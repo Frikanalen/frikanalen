@@ -1,0 +1,54 @@
+Creating a local development environment
+========================================
+
+place the source somewhere
+
+install virtualenv
+
+create virtual env:
+
+	$ mkdir fkwork # just an example. i keep databases etc 
+	$ cd fkwork
+	$ virtualenv --no-site-packages fkenv
+	$ # this creates a folder called fkenv containing 
+	$ # a python environment
+	$
+
+before you continue installing python librares
+
+	$ source fkenv/bin/activate
+	(fkenv) $
+
+you can now use pip or easy_install
+
+pip:
+	(fkenv)$ pip install south
+easy_install:
+	(fkenv)$ easy_install south
+
+dependencies:
+	(fkenv)$ pip install south
+	(fkenv)$ pip install djangorestframework
+	(fkenv)$ pip install python-datetime
+	(fkenv)$ pip install django-register 
+	(fkenv)$ pip install twisted
+
+Open fkbeta/settings.py in your editor and edit paths and database-settings
+(TODO) Create django SECRET_KEY 
+
+	(fkenv)$ cd fkbeta
+	(TODO) i guess there's some trouble with south at this point, if so, move out fkbeta/fk/migrations
+	(fkenv)$ manage.py syncdb
+	...
+Create superuser when asked...
+	(fkenv)$ manage.py runserver
+	Validating models...
+	
+	0 errors found
+	Django version 1.4.1, using settings 'fkbeta.settings'
+	Development server is running at http://127.0.0.1:8000/
+	Quit the server with CTRL-BREAK.
+
+Point your webbrowser to http://127.0.0.1:8000/admin and log in ...
+
+Make some tables

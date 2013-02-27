@@ -1,0 +1,129 @@
+{% extends "base_generic.html" %}
+
+{% block style %}
+<style>
+
+.small_thumbnail {
+    height: 36px;
+    width: 64px;
+}
+
+.video_container {
+}
+
+.videolist_container {
+}
+
+.video_container ul {
+    list-style: none;
+    margin: 5px;
+    padding: 5px;
+    /*margin: 15px 15px 0 0;*/
+    border-radius: 8px;
+    background-color:#eaeaea;
+    /*border: 3px solid;
+    border-color:#d8d8d8;*/
+}
+
+.video_container img {
+    float: left;
+    padding: 0px 8px 4px 4px;
+}
+.video_container img {
+    height: 36px;
+    width: 64px;
+}
+
+.video_container .name {
+    font-weight: bold;
+}
+
+.video_container .description {
+    font-size: 75%;
+}
+
+.video_container .duration {
+    font-size: 67%;
+}
+
+.video_container .editor {
+    font-size: 75%;
+}
+
+.video_container li {
+    padding:0;
+    margin:0;
+}
+
+</style>
+
+{% endblock style %}
+
+{% block content %}
+
+<div class="navigation_container">
+{% if page.paginator.num_pages > 1 %}
+    <div class="navigation">
+        <div class="inner">
+        {% if page.has_previous %}
+        <a href="?page={{ page.previous_page_number }}{{ url_query_postfix }}"> Previous</a>
+        {% else %}
+        First
+        {% endif %}
+        </div>
+    </div>
+
+    <div class="navigation">
+        <div class="inner">
+        {{ page.number }} of {{ page.paginator.num_pages }}
+        </div>
+    </div>
+
+    <div class="navigation">
+        <div class="inner">
+        {% if page.has_next %}  
+        <a href="?page={{ page.next_page_number }}{{ url_query_postfix }}"> Next</a>
+        {% else %}
+        Last
+        {% endif %}
+        </div>
+    </div>
+{% endif %}
+    <div class="navigation">
+        <form>
+            <input name="q" value="{{ search_query }}" placeholder="Search videos" type="search" style="float:left;">
+            <input type="submit" value="Search">
+        </form>
+    </div>
+</div>
+
+<div class="videolist_container">
+{% for video in videos %}
+<div class="video_container">
+    <ul>
+        <li>
+            <a href="/video/{{ video.id }}">
+                <img src="{{ video.small_thumbnail_url }}" class="small_thumbnail"/>
+            </a>
+        </li>
+        <li class="header">
+            <a href="/video/{{ video.id }}"><span class="name">{{ video.name }}</span></a>
+            <span class="duration">({{ video.duration }})</span>
+        </li>
+        <li class="editor">
+            <a href="/organization/{{ video.organization.id }}">
+            <i>{{ video.organization }}</i>
+            </a>
+        </li>
+        <li class="description">
+        {% if video.header %}
+        <i>
+            {{ video.header }}
+        </i></li>
+        {% endif %}
+
+    </ul>
+</div>
+{% endfor %}
+</div>
+{% endblock content %}

@@ -1,0 +1,118 @@
+{% extends "base_generic.html" %}
+
+{% block style %}
+<style>
+ul {
+    list-style: none;
+    padding:5px;
+    margin:5px;
+    }
+
+.video_container {
+    overflow:auto;
+}
+
+.player-container {
+    float: left;
+    padding: 0px 16px 16px 16px;
+    }
+
+.player {
+    width: 640px; 
+    height: 360px;
+}
+
+.video-info {
+    overflow:auto;
+    margin: 0px 16px 0px 16px;
+    padding: 16px;
+    border-radius: 8px;
+    background-color:#eaeaea;
+    min-width: 100px;
+}
+
+.video-description {
+    overflow:auto;
+    margin: 0px 16px 0px 16px;
+    padding: 8px 16px 8px 16px;
+    border-radius: 8px;
+    background-color:#eaeaea;
+    font-size:120%;
+    clear:both;
+}
+
+</style>
+{% endblock style %}
+
+
+
+{% block content %}
+
+<div class="video_container">
+        <div class="player-container">
+            <video class="player" src="http://frikanalen.nuug.no{{ video.ogv_url }}"  poster="http://frikanalen.nuug.no/media/id/{{ video.large_thumbnail_url }}" controls>
+                Video is not working. This is a fallback.
+            </video>
+        </div>
+        <div class="video-info">
+            {% if video.organization %}
+            <div>
+                <a href="/organization/{{ video.organization.id }}">{{ video.organization }}</a>
+            </div>
+            {% endif %}
+            {% if video.ref_url %}
+            <div>
+                <a href="http://{{ video.ref_url }}" target="_blank">{{ video.ref_url }}</a>
+            </div>
+            {% endif %}
+            <div>Editor: <i>{{ video.editor.first_name }} {{ video.editor.last_name }}</i></div>
+            <div>Category:
+                <i> 
+                {% for category in video.category_list %}
+                    <span style="background-color:{{ category.rgb }};border-radius: 4px;padding:2px;">{{ category }}</span>
+                {% endfor %}
+                </i>
+            </div>
+        <!--
+        <li><b>Files</b></li>
+
+        <li><a href="http://frikanalen.nuug.no{{ video.ogv_url }}">ogv @ nuug.no</a></li>
+        {% for videofile in video.videofiles  %}
+            <li class="format_tag">
+                <a href="http://frikanalen.nuug.no/media/id/{{ videofile.old_filename }}">{{ videofile.format.fsname }}</a>
+            </li>               
+        {% endfor %}
+        <li><hr/></li>
+        -->
+            <div>
+                <small>Length: {{ video.duration }}</small>
+            </div>
+            <div>
+            {% if video.first_broadcast %}
+                <small>First broadcast: <i>{{ video.first_broadcast.starttime }}</i></small>
+            {% else %}
+                <small>Not broadcast yet.</i></small>
+            {% endif %}
+            <!-- <div>Previous broadcast: <i> {{ video.last_broadcast.starttime }}</i></div> --> 
+            </div>
+        {% if video.has_tono_records %}
+            <div><img src="/static/tono-logo.gif" alt="TONO" style="margin:5px;"/></div>
+        {% else %}
+        {% endif %}
+    </div>
+</div>
+{% if video.header %}
+<div class="video-description">
+    {{ video.header|linebreaks }}
+    <!--
+    <ul style="clear:both;">
+    	<li><b>History</b></li>
+        {% for event in video.schedule  %}
+            <li>{{ event }}</li>
+        {% endfor %}
+
+    </ul>
+    -->
+</div>
+{% endif %}
+{% endblock content %}
