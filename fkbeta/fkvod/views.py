@@ -32,6 +32,8 @@ class VideoDetail(TemplateView):
 
 
 class AbstractVideoList(TemplateView):
+    template = 'fkvod/video_list.html'
+
     def videoset_name(self, *kw, **kwargs):
         return "abstract videos"
 
@@ -68,10 +70,9 @@ class AbstractVideoList(TemplateView):
             "url_query_postfix": url_query_postfix,
             "search_query": search_query
         }
-        return render_to_response('fkvod/video_list.html',
-            context,
-            context_instance=RequestContext(request))
-
+        return render_to_response(self.template,
+                                  context,
+                                  context_instance=RequestContext(request))
 
 class VideoList(AbstractVideoList):
     def videoset_name(self):
@@ -98,4 +99,24 @@ class OrganizationVideos(AbstractVideoList):
                   .public()
                   .filter(organization=self.org)
                   .order_by('-id'))
+        return videos
+
+
+class RssVideos(AbstractVideoList):
+    template = 'fkvod/video_list.rss'
+
+    def videoset_name(self, orgid=None, *args, **kwargs):
+        if self.org is not None:
+            return "Video RSS from %s" % self.org.name
+        else:
+            return "Video RSS"
+
+    def initial_queryset(self, orgid=None, *args, **kwargs):
+        self.org = None
+        if orgid is not None:
+            self.org = Organization.objects.get(id=orgid)
+            videos = (Video.objects.public().filter(organization=self.org)
+                      .order_by('-id'))
+        else:
+            videos = Video.objects.public().order_by('-id')
         return videos

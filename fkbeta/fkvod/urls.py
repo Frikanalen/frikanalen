@@ -8,8 +8,11 @@ from fkvod import views
 urlpatterns = [
     url(r'^video/$', views.VideoList.as_view(),
         name='vod-video-list'),
-    url(r'^video/(?P<video_id>\d+)$', views.VideoDetail.as_view(),
+    url(r'^video/(?P<video_id>\d+)/$', views.VideoDetail.as_view(),
         name='vod-video-detail'),
-    url(r'^organization/(?P<orgid>\d+)$', views.OrganizationVideos.as_view(),
+    url(r'^video/rss/$', views.RssVideos.as_view(), name='video-list-rss'),
+    url(r'^organization/(?P<orgid>\d+)/$', views.OrganizationVideos.as_view(),
         name='vod-org-video-list'),
+    url(r'^organization/(?P<orgid>\d+)/rss/$', views.RssVideos.as_view(),
+        name='video-list-rss'),
 ]
