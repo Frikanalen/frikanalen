@@ -203,12 +203,11 @@ class Video(models.Model):
 
 import datetime
 from django.utils.timezone import utc
-#from fkutils import timeutils
 
 class ScheduleitemManager(models.Manager):
     def by_day(self, date=None, days=1):
         if not date:
-            date = datetime.date.today().replace(tzinfo=utc)
+            date = datetime.datetime.utcnow().replace(tzinfo=utc).date()
         enddate = date + datetime.timedelta(days=days)
         return super(ScheduleitemManager, self).get_query_set().filter(starttime__gt=date, starttime__lt=enddate)
 
