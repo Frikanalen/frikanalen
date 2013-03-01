@@ -198,7 +198,7 @@ class Video(models.Model):
         return videofile.old_filename.split('/')[0]
 
     def ogv_url(self):
-        url = r"/media/id/%s" % self.videofile_url("theora")
+        url = settings.FK_MEDIA_URLPREFIX + self.videofile_url("theora")
         return url
 
 import datetime

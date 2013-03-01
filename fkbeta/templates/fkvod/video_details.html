@@ -50,7 +50,8 @@ ul {
 
 <div class="video_container">
         <div class="player-container">
-            <video class="player" src="http://frikanalen.nuug.no{{ video.ogv_url }}"  poster="http://frikanalen.nuug.no/media/id/{{ video.large_thumbnail_url }}" controls>
+            <video class="player" poster="http://frikanalen.nuug.no/media/id/{{ video.large_thumbnail_url }}" controls>
+                <source src="{{ video.ogv_url }}" type="video/ogg"> 
                 Video is not working. This is a fallback.
             </video>
         </div>
