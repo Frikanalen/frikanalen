@@ -1,10 +1,12 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.generic import TemplateView
-from fk.models import Scheduleitem
+from django.forms import ModelForm #, ModelChoiceField
+from fk.models import Scheduleitem, Video, Organization
 import datetime
 
 from django.utils.timezone import utc
+#from django.contrib.auth.decorators import login_required
 
 class ProgramguideView(TemplateView):
   """Simple Programguide
@@ -24,3 +26,96 @@ class ProgramguideView(TemplateView):
     return render_to_response('agenda/events.html', 
       context, 
       context_instance=RequestContext(request))
+
+class VideoFormForUsers(ModelForm):
+  #organization = ModelChoiceField(queryset=Organization.objects.filter(name="Frikanalen"))
+  class Meta:
+    model = Video
+    exclude = ("editor", "framerate", "played_count_web", "description", "proper_import", "updated_time", "uploaded_time")
+
+class VideoFormForAdmin(ModelForm):
+  class Meta:
+    model = Video
+    exclude = ("framerate", "played_count_web", "description", "proper_import", "updated_time", "uploaded_time")
+
+class AbstractVideoFormView(TemplateView):
+  UserForm = VideoFormForUsers
+  AdminForm = VideoFormForAdmin
+
+  def get_form(self, request, data=None, initial={}, form=None, instance=None):
+    # I suspect this stuff should be moved to the VideoForm-class
+    organizations = Organization.objects.filter(members=request.user.id)
+    if not form:
+      if not instance:
+        if organizations:
+          initial["organization"] = organizations[0].id
+        initial["publish_on_web"] = True
+        initial["is_filler"] = True
+
+      if request.user.is_superuser:
+        initial["editor"] = request.user.id
+        if not instance:
+          form = self.AdminForm(initial=initial)
+        else:
+          form = self.AdminForm(data, instance=instance)
+      else:
+        if not instance:
+          form = self.UserForm(initial=initial)
+        else:
+          form = self.UserForm(data, instance=instance)
+
+    if not request.user.is_superuser:
+      form.fields["organization"].queryset=organizations
+    return form
+
+class ManageVideoNew(AbstractVideoFormView):
+  def get(self, request, form=None):
+    if not request.user.is_authenticated():
+      return redirect('/login/?next=%s' % request.path)
+    initial = {}
+    form = self.get_form(request, initial=initial, form=form)
+    context = {
+               "form": form,
+               "title": u"New Video"
+               }
+    return render_to_response('agenda/manage_video_new.html',
+      context,
+      context_instance=RequestContext(request))
+
+  def post(self, request):
+    if not request.user.is_authenticated():
+      return redirect('/login/?next=%s' % request.path)
+    if request.user.is_superuser:
+      video = Video()
+    else:
+      video = Video(editor=request.user)
+    form = self.get_form(request, data=request.POST, instance=video)
+    if form.is_valid():
+      video = form.save()
+      # Success, send to edit page
+      return redirect("manage_video_edit", video.id)
+    return self.get(request, form=form)
+
+class ManageVideoEdit(AbstractVideoFormView):
+  Form = VideoFormForUsers
+  def get(self, request, id=None, form=None):
+    if not request.user.is_authenticated():
+      return redirect('/login/?next=%s' % request.path)
+    video = Video.objects.get(id=id)
+    form = self.get_form(request, form=form, instance=video)
+    context = {
+               "form": form,
+               "title": u"Edit video"
+               }
+    return render_to_response('agenda/manage_video_new.html',
+      context,
+      context_instance=RequestContext(request))
+
+  def post(self, request, id):
+    if not request.user.is_authenticated():
+      return redirect('/login/?next=%s' % request.path)
+    video = Video.objects.get(id=id)
+    form = self.get_form(request, data=request.POST, instance=video)
+    if form.is_valid():
+      form.save()
+    return self.get(request, id=id, form=form)
