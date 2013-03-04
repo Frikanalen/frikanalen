@@ -3,3 +3,5 @@ django-registration >= 0.8
 djangorestframework >= 2.2.0
 Twisted >= 12
 python-dateutil == 2.1
+Django >= 1.4, < 1.5
+pytz
