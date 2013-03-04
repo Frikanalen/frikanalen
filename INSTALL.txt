@@ -1,44 +1,38 @@
 Creating a local development environment
 ========================================
 
-place the source somewhere
+Install virtualenv:
 
-install virtualenv
+    $ apt-get install python-virtualenv python-pip
 
-create virtual env:
+Create virtual env:
 
-	$ mkdir fkwork # just an example. i keep databases etc 
-	$ cd fkwork
-	$ virtualenv --no-site-packages fkenv
-	$ # this creates a folder called fkenv containing 
-	$ # a python environment
-	$
+    $ virtualenv --no-site-packages env
 
-before you continue installing python librares
+Activate your new pyhton environment:
 
-	$ source fkenv/bin/activate
-	(fkenv) $
+    $ source fkenv/bin/activate
+    (fkenv)$
 
-you can now use pip to install the rest of the requirements:
+Use pip to install the rest of the requirements:
 
-	(fkenv)$ pip install -r requirements.txt
+    (fkenv)$ pip install -r requirements.txt
 
-Open fkbeta/settings.py in your editor and edit paths and database-settings
-(TODO) Create django SECRET_KEY 
+Open fkbeta/settings.py in your editor and edit paths and database-settings.
+You should set SECRET_KEY to a random string.
 
-	(fkenv)$ cd fkbeta
-	(TODO) i guess there's some trouble with south at this point, if so, move out fkbeta/fk/migrations
-	(fkenv)$ manage.py syncdb
-	...
-Create superuser when asked...
-	(fkenv)$ manage.py runserver
-	Validating models...
-	
-	0 errors found
-	Django version 1.4.1, using settings 'fkbeta.settings'
-	Development server is running at http://127.0.0.1:8000/
-	Quit the server with CTRL-BREAK.
+    (fkenv)$ cd fkbeta
+    (fkenv)$ python manage.py syncdb
+        ...
+    (fkenv)$ manage.py runserver
 
-Point your webbrowser to http://127.0.0.1:8000/admin and log in ...
+    Validating models...
+
+    0 errors found
+    Django version 1.4.1, using settings 'fkbeta.settings'
+    Development server is running at http://127.0.0.1:8000/
+    Quit the server with CTRL-BREAK.
+
+Point your webbrowser to http://127.0.0.1:8000/admin and log in.
 
 Make some tables
