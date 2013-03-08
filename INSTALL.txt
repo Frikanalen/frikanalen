@@ -9,22 +9,22 @@ Create virtual env:
 
     $ virtualenv --no-site-packages env
 
-Activate your new pyhton environment:
+Activate your new python environment:
 
-    $ source fkenv/bin/activate
-    (fkenv)$
+    $ source env/bin/activate
+    (env)$
 
 Use pip to install the rest of the requirements:
 
-    (fkenv)$ pip install -r requirements.txt
+    (env)$ pip install -r requirements.txt
 
 Open fkbeta/settings.py in your editor and edit paths and database-settings.
 You should set SECRET_KEY to a random string.
 
-    (fkenv)$ cd fkbeta
-    (fkenv)$ python manage.py syncdb
+    (env)$ cd fkbeta
+    (env)$ python manage.py syncdb
         ...
-    (fkenv)$ manage.py runserver
+    (env)$ manage.py runserver
 
     Validating models...
 
