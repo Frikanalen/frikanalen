@@ -1,4 +1,5 @@
 
+from django.shortcuts import redirect
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
@@ -80,4 +81,7 @@ class VideoDetail(generics.RetrieveAPIView):
     API endpoint that represents a list of users.
     """
     model = Video
-    serializer_class = VideoSerializer    
+    serializer_class = VideoSerializer
+
+def wschange_redirect_view(request, path):
+    return redirect('/api/' + path, permanent=True)
