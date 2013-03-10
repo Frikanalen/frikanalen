@@ -193,7 +193,7 @@
                 </div>
 
                 <div id="header-subtitle">
-                    <a href="">{{ title|default:"No title" }}</a>
+                    {% block heading-title %}<a href="">{{ title|default:"No title" }}</a>{% endblock heading-title %}
                 </div>
             </div>
             {% endblock heading %}
