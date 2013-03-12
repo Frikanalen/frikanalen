@@ -207,7 +207,7 @@ import datetime
 from django.utils.timezone import utc
 
 class ScheduleitemManager(models.Manager):
-    def by_day(self, date=None, days=1, surrounding=True):
+    def by_day(self, date=None, days=1, surrounding=False):
         if not date:
             date = datetime.datetime.utcnow().replace(tzinfo=utc).date()
         enddate = date + datetime.timedelta(days=days)
@@ -229,7 +229,7 @@ class Scheduleitem(models.Model):
     default_name = models.CharField(max_length=255, blank=True)
     video = models.ForeignKey(Video, null=True, blank=True)
     schedulereason = models.IntegerField(
-            null = True,
+            blank=True,
             choices = SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = fields.MillisecondField() # in milliseconds
