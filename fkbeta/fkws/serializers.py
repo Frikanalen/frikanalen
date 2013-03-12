@@ -33,10 +33,13 @@ class VideoSerializer(serializers.ModelSerializer):
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
 	video = VideoSerializer()
+	video_id = serializers.HyperlinkedRelatedField(source="video", view_name="api-video-detail", read_only=False, required=False)
 	class Meta:
 		model = Scheduleitem
 		fields = (
+			"id",
 			"default_name", 
+			"video_id",
 			"video", 
 			#"schedulereason", 
 			"starttime", 

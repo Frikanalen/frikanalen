@@ -1,14 +1,15 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic import TemplateView
+from django.http import Http404
 from fk.models import Video, Organization
 from django.core.paginator import Paginator
 import search
 import urllib
 from django.core.exceptions import ObjectDoesNotExist
 
-# /agenda/video
 class VideoDetail(TemplateView):
+  """Show video and video player to website visitors"""
   def get(self, request, video_id):
     try:
       video = Video.objects.public().get(id=video_id)
@@ -50,7 +51,6 @@ class AbstractVideoList(TemplateView):
       title = videoset_name
       url_query_postfix = ""
 
-
     p = Paginator(videos, 9)
     page = p.page(page_nr)
     context = {"videos": page.object_list,
@@ -77,6 +77,9 @@ class OrganizationVideos(AbstractVideoList):
     return "Videos from %s" % self.org.name
 
   def initial_queryset(self, orgid):
-    self.org = Organization.objects.get(id=orgid)
+    try:
+      self.org = Organization.objects.get(id=orgid)
+    except ObjectDoesNotExist:
+      raise Http404
     videos = Video.objects.public().filter(organization=self.org).order_by('-id')    
     return videos

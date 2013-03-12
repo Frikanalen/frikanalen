@@ -1,0 +1,107 @@
+{% extends "base_generic.html" %}
+
+{% block style %}
+<style>
+.video_container {
+    margin: 0px 0px 0 0;
+    overflow: hidden;
+}
+
+.videolist_container {
+    clear:both;
+    font-size: 12px;
+}
+
+.video_container ul {
+    list-style: none;
+    padding: 5px 0 5px 5px;
+    margin: 5px 5px 5px 5px;
+    clear: both;
+}
+
+.video_container li {
+    padding:0;
+    margin:0;
+    float: left;
+    width: 240px;
+}
+</style>
+{% endblock style %}
+
+{% block content %}
+<div class="navigation_container">
+    <div class="navigation">
+        <div class="inner">
+            <a href="new/">Ny video</a>
+        </div>
+    </div>
+</div>
+
+
+<div class="navigation_container">
+{% if page.paginator.num_pages > 1%}
+    <div class="navigation">
+        <div class="inner">
+            {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}"> Previous</a>
+            {% else %}
+            First
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="navigation">
+        <div class="inner">
+            {{ page.number }} of {{ page.paginator.num_pages }}
+        </div>
+    </div>
+
+    <div class="navigation">
+        <div class="inner">
+            {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}"> Next</a>
+            {% else %}
+            Last
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+</div>
+
+<div class="videolist_container">
+{% for video in videos %}
+<div class="video_container">
+<ul>
+    <!--
+    <li>
+        <a href="/agenda/video/{{ video.id }}">
+            <img src="{{ MEDIA_URL }}videos/{{ video.small_thumbnail_url }}"/>
+        </a>
+    </li>
+    -->
+    <li>
+        <a href="/agenda/video/{{ video.id }}">
+            <b>{{ video.name }}</b>
+        <a href="/agenda/video/{{ video.id }}">
+    </li>
+    <li><a href="/agenda/user/{{ video.editor }}"><i>{{ video.editor }}</i></a></li>
+    {% if video.tags %}
+    <li>{{ video.tags }}</li>
+    {% else %}
+    <li>&nbsp;</li>
+    {% endif %}
+    <li>{{ video.last_broadcast.starttime }}&nbsp;</li>
+    <li><a href="edit/{{ video.id }}">edit</a></li>
+    <!--<li> {{ video.last_broadcast.duration }} </li> -->
+    <!--
+    {% if video.header %}
+    <li><i>{{ video.header }}</i></li>
+    {% endif %}
+    -->
+
+</ul>
+</div>
+{% endfor %}
+</div>
+{% endblock content %}
+

@@ -1,0 +1,37 @@
+{% extends "base_generic.html" %}
+
+{% block style %}
+<style>
+.form_body {
+    /* Kill me now why does margin-top put stuff at the top */
+    margin-left: 5px;
+}
+.form_body label {
+    display: block;
+    float: left;
+    width: 15em;
+    margin-right: 5px;
+    text-align: right;
+}
+.form_body input[type=text] {
+    width: 25em;
+}
+.form_body textarea {
+    width: 25em;
+}
+.form_body button {
+    border: 1px solid;
+}
+</style>
+{% endblock style %}
+
+{% block content %}
+<div class="form_body">
+    &nbsp;
+    <form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <p><label>&nbsp;</label><button type="submit">Save video</button></p>
+    </form>
+</div>
+{% endblock content %}
+
