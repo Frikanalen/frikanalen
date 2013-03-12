@@ -1,0 +1,568 @@
+{% extends "base_generic.html" %}
+{% block style %}
+<style>
+    .clear {
+        clear: both;
+        overflow: auto;
+    }
+
+    .dayblock {
+        float: left;
+    }
+
+    .event {
+        clear: both;
+        width: 40em;
+        margin: 0;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 16px;
+        padding-right: 16px;
+        overflow: auto;
+    }
+
+    .time {
+        width: 5em;
+    }
+
+    .name {
+        width: 20em;
+    }
+
+    .hour {
+        float: left;
+        width: 2em;
+        margin-left: 0.25em;
+        color:gray;
+        font-weight: bold;
+    }
+    .event-info {
+        clear: right;
+        left: 2em;
+        width: 100%;
+    }
+    .event-actions {
+        clear: both;
+        padding-left: 20em;
+        display: none;
+    }
+
+    .event-edit {
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        display: none;
+    }
+
+    .event-edit label {
+        width: 6em;
+        height: 2em;
+        overflow: auto;
+        display: block;
+        float: left;
+        font-size: 12px;
+    }
+
+    .event-edit input {
+        width:20em;
+    }
+
+    #videobrowser {
+        position: fixed;
+        top: 10em;
+        bottom: 3em;
+        width: 30em;
+        left: 50em;
+        overflow: auto;
+        background: white;
+        padding: 8px;
+        border: solid black 1px;
+    }
+
+</style>
+{% endblock style %}
+
+{% block content %}
+<script src="/static/jquery-1.9.1.min.js"></script>
+<script type='text/javascript' src='/static/knockout-2.2.1.js'></script>
+<script type='text/javascript' src='/static/knockout.mapping.js'></script>
+<script type='text/javascript' src='/static/moment.min.js'></script>
+
+<script>
+// From here: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+// From here: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function sameOrigin(url) {
+    // test that a given url is a same-origin URL
+    // url could be relative or scheme relative or absolute
+    var host = document.location.host; // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+    // Allow absolute or scheme relative URLs to same origin
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        // or any other URL that isn't scheme relative or absolute i.e relative.
+        !(/^(\/\/|http:|https:).*/.test(url));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+            // Send the token to same-origin, relative URLs only.
+            // Send the token only if the method warrants CSRF protection
+            // Using the CSRFToken value acquired earlier
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+// End setting up csrf for ajax/django
+
+// A handler for moment dates
+ko.bindingHandlers.moment = {
+    update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+        var value = valueAccessor();
+        var allBindings = allBindingsAccessor();
+        var valueUnwrapped = ko.utils.unwrapObservable(value);
+        var pattern = allBindings.pattern || 'YYYY-MM-DD HH:mm:ss';
+        $(element).text(valueUnwrapped.format(pattern));
+    }
+}
+
+
+function duration_to_moment(duration) {
+    /* Evil workaround because moment doesn't support formatting of durations */
+    l = duration.split(':');
+    ms = 0;
+    for (var n = 0; n < l.length; n++){
+        ms = ms*60 + parseFloat(l[n]);
+    }
+    d = moment.duration(ms*1000, "ms")
+    return moment(d).utc()
+};
+
+function duration_to_moment_duration(duration) {
+    l = duration.split(':');
+    ms = 0;
+    for (var n = 0; n < l.length; n++){
+        ms = ms*60 + parseFloat(l[n]);
+    }
+    d = moment.duration(ms*1000, "ms")
+    return d;
+};
+
+ProgramEvent = function() {
+    var self = this
+    self.id = ko.observable();
+    self.event_type = ko.observable();
+    self.video = ko.observable();
+    self.default_name = ko.observable();
+    self.duration = ko.observable("00:00");
+    self.starttime = ko.observable();
+
+    self.starttime_time = ko.computed({
+        read: function() {
+            if (self.starttime())
+                return self.starttime().format("HH:mm:ss.SS");
+        },
+        write: function(value) {
+            s = self.starttime_date() + value
+            self.starttime(moment(s, "YYYY-MM-DD HH:mm:ss.SS"))
+        },
+        owner: this
+    });
+
+    self.starttime_date = ko.computed({
+        read: function() {
+            if (self.starttime())
+                return self.starttime().format("YYYY-MM-DD");
+        },
+        write: function(value) {
+            s = value + self.starttime_time()
+            self.starttime(moment(s, "YYYY-MM-DD HH:mm:ss.SS"))
+        },
+        owner: this
+    });
+
+    self.endtime = ko.computed(function() {
+        return moment(self.starttime()).add(duration_to_moment_duration(self.duration()))
+    });
+
+    self.display_duration = ko.computed(function() {
+        return duration_to_moment(self.duration())
+    });
+
+    self.video_id = ko.computed(function() {
+        if (self.video()) 
+            return self.video().id
+        else
+            return null;
+    });
+
+    self.video_name = ko.computed(function() {
+        if (self.video()) 
+            return self.video().name;
+    });
+
+    self.display_name = ko.computed(function() {
+        if (self.default_name()) 
+            return self.default_name()
+        else if (self.video())
+            return self.video().name;
+    });
+
+    self.edit_url = ko.computed(function() {
+        if (self.video()) 
+            return "../video/edit/"+self.video().id
+        else
+            return "";
+    });
+}
+
+PlannerViewModel = function() {
+    var self = this;
+    self.videos = ko.observableArray();
+    self.events = ko.observableArray();
+    self.editing_date = ko.observable();
+    self.selected_event = ko.observable();
+    self.video_search_query = ko.observable();
+    self.display_editing_date = ko.computed(function() {
+        if (self.editing_date())
+            return self.editing_date().format("DD-MM-YYYY");
+    }, self);
+
+    self.load = function() {
+        self.editing_date.subscribe(self.loadEvents);
+        self.editing_date(moment());
+        self.loadVideos();
+    };
+
+    self.loadVideos = function() {
+        url = "/ws/videos/"
+        if (self.video_search_query()) {
+            url = url + "?q="+self.video_search_query();
+        }
+        $.getJSON(url, function(data) {
+            $.each(data.results, function(i, v) {
+                data.results[i].display_duration = duration_to_moment(v.duration);
+                data.results[i].edit_url = "../video/edit/"+v.id
+            });
+            self.videos(data.results);
+        });
+    };
+
+    self.loadEvents = function() {
+        date = self.editing_date().format("YYYYMMDD")
+        self.events()
+        $.getJSON("/ws/scheduleitems/?days=1&surrounding=1&page_size=0&date="+date, function(data) { 
+        //$.getJSON("/ws/scheduleitems/?days=1&page_size=0&date="+date, function(data) { 
+            //console.log(ko.mapping.fromJS(data[0]));
+            // First process the json
+            programevents = []
+            $.each(data, function(i, v) {
+                programevent = new ProgramEvent()
+                programevent.id(v.id)
+                programevent.default_name(v.default_name)
+                programevent.starttime(moment(v.starttime))
+                programevent.duration(v.duration);
+                programevent.video(v.video)
+                if (programevent.video) {
+                    programevent.event_type("video")
+                }
+                else
+                    programevent.event_type("booking")
+                programevents.push(programevent)
+            });
+            // Now fill in empty spaces
+            events = []
+            for (i = 0; i < programevents.length; i++) {
+                current = programevents[i];
+                events.push(current);
+                if (i < programevents.length - 1) {
+                    next = programevents[i+1];
+                    pause_duration = moment(next.starttime().diff(current.endtime())).utc();
+
+                    empty = new ProgramEvent();
+                    empty.duration(pause_duration.format("HH:mm:ss.SS"));
+                    empty.starttime(current.endtime());
+                    empty.event_type("pause");
+                    empty.default_name("")
+                    if (pause_duration > 0)
+                        events.push(empty);
+                }
+            }
+            self.events (events);
+        })
+    };
+
+    self.selectEvent = function(event, evt) {
+        self.selected_event(event);
+        editor = $(evt.target).closest("tr").next().find(".event-edit");
+        $(".event-edit").not(editor).slideUp("fast");
+        $(editor).slideToggle("fast");
+    }
+
+    self.insertVideo = function(video) {
+        if (self.selected_event()) {
+            self.selected_event().video(video);
+            self.selected_event().duration(video.duration);
+        }
+        else
+            alert("No event selected");
+    };
+
+    self.unsetEventVideo = function(event) {
+        self.selected_event().video(null);
+        self.selected_event().duration("00:00");
+    };
+
+    self.selectVideo = function(video) {
+        console.log("what to use this for... "+video.id)
+    };
+
+    self.previousDay = function(video) {
+        new_date = self.editing_date().subtract('days', 1);
+        self.editing_date(new_date);
+    };
+    self.nextDay = function(video) {
+        new_date = self.editing_date().add('days', 1);
+        self.editing_date(new_date);
+    };
+
+    self.updateEvent = function(event) {
+        var jsData = ko.toJS(event);
+        console.log(jsData);
+        delete jsData.video
+        if (jsData.video_id) 
+            jsData.video_id = "http://localhost:8000/ws/videos/"+jsData.video_id
+        else
+            jsData.video_id = "";
+        delete jsData.edit_url
+        delete jsData.video_name
+        delete jsData.pause_duration
+        delete jsData.display_duration
+        delete jsData.display_editing_date
+        delete jsData.endtime
+        delete jsData.event_type
+        jsonData = ko.toJSON(jsData)
+        url = "/ws/scheduleitems/"
+        if (jsData.id) {
+            url = url + jsData.id;
+            method = "PUT";
+        }
+        else {
+            method = "POST";
+        };
+
+
+        $.ajax({
+            url: url,
+            type: method,
+            data: jsonData, 
+            contentType: 'application/json',
+            success: function(response) {
+            // This callback is executed if the post was successful
+            self.loadEvents()
+        }});
+    };
+
+    self.deleteEvent = function(event) {
+        url = "/ws/scheduleitems/"+event.id()
+        method = "DELETE";
+
+        $.ajax({
+            url: url,
+            type: method,
+            data: "{}", 
+            contentType: 'application/json',
+            success: function(response) {
+                self.loadEvents()
+        }});
+    };
+
+    self.searchVideos = function() {
+        self.loadVideos()
+    };
+ };
+
+$(document).ready(function() {
+    planner = new PlannerViewModel();
+    ko.applyBindings(planner);
+    planner.load()
+
+
+    // On load handling
+    $(".event-info").click(function(evt)
+        {
+            $(".event-info").not(this).parent().find(".event-actions").slideUp("fast");
+            $(this).parent().find(".event-actions").slideToggle("fast");
+        });
+    });
+
+</script>
+
+{% load tz %}
+{% timezone TIME_ZONE %}
+<div>
+    <div class="navigation_container">
+    <div class="navigation">
+        <div class="inner" data-bind="click: $root.previousDay">
+        <a href="#">Previous</a>
+        </div>
+    </div>
+    <div class="navigation">
+        <div class="inner">
+        <span data-bind="text: display_editing_date">Loading...</span>
+        </div>
+    </div>
+    <div class="navigation">
+        <div class="inner">
+        <a href="#" data-bind="click: $root.nextDay">Next</a>
+        </div>
+    </div>
+    </div>
+<div>
+
+<div>
+    <div style="clear:both;">
+    <table class="events">
+        <thead><tr>
+            <th class="time">Date</th>
+            <th class="time">Time</th>
+            <th class="name">Name</th>
+            <th class="time">Duration</th>
+        </tr></thead>
+        <tbody data-bind="foreach: events">
+            <tr class="event-row" data-bind="click: $root.selectEvent">
+                <td>
+                    <span data-bind="moment: starttime, pattern: 'DD-MM'"></span><br/>
+                    <span data-bind="moment: endtime, pattern: 'DD-MM'"></span>
+                </td>
+                <td>
+                    <span data-bind="moment: starttime, pattern: 'HH:mm:ss'"></span><br/>
+                    <span data-bind="moment: endtime, pattern: 'HH:mm:ss'"></span>
+                </td>
+                <td><b data-bind="text: display_name"></b></td>
+                <td data-bind="moment: display_duration, pattern: 'HH:mm:ss'"></td>
+            </tr>     
+            <tr>
+                <td colspan="4" style="background:white;">
+                    <div class="event-edit">
+                        <div class="clear"><label>Date</label>
+                            <input data-bind="value: starttime_date"/>
+                        </div>
+                        <div class="clear"><label>Time</label>
+                            <input data-bind="value: starttime_time"/>
+                        </div>
+                        <div class="clear"><label>Name</label><input data-bind="value: default_name"/></div>
+                        <div class="clear">
+                            <label>Video</label>
+                            <div>
+                                <span data-bind="text: video_name"></span><br/>
+                                <a data-bind="attr: { href: edit_url }" target="_blank" href="#">Edit Video...</a>
+                                <a data-bind="click: $root.unsetEventVideo" href="#">Unset Video</a>
+                                <!--<small>#<span data-bind="text: video.id"></span></small>-->
+                            </div>
+                        </div>
+                        <div class="clear"><label>Duration</label> <input data-bind="value: duration"/></div>
+                        <button data-bind="click: $root.updateEvent">Update</button>
+                        <button data-bind="click: $root.deleteEvent">Delete</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+{% comment %}
+{% for event in events %}
+    <div class="event" style="background-color:{% cycle '#f1f1f1' '#e7e7e7' %}">
+    {% ifchanged event.starttime.hour event.starttime.date %}
+        <div class="hour">
+        {{ event.starttime|date:"H" }}
+        </div>
+    {% else %}
+        <div class="hour">
+            &nbsp;
+        </div>
+    {% endifchanged %}
+        <div class="event-info">
+            <div class="time">
+                {{ event.starttime|date:"d M y" }}
+            </div>
+            <div class="time">
+                {{ event.starttime|date:"H:i:s" }}
+            </div>
+            <div class="time">
+                {{ event.endtime|date:"H:i:s"}}
+            </div>
+            <!-- <img src="{{ MEDIA_URL }}videos/{{ event.video.small_thumbnail_url }}"/> -->   
+            <div class="blurb">
+                <!-- {{ event.video.name }} -->
+                <b>
+                    {% if event.event_type = "video"  %}
+                        {% if event.video.is_public %}
+                        <a href="/video/{{ event.video.id }}">{{ event.name }}</a>
+                        {% endif %}
+                    {% else %}
+                        {{ event.event_type }}:
+                        {{ event.name }}<br>
+                    {% endif %}
+                </b>
+            </div>
+            <div class="time">
+                {{ event.duration }}
+            </div>
+        </div>
+        <div class="event-actions">
+            {% if event.event_type = "video"  %}
+                <a href="#">Edit event</a><br/>
+            {% elif event.event_type = "pause"  %}
+                <a href="#">Create event</a><br/>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+{% endcomment %}
+</div>
+</div>
+<div id="videobrowser">
+        <input value="{{ search_query }}" placeholder="Search videos" style="float:left;" data-bind="value: video_search_query">
+        <button data-bind="click: $root.searchVideos">Search</button>
+        <div style="clear:both;">
+
+        <table class="videos">
+            <thead><tr><th class="name">Name</th><th class="time">Duration</th></tr></thead>
+            <tbody data-bind="foreach: videos">
+                <tr data-bind="click: $root.selectVideo">
+                    <td data-bind="text: name"></td>
+                    <td data-bind="moment: display_duration, pattern: 'HH:mm:ss'"></td>
+                    <td><a href="#" data-bind="click: $root.insertVideo">Set</a></td>
+                </tr>     
+            </tbody>
+        </table>
+        </div>
+</div>
+{% endtimezone %}
+{% endblock content %}
+    

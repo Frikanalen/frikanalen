@@ -91,20 +91,17 @@
 				</div>
 			{% endifchanged %}
 			<div class="time">
-				{% if event.starttime.second == 0 %}
 				{{ event.starttime|date:"H:i"}}
-				{% else %}
-				{{ event.starttime|date:"H:i:s"}}
-				{% endif %}
 			</div>
 			<!-- <img src="{{ MEDIA_URL }}videos/{{ event.video.small_thumbnail_url }}"/> -->	
 			<div class="blurb">
-				<!-- {{ event.video.name }} -->
 				<b>
-					{% if event.video.is_public %}
-					<a href="/video/{{ event.video.id }}">{{ event.video.name }}</a>
+					{% if event.video and event.video.is_public %}
+						<a href="/video/{{ event.video.id }}">{{ event.video.name }}</a>
+					{% elif event.video %}
+						{{ event.video.name }}
 					{% else %}
-					{{ event.video.name }}
+						{{ event.default_name }}</a>
 					{% endif %}
 				</b>
 				<br/>

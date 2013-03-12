@@ -1,12 +1,13 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.generic import TemplateView
-from django.forms import ModelForm #, ModelChoiceField
+from django.core.paginator import Paginator
+from django.forms import ModelForm
 from fk.models import Scheduleitem, Video, Organization
+from fkutils import timeutils
 import datetime
 
 from django.utils.timezone import utc
-#from django.contrib.auth.decorators import login_required
 
 class ProgramguideView(TemplateView):
   """Simple Programguide
@@ -23,8 +24,40 @@ class ProgramguideView(TemplateView):
         'events': events,
         'title': 'Program Guide - This week'
       }
-    return render_to_response('agenda/events.html', 
-      context, 
+    return render_to_response('agenda/events.html',
+      context,
+      context_instance=RequestContext(request))
+
+class ProgramplannerView(TemplateView):
+  def get(self, request, form = None):
+    context = {
+        #'events': events,
+        'title': 'Schedule planner'
+      }
+    return render_to_response('agenda/planner.html',
+      context,
+      context_instance=RequestContext(request))
+
+class ManageVideoList(TemplateView):
+  def get(self, request):
+    if not request.user.is_authenticated():
+      return redirect('/login/?next=%s' % request.path)
+    context = {}
+    context["title"] = "My videos"
+    videos = Video.objects.filter(editor=request.user).order_by('name')
+
+    p = Paginator(videos, 20)
+    s = request.GET.get("page")
+    if str(s).isdigit():
+      page_nr = int(s)
+    else:
+      page_nr = 1
+    page = p.page(page_nr)
+
+    context["videos"] = page.object_list
+    context["page"] = page
+    return render_to_response('agenda/manage_video_list.html',
+      context,
       context_instance=RequestContext(request))
 
 class VideoFormForUsers(ModelForm):
@@ -70,7 +103,7 @@ class AbstractVideoFormView(TemplateView):
 
 class ManageVideoNew(AbstractVideoFormView):
   def get(self, request, form=None):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated() or not request.user.is_superuser:
       return redirect('/login/?next=%s' % request.path)
     initial = {}
     form = self.get_form(request, initial=initial, form=form)
@@ -83,7 +116,7 @@ class ManageVideoNew(AbstractVideoFormView):
       context_instance=RequestContext(request))
 
   def post(self, request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated() or not request.user.is_superuser:
       return redirect('/login/?next=%s' % request.path)
     if request.user.is_superuser:
       video = Video()
@@ -99,7 +132,7 @@ class ManageVideoNew(AbstractVideoFormView):
 class ManageVideoEdit(AbstractVideoFormView):
   Form = VideoFormForUsers
   def get(self, request, id=None, form=None):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated() or not request.user.is_superuser:
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
     form = self.get_form(request, form=form, instance=video)
@@ -112,7 +145,7 @@ class ManageVideoEdit(AbstractVideoFormView):
       context_instance=RequestContext(request))
 
   def post(self, request, id):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated() or not request.user.is_superuser:
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
     form = self.get_form(request, data=request.POST, instance=video)
