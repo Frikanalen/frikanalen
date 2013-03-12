@@ -7,7 +7,7 @@
 	}
 
 	.event {
-		clear: both;		
+		clear: both;
 		width: 100%;
 		padding-top: 5px;
 		padding-bottom: 5px;
@@ -15,7 +15,7 @@
 		overflow: auto;
 	}
 	.event .content {
-		clear: both;		
+		clear: both;
 	}
 	.week {
 		width: 10em;
@@ -75,7 +75,6 @@
 	<div class="event">
 		<div class="date">
 			<b>{{ event.starttime|date:"l N jS o" }}</b>
-			<!-- <b>{{ event.starttime|date:"l N jS o O" }}</b>-->
 		</div>
 	</div>
 	{% endifchanged %}
@@ -93,7 +92,6 @@
 			<div class="time">
 				{{ event.starttime|date:"H:i"}}
 			</div>
-			<!-- <img src="{{ MEDIA_URL }}videos/{{ event.video.small_thumbnail_url }}"/> -->	
 			<div class="blurb">
 				<b>
 					{% if event.video and event.video.is_public %}

@@ -213,26 +213,26 @@ ProgramEvent = function() {
     });
 
     self.video_id = ko.computed(function() {
-        if (self.video()) 
+        if (self.video())
             return self.video().id
         else
             return null;
     });
 
     self.video_name = ko.computed(function() {
-        if (self.video()) 
+        if (self.video())
             return self.video().name;
     });
 
     self.display_name = ko.computed(function() {
-        if (self.default_name()) 
+        if (self.default_name())
             return self.default_name()
         else if (self.video())
             return self.video().name;
     });
 
     self.edit_url = ko.computed(function() {
-        if (self.video()) 
+        if (self.video())
             return "../video/edit/"+self.video().id
         else
             return "";
@@ -274,9 +274,7 @@ PlannerViewModel = function() {
     self.loadEvents = function() {
         date = self.editing_date().format("YYYYMMDD")
         self.events()
-        $.getJSON("/api/scheduleitems/?days=1&surrounding=1&page_size=0&date="+date, function(data) { 
-        //$.getJSON("/api/scheduleitems/?days=1&page_size=0&date="+date, function(data) { 
-            //console.log(ko.mapping.fromJS(data[0]));
+        $.getJSON("/api/scheduleitems/?days=1&surrounding=1&page_size=0&date="+date, function(data) {
             // First process the json
             programevents = []
             $.each(data, function(i, v) {
@@ -353,7 +351,7 @@ PlannerViewModel = function() {
         var jsData = ko.toJS(event);
         console.log(jsData);
         delete jsData.video
-        if (jsData.video_id) 
+        if (jsData.video_id)
             jsData.video_id = "http://localhost:8000/api/videos/"+jsData.video_id
         else
             jsData.video_id = "";
@@ -378,7 +376,7 @@ PlannerViewModel = function() {
         $.ajax({
             url: url,
             type: method,
-            data: jsonData, 
+            data: jsonData,
             contentType: 'application/json',
             success: function(response) {
             // This callback is executed if the post was successful
@@ -393,7 +391,7 @@ PlannerViewModel = function() {
         $.ajax({
             url: url,
             type: method,
-            data: "{}", 
+            data: "{}",
             contentType: 'application/json',
             success: function(response) {
                 self.loadEvents()
@@ -464,7 +462,7 @@ $(document).ready(function() {
                 </td>
                 <td><b data-bind="text: display_name"></b></td>
                 <td data-bind="moment: display_duration, pattern: 'HH:mm:ss'"></td>
-            </tr>     
+            </tr>
             <tr>
                 <td colspan="4" style="background:white;">
                     <div class="event-edit">
@@ -494,56 +492,6 @@ $(document).ready(function() {
     </table>
     </div>
 </div>
-{% comment %}
-{% for event in events %}
-    <div class="event" style="background-color:{% cycle '#f1f1f1' '#e7e7e7' %}">
-    {% ifchanged event.starttime.hour event.starttime.date %}
-        <div class="hour">
-        {{ event.starttime|date:"H" }}
-        </div>
-    {% else %}
-        <div class="hour">
-            &nbsp;
-        </div>
-    {% endifchanged %}
-        <div class="event-info">
-            <div class="time">
-                {{ event.starttime|date:"d M y" }}
-            </div>
-            <div class="time">
-                {{ event.starttime|date:"H:i:s" }}
-            </div>
-            <div class="time">
-                {{ event.endtime|date:"H:i:s"}}
-            </div>
-            <!-- <img src="{{ MEDIA_URL }}videos/{{ event.video.small_thumbnail_url }}"/> -->   
-            <div class="blurb">
-                <!-- {{ event.video.name }} -->
-                <b>
-                    {% if event.event_type = "video"  %}
-                        {% if event.video.is_public %}
-                        <a href="/video/{{ event.video.id }}">{{ event.name }}</a>
-                        {% endif %}
-                    {% else %}
-                        {{ event.event_type }}:
-                        {{ event.name }}<br>
-                    {% endif %}
-                </b>
-            </div>
-            <div class="time">
-                {{ event.duration }}
-            </div>
-        </div>
-        <div class="event-actions">
-            {% if event.event_type = "video"  %}
-                <a href="#">Edit event</a><br/>
-            {% elif event.event_type = "pause"  %}
-                <a href="#">Create event</a><br/>
-            {% endif %}
-        </div>
-    </div>
-{% endfor %}
-{% endcomment %}
 </div>
 </div>
 <div id="videobrowser">
@@ -558,11 +506,10 @@ $(document).ready(function() {
                     <td data-bind="text: name"></td>
                     <td data-bind="moment: display_duration, pattern: 'HH:mm:ss'"></td>
                     <td><a href="#" data-bind="click: $root.insertVideo">Set</a></td>
-                </tr>     
+                </tr>
             </tbody>
         </table>
         </div>
 </div>
 {% endtimezone %}
 {% endblock content %}
-    
