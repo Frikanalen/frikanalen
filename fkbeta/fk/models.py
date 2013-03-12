@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.db import models
 from colorful.fields import RGBColorField
 from fk import fields
+from fkutils import timeutils
 from django.core.exceptions import ObjectDoesNotExist
 import settings
 
@@ -39,6 +40,7 @@ class Organization(models.Model):
     #featured_videos = models.ManyToManyField("Video") # Videos to feature on their frontpage, incl other members
     #twitter_username = models.CharField(null=True,max_length=255) 
     #twitter_tags = models.CharField(null=True,max_length=255) 
+    #homepage = models.CharField(blank=True, max_length=255) # To be copied into every video they create
     #categories = models.ManyToManyField(Category)
     class Meta:
         db_table = u'Organization'
@@ -205,11 +207,20 @@ import datetime
 from django.utils.timezone import utc
 
 class ScheduleitemManager(models.Manager):
-    def by_day(self, date=None, days=1):
+    def by_day(self, date=None, days=1, surrounding=False):
         if not date:
             date = datetime.datetime.utcnow().replace(tzinfo=utc).date()
         enddate = date + datetime.timedelta(days=days)
-        return super(ScheduleitemManager, self).get_query_set().filter(starttime__gt=date, starttime__lt=enddate)
+        if surrounding:
+            # Try to find the event before the given date
+            before = Scheduleitem.objects.filter(starttime__lte = date).order_by("-starttime")
+            if before:
+                date = before[0].starttime
+            # Try to find the event after the end date
+            after = Scheduleitem.objects.filter(starttime__gte = enddate).order_by("starttime")
+            if after:
+                enddate = after[0].starttime
+        return super(ScheduleitemManager, self).get_query_set().filter(starttime__gte=date, starttime__lte=enddate)
 
 class Scheduleitem(models.Model):
     objects = ScheduleitemManager()
@@ -218,7 +229,7 @@ class Scheduleitem(models.Model):
     default_name = models.CharField(max_length=255, blank=True)
     video = models.ForeignKey(Video, null=True, blank=True)
     schedulereason = models.IntegerField(
-            null = True,
+            blank=True,
             choices = SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = fields.MillisecondField() # in milliseconds
@@ -242,6 +253,11 @@ class Scheduleitem(models.Model):
             return str(s) + ": " + unicode(self.video)
         else:
             return str(s) + ": " + self.default_name
+
+    def endtime(self):
+        if not self.duration:
+            return self.starttime
+        return self.starttime + self.duration
 
 class UserProfile(models.Model):
     # example from http://stackoverflow.com/questions/44109/extending-the-user-model-with-custom-fields-in-django

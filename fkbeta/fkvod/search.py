@@ -36,11 +36,13 @@ def get_query(query_string, search_fields):
             query = query & or_query
     return query
 
-def search_videos(video_queryset, request):
+def search_videos(video_queryset, request=None, query=""):
     query_string = ''
     found_entries = None
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
+    if request and ('q' in request.GET):
+        query = request.GET['q']
+    if query.strip():
+        query_string = query
         entry_query = get_query(query_string, ["name", "description", "organization__name", "header"])
         found_entries = video_queryset.filter(entry_query).order_by('-id')
     return found_entries
