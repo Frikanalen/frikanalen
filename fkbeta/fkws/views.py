@@ -136,4 +136,6 @@ class VideoDetail(generics.RetrieveAPIView):
     serializer_class = VideoSerializer
 
 def wschange_redirect_view(request, path):
+    if request.META['QUERY_STRING']:
+        path += '?%s' % request.META['QUERY_STRING']
     return redirect('/api/' + path, permanent=True)

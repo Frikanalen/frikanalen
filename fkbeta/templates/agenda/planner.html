@@ -258,7 +258,7 @@ PlannerViewModel = function() {
     };
 
     self.loadVideos = function() {
-        url = "/ws/videos/"
+        url = "/api/videos/"
         if (self.video_search_query()) {
             url = url + "?q="+self.video_search_query();
         }
@@ -274,8 +274,8 @@ PlannerViewModel = function() {
     self.loadEvents = function() {
         date = self.editing_date().format("YYYYMMDD")
         self.events()
-        $.getJSON("/ws/scheduleitems/?days=1&surrounding=1&page_size=0&date="+date, function(data) { 
-        //$.getJSON("/ws/scheduleitems/?days=1&page_size=0&date="+date, function(data) { 
+        $.getJSON("/api/scheduleitems/?days=1&surrounding=1&page_size=0&date="+date, function(data) { 
+        //$.getJSON("/api/scheduleitems/?days=1&page_size=0&date="+date, function(data) { 
             //console.log(ko.mapping.fromJS(data[0]));
             // First process the json
             programevents = []
@@ -354,7 +354,7 @@ PlannerViewModel = function() {
         console.log(jsData);
         delete jsData.video
         if (jsData.video_id) 
-            jsData.video_id = "http://localhost:8000/ws/videos/"+jsData.video_id
+            jsData.video_id = "http://localhost:8000/api/videos/"+jsData.video_id
         else
             jsData.video_id = "";
         delete jsData.edit_url
@@ -365,7 +365,7 @@ PlannerViewModel = function() {
         delete jsData.endtime
         delete jsData.event_type
         jsonData = ko.toJSON(jsData)
-        url = "/ws/scheduleitems/"
+        url = "/api/scheduleitems/"
         if (jsData.id) {
             url = url + jsData.id;
             method = "PUT";
@@ -387,7 +387,7 @@ PlannerViewModel = function() {
     };
 
     self.deleteEvent = function(event) {
-        url = "/ws/scheduleitems/"+event.id()
+        url = "/api/scheduleitems/"+event.id()
         method = "DELETE";
 
         $.ajax({
