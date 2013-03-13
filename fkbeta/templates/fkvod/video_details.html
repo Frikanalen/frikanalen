@@ -78,6 +78,7 @@ ul {
             </div>
             {% elif video.ogv_url %}
             <video class="player" poster="{{ video.large_thumbnail_url }}" controls>
+                <source src="{{ video.ogv_url }}" type="video/ogg"/>
                 <div id="player-error-container">
                     <div id="player-error-message">
                         <h1>Browser does not support HTML5 video</h1>
@@ -110,17 +111,6 @@ ul {
                 {% endfor %}
                 </i>
             </div>
-        <!--
-        <li><b>Files</b></li>
-
-        <li><a href="http://frikanalen.nuug.no{{ video.ogv_url }}">ogv @ nuug.no</a></li>
-        {% for videofile in video.videofiles  %}
-            <li class="format_tag">
-                <a href="http://frikanalen.nuug.no/media/id/{{ videofile.old_filename }}">{{ videofile.format.fsname }}</a>
-            </li>               
-        {% endfor %}
-        <li><hr/></li>
-        -->
             <div>
                 <small>Uploaded: <i>{{ video.uploaded_time|date:"d M Y"}}</i></small>
             </div>
