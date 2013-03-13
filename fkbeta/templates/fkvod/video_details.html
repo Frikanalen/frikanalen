@@ -41,6 +41,28 @@ ul {
     clear:both;
 }
 
+#player-error-container {
+    background-image: url("{{ video.large_thumbnail_url }}");
+    background-size: contain;
+    width: 640px;
+    height: 360px;
+    overflow: auto;
+}
+
+#player-error-message  {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-top: 3em;
+    text-align: center;
+    color: white;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.7);
+}
+#player-error-message h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
 </style>
 {% endblock style %}
 
@@ -50,10 +72,24 @@ ul {
 
 <div class="video_container">
         <div class="player-container">
-            <video class="player" poster="http://frikanalen.nuug.no/media/id/{{ video.large_thumbnail_url }}" controls>
-                <source src="{{ video.ogv_url }}" type="video/ogg"> 
-                Video is not working. This is a fallback.
+            {% if video_error %}
+            <div id="player-error-container">
+                <div id="player-error-message"><h1>{{ video_error }}</h1>{{ video_error_explanation }}</div>
+            </div>
+            {% elif video.ogv_url %}
+            <video class="player" poster="{{ video.large_thumbnail_url }}" controls>
+                <div id="player-error-container">
+                    <div id="player-error-message">
+                        <h1>Browser does not support HTML5 video</h1>
+                        Please use Chrome, Opera, Firefox or any other browser which supports Ogg Theora.
+                    </div>
+                </div>
             </video>
+            {% else %}
+            <div id="player-error-container">
+                <div id="player-error-message"><h1>Video not available</h1></div>
+            </div>
+            {% endif %}
         </div>
         <div class="video-info">
             {% if video.organization %}

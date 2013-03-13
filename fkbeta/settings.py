@@ -8,7 +8,8 @@ TEMPLATE_DEBUG = DEBUG
 # Change this in production (!)
 SECRET_KEY = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 
-# Root of project. Trailing slash is important.
+# Do not publish any files with the TONO flag set on the web
+WEB_NO_TONO = True
 
 # Where all the media files are stored
 FK_MEDIA_URLPREFIX = 'http://beta.frikanalen.tv/media/id/'
