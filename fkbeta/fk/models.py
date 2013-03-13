@@ -186,13 +186,19 @@ class Video(models.Model):
 
     def medium_thumbnail_url(self):
         format = FileFormat.objects.get(fsname="medium_thumb")
-        videofile = VideoFile.objects.get(video = self, format=format)
-        return videofile.old_filename
+        try:
+            videofile = VideoFile.objects.get(video = self, format=format)
+        except ObjectDoesNotExist:
+            return "/static/default_medium_thumbnail.png"
+        return settings.FK_MEDIA_URLPREFIX+videofile.old_filename
 
     def large_thumbnail_url(self):
         format = FileFormat.objects.get(fsname="large_thumb")
-        videofile = VideoFile.objects.get(video = self, format=format)
-        return videofile.old_filename
+        try:
+            videofile = VideoFile.objects.get(video = self, format=format)
+        except ObjectDoesNotExist:
+            return "/static/default_large_thumbnail.png"
+        return settings.FK_MEDIA_URLPREFIX+videofile.old_filename
 
     def old_id(self):
         format = FileFormat.objects.get(fsname="broadcast")

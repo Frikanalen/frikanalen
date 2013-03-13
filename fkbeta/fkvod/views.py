@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic import TemplateView
@@ -14,12 +15,22 @@ class VideoDetail(TemplateView):
     try:
       video = Video.objects.public().get(id=video_id)
       title = u"%s" % unicode(video.name)
+      video_error = None
     except ObjectDoesNotExist:
       video = None
       title = "Video #%i not found" % int(video_id)
+      video_error = title
+    else:
+      if not video.publish_on_web:
+        video_error = "Video is not published on web"
+      elif settings.WEB_NO_TONO and video.has_tono_records:
+        video_error = "TONO videos currently unavailable"
 
-    context = {"video": video,
-               "title": title}
+    context = {
+      "video": video,
+      "video_error": video_error,
+      "title": title
+      }
     return render_to_response('fkvod/video_details.html', 
       context, 
       context_instance=RequestContext(request))
