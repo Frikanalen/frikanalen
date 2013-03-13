@@ -73,13 +73,14 @@ ul {
         <div class="player-container">
             {% if video_error %}
             <div id="player-error-container">
-                <div id="player-error-message"><h1>{{ video_error }}</h1></div>
+                <div id="player-error-message"><h1>{{ video_error }}</h1>{{ video_error_explanation }}</div>
             </div>
             {% elif video.ogv_url %}
             <video class="player" poster="{{ video.large_thumbnail_url }}" controls>
                 <div id="player-error-container">
                     <div id="player-error-message">
-                        <h1>Browser does not support video</h1>
+                        <h1>Browser does not support HTML5 video</h1>
+                        Please use Chrome, Opera, Firefox or any other browser which supports Ogg Theora.
                     </div>
                 </div>
             </video>
