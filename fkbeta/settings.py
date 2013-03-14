@@ -1,3 +1,5 @@
+# Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
+# This file is covered by the LGPLv3 or later, read COPYING for details.
 import os
 PROJECT_PATH = os.path.dirname(__file__)
 PROJECT_ROOT = os.path.join(PROJECT_PATH, "..")

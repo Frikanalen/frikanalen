@@ -1,3 +1,5 @@
+# Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
+# This file is covered by the LGPLv3 or later, read COPYING for details.
 from zope.interface import implements
 from twisted.python import failure, log
 from twisted.cred import portal, checkers, error, credentials
