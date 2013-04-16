@@ -211,6 +211,12 @@ class Video(models.Model):
         url = settings.FK_MEDIA_URLPREFIX + self.videofile_url("theora")
         return url
 
+    def mp4_url(self):
+        url = settings.FK_MEDIA_URLPREFIX + self.videofile_url("mp4")
+        return url
+
+
+
 import datetime
 from django.utils.timezone import utc
 
