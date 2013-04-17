@@ -1,1 +1,0 @@
-# hello, django.contrib.staticfiles!
