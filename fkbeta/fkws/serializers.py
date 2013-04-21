@@ -31,6 +31,7 @@ class VideoSerializer(serializers.ModelSerializer):
 			#'videofiles',
 			"categories",
 			"has_tono_records",
+			"is_filler",
 			)
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
