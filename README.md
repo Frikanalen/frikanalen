@@ -1,7 +1,7 @@
 Frikanalen Beta
 ===============
 
-Tools and web for the Norwegian public access TV channel [Frikanalen](http:/www.frikanalen.no/).
+Tools and web for the Norwegian public access TV channel [Frikanalen](http://www.frikanalen.no/).
 
 The latest version of the source is available from [our GitHub page](http://github.com/Frikanalen/).
 
