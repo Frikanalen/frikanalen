@@ -1,13 +1,14 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.db import models
-from colorful.fields import RGBColorField
-from fk import fields
-from fkutils import timeutils
 from django.core.exceptions import ObjectDoesNotExist
-import settings
+from django.db import models
+from django.db.models.signals import post_save
+
+from colorful.fields import RGBColorField
+
+from fk import fields
 
 """
 Models for the Frikanalen database.
