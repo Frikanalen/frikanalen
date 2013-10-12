@@ -123,16 +123,22 @@
         }
 
         .navigation {
-            position: absolute;
-            top: 118px;
-            right: 0;
+            height: 36px;
+            display: inline-block;
         }
+
         .navigation .inner {
             line-height: 32px;
         }
         .navigation form {
             /* This is not elegant */
             padding: 3px 16px 0px 16px;
+        }
+
+        .search {
+            position: absolute;
+            top: 118px;
+            right: 0;
         }
 
         {% block style %}

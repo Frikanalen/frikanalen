@@ -61,8 +61,8 @@
 
 {% block content %}
 
-<div class="navigation_container">
 {% if page.paginator.num_pages > 1 %}
+<div class="navigation_container">
     <div class="navigation">
         <div class="inner">
         {% if page.has_previous %}
@@ -81,21 +81,22 @@
 
     <div class="navigation">
         <div class="inner">
-        {% if page.has_next %}  
+        {% if page.has_next %}
         <a href="?page={{ page.next_page_number }}{{ url_query_postfix }}"> Next</a>
         {% else %}
         Last
         {% endif %}
         </div>
     </div>
-{% endif %}
-    <div class="navigation">
-        <form>
-            <input name="q" value="{{ search_query }}" placeholder="Search videos" type="search" style="float:left;">
-            <input type="submit" value="Search">
-        </form>
-    </div>
 </div>
+{% endif %}
+
+  <div class="search">
+      <form>
+          <input name="q" value="{{ search_query }}" placeholder="Search videos" type="search" style="float:left;">
+          <input type="submit" value="Search">
+      </form>
+  </div>
 
 <div class="videolist_container">
 {% for video in videos %}
