@@ -1,5 +1,8 @@
 secret.py
 *.py[cod]
+*.sw[po]
+
+fkbeta/fkbeta/default.db
 
 # C extensions
 *.so

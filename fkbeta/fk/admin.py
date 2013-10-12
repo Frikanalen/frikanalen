@@ -3,13 +3,14 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
-from fkbeta.fk.models import UserProfile
-from fkbeta.fk.models import Video, Category, Scheduleitem
-from fkbeta.fk.models import FileFormat
-from fkbeta.fk.models import VideoFile
-from fkbeta.fk.models import Organization
 
-# In order to display the userprofile on 
+from fk.models import UserProfile
+from fk.models import Video, Category, Scheduleitem
+from fk.models import FileFormat
+from fk.models import VideoFile
+from fk.models import Organization
+
+# In order to display the userprofile on
 admin.site.unregister(User)
 
 class UserProfileInline(admin.StackedInline):

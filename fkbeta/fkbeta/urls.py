@@ -1,7 +1,6 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
-import settings
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 
 # Enable the admin:
@@ -30,7 +29,7 @@ urlpatterns += fkws.urls.urlpatterns
 # Add registration and login
 urlpatterns += patterns('',
     (r'^accounts/', include('registration.urls')),
-    (r'^accounts/', include('registration.backends.simple.urls')),    
+    (r'^accounts/', include('registration.backends.simple.urls')),
     (r'^accounts/', include('registration.backends.default.urls')),
     )
 """
@@ -67,11 +66,11 @@ urlpatterns = patterns('',
     #url(r'^agenda/video/(?P<video_id>[0-9]+)$', agenda.views.VideoDetails.as_view(), name='video_details'),
     # Management
     #(r'^agenda/editor/$', 'agenda.views.editor'),
-    #(r'^agenda/videos/$', 'agenda.views.manage_videos'), 
-    #(r'^agenda/videos/originals/$', 'agenda.views.originals'), 
+    #(r'^agenda/videos/$', 'agenda.views.manage_videos'),
+    #(r'^agenda/videos/originals/$', 'agenda.views.originals'),
     #url(r'^agenda/videos/new/$', agenda.views.ManageVideoNew.as_view(), name='manage_video_new'),
     #url(r'^agenda/videos/edit/(?P<id>[0-9]+)$', agenda.views.ManageVideoEdit.as_view(), name='manage_video_edit'),
-    
+
 
     # deprecated, only for timeline test, pure json
     #(r'^agenda/schedule/$', 'agenda.views.schedule'),
@@ -87,7 +86,7 @@ urlpatterns = patterns('',
 
     # registration
     #(r'^accounts/', include('registration.urls')),
-    #(r'^accounts/', include('registration.backends.simple.urls')),    
+    #(r'^accounts/', include('registration.backends.simple.urls')),
     #(r'^accounts/', include('registration.backends.default.urls')),
     )
 """
