@@ -42,4 +42,7 @@ def application(environ, start_response):
     for var in env_variables_to_pass:
         if var in environ:
             os.environ[var] = environ[var]
-        return _application(environ, start_response)
+    if 'EXTRA_SITE_DIR' in environ:
+          import site
+          site.addsitedir(environ['EXTRA_SITE_DIR'])
+    return _application(environ, start_response)
