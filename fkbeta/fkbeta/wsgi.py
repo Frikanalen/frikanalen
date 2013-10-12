@@ -30,8 +30,16 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fkbeta.settings.production")
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
 from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
+_application = get_wsgi_application()
 
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+
+env_variables_to_pass = ['SECRET_KEY']
+def application(environ, start_response):
+    # pass the WSGI environment variables on through to os.environ
+    for var in env_variables_to_pass:
+        if var in environ:
+            os.environ[var] = environ[var]
+        return _application(environ, start_response)
