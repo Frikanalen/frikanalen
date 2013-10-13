@@ -15,6 +15,37 @@
       width: 80%;
       margin: 0 50px 30px 50px;
     }
+
+    #top_news_box {
+        height: 340px;
+    }
+
+    #top_news_box h2 {
+        margin: 0; padding: 0;
+        margin-left: 7px;
+        font-variant: small-caps;
+    }
+
+    #featured_video p {
+        margin: 0; padding: 0;
+    }
+
+    #featured_video {
+        float: left;
+        color: white;
+        background-color: #333;
+        width: 514px;
+        height: 320px;
+    }
+
+    #coming_attractions {
+        float: left;
+        color: white;
+        background-color: #666;
+        width: 474px;
+        height: 320px;
+    }
+
   </style>
 {% endblock style %}
 
@@ -23,7 +54,18 @@
     <a class="twitter-timeline" href="https://twitter.com/Frikanalen" data-widget-id="389487927782162432">Tweets by @Frikanalen</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 </div>
-  <div id="mainbox">
+<div id="mainbox">
+    <div id="top_news_box">
+        <div id="featured_video">
+            <h2>ukens video</h2>
+            {% load vod %}
+            {% show_vod_widget 623232 %}
+        </div>
+        <div id="coming_attractions">
+            <h2>kommende sendinger</h2>
+        </div>
+        <div style="clear:both; margin: 0;">&nbsp;</div>
+    </div>
   <div id="latest-news">
     {% for article in article_list %}
     <h2>{{ article.title }}</h2>
