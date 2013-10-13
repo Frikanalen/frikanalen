@@ -277,7 +277,7 @@ PlannerViewModel = function() {
         $.getJSON("/api/scheduleitems/?days=1&surrounding=1&page_size=0&date="+date, function(data) {
             // First process the json
             programevents = []
-            $.each(data, function(i, v) {
+            $.each(data.results, function(i, v) {
                 programevent = new ProgramEvent()
                 programevent.id(v.id)
                 programevent.default_name(v.default_name)
