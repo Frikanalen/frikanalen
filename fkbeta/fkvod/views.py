@@ -36,8 +36,8 @@ class VideoDetail(TemplateView):
       "video_error_explanation": video_error_explanation,
       "title": title
       }
-    return render_to_response('fkvod/video_details.html', 
-      context, 
+    return render_to_response('fkvod/video_details.html',
+      context,
       context_instance=RequestContext(request))
 
 class AbstractVideoList(TemplateView):
@@ -75,9 +75,9 @@ class AbstractVideoList(TemplateView):
                # For appending &q=""
                "url_query_postfix": url_query_postfix,
                "search_query": search_query
-               }    
-    return render_to_response('fkvod/video_list.html', 
-      context, 
+               }
+    return render_to_response('fkvod/video_list.html',
+      context,
       context_instance=RequestContext(request))
 
 class VideoList(AbstractVideoList):
@@ -97,5 +97,5 @@ class OrganizationVideos(AbstractVideoList):
       self.org = Organization.objects.get(id=orgid)
     except ObjectDoesNotExist:
       raise Http404
-    videos = Video.objects.public().filter(organization=self.org).order_by('-id')    
+    videos = Video.objects.public().filter(organization=self.org).order_by('-id')
     return videos

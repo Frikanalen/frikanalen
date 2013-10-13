@@ -41,8 +41,8 @@ class Organization(models.Model):
     orgnr = models.CharField(blank=True, max_length=255)
     # owner = models.ForeignKey(User) # No such concept yet. Every member can add members.
     #featured_videos = models.ManyToManyField("Video") # Videos to feature on their frontpage, incl other members
-    #twitter_username = models.CharField(null=True,max_length=255) 
-    #twitter_tags = models.CharField(null=True,max_length=255) 
+    #twitter_username = models.CharField(null=True,max_length=255)
+    #twitter_tags = models.CharField(null=True,max_length=255)
     #homepage = models.CharField(blank=True, max_length=255) # To be copied into every video they create
     #categories = models.ManyToManyField(Category)
     class Meta:
@@ -52,7 +52,7 @@ class Organization(models.Model):
 
 class FileFormat(models.Model):
     id = models.AutoField(primary_key=True)
-    description = models.TextField(unique=True, max_length=255, 
+    description = models.TextField(unique=True, max_length=255,
            null=True, blank=True)
     fsname = models.CharField(max_length=20)
     #httpprefix = models.CharField(max_length=200)
@@ -78,9 +78,9 @@ class VideoFile(models.Model):
     # metadata frames, width, height, framerate? mlt profile name?
     # edl for in/out?
     def location(self):
-        return '/'.join(('/mnt/media', 
+        return '/'.join(('/mnt/media',
                 str(self.video.id),
-                self.format.fsname, 
+                self.format.fsname,
                 self.filename))
     class Meta:
         verbose_name = u'video file'
@@ -120,18 +120,18 @@ class Video(models.Model):
     #disabled = models.BooleanField() # Not migrated
     #uploader = models.ForeignKey(User)
     #planned_duration = models.IntegerField() # Planned duration in milliseconds, probably not going to be used
-    #published_time = models.DateTimeField() # Time when it is to be published on web 
+    #published_time = models.DateTimeField() # Time when it is to be published on web
     #created_time = models.DateTimeField() # Time the program record was created # Not migrated
 
     proper_import = models.BooleanField(default=False)
-    played_count_web = models.IntegerField(default=0) # Number of times it has been played 
-    updated_time = models.DateTimeField(null=True) # Time the program record has been updated 
-    uploaded_time = models.DateTimeField(null=True) # Time the program record was created 
+    played_count_web = models.IntegerField(default=0) # Number of times it has been played
+    updated_time = models.DateTimeField(null=True) # Time the program record has been updated
+    uploaded_time = models.DateTimeField(null=True) # Time the program record was created
     framerate = models.IntegerField(default=25000) # Framerate of master video in thousands / second
     organization = models.ForeignKey(Organization, null=True) # Organization for video
-    ref_url = models.CharField(blank=True, max_length=1024) # URL for Reference 
+    ref_url = models.CharField(blank=True, max_length=1024) # URL for Reference
     duration = fields.MillisecondField() # in milliseconds
-    #TODO: Tono-records 
+    #TODO: Tono-records
     class Meta:
         db_table = u'Video'
     def __unicode__(self):
@@ -248,7 +248,7 @@ class Scheduleitem(models.Model):
             choices = SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = fields.MillisecondField() # in milliseconds
-    #endtime = models.DateTimeField() # Make this read only? 
+    #endtime = models.DateTimeField() # Make this read only?
 
     """
     def save(self, *args, **kwargs):
@@ -287,14 +287,14 @@ class UserProfile(models.Model):
     home_country = models.CharField(blank=True, max_length=255)
     legacy_username = models.CharField(blank=True, max_length=255)
 
-    def __str__(self):  
-          return "%s's profile" % self.user  
+    def __str__(self):
+          return "%s's profile" % self.user
 
-def create_user_profile(sender, instance, created, **kwargs):  
-    if created:  
-       profile, created = UserProfile.objects.get_or_create(user=instance)  
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+       profile, created = UserProfile.objects.get_or_create(user=instance)
 
-post_save.connect(create_user_profile, sender=User) 
+post_save.connect(create_user_profile, sender=User)
 
 #class Scheduleregion(models.Model):
 #    id = models.IntegerField(primary_key=True)

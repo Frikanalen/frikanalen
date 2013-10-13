@@ -6,7 +6,6 @@ from django.views.generic import TemplateView
 from django.core.paginator import Paginator
 from django.forms import ModelForm
 from fk.models import Scheduleitem, Video, Organization
-from fkutils import timeutils
 import datetime
 
 from django.utils.timezone import utc
@@ -16,8 +15,8 @@ class ProgramguideView(TemplateView):
 
   It's quite slow.
 
-  Improvement would be to give out days presorted as days to facilitate 
-  flowing formatting. 
+  Improvement would be to give out days presorted as days to facilitate
+  flowing formatting.
   """
   def get(self, request, form = None):
     starttime = datetime.datetime.utcnow().replace(tzinfo=utc).date()
