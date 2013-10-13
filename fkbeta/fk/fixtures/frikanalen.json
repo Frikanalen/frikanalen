@@ -1,0 +1,128 @@
+[
+   {
+      "model": "fk.fileformat",
+      "pk": 1,
+      "fields": {
+         "fsname": "large_thumb"
+      }
+   },
+   {
+      "model": "fk.fileformat",
+      "pk": 2,
+      "fields": {
+         "fsname": "broadcast"
+      }
+   },
+   {
+      "model": "fk.fileformat",
+      "pk": 3,
+      "fields": {
+         "fsname": "vc1"
+      }
+   },
+   {
+      "model": "fk.fileformat",
+      "pk": 4,
+      "fields": {
+         "fsname": "med_thumb"
+      }
+   },
+   {
+      "model": "fk.fileformat",
+      "pk": 5,
+      "fields": {
+         "fsname": "small_thumb"
+      }
+   },
+   {
+      "model": "fk.fileformat",
+      "pk": 6,
+      "fields": {
+         "fsname": "original"
+      }
+   },
+   {
+      "model": "fk.fileformat",
+      "pk": 7,
+      "fields": {
+         "fsname": "theora"
+      }
+   },
+   {
+      "model": "fk.fileformat",
+      "pk": 8,
+      "fields": {
+         "fsname": "mp4"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 119,
+      "fields": {
+         "name": "Velferd"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 118,
+      "fields": {
+         "name": "Solidaritet og bistand"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 117,
+      "fields": {
+         "name": "Samfunn"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 116,
+      "fields": {
+         "name": "Religion/livssyn"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 115,
+      "fields": {
+         "name": "Minoriteter"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 114,
+      "fields": {
+         "name": "Kultur"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 113,
+      "fields": {
+         "name": "Idrett"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 112,
+      "fields": {
+         "name": "Beredskap"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 111,
+      "fields": {
+         "name": "Barn og ungdom"
+      }
+   },
+   {
+      "model": "fk.category",
+      "pk": 110,
+      "fields": {
+         "name": "Andre"
+      }
+   }  
+]

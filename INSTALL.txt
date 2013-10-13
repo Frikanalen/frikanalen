@@ -7,7 +7,7 @@ Install virtualenv:
 
 Create virtual env:
 
-    $ virtualenv --no-site-packages env
+    $ virtualenv env
 
 Activate your new python environment:
 
@@ -21,9 +21,18 @@ Use pip to install the rest of the requirements:
 Open fkbeta/settings.py in your editor and edit paths and database-settings.
 You should set SECRET_KEY to a random string.
 
+Initialize the database
+
     (env)$ cd fkbeta
     (env)$ python manage.py syncdb
         ...
+
+Load some default data (fixtures) into the database
+    (env)$ python manage.py loaddata frikanalen
+        ...
+
+Start the webserver
+
     (env)$ manage.py runserver
 
     Validating models...
@@ -34,5 +43,3 @@ You should set SECRET_KEY to a random string.
     Quit the server with CTRL-BREAK.
 
 Point your webbrowser to http://127.0.0.1:8000/admin and log in.
-
-Make some tables
