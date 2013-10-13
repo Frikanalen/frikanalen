@@ -277,12 +277,12 @@ class Scheduleitem(models.Model):
 class UserProfile(models.Model):
     # example from http://stackoverflow.com/questions/44109/extending-the-user-model-with-custom-fields-in-django
     user = models.OneToOneField(User)
-    phone = models.CharField(blank=True, max_length=255)
-    mailing_address = models.CharField(blank=True, max_length=512)
-    post_code = models.CharField(blank=True, max_length=255)
-    city = models.CharField(blank=True, max_length=255)
-    country = models.CharField(blank=True, max_length=255)
-    legacy_username = models.CharField(blank=True, max_length=255)
+    phone = models.CharField(blank=True, max_length=255, default='', null=True)
+    mailing_address = models.CharField(blank=True, max_length=512, default='', null=True)
+    post_code = models.CharField(blank=True, max_length=255, default='', null=True)
+    city = models.CharField(blank=True, max_length=255, default='', null=True)
+    country = models.CharField(blank=True, max_length=255, default='', null=True)
+    legacy_username = models.CharField(blank=True, max_length=255, default='')
 
     def __str__(self):  
           return "%s (profile)" % self.user  
