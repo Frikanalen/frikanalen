@@ -36,15 +36,7 @@ urlpatterns += patterns('',
         url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
         )
 
-# Create a simple frontpage for now
-from django.views.generic import TemplateView
-class Frontpage(TemplateView):
-    template_name = "frontpage.html"
-    def get_context_data(self, **kwargs):
-        context = {
-            "title": "Frikanalen over på fri programvareløsning"
-            }
-        return context
+from fknews.views import Frontpage
 
 urlpatterns += patterns('',
     url(r'^$', Frontpage.as_view(), name="frontpage"),

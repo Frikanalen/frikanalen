@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block style %}
+  <style>
+    h1, p {
+      font-family: Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+    }
+
+    p {
+      margin: .5em 2em;
+      width: 80%;
+    }
+
+    #mainbox {
+      width: 80%;
+      margin: 0 50px 30px 50px;
+    }
+  </style>
+{% endblock style %}
+
+{% block content %}
+  <div id="mainbox">
+  <div id="latest-news">
+    {% for article in article_list %}
+    <h2>{{ article.title }}</h2>
+    <p>{{ article.text|safe }}</p>
+    {% endfor %}
+  </div>
+  </div>
+{% endblock content %}

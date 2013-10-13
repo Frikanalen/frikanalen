@@ -1,0 +1,11 @@
+{% extends 'base_generic.html' %}
+
+{% block heading-title %}
+{{ article.title }}
+{% endblock %}
+
+{% block content %}
+<div>
+{{ article.text|safe}}
+</div>
+{% endblock %}

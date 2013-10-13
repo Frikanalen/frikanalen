@@ -1,0 +1,11 @@
+{% extends 'base_generic.html' %}
+
+{% block heading-title %}
+Article list
+{% endblock %}
+
+{% block content %}
+{% for article in object_list %}
+<p>Article: {{ article.title }}</p>
+{% endfor %}
+{% endblock %}

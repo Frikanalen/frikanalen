@@ -239,6 +239,7 @@ LOCAL_APPS = (
     #'fktasks',
     'agenda',
     'fk',
+    'fknews',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
