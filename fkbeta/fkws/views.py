@@ -87,7 +87,7 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     """Schedule item details
     """
     model = Scheduleitem
-    serializer_class = ScheduleitemSerializer    
+    serializer_class = ScheduleitemSerializer
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_superuser:
@@ -115,7 +115,7 @@ class VideoList(generics.ListAPIView):
 
         HTTP parameters:
         * q
-            Free search query. 
+            Free search query.
         * page_size
             How many items per page. If set to 0 it will list all items.
             Default is 50 items.
