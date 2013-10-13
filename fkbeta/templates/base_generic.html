@@ -155,20 +155,20 @@
                     </a>
                 </div>
                 <div class="login_box">
-                    {% comment %}
                     {% if not user.is_authenticated %}
-                      <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a>
+                      <a href="/login/?next=/">Log in</a> or <a href="/register/">Register</a>
                     {% endif %}
 
                     {% if user.is_authenticated %}
                       {{ user.first_name }}
                       {{ user.last_name }}
                       ({{ user.username }}) logged in.<br/>
-                      <a href="/accounts/logout/?next=/">Logout</a><br/>
+                      <a href="/logout/?next=/">Logout</a><br/>
+                      {% comment %}
                       <a href="/agenda/videos/">My Videos</a><br/>
                       <a href="/agenda/user/{{ user.username }}">Your page</a>
+                      {% endcomment %}
                     {% endif %}
-                    {% endcomment %}
                     <nav class=top-nav>
                       <ul>
                         <li><a href="/guide/">Program Guide</a>

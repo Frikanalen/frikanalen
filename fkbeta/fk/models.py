@@ -277,24 +277,22 @@ class Scheduleitem(models.Model):
 class UserProfile(models.Model):
     # example from http://stackoverflow.com/questions/44109/extending-the-user-model-with-custom-fields-in-django
     user = models.OneToOneField(User)
-    ssn = models.CharField(blank=True, max_length=255)
-    phone_home = models.CharField(blank=True, max_length=255)
-    phone_work = models.CharField(blank=True, max_length=255)
-    phone_mobile = models.CharField(blank=True, max_length=255)
-    home_address = models.CharField(blank=True, max_length=512)
-    home_zip = models.CharField(blank=True, max_length=255)
-    home_city = models.CharField(blank=True, max_length=255)
-    home_country = models.CharField(blank=True, max_length=255)
+    phone = models.CharField(blank=True, max_length=255)
+    post_address = models.CharField(blank=True, max_length=512)
+    post_code = models.CharField(blank=True, max_length=255)
+    post_city = models.CharField(blank=True, max_length=255)
+    post_country = models.CharField(blank=True, max_length=255)
     legacy_username = models.CharField(blank=True, max_length=255)
 
-    def __str__(self):
-          return "%s's profile" % self.user
+    def __str__(self):  
+          return "%s (profile)" % self.user  
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
        profile, created = UserProfile.objects.get_or_create(user=instance)
 
-post_save.connect(create_user_profile, sender=User)
+# Create a hook so the profile model is created when a User is.
+post_save.connect(create_user_profile, sender=User) 
 
 #class Scheduleregion(models.Model):
 #    id = models.IntegerField(primary_key=True)

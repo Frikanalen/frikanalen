@@ -2,7 +2,7 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 from django.conf.urls import patterns, include, url
-
+from django.contrib.auth.decorators import login_required
 
 # Enable the admin:
 from django.contrib import admin
@@ -24,6 +24,14 @@ urlpatterns += fkvod.urls.urlpatterns
 # Add webservices
 import fkws.urls
 urlpatterns += fkws.urls.urlpatterns
+
+# Add user authentication views
+from django.contrib.auth.views import login, logout
+
+urlpatterns += patterns('',
+        url(r'^login/$', login, name='login'),
+        url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+        )
 
 # Create a simple frontpage for now
 from django.views.generic import TemplateView
