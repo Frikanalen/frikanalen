@@ -19,6 +19,10 @@
 {% endblock style %}
 
 {% block content %}
+<div id="right_bar">
+    <a class="twitter-timeline" href="https://twitter.com/Frikanalen" data-widget-id="389487927782162432">Tweets by @Frikanalen</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</div>
   <div id="mainbox">
   <div id="latest-news">
     {% for article in article_list %}

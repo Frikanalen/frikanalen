@@ -64,6 +64,7 @@
             font-size: 16pt;
             padding: 16px 8px 16px 16px;
         }
+
         #header-subtitle a {
             text-decoration: none;
         }
@@ -96,6 +97,25 @@
             background-color: rgb(204, 204, 204);
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 16px 16px 0 0;
+        }
+
+        #top_bar ul {
+            margin: 0;
+            margin-bottom: 20px;
+        }
+
+        #top_bar li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        #top_bar a {
+            text-decoration: none;
+        }
+
+        #right_bar {
+            float: right;
+            width: 300px;
         }
 
         .login_box {
@@ -170,15 +190,17 @@
                       <a href="/agenda/user/{{ user.username }}">Your page</a>
                       {% endcomment %}
                     {% endif %}
-                    <nav class=top-nav>
-                      <ul>
-                        <li><a href="/guide/">Program Guide</a>
-                        <li><a href="/video/">Videos</a>
-                      </ul>
-                    </nav>
                 </div>
+                <div id="top_bar">
 
-                <div id="header-subtitle">
+                <nav class=top-nav>
+                <ul>
+                    <li><a href="/guide/">Program Guide</a></li>
+                    <li><a href="/video/">Videos</a></li>
+                </ul>
+                </nav>
+
+                <div id="header-subtitle" style="display: none;">
                     {% block heading-title %}<a href="">{{ title|default:"No title" }}</a>{% endblock heading-title %}
                 </div>
             </div>
@@ -189,6 +211,7 @@
                 <p>content not defined in template</p>
                 {% endblock content %}
             </div>
+            <div style="clear:both;">&nbsp;</div>
             <div id="spacer">
             </div>
             <div id="footer">
