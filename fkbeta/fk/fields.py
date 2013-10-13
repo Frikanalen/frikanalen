@@ -46,12 +46,19 @@ class MillisecondField(IntegerField):
         raise ValidationError('Unable to convert %s to timedelta.' % value)
 
     def get_db_prep_value(self, value, connection, prepared):
+        # XXX This is extremely hacky and wrong. Should understand
+        # how this actually works and fix it. Later.
+        if isinstance(value, timeutils.TimeDeltaWrapper):
+            return self.get_prep_value(value)
+        return value
+
+    def get_prep_value(self, value):
         milliseconds = ((value.days * (24*60*60)) + value.seconds)*1000 + value.microseconds / 1000
         return milliseconds
 
     def value_to_string(self, instance):
         timedelta = getattr(instance, self.name)
-        if timedelta:   
+        if timedelta:
             s = timeutils.timedelta_to_string(timedelta)
             return s
 
@@ -61,8 +68,8 @@ class MillisecondField(IntegerField):
             }
         defaults.update(kwargs)
         defaults.update({
-            #'form_class': FramesFormField,           
-            'widget': self.widget, 
+            #'form_class': FramesFormField,
+            'widget': self.widget,
             })
         return MillisecondFormField(**defaults) #super(FramesField, self).formfield(**defaults)
 

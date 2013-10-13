@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
+from django.utils.translation import ugettext as _
 
 from colorful.fields import RGBColorField
 
@@ -17,10 +18,10 @@ A lot of the models are business-specific for Frikanalen. There's also
 a quite a few fields that are related to our legacy systems, but these
 are likely to be removed when we're confident that data is properly transferred.
 
-An empty database should populate at least FileFormat and Categories 
-with some content before it can be properly used. 
+An empty database should populate at least FileFormat and Categories
+with some content before it can be properly used.
 
-Fields that are commented out are suggestions for future fields. If they turn 
+Fields that are commented out are suggestions for future fields. If they turn
 out to be silly they should obviously be removed.
 """
 
@@ -28,6 +29,7 @@ SCHEDULE_REASONS = (
         (1, 'Legacy'),
         (2, 'Administrative'),
         (3, 'User'),
+        (4, 'Automatic'),
         )
 
 class Organization(models.Model):
@@ -134,6 +136,8 @@ class Video(models.Model):
     #TODO: Tono-records
     class Meta:
         db_table = u'Video'
+        get_latest_by = 'uploaded_time'
+
     def __unicode__(self):
         return self.name
 
@@ -237,6 +241,89 @@ class ScheduleitemManager(models.Manager):
                 enddate = after[0].starttime
         return super(ScheduleitemManager, self).get_query_set().filter(starttime__gte=date, starttime__lte=enddate)
 
+DAY_OF_THE_WEEK = (
+    (0, _(u'Monday')),
+    (1, _(u'Tuesday')),
+    (2, _(u'Wednesday')),
+    (3, _(u'Thursday')),
+    (4, _(u'Friday')),
+    (5, _(u'Saturday')),
+    (6, _(u'Sunday')),
+)
+
+class SchedulePurpose(models.Model):
+    """A block of video files having a similar purpose.
+    Either an organization and its videos (takes preference) or manually
+    connected videos.
+    """
+    name = models.CharField(max_length=100)
+    organization = models.ForeignKey(Organization, blank=True, null=True)
+    direct_videos = models.ManyToManyField(Video, blank=True)
+
+    def videos_str(self):
+        return u", ".join([unicode(x) for x in self.videos()])
+    videos_str.short_description = "videos"
+    videos_str.admin_order_field = "videos"
+
+    def videos(self, max_duration=None):
+        if self.organization:
+            qs = self.organization.video_set.all()
+        else:
+            qs = self.direct_videos.all()
+        if max_duration:
+            qs = qs.filter(duration__lte=max_duration)
+        return qs
+
+    def single_video(self, max_duration=None):
+        qs = self.videos(max_duration)
+        if self.organization:
+            try:
+                return qs.latest()
+            except Video.DoesNotExist:
+                return None
+        try:
+            # If direct videos, we just get a random one
+            # (might be slow, but hopefully few records)
+            return qs.order_by('?')[0]
+        except IndexError:
+            return None
+
+    def __unicode__(self):
+        return self.name
+
+class WeeklySlot(models.Model):
+    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True)
+
+    day = models.IntegerField(
+        choices=DAY_OF_THE_WEEK,
+    )
+    start_time = models.TimeField()
+    duration = fields.MillisecondField()
+
+    @property
+    def end_time(self):
+        if not self.duration:
+            return self.start_time
+        return self.start_time + self.duration
+
+    def next_date(self, from_date=None):
+        if not from_date:
+            from_date = datetime.date.today()
+        days_ahead = self.day - from_date.weekday()
+        if days_ahead <= 0:
+            # target date already happened this week
+            days_ahead += 7
+        return from_date + datetime.timedelta(days_ahead)
+
+    def next_datetime(self, from_date=None):
+        next_date = self.next_date(from_date)
+        return datetime.datetime.combine(next_date, self.start_time)
+
+    def __unicode__(self):
+        return (u"{day} {s.start_time} ({s.purpose})"
+                u"".format(day=self.get_day_display(), s=self))
+
+
 class Scheduleitem(models.Model):
     objects = ScheduleitemManager()
 
@@ -245,7 +332,7 @@ class Scheduleitem(models.Model):
     video = models.ForeignKey(Video, null=True, blank=True)
     schedulereason = models.IntegerField(
             blank=True,
-            choices = SCHEDULE_REASONS)
+            choices=SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = fields.MillisecondField() # in milliseconds
     #endtime = models.DateTimeField() # Make this read only?
@@ -284,15 +371,15 @@ class UserProfile(models.Model):
     country = models.CharField(blank=True, max_length=255, default='', null=True)
     legacy_username = models.CharField(blank=True, max_length=255, default='')
 
-    def __str__(self):  
-          return "%s (profile)" % self.user  
+    def __str__(self):
+          return "%s (profile)" % self.user
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
        profile, created = UserProfile.objects.get_or_create(user=instance)
 
 # Create a hook so the profile model is created when a User is.
-post_save.connect(create_user_profile, sender=User) 
+post_save.connect(create_user_profile, sender=User)
 
 #class Scheduleregion(models.Model):
 #    id = models.IntegerField(primary_key=True)

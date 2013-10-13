@@ -4,11 +4,12 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
+from fk.models import FileFormat
+from fk.models import Organization
 from fk.models import UserProfile
 from fk.models import Video, Category, Scheduleitem
-from fk.models import FileFormat
 from fk.models import VideoFile
-from fk.models import Organization
+from fk.models import SchedulePurpose, WeeklySlot
 
 # In order to display the userprofile on
 admin.site.unregister(User)
@@ -32,24 +33,45 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ("proper_import", "is_filler", "publish_on_web", "has_tono_records")
 
 class OrganizationAdmin(admin.ModelAdmin):
-	list_display = ('name', 'fkmember', 'orgnr')
-	filter_horizontal = ("members",)
-	ordering = ('name',)
+    list_display = ('name', 'fkmember', 'orgnr')
+    filter_horizontal = ("members",)
+    ordering = ('name',)
 
 
 class ScheduleitemAdmin(admin.ModelAdmin):
-	list_filter = ("starttime", )
-	list_display = ('__unicode__', 'duration')
-	#list_display_links = ('starttime', 'video',)
-	#inlines = [VideoInline]
-	#exclude = ('video',)
-	search_fields = ["video__name", "video__organization__name"]
-	ordering = ('starttime',)
+    list_filter = ("starttime", )
+    list_display = ('__unicode__',
+                    'video',
+                    'schedulereason',
+                    'starttime',
+                    'duration')
+    #list_display_links = ('starttime', 'video',)
+    #inlines = [VideoInline]
+    #exclude = ('video',)
+    search_fields = ["video__name", "video__organization__name"]
+    ordering = ('starttime',)
 
-admin.site.register(User, UserProfileAdmin)
-admin.site.register(Video, VideoAdmin)
+class SchedulePurposeAdmin(admin.ModelAdmin):
+    list_display = (
+        '__unicode__',
+        'videos_str',
+    )
+
+class WeeklySlotAdmin(admin.ModelAdmin):
+    list_display = (
+        '__unicode__',
+        'day',
+        'start_time',
+        'duration',
+        'purpose',
+    )
+
 admin.site.register(Category)
 admin.site.register(FileFormat)
-admin.site.register(VideoFile)
-admin.site.register(Scheduleitem, ScheduleitemAdmin)
 admin.site.register(Organization, OrganizationAdmin)
+admin.site.register(SchedulePurpose, SchedulePurposeAdmin)
+admin.site.register(Scheduleitem, ScheduleitemAdmin)
+admin.site.register(User, UserProfileAdmin)
+admin.site.register(Video, VideoAdmin)
+admin.site.register(VideoFile)
+admin.site.register(WeeklySlot, WeeklySlotAdmin)

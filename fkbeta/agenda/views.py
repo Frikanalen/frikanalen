@@ -1,14 +1,18 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
-from django.views.generic import TemplateView
+import datetime
+import logging
+
 from django.core.paginator import Paginator
 from django.forms import ModelForm
-from fk.models import Scheduleitem, Video, Organization
-import datetime
-
+from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
 from django.utils.timezone import utc
+from django.views.generic import TemplateView
+
+from fk.models import Scheduleitem, Video, Organization
+
+logger = logging.getLogger(__name__)
 
 class ProgramguideView(TemplateView):
   """Simple Programguide
@@ -153,3 +157,30 @@ class ManageVideoEdit(AbstractVideoFormView):
     if form.is_valid():
       form.save()
     return self.get(request, id=id, form=form)
+
+def fill_next_weeks_agenda():
+    from fk.models import WeeklySlot
+    slots = WeeklySlot.objects.all()
+    for slot in slots:
+        if not slot.purpose:
+            logger.info("No purpose connected, so nothing to fill")
+            continue
+        video = slot.purpose.single_video(slot.duration)
+        if not video:
+            logger.info("Couldn't get a video to use in slot!")
+            continue
+        next_datetime = slot.next_datetime()
+        end_next_datetime = next_datetime + slot.duration
+
+        if Scheduleitem.objects.filter(
+                starttime__gte=next_datetime,
+                starttime__lt=end_next_datetime).exists():
+            # Ouch we have already scheduled something in the slot
+            logger.debug("Already something scheduled in this slot")
+            continue
+        item = Scheduleitem(
+                  video=video,
+                  schedulereason=4,
+                  starttime=next_datetime,
+                  duration=video.duration)
+        item.save()
