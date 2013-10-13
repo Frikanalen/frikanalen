@@ -11,6 +11,8 @@ urlpatterns = patterns('fkws.views',
     url(r'^api/scheduleitems/(?P<pk>\d+)$', ScheduleitemDetail.as_view(), name='api-scheduleitem-detail'),
     url(r'^api/videos/$', VideoList.as_view(), name='api-video-list'),
     url(r'^api/videos/(?P<pk>\d+)$', VideoDetail.as_view(), name='api-video-detail'),
+    url(r'^api/videofiles/$', VideoFileList.as_view(), name='api-videofile-list'),
+    url(r'^api/videofiles/(?P<pk>\d+)$', VideoFileDetail.as_view(), name='api-videofile-detail'),
 )
 
 # Format suffixes

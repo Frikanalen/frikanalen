@@ -7,9 +7,9 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
-from fk.models import Scheduleitem, Video
+from fk.models import Scheduleitem, Video, VideoFile
 import fkvod.search
-from fkws.serializers import ScheduleitemSerializer, VideoSerializer
+from fkws.serializers import ScheduleitemSerializer, VideoSerializer, VideoFileSerializer
 import datetime
 
 @api_view(['GET'])
@@ -19,6 +19,7 @@ def api_root(request, format=None):
     return Response({
         'scheduleitems': reverse('api-scheduleitem-list', request=request),
         'videos': reverse('api-video-list', request=request),
+        'videofiles': reverse('api-videofile-list', request=request),
     })
 
 class ScheduleitemList(generics.ListCreateAPIView):
@@ -133,10 +134,78 @@ class VideoList(generics.ListAPIView):
         return queryset
 
 class VideoDetail(generics.RetrieveAPIView):
-    """Video details
+    """Video file details
     """
     model = Video
     serializer_class = VideoSerializer
+
+class VideoFileList(generics.ListCreateAPIView):
+    """Video file list
+
+        HTTP parameters:
+        * video_id
+            The video by ID
+        * page_size
+            How many items per page. If set to 0 it will list all items.
+            Default is 50 items.
+    """
+    model = VideoFile
+    serializer_class = VideoFileSerializer
+    paginate_by = 50
+    paginate_by_param = 'page_size'
+
+    def get_queryset(self):
+        queryset = self.model.objects.all()
+        video_id = self.request.QUERY_PARAMS.get('video_id', None)
+        if not (video_id == None):
+               queryset = queryset.filter(video_id = video_id)
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileList, self).post(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileList, self).put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileList, self).patch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileList, self).delete(request, *args, **kwargs)
+
+class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
+    """Video file details
+    """
+    model = VideoFile
+    serializer_class = VideoFileSerializer
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileDetail, self).post(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileDetail, self).put(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileDetail, self).patch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return super(VideoFileDetail, self).delete(request, *args, **kwargs)
 
 def wschange_redirect_view(request, path):
     if request.META['QUERY_STRING']:

@@ -3,21 +3,20 @@
 from fk.models import Scheduleitem, Video, VideoFile
 from rest_framework import serializers, fields
 
-class VideofileSerializer(serializers.ModelSerializer):
-    format = fields.Field(source="format.fsname")
+class VideoFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoFile
         fields = (
+            "video",
             "format",
             "filename",
             "old_filename"
             )
 
 class VideoSerializer(serializers.ModelSerializer):
-    #editor = Charfield(source="editor")
     editor = fields.Field(source="editor.username")
     organization = fields.Field(source="organization")
-    videofiles = VideofileSerializer(source="videofiles")
+    #videofiles = VideoFileSerializer(source="videofiles")
     categories = fields.Field(source="category_list")
     class Meta:
         model = Video
@@ -48,7 +47,7 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
             "default_name",
             "video_id",
             "video",
-            #"schedulereason",
+            "schedulereason",
             "starttime",
             "duration"
             )

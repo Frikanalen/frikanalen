@@ -12,16 +12,6 @@ ul {
     overflow:auto;
 }
 
-.player-container {
-    float: left;
-    padding: 0px 16px 16px 16px;
-    }
-
-.player {
-    width: 640px; 
-    height: 360px;
-}
-
 .video-info {
     overflow:auto;
     margin: 0px 16px 0px 16px;
@@ -41,62 +31,14 @@ ul {
     clear:both;
 }
 
-#player-error-container {
-    background-image: url("{{ video.large_thumbnail_url }}");
-    background-size: contain;
-    width: 640px;
-    height: 360px;
-    overflow: auto;
-}
-
-#player-error-message  {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    margin-top: 3em;
-    text-align: center;
-    color: white;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.7);
-}
-#player-error-message h1 {
-    margin: 0;
-    font-size: 2em;
-}
-
 </style>
 {% endblock style %}
-
-
 
 {% block content %}
 
 <div class="video_container">
-        <div class="player-container">
-            {% if video_error %}
-            <div id="player-error-container">
-                <div id="player-error-message"><h1>{{ video_error }}</h1>{{ video_error_explanation }}</div>
-            </div>
-            {% elif video.ogv_url or video.mp4_url %}
-            <video class="player" poster="{{ video.large_thumbnail_url }}" controls>
-              {% if video.ogv_url %}
-                <source src="{{ video.ogv_url }}" type="video/ogg"/>
-              {% endif %}
-              {% if video.mp4_url %}
-                 <source src="{{ video.mp4_url }}" type="video/mp4"/>
-              {% endif %}
-                <div id="player-error-container">
-                    <div id="player-error-message">
-                        <h1>Browser does not support HTML5 video</h1>
-                        Please use Chrome, Opera, Firefox or any other browser which supports Ogg Theora.
-                    </div>
-                </div>
-            </video>
-            {% else %}
-            <div id="player-error-container">
-                <div id="player-error-message"><h1>Video not available</h1></div>
-            </div>
-            {% endif %}
-        </div>
+	{% load vod %}
+	{% show_vod_widget video.id %}
         <div class="video-info">
             {% if video.organization %}
             <div>
