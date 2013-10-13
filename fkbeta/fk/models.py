@@ -49,6 +49,7 @@ class Organization(models.Model):
     #categories = models.ManyToManyField(Category)
     class Meta:
         db_table = u'Organization'
+        ordering = ('name',)
     def __unicode__(self):
         return self.name
 

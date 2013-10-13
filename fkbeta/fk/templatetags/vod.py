@@ -6,11 +6,11 @@ register = template.Library()
 
 @register.inclusion_tag("fkvod/vod_widget.html")
 def show_vod_widget(video_id):
+    video_error_explanation = ""
     try:
         video = Video.objects.public().get(id=video_id)
         title = u"%s" % unicode(video.name)
         video_error = None
-        video_error_explanation = ""
     except ObjectDoesNotExist:
         video = None
         title = "Video #%i not found" % int(video_id)

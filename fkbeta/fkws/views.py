@@ -134,7 +134,7 @@ class VideoList(generics.ListAPIView):
         return queryset
 
 class VideoDetail(generics.RetrieveAPIView):
-    """Video file details
+    """Video details
     """
     model = Video
     serializer_class = VideoSerializer
