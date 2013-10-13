@@ -1,33 +1,42 @@
 {% extends "base_generic.html" %}
 
 {% block style %}
-      <style>
-            h1 {
-                  font-family: Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-            }
+  <style>
+    h1, p {
+      font-family: Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
+    }
 
-            p {
-                  font-family: Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-                  margin: .5em 2em;
-                  width: 80%;
-            }
+    p {
+      margin: .5em 2em;
+      width: 80%;
+    }
 
-            #mainbox {
-                  width: 80%;
-                  margin: 30px 50px;
-            }
-      </style>
+    #mainbox {
+      width: 80%;
+      margin: 0 50px 30px 50px;
+    }
+  </style>
 {% endblock style %}
 
 {% block content %}
-      <div id="mainbox">
-            <p>I sammenheng med flyttingen av maskinparken fra TV8 til Oslo Studentersamfund gjennomføres det et omfattende arbeide for å 
-            sette på plass et nytt og sterkt forbedret system.</p>
-            <p>Dessverre har vi ikke ressurser til å drive begge systemene samtidig, så i mellomperioden er vi dessverre
-            tvunget til å ta ned dette systemet i påvente av det nye.</p>
-            <p>Om du ønsker å laste opp nye videoer, eller legge dem på sendeplanen, vil vi med glede hjelpe deg med dette manuelt. Vennligst send din henvendelse til 
-            <a href="mailto:post@frikanalen.no">post@frikanalen.no</a> og vi vil komme tilbake til deg så fort som mulig.</p>
-            <p>Med vennlig hilsen,</p>
-            <p>Frikanalen</p>
-      </div>
-{% endblock content %}      
+  <div id="mainbox">
+    <p>Samtidig med flyttingen av maskinparken fra TV8 til Oslo
+    Studentersamfund i februar 2013 (sjekk når?) ble helt ny teknisk løsning
+    basert på fri programvare tatt i bruk.
+
+    <p>Dessverre mangler vi ressurser til å drive den gamle proprietære
+    løsningen samtidig med den nye løsningen, og vi har dermed vært nødt
+    til å ta ned den gamle løsningen.  Konsekvensen er at den
+    Silverlightbaserte løsningen er borte og administrasjonsgrensesnittet
+    er mangelfullt.  Vi jobber med å erstatte den med en fri
+    programvarebasert løsning.
+
+    <p>Om du ønsker å laste opp nye videoer, eller legge dem på sendeplanen,
+    vil vi med glede hjelpe deg med dette manuelt. Vennligst send din
+    henvendelse til <a href="mailto:post@frikanalen.no">post@frikanalen.no</a>
+    og vi vil komme tilbake til deg så fort som mulig.
+
+    <p>Med vennlig hilsen,<br>
+      Frikanalen
+  </div>
+{% endblock content %}
