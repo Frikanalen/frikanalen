@@ -1,16 +1,19 @@
 .player-container {
-    float: left;
     padding: 0px 16px 16px 16px;
     }
 
+.widget-container {
+  width: 640px;
+  float: left;
+  height: 360px;
+}
 .player {
-    width: 640px; 
     height: 360px;
+    width: 100%;
 }
 
 #player-error-container {
     background-size: contain;
-    width: 640px;
     height: 360px;
     overflow: auto;
 }
