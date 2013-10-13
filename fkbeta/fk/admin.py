@@ -56,6 +56,7 @@ class SchedulePurposeAdmin(admin.ModelAdmin):
         '__unicode__',
         'videos_str',
     )
+    filter_horizontal = ('direct_videos',)
 
 class WeeklySlotAdmin(admin.ModelAdmin):
     list_display = (

@@ -301,6 +301,9 @@ class WeeklySlot(models.Model):
     start_time = models.TimeField()
     duration = fields.MillisecondField()
 
+    class Meta:
+        ordering = ('day', 'start_time', 'pk')
+
     @property
     def end_time(self):
         if not self.duration:
