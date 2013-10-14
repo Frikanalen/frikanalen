@@ -179,6 +179,7 @@ ProgramEvent = function() {
     self.default_name = ko.observable();
     self.duration = ko.observable("00:00");
     self.starttime = ko.observable();
+    self.schedulereason = 2;
 
     self.starttime_time = ko.computed({
         read: function() {
