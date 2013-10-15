@@ -240,6 +240,7 @@ LOCAL_APPS = (
     'agenda',
     'fk',
     'fknews',
+    'fkprofile',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

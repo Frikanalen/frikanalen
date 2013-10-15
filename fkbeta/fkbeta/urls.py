@@ -13,6 +13,11 @@ urlpatterns = patterns('', (r'^admin/', include(admin.site.urls)))
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns += staticfiles_urlpatterns()
 
+# Add pages from organization profile.
+urlpatterns += patterns('',
+    url(r'^member/', include('fkprofile.urls')),
+)
+
 # Add pages from agenda.
 import agenda.urls
 urlpatterns += agenda.urls.urlpatterns
