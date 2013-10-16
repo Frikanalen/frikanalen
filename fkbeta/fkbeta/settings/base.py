@@ -20,6 +20,10 @@ FK_MEDIA_URLPREFIX = 'http://beta.frikanalen.tv/media/id/'
 AUTH_PROFILE_MODULE = 'fk.UserProfile'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
