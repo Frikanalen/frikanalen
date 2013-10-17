@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# This is a really nasty hack for now. All improvements welcome.
+# Ideally, this file should generate quite a few different corner
+# cases to stress test the video ingest pipeline.
+
+# Requires ffmpeg, not libav. Example:
+# sudo add-apt-repository ppa:jon-severinsson/ffmpeg
+# sudo apt-get update
+# sudo apt-get install ffmpeg
+
+if [ ! -f Inconsolata.txt ]; then
+    wget http://www.levien.com/type/myfonts/Inconsolata.otf
+fi
+
+ffmpeg -t 30 \
+    -f lavfi -i mptestsrc -y \
+    -vf 'scale=720:576' \
+    -vf 'drawtext=box=1:x=(w-text_w)/2:y=(h-text_h-line_h)/2:fontfile=./Inconsolata.otf:fontsize=48:text='"$1"''\
+    -target pal-dv -aspect 16:9 \
+    dummy_test_video.mov
