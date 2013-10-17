@@ -55,7 +55,7 @@ class AbstractVideoList(TemplateView):
       title = videoset_name
       url_query_postfix = ""
 
-    p = Paginator(videos, 9)
+    p = Paginator(videos, 30)
     page = p.page(page_nr)
     context = {"videos": page.object_list,
                "title": title,
