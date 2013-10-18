@@ -10,6 +10,7 @@
 # sudo apt-get install ffmpeg
 
 if [ ! -f Inconsolata.txt ]; then
+    # Or use debian package fonts-inconsolata
     wget http://www.levien.com/type/myfonts/Inconsolata.otf
 fi
 
