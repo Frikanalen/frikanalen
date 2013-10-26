@@ -22,12 +22,16 @@
     .top_news_box h2 {
         margin: 0; padding: 0;
         margin-left: 7px;
-        font-variant: small-caps;
+        text-transform: uppercase;
+        font-size: 14pt;
     }
 
     .featured_video {
         color: white;
         background-color: #333;
+    }
+    .featured_video a {
+        color: #bcb;
     }
   </style>
 {% endblock style %}
@@ -40,7 +44,7 @@
 <div id="mainbox">
     <div class="top_news_box">
         <div class="featured_video">
-            <h2>ukens video<br><a href="/video/625110">empo tv - del 118</a></h2>
+            <h2>ukens video <small><a href="/video/625110">empo tv - del 118</a></small></h2>
             {% load vod %}
             {% show_vod_widget 625110 %}
         </div>
