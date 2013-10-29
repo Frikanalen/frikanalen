@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
+import pytz
 
 from colorful.fields import RGBColorField
 
@@ -321,7 +322,9 @@ class WeeklySlot(models.Model):
 
     def next_datetime(self, from_date=None):
         next_date = self.next_date(from_date)
-        return datetime.datetime.combine(next_date, self.start_time)
+        return datetime.datetime.combine(
+                next_date, self.start_time.replace(
+                        tzinfo=pytz.timezone(settings.TIME_ZONE)))
 
     def __unicode__(self):
         return (u"{day} {s.start_time} ({s.purpose})"
