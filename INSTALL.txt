@@ -1,9 +1,9 @@
 Creating a local development environment
 ========================================
 
-Install virtualenv:
+Install virtualenv and sqlite3:
 
-    $ apt-get install python-virtualenv python-pip
+    $ apt-get install sqlite3 python-virtualenv python-pip
 
 Create virtual env:
 
