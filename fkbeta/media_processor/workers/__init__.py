@@ -126,7 +126,7 @@ class WorkingClass():
 
 
 class TheoraEncoder(FFmpegProcess, WorkingClass):
-    job_type = 2
+    job_type = 7
     extension = '.ogv'
     def get_settings(self):
         return [
@@ -136,6 +136,7 @@ class TheoraEncoder(FFmpegProcess, WorkingClass):
             ('qscale:a', '2'),
             ('vf', 'scale=720:-1'),
             ]
+
 class LargeThumbEncoder(ThumbEncoder, WorkingClass):
     job_type = 1
     resolution = '720:405'
