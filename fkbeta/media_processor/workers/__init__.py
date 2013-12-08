@@ -57,7 +57,8 @@ class FFmpegProcess(protocol.ProcessProtocol):
         newfile = VideoFile(
                 video_id = self.task.source_file.video_id,
                 format_id = self.job_type,
-                filename = output_file)
+                filename = output_file,
+                old_filename = output_file)
 
         newfile.save()
 
@@ -69,10 +70,7 @@ class FFmpegProcess(protocol.ProcessProtocol):
 
         return cmd_args
 
-    def _go(self):
-        return self.run_ffmpeg()
-
-    def run_ffmpeg(self):
+    def _run_engine(self):
         self.deferred = defer.Deferred()
         logging.debug('Starting ffmpeg process...')
         reactor.spawnProcess(self, "ffmpeg", self.arguments(), {})
@@ -140,7 +138,7 @@ class LargeThumbEncoder(ThumbEncoder, WorkingClass):
 class WaitASecond(WorkingClass):
     job_type = 1337
 
-    def _go(self):
+    def _run_engine(self):
         self.defer = defer.Deferred()
         reactor.callLater(1,self.finished)
         return self.defer
