@@ -22,4 +22,7 @@ class Task(models.Model):
             default=0,
             choices=STATES)
 
+    def __unicode__(self):
+        return '%s task to get %s from %s' % (self.get_status_display(), self.target_format, self.source_file)
+
 
