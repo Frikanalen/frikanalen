@@ -13,14 +13,22 @@ DESIRED_FORMATS = [1, 7]
 class Command(BaseCommand):
     help = 'Find missing file types and generate jobs to make them'
     log = logging.getLogger('find_missing')
+    args = '<video_id video_id ...>'
+
     import sys
     log.addHandler(logging.StreamHandler(sys.stdout))
     log.setLevel(logging.DEBUG)
 
 
     def handle(self, *args, **options):
-        videos = Video.objects.all()
         
+        if len(args):
+            videos = []
+            for video_id in args:
+                videos.append(Video.objects.get(id=video_id))
+        else:
+            videos = Video.objects.all()
+
         for video in videos:
             try:
                 original = video.videofile_set.filter(format_id = 6)[0]
@@ -38,5 +46,3 @@ class Command(BaseCommand):
                     self.log.debug('Video %s lacks file in format %d; enqueueing...' % (video, wanted_format_id))
                     t = Task(source_file = original, target_format = wanted_format_id, status=Task.STATE_PENDING)
                     t.save()
-            
-        #    self.stdout.write('Successfully closed poll "%s"' % poll_id)
