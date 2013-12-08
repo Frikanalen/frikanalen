@@ -14,9 +14,13 @@ import logging
 class Command(BaseCommand):
     help = 'Run all tasks in the \'PENDING\' state before returning'
     log = logging.getLogger('run_queue')
+    import sys
+    log.setLevel(logging.DEBUG)
+    log.addHandler(logging.StreamHandler(sys.stdout))
     outstanding_jobs = 0
 
     def run_task(self, task):
+        self.log.debug('Running task %s...' % (task,))
         worker = workers.WorkerBroker.yielders.get(task.target_format)()
         worker.load(task)
         self.outstanding_jobs += 1
@@ -33,5 +37,6 @@ class Command(BaseCommand):
         self.log.info('%d outstanding tasks' % (len(pending_tasks),))
         if pending_tasks:
             for task in pending_tasks:
+                self.log.debug('Adding %s to queue' % (task,))
                 self.run_task(task)
             reactor.run()
