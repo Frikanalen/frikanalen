@@ -48,7 +48,7 @@ class FFmpegProcess(protocol.ProcessProtocol):
 
         input_file = self.task.source_file.location()
         output_file = os.path.splitext(os.path.basename(input_file))[0] + self.extension
-        cmd_args += ['-i', input_file]
+        cmd_args += ['-i', str(input_file)]
         cmd_args += ['-t', '10']#, '-f', 'lavfi', '-i', 'mptestsrc']
 
         for key, value in self.get_settings():
@@ -65,7 +65,7 @@ class FFmpegProcess(protocol.ProcessProtocol):
             os.makedirs(os.path.dirname(newfile.location()))
         except:
             pass
-        cmd_args.append(newfile.location())
+        cmd_args.append(str(newfile.location()))
 
         return cmd_args
 
@@ -115,7 +115,7 @@ class ThumbEncoder(FFmpegProcess):
             # FIXME: makes a BAD assumption
             ('ss', '00:00:05'),
             ('vf', 'scale=%s' % (self.resolution,)),
-            ('aspect', '16x9'),
+            ('aspect', '16:9'),
             ]
 
 class SmallThumbEncoder(ThumbEncoder):
