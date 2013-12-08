@@ -13,14 +13,10 @@ DESIRED_FORMATS = [1, 7]
 class Command(BaseCommand):
     help = 'Find missing file types and generate jobs to make them'
     log = logging.getLogger('find_missing')
+    import sys
+    log.addHandler(logging.StreamHandler(sys.stdout))
+    log.setLevel(logging.DEBUG)
 
-#    option_list = BaseCommand.option_list + (
-#        make_option('--delete',
-#            action='store_true',
-#            dest='delete',
-#            default=False,
-#            help='Delete poll instead of closing it'),
-#        )
 
     def handle(self, *args, **options):
         videos = Video.objects.all()
@@ -29,8 +25,11 @@ class Command(BaseCommand):
             try:
                 original = video.videofile_set.filter(format_id = 6)[0]
             except IndexError:
-                self.log.info('Video %s has no original file, skipping..' % (video,))
-                continue
+                try:
+                    original = video.videofile_set.filter(format_id = 2)[0]
+                except IndexError:
+                    self.log.info('Video %s has no original file, skipping..' % (video,))
+                    continue
             for wanted_format_id in DESIRED_FORMATS:
                 desired_file = video.videofile_set.filter(format_id = wanted_format_id)
                 if len(desired_file):
