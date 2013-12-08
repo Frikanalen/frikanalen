@@ -3,6 +3,36 @@ from fk.models import VideoFile
 import logging
 from twisted.internet import reactor, defer, protocol
 
+class WorkerFactory():
+    workers = []
+    yielders = {}
+
+    def get_worker_from_task(self, task):
+        worker_class = self.yielders.get(task.target_format)
+        if worker_class is None:
+            raise IndexError('No handler registered for that job type!')
+        worker = worker_class()
+        worker.load(task)
+        return worker
+
+    def register(self, worker):
+        self.workers.append(worker)
+        self.yielders[worker.job_type] = worker
+
+class WorkingClass():
+    def load(self, task):
+        self.task = task
+
+    def go(self):
+        self.task.status = Task.STATE_RUNNING
+        self.task.save()
+        return self._run_engine()
+
+    def finished(self):
+        self.task.status = Task.STATE_COMPLETE
+        self.task.save()
+        self.defer.callback(self.task)
+
 class FFmpegProcess(protocol.ProcessProtocol):
     running = False
     frame = 0
@@ -18,11 +48,8 @@ class FFmpegProcess(protocol.ProcessProtocol):
 
         input_file = self.task.source_file.location()
         output_file = os.path.splitext(os.path.basename(input_file))[0] + self.extension
-        print type(output_file)
-        print output_file
         cmd_args += ['-i', input_file]
         cmd_args += ['-t', '10']#, '-f', 'lavfi', '-i', 'mptestsrc']
-
 
         for key, value in self.get_settings():
             cmd_args += ['-' + key, value]
@@ -94,37 +121,6 @@ class ThumbEncoder(FFmpegProcess):
 class SmallThumbEncoder(ThumbEncoder):
     resolution = '64:36'
 
-class TestEncoder(FFmpegProcess):
-    pass
-
-class WorkerBroker():
-    workers = []
-    yielders = {}
-
-    def register(self, worker):
-        self.workers.append(worker)
-        self.yielders[worker.job_type] = worker
-
-
-class WorkingClass():
-    def load(self, task):
-        self.task = task
-
-    def _go(self):
-        pass
-
-    def go(self):
-        self.task.status = Task.STATE_RUNNING
-        self.task.save()
-        return self._go()
-
-    def finished(self):
-        self.task.status = Task.STATE_COMPLETE
-        self.task.result = 'Test job complete'
-        self.task.save()
-        self.defer.callback(self.task)
-
-
 class TheoraEncoder(FFmpegProcess, WorkingClass):
     job_type = 7
     extension = '.ogv'
@@ -159,7 +155,7 @@ class AnalyzeFile(WorkingClass):
         self.task.save()
         self.deferred.callback(True)
 
-    def _go(self):
+    def _run_engine(self):
         self.deferred = defer.Deferred()
         self.analyze_file()
         return self.deferred
@@ -167,7 +163,7 @@ class AnalyzeFile(WorkingClass):
 class CreateTestFile(WorkingClass, FFmpegProcess):
     job_type = 1338
 
-    def _go(self):
+    def _run_engine(self):
         self.deferred = defer.Deferred()
         try:
             import os
@@ -185,12 +181,8 @@ class CreateTestFile(WorkingClass, FFmpegProcess):
 
         return cmd_args
 
-    def start(self):
-        logging.debug('Starting ffmpeg process...')
-        reactor.spawnProcess(self, "ffmpeg", self.arguments(), {})
-
-WorkerBroker().register(WaitASecond)
-WorkerBroker().register(LargeThumbEncoder)
-WorkerBroker().register(CreateTestFile)
-WorkerBroker().register(AnalyzeFile)
-WorkerBroker().register(TheoraEncoder)
+WorkerFactory().register(WaitASecond)
+WorkerFactory().register(LargeThumbEncoder)
+WorkerFactory().register(CreateTestFile)
+WorkerFactory().register(AnalyzeFile)
+WorkerFactory().register(TheoraEncoder)

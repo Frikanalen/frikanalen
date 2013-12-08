@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from fk.models import Video
 from media_processor.models import Task
-from media_processor import workers
+from media_processor.workers import WorkerFactory
 from optparse import make_option
 
 from twisted.internet import reactor, defer
@@ -17,8 +17,7 @@ class Command(BaseCommand):
     outstanding_jobs = 0
 
     def run_task(self, task):
-        worker = workers.WorkerBroker.yielders.get(task.target_format)()
-        worker.load(task)
+        worker = WorkerFactory().get_worker_from_task(task)
         self.outstanding_jobs += 1
         d = worker.go()
         d.addCallbacks(self.done,self.done)
