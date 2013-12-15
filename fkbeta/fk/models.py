@@ -82,10 +82,9 @@ class VideoFile(models.Model):
     # metadata frames, width, height, framerate? mlt profile name?
     # edl for in/out?
     def location(self):
-        return '/'.join(('/mnt/media',
-                str(self.video.id),
-                self.format.fsname,
-                self.filename))
+        import os
+        return ('/'.join((settings.FK_MEDIA_ROOT,
+                self.filename)))
     class Meta:
         verbose_name = u'video file'
         verbose_name_plural = u'video files'

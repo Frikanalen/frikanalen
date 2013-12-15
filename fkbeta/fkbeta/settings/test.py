@@ -1,5 +1,6 @@
 from base import *
 
+FK_MEDIA_ROOT='/tmp/media'
 ########## TEST SETTINGS
 TEST_RUNNER = 'discover_runner.DiscoverRunner'
 TEST_DISCOVER_TOP_LEVEL = SITE_ROOT
@@ -16,3 +17,4 @@ DATABASES = {
         "PORT": "",
     },
 }
+

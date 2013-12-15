@@ -16,6 +16,7 @@ WEB_NO_TONO = True
 
 # Where all the media files are stored
 FK_MEDIA_URLPREFIX = 'http://beta.frikanalen.tv/media/id/'
+FK_MEDIA_ROOT = '/mnt/media'
 
 AUTH_PROFILE_MODULE = 'fk.UserProfile'
 
@@ -245,6 +246,7 @@ LOCAL_APPS = (
     'fk',
     'fknews',
     'fkprofile',
+    'media_processor',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
