@@ -192,7 +192,7 @@ class Video(models.Model):
     def videofile_url(self, fsname):
         format = FileFormat.objects.get(fsname=fsname)
         videofile = VideoFile.objects.get(video = self, format=format)
-        return videofile.old_filename
+        return videofile.location(relative=True)
 
     def small_thumbnail_url(self):
         format = FileFormat.objects.get(fsname="small_thumb")
@@ -200,7 +200,7 @@ class Video(models.Model):
             videofile = VideoFile.objects.get(video = self, format=format)
         except ObjectDoesNotExist:
             return "/static/default_small_thumbnail.png"
-        return settings.FK_MEDIA_URLPREFIX+videofile.old_filename
+        return settings.FK_MEDIA_URLPREFIX+videofile.location(relative=True)
 
     def medium_thumbnail_url(self):
         format = FileFormat.objects.get(fsname="medium_thumb")
@@ -208,7 +208,7 @@ class Video(models.Model):
             videofile = VideoFile.objects.get(video = self, format=format)
         except ObjectDoesNotExist:
             return "/static/default_medium_thumbnail.png"
-        return settings.FK_MEDIA_URLPREFIX+videofile.old_filename
+        return settings.FK_MEDIA_URLPREFIX+videofile.location(relative=True)
 
     def large_thumbnail_url(self):
         format = FileFormat.objects.get(fsname="large_thumb")
@@ -216,7 +216,7 @@ class Video(models.Model):
             videofile = VideoFile.objects.get(video = self, format=format)
         except ObjectDoesNotExist:
             return "/static/default_large_thumbnail.png"
-        return settings.FK_MEDIA_URLPREFIX+videofile.old_filename
+        return settings.FK_MEDIA_URLPREFIX+videofile.location(relative=True)
 
     def old_id(self):
         format = FileFormat.objects.get(fsname="broadcast")

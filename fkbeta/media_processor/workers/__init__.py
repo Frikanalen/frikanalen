@@ -49,24 +49,22 @@ class FFmpegProcess(protocol.ProcessProtocol):
         input_file = self.task.source_file.location()
         output_file = os.path.splitext(os.path.basename(input_file))[0] + self.extension
         cmd_args += ['-i', str(input_file)]
-        cmd_args += ['-t', '10']#, '-f', 'lavfi', '-i', 'mptestsrc']
 
         for key, value in self.get_settings():
             cmd_args += ['-' + key, value]
 
-        newfile = VideoFile(
+        self.newfile = VideoFile(
                 video_id = self.task.source_file.video_id,
                 format_id = self.job_type,
                 filename = output_file,
                 old_filename = output_file)
 
-        newfile.save()
 
         try:
-            os.makedirs(os.path.dirname(newfile.location()))
+            os.makedirs(os.path.dirname(self.newfile.location()))
         except:
             pass
-        cmd_args.append(str(newfile.location()))
+        cmd_args.append(str(self.newfile.location()))
 
         return cmd_args
 
@@ -80,6 +78,7 @@ class FFmpegProcess(protocol.ProcessProtocol):
         self.running = False
         rc = status.value.exitCode
         if rc == 0:
+            self.newfile.save()
             logging.debug('ffmpeg process ended successfully.')
             self.task.status = Task.STATE_COMPLETE
             self.task.save()
