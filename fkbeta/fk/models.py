@@ -81,10 +81,20 @@ class VideoFile(models.Model):
     # created_time = models.DateTimeField()# encoded_time?
     # metadata frames, width, height, framerate? mlt profile name?
     # edl for in/out?
-    def location(self):
+    def location(self, relative=False):
         import os
-        return ('/'.join((settings.FK_MEDIA_ROOT,
-                self.filename)))
+
+        filename = os.path.basename(self.filename)
+
+        path = '/'.join((
+                str(self.video.id),
+                self.format.fsname,
+                filename))
+
+        if relative:
+            return path
+        else:
+            return '/'.join((settings.FK_MEDIA_ROOT, path))
     class Meta:
         verbose_name = u'video file'
         verbose_name_plural = u'video files'
