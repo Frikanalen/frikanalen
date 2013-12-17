@@ -15,8 +15,8 @@ from sys import path
 WEB_NO_TONO = True
 
 # Where all the media files are stored
-FK_MEDIA_URLPREFIX = 'http://beta.frikanalen.tv/media/id/'
-FK_MEDIA_ROOT = '/mnt/media'
+FK_MEDIA_URLPREFIX = 'http://simula.gunkies.org/media/'
+FK_MEDIA_ROOT = '/tank/new_media/media'
 
 AUTH_PROFILE_MODULE = 'fk.UserProfile'
 
