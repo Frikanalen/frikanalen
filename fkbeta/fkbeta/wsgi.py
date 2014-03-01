@@ -31,9 +31,11 @@ def application(environ, start_response):
         if var in environ:
             os.environ[var] = environ[var]
     if 'EXTRA_SITE_DIR' in environ:
-          import site
-          site.addsitedir(environ['EXTRA_SITE_DIR'])
-    sys.path.append(SITE_ROOT)
+        import site
+        site.addsitedir(environ['EXTRA_SITE_DIR'])
+    # Avoid repeatedly adding the when debugging
+    if not SITE_ROOT in sys.path:
+       sys.path.append(SITE_ROOT)
 
     from django.core.wsgi import get_wsgi_application
     _application = get_wsgi_application()
