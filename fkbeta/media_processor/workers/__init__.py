@@ -47,8 +47,9 @@ class FFmpegProcess(protocol.ProcessProtocol):
                 ]
 
         input_file = self.task.source_file.location()
+        print str(input_file).encode('utf-8')
         output_file = os.path.splitext(os.path.basename(input_file))[0] + self.extension
-        cmd_args += ['-i', str(input_file)]
+        cmd_args += ['-i', str(input_file.decode('utf-8'))]
 
         for key, value in self.get_settings():
             cmd_args += ['-' + key, value]
@@ -59,12 +60,10 @@ class FFmpegProcess(protocol.ProcessProtocol):
                 filename = output_file,
                 old_filename = output_file)
 
-
-        try:
+        if not os.path.isdir(os.path.dirname(self.newfile.location())):
             os.makedirs(os.path.dirname(self.newfile.location()))
-        except:
-            pass
-        cmd_args.append(str(self.newfile.location()))
+
+        cmd_args.append(str(self.newfile.location().decode('utf-8')))
 
         return cmd_args
 
@@ -84,6 +83,8 @@ class FFmpegProcess(protocol.ProcessProtocol):
             self.task.save()
             self.deferred.callback(self)
         else:
+            self.task.status = Task.STATE_FAILED
+            self.task.save()
             logging.debug('ffmpeg process returned failure.')
             self.deferred.errback(rc)
 
@@ -115,7 +116,8 @@ class ThumbEncoder(FFmpegProcess):
             ('aspect', '16:9'),
             ]
 
-class SmallThumbEncoder(ThumbEncoder):
+class SmallThumbEncoder(ThumbEncoder, WorkingClass):
+    job_type = 5
     resolution = '64:36'
 
 class TheoraEncoder(FFmpegProcess, WorkingClass):
@@ -180,6 +182,7 @@ class CreateTestFile(WorkingClass, FFmpegProcess):
 
 WorkerFactory().register(WaitASecond)
 WorkerFactory().register(LargeThumbEncoder)
+WorkerFactory().register(SmallThumbEncoder)
 WorkerFactory().register(CreateTestFile)
 WorkerFactory().register(AnalyzeFile)
 WorkerFactory().register(TheoraEncoder)
