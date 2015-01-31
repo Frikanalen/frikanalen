@@ -1,14 +1,18 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
+import datetime
+import os
+
+import pytz
+from colorful.fields import RGBColorField
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_save
+from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
-import pytz
-
-from colorful.fields import RGBColorField
 
 from fk import fields
 
@@ -26,13 +30,6 @@ Fields that are commented out are suggestions for future fields. If they turn
 out to be silly they should obviously be removed.
 """
 
-SCHEDULE_REASONS = (
-        (1, 'Legacy'),
-        (2, 'Administrative'),
-        (3, 'User'),
-        (4, 'Automatic'),
-        )
-
 class Organization(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -48,11 +45,17 @@ class Organization(models.Model):
     #twitter_tags = models.CharField(null=True,max_length=255)
     #homepage = models.CharField(blank=True, max_length=255) # To be copied into every video they create
     #categories = models.ManyToManyField(Category)
+
     class Meta:
         db_table = u'Organization'
         ordering = ('name',)
+
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('org-video-list', kwargs={'orgid': self.id})
+
 
 class FileFormat(models.Model):
     id = models.AutoField(primary_key=True)
@@ -63,12 +66,15 @@ class FileFormat(models.Model):
     rgb = RGBColorField(default="cccccc")
     #mime_type = models.CharField(max_length=256)
     # metadata framerate, resolution, etc?
+
     class Meta:
         db_table = u'ItemType'
         verbose_name = u'video file format'
         verbose_name_plural = u'video file formats'
+
     def __unicode__(self):
         return self.fsname
+
 
 class VideoFile(models.Model):
     id = models.AutoField(primary_key=True)
@@ -81,9 +87,15 @@ class VideoFile(models.Model):
     # created_time = models.DateTimeField()# encoded_time?
     # metadata frames, width, height, framerate? mlt profile name?
     # edl for in/out?
-    def location(self, relative=False):
-        import os
 
+    class Meta:
+        verbose_name = u'video file'
+        verbose_name_plural = u'video files'
+
+    def __unicode__(self):
+        return "%s version of %s" % (self.format.fsname, self.video.name)
+
+    def location(self, relative=False):
         filename = os.path.basename(self.filename)
 
         path = '/'.join((
@@ -95,27 +107,28 @@ class VideoFile(models.Model):
             return path
         else:
             return '/'.join((settings.FK_MEDIA_ROOT, path))
-    class Meta:
-        verbose_name = u'video file'
-        verbose_name_plural = u'video files'
-    def __unicode__(self):
-        return "%s version of %s" % (self.format.fsname, self.video.name)
+
 
 class Category(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     rgb = RGBColorField()
     desc = models.CharField(max_length=255, blank=True)
+
     class Meta:
         db_table = u'Category'
         verbose_name = u'video category'
         verbose_name_plural = u'video categories'
+
     def __unicode__(self):
         return self.name
 
+
 class VideoManager(models.Manager):
     def public(self):
-        return super(VideoManager, self).get_query_set().filter(publish_on_web=True, proper_import=True)
+        return (super(VideoManager, self)
+                .get_query_set()
+                .filter(publish_on_web=True, proper_import=True))
 
 
 class Video(models.Model):
@@ -144,6 +157,7 @@ class Video(models.Model):
     organization = models.ForeignKey(Organization, null=True) # Organization for video
     ref_url = models.CharField(blank=True, max_length=1024) # URL for Reference
     duration = fields.MillisecondField() # in milliseconds
+
     #TODO: Tono-records
     class Meta:
         db_table = u'Video'
@@ -231,10 +245,9 @@ class Video(models.Model):
         url = settings.FK_MEDIA_URLPREFIX + self.videofile_url("mp4")
         return url
 
+    def get_absolute_url(self):
+        return reverse('video-detail', kwargs={'video_id': self.id})
 
-
-import datetime
-from django.utils.timezone import utc
 
 class ScheduleitemManager(models.Manager):
     def by_day(self, date=None, days=1, surrounding=False):
@@ -243,24 +256,24 @@ class ScheduleitemManager(models.Manager):
         enddate = date + datetime.timedelta(days=days)
         if surrounding:
             # Try to find the event before the given date
-            before = Scheduleitem.objects.filter(starttime__lte = date).order_by("-starttime")
+            before = (
+                Scheduleitem.objects
+                .filter(starttime__lte = date)
+                .order_by("-starttime"))
             if before:
                 date = before[0].starttime
             # Try to find the event after the end date
-            after = Scheduleitem.objects.filter(starttime__gte = enddate).order_by("starttime")
+            after = (
+                Scheduleitem.objects
+                .filter(starttime__gte = enddate)
+                .order_by("starttime"))
             if after:
                 enddate = after[0].starttime
-        return super(ScheduleitemManager, self).get_query_set().filter(starttime__gte=date, starttime__lte=enddate)
+        return (
+           super(ScheduleitemManager, self)
+           .get_query_set()
+           .filter(starttime__gte=date, starttime__lte=enddate))
 
-DAY_OF_THE_WEEK = (
-    (0, _(u'Monday')),
-    (1, _(u'Tuesday')),
-    (2, _(u'Wednesday')),
-    (3, _(u'Thursday')),
-    (4, _(u'Friday')),
-    (5, _(u'Saturday')),
-    (6, _(u'Sunday')),
-)
 
 class SchedulePurpose(models.Model):
     """A block of video files having a similar purpose.
@@ -302,9 +315,19 @@ class SchedulePurpose(models.Model):
     def __unicode__(self):
         return self.name
 
-class WeeklySlot(models.Model):
-    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True)
 
+class WeeklySlot(models.Model):
+    DAY_OF_THE_WEEK = (
+        (0, _(u'Monday')),
+        (1, _(u'Tuesday')),
+        (2, _(u'Wednesday')),
+        (3, _(u'Thursday')),
+        (4, _(u'Friday')),
+        (5, _(u'Saturday')),
+        (6, _(u'Sunday')),
+    )
+
+    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True)
     day = models.IntegerField(
         choices=DAY_OF_THE_WEEK,
     )
@@ -341,7 +364,12 @@ class WeeklySlot(models.Model):
 
 
 class Scheduleitem(models.Model):
-    objects = ScheduleitemManager()
+    SCHEDULE_REASONS = (
+        (1, 'Legacy'),
+        (2, 'Administrative'),
+        (3, 'User'),
+        (4, 'Automatic'),
+    )
 
     id = models.AutoField(primary_key=True)
     default_name = models.CharField(max_length=255, blank=True)
@@ -353,11 +381,14 @@ class Scheduleitem(models.Model):
     duration = fields.MillisecondField() # in milliseconds
     #endtime = models.DateTimeField() # Make this read only?
 
+    objects = ScheduleitemManager()
+
     """
     def save(self, *args, **kwargs):
         self.endtime = self.starttime + timeutils.duration
         super(Scheduleitem, self).save(*args, **kwargs)
     """
+
     class Meta:
         db_table = u'ScheduleItem'
         verbose_name = u'TX schedule entry'
@@ -377,6 +408,7 @@ class Scheduleitem(models.Model):
             return self.starttime
         return self.starttime + self.duration
 
+
 class UserProfile(models.Model):
     # example from http://stackoverflow.com/questions/44109/extending-the-user-model-with-custom-fields-in-django
     user = models.OneToOneField(User)
@@ -390,12 +422,14 @@ class UserProfile(models.Model):
     def __str__(self):
           return "%s (profile)" % self.user
 
+
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
        profile, created = UserProfile.objects.get_or_create(user=instance)
 
 # Create a hook so the profile model is created when a User is.
 post_save.connect(create_user_profile, sender=User)
+
 
 #class Scheduleregion(models.Model):
 #    id = models.IntegerField(primary_key=True)
@@ -406,12 +440,14 @@ post_save.connect(create_user_profile, sender=User)
 #    class Meta:
 #        db_table = u'ScheduleRegion'
 
+
 #class Schedulereason(models.Model):
 #    id = models.IntegerField(primary_key=True)
 #    desc = models.CharField(max_length=255)
 #    name = models.CharField(unique=True, max_length=255)
 #    class Meta:
 #        db_table = u'ScheduleReason'
+
 
 #class Metadatatype(models.Model):
 #    id = models.IntegerField(primary_key=True)
@@ -421,6 +457,7 @@ post_save.connect(create_user_profile, sender=User)
 #    desc_nor = models.CharField(max_length=255)
 #    class Meta:
 #        db_table = u'MetadataType'
+
 
 #class Metadataattribute(models.Model):
 #    id = models.IntegerField(primary_key=True)
