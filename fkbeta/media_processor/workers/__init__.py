@@ -1,14 +1,18 @@
-from media_processor.models import Task
-from fk.models import VideoFile
 import logging
+
 from twisted.internet import reactor, defer, protocol
+
+from fk.models import FileFormat
+from fk.models import VideoFile
+from media_processor.models import Task
+
 
 class WorkerFactory():
     workers = []
     yielders = {}
 
     def get_worker_from_task(self, task):
-        worker_class = self.yielders.get(task.target_format)
+        worker_class = self.yielders.get(task.target_format.fsname)
         if worker_class is None:
             raise IndexError('No handler registered for that job type!')
         worker = worker_class()
@@ -18,6 +22,7 @@ class WorkerFactory():
     def register(self, worker):
         self.workers.append(worker)
         self.yielders[worker.job_type] = worker
+
 
 class WorkingClass():
     def load(self, task):
@@ -54,11 +59,12 @@ class FFmpegProcess(protocol.ProcessProtocol):
         for key, value in self.get_settings():
             cmd_args += ['-' + key, value]
 
+        file_format = FileFormat.objects.get(fsname=self.job_type)
         self.newfile = VideoFile(
-                video_id = self.task.source_file.video_id,
-                format_id = self.job_type,
-                filename = output_file,
-                old_filename = output_file)
+                video_id=self.task.source_file.video_id,
+                format=file_format,
+                filename=output_file,
+                old_filename=output_file)
 
         if not os.path.isdir(os.path.dirname(self.newfile.location())):
             os.makedirs(os.path.dirname(self.newfile.location()))
@@ -117,11 +123,11 @@ class ThumbEncoder(FFmpegProcess):
             ]
 
 class SmallThumbEncoder(ThumbEncoder, WorkingClass):
-    job_type = 5
+    job_type = 'small_thumb'
     resolution = '64:36'
 
 class TheoraEncoder(FFmpegProcess, WorkingClass):
-    job_type = 7
+    job_type = 'theora'
     extension = '.ogv'
     def get_settings(self):
         return [
@@ -133,7 +139,7 @@ class TheoraEncoder(FFmpegProcess, WorkingClass):
             ]
 
 class LargeThumbEncoder(ThumbEncoder, WorkingClass):
-    job_type = 1
+    job_type = 'large_thumb'
     resolution = '720:405'
 
 class WaitASecond(WorkingClass):
