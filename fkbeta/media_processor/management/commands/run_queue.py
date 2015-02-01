@@ -1,18 +1,18 @@
 # Run any pending tasks before returning
 
-from django.core.management.base import BaseCommand, CommandError
-
-from fk.models import Video
-from media_processor.models import Task
-from media_processor.workers import WorkerFactory
-from optparse import make_option
-
-from twisted.internet import reactor, defer
+from __future__ import unicode_literals
 
 import logging
 
+from django.core.management.base import BaseCommand
+from twisted.internet import reactor
+
+from media_processor.models import Task
+from media_processor.workers import WorkerFactory
+
+
 class Command(BaseCommand):
-    help = 'Run all tasks in the \'PENDING\' state before returning'
+    help = "Run all tasks in the 'PENDING' state before returning"
     log = logging.getLogger('run_queue')
     outstanding_jobs = 0
 
@@ -29,7 +29,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         pending_tasks = Task.objects.filter(status=Task.STATE_PENDING)
-        self.log.info('%d outstanding tasks' % (len(pending_tasks),))
+        self.log.info("%d outstanding tasks" % (len(pending_tasks),))
         if pending_tasks:
             for task in pending_tasks:
                 self.run_task(task)

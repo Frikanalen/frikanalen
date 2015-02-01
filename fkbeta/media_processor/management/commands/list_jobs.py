@@ -1,11 +1,9 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from fk.models import Video
-from optparse import make_option
 from media_processor.models import Task
 
+
 class Command(BaseCommand):
-    args = '<video_id video_id ...>'
     help = 'List video jobs'
 
     def handle(self, *args, **options):
