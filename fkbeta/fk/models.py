@@ -59,11 +59,12 @@ class Organization(models.Model):
 
 class FileFormat(models.Model):
     id = models.AutoField(primary_key=True)
-    description = models.TextField(unique=True, max_length=255,
-           null=True, blank=True)
+    description = models.TextField(
+        unique=True, max_length=255, null=True, blank=True)
     fsname = models.CharField(max_length=20)
-    #httpprefix = models.CharField(max_length=200)
     rgb = RGBColorField(default="cccccc")
+
+    #httpprefix = models.CharField(max_length=200)
     #mime_type = models.CharField(max_length=256)
     # metadata framerate, resolution, etc?
 
@@ -204,8 +205,7 @@ class Video(models.Model):
         return None
 
     def videofile_url(self, fsname):
-        format = FileFormat.objects.get(fsname=fsname)
-        videofile = VideoFile.objects.get(video = self, format=format)
+        videofile = self.videofile_set.get(format__fsname=fsname)
         return videofile.location(relative=True)
 
     def small_thumbnail_url(self):
