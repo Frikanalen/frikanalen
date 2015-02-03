@@ -25,13 +25,16 @@ class VideoSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "header",
+            "description",
             "editor",
             "organization",
             "duration",
             #'videofiles',
             "categories",
             "has_tono_records",
+            "publish_on_web",
             "is_filler",
+            "ref_url",
             )
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
