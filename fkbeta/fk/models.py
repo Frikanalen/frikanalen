@@ -54,7 +54,7 @@ class Organization(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('org-video-list', kwargs={'orgid': self.id})
+        return reverse('vod-org-video-list', kwargs={'orgid': self.id})
 
 
 class FileFormat(models.Model):
@@ -246,7 +246,7 @@ class Video(models.Model):
         return url
 
     def get_absolute_url(self):
-        return reverse('video-detail', kwargs={'video_id': self.id})
+        return reverse('vod-video-detail', kwargs={'video_id': self.id})
 
 
 class ScheduleitemManager(models.Manager):

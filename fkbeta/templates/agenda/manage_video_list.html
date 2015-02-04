@@ -32,7 +32,7 @@
 <div class="navigation_container">
     <div class="navigation">
         <div class="inner">
-            <a href="new/">Ny video</a>
+            <a href="{% url 'manage-video-new' %}">New video</a>
         </div>
     </div>
 </div>
@@ -80,7 +80,7 @@
     </li>
     -->
     <li>
-        <a href="/agenda/video/{{ video.id }}">
+        <a href="{% url 'manage-video-edit' video.id %}">
             <b>{{ video.name }}</b>
         <a href="/agenda/video/{{ video.id }}">
     </li>
@@ -91,7 +91,7 @@
     <li>&nbsp;</li>
     {% endif %}
     <li>{{ video.last_broadcast.starttime }}&nbsp;</li>
-    <li><a href="edit/{{ video.id }}">edit</a></li>
+    <li><a href="{% url 'vod-video-detail' video.id %}">public page</a></li>
     <!--<li> {{ video.last_broadcast.duration }} </li> -->
     <!--
     {% if video.header %}

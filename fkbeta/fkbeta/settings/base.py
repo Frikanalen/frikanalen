@@ -14,7 +14,7 @@ from sys import path
 # Do not publish any files with the TONO flag set on the web
 WEB_NO_TONO = True
 
-# Where all the media files are stored
+# Where all the media files are stored (Must have trailing slash)
 FK_MEDIA_URLPREFIX = 'http://simula.gunkies.org/media/'
 FK_MEDIA_ROOT = '/tank/new_media/media'
 
@@ -33,9 +33,17 @@ REST_FRAMEWORK = {
     )
 }
 
+# Channel ID per RFC 2838 (Uniform Resource Identifier for Television Broadcasts)
+CHANNEL_ID = "frikanalen.tv"
+
+# Human readable channel name, higher priority first
+CHANNEL_DISPLAY_NAMES = [u"Frikanalen"]
+
+# URL to the website for references in feeds (No trailing slash)
+SITE_URL = 'http://beta.frikanalen.tv'
+
 # For django-registration
 ACCOUNT_ACTIVATION_DAYS = 7
-
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:

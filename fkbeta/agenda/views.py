@@ -3,16 +3,23 @@
 import datetime
 import logging
 
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.forms import ModelForm
+from django.shortcuts import render
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils.timezone import utc
 from django.views.generic import TemplateView
 
-from fk.models import Scheduleitem, Video, Organization
+from fk.models import Organization
+from fk.models import Scheduleitem
+from fk.models import Video
+from fk.models import WeeklySlot
+
 
 logger = logging.getLogger(__name__)
+
 
 class ProgramguideView(TemplateView):
   """Simple Programguide
@@ -28,10 +35,12 @@ class ProgramguideView(TemplateView):
     context = {
         'events': events,
         'title': 'Program Guide - This week'
-      }
-    return render_to_response('agenda/events.html',
+    }
+    return render(
+      request,
+      'agenda/events.html',
       context,
-      context_instance=RequestContext(request))
+    )
 
 class ProgramplannerView(TemplateView):
   def get(self, request, form = None):
@@ -127,11 +136,14 @@ class ManageVideoNew(AbstractVideoFormView):
       video = Video()
     else:
       video = Video(editor=request.user)
+    # Since this is not an import we set this to True
+    video.proper_import = True
+
     form = self.get_form(request, data=request.POST, instance=video)
     if form.is_valid():
       video = form.save()
       # Success, send to edit page
-      return redirect("manage_video_edit", video.id)
+      return redirect("manage-video-edit", video.id)
     return self.get(request, form=form)
 
 class ManageVideoEdit(AbstractVideoFormView):
@@ -159,7 +171,6 @@ class ManageVideoEdit(AbstractVideoFormView):
     return self.get(request, id=id, form=form)
 
 def fill_next_weeks_agenda():
-    from fk.models import WeeklySlot
     slots = WeeklySlot.objects.all()
     for slot in slots:
         if not slot.purpose:
@@ -184,3 +195,22 @@ def fill_next_weeks_agenda():
                   starttime=next_datetime,
                   duration=video.duration)
         item.save()
+
+
+def xmltv(request, year, month, day):
+    """ Program guide as XMLTV """
+    date = (datetime.datetime(year=int(year), month=int(month), day=int(day))
+            .replace(tzinfo=utc))
+    events = (Scheduleitem.objects
+              .by_day(date, days=1)
+              .order_by('starttime'))
+    return render(
+        request,
+        'agenda/xmltv.xml',
+        {
+            'channel_id': settings.CHANNEL_ID,
+            'channel_display_names': settings.CHANNEL_DISPLAY_NAMES,
+            'events': events,
+            'site_url': settings.SITE_URL,
+        },
+        content_type='application/xml')
