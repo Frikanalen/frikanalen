@@ -35,6 +35,7 @@ class VideoAdmin(admin.ModelAdmin):
 class OrganizationAdmin(admin.ModelAdmin):
     list_display = ('name', 'fkmember', 'orgnr')
     filter_horizontal = ("members",)
+    list_filter = ('fkmember',)
     ordering = ('name',)
 
 
