@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# Nagios test to detect a hanging video stream.
+# Fetch two images from the Video stream and make sure they differ.
+# Report error if they stay the same.
+#
+# Remember: apt-get install findimagedupes mplayer
+
+set -e
+
+delay=35 # seconds
+tmpdir=/tmp
+
+getframe() {
+    (
+	cd $tmpdir # Make sure temp file is stored in temp directory
+	url="$1"
+	filename="$2"
+	mplayer -ss 0:00 -frames 1 -vo jpeg -nosound $url > /dev/null 2>&1
+        if [ ! -f 00000001.jpg ] ; then
+            echo "CRITICAL: Unable to fetch image from URL"
+            exit 2
+        fi
+	mv 00000001.jpg $filename
+    )
+}
+
+for bin in mplayer findimagedupes ; do
+    if type $bin >/dev/null 2>&1 ; then
+	:
+    else
+	echo "WARNING: Unable to find $bin binary."
+	exit 1
+    fi
+done
+
+if [ ! "$1" ] ; then
+    cat <<EOF
+Usage: check_stream_images <url>
+Example: check_xstream_images http://voip.nuug.no:8000/frikanalen.ogv
+EOF
+    exit 1
+else
+    url="$1"
+fi
+
+timestamp=$(date +%Y%m%dT%H:%M:%S)
+first="$tmpdir/first-$timestamp-$$.jpeg"
+second="$tmpdir/second-$timestamp-$$.jpeg"
+
+getframe "$url" "$first"
+sleep $delay
+getframe "$url" "$second"
+
+if findimagedupes "$first" "$second" | grep -q "$second" ; then
+    rm $first $second
+    echo "CRITICAL: Two images taken $delay seconds apart were (almost) identical"
+    exit 2
+else
+    rm $first $second
+    echo "OK: Two images taken $delay seconds apart differ"
+    exit 0
+fi
