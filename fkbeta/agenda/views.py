@@ -97,7 +97,9 @@ class AbstractVideoFormView(TemplateView):
         if organizations:
           initial["organization"] = organizations[0].id
         initial["publish_on_web"] = True
-        initial["is_filler"] = True
+
+        # Request manual intervention before the video end in rotation
+        initial["is_filler"] = False
 
       if request.user.is_superuser:
         initial["editor"] = request.user.id
