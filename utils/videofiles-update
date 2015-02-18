@@ -1,0 +1,243 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Look for unregistered files in /tank/new_media/media/, and ask if
+# they should be registered in the database.
+
+import os
+import sys
+import json
+import glob
+import getpass
+import mechanize
+import urllib2
+import ConfigParser
+
+config = ConfigParser.ConfigParser()
+configfilename = '~/.frikanalen.ini'
+config.read(os.path.expanduser(configfilename))
+
+if not config.has_section('auth'):
+    print """
+error: no %s or missing auth section in file.
+
+The content should look something like this:
+
+[auth]
+username=myusername
+password=mypassword
+
+""" % configfilename
+
+mediadir = '/tank/new_media/media'
+
+loginurl = 'http://beta.frikanalen.tv/api/api-auth/login/?next=/api/'
+videofilesurl = 'http://beta.frikanalen.tv/api/videofiles/' 
+
+def frikanalen_login(username, password):
+    """
+Log into Frikanalen and provide a mechanize object to use this
+session.
+"""
+    try:
+        mech = mechanize.Browser()
+        res = mech.open(loginurl)
+        mech.select_form(nr=0);
+        mech['username'] = username
+        mech['password'] = password
+        response = mech.submit()
+        return mech
+    except urllib2.HTTPError, e:
+        print "HTTP error for %s: %s" % (loginurl, str(e))
+        raise
+    except urllib2.URLError, e:
+        print "URL error for %s: %s" % (loginurl, str(e))
+        raise
+
+def frikanalen_video_info(mech, id):
+    mech.open('http://beta.frikanalen.tv/api/videos/%d' % id)
+    jsonstr = mech.response().read()
+    j = json.loads(jsonstr.decode('utf8'))
+    return j
+
+def videofile_for_video(id):
+    headers = {}
+    url = '%s?video_id=%s' % (videofilesurl, id)
+    try:
+        req = urllib2.Request(url, None, headers)
+        resp = urllib2.urlopen(req).read()
+        j = json.loads(resp.decode('utf8'))
+#        print j
+        return j['results']
+    except urllib2.HTTPError, e:
+        print "HTTP error for %s: %s" % (url, str(e))
+        return None
+    except urllib2.URLError, e:
+        print "URL error for %s: %s" % (url, str(e))
+        return None
+
+def guess_file_format(filepath):
+    if -1 != filepath.find("large_thumb"):
+        return 1
+    if -1 != filepath.find("broadcast"):
+        return 2
+    if -1 != filepath.find("vc1"):
+        return 3
+    if -1 != filepath.find("med_thumb"):
+        return 4
+    if -1 != filepath.find("small_thumb"):
+        return 5
+    if -1 != filepath.find("original"):
+        return 6
+    if -1 != filepath.find("theora"):
+        return 7
+    return -1
+
+class PutRequest(mechanize.Request):
+    "Extend the mechanize Request class to allow a http PUT"
+    def get_method(self):
+        return "PUT"
+
+class DeleteRequest(mechanize.Request):
+    "Extend the mechanize Request class to allow a http DELETE"
+    def get_method(self):
+        return "DELETE"
+
+def videofile_delete(mech, videofile_id):
+    print "DELETE videofile id %d" % videofile_id
+    try:
+        url = "%s/%d" % ( videofilesurl, videofile_id)
+        mech.open(DeleteRequest(url))
+    except Exception, e:
+        print "DELETE failed: %s" % str(e)
+        raise
+
+def videofile_add(mech, video_id, filepath, fileformat):
+    print "PUT video id %d filename %s format %d" % (video_id, filepath, fileformat)
+    if False: # FIXME use this when API POST/PUT is working
+
+        params = {
+            'video' : video_id,
+            'format' : fileformat,
+            'filename' : filepath,
+            'old_filename' : filepath, 
+            }
+        params_json = json.dumps(params)
+        headers = {"Content-type":"application/json"}
+        try:
+            mech.open(PutRequest(videofilesurl, data=params_json, headers=headers))
+        except Exception, e:
+            print mech.response()
+            raise
+    else:
+        try:
+            mech.open('http://beta.frikanalen.tv/admin/fk/videofile/add/')
+#            print mech.response().read()
+            form = mech.select_form(nr=0);
+#            print form
+            mech['filename'] = filepath
+            mech['old_filename'] = filepath
+            mech['video'] = [str(video_id)]
+            mech['format'] = [str(fileformat)]
+            response = mech.submit()
+#            print response.read()
+        except urllib2.HTTPError, e:
+            print "HTTP error for %s: %s" % (loginurl, str(e))
+            raise
+        except urllib2.URLError, e:
+            print "URL error for %s: %s" % (loginurl, str(e))
+            raise
+        
+
+def videofile_find_unregistered(mech, videodir):
+    id = int(videodir.split('/')[-1])
+#    print id
+    regfilehash = {}
+    mediafilehash = {}
+    filehash = {}
+    regfiles = videofile_for_video(id)
+    errors = []
+    if 0 == len(regfiles):
+        errors.append("video %d: no files registered" % id)
+    for regfile in regfiles:
+        regfilehash[regfile['filename']] = regfile['format']
+        filehash[regfile['filename']] = regfile['id']
+    for root, dirs, files in os.walk(videodir):
+#       print root, dirs, files
+       for file in files:
+           fullpath = os.path.join(root, file).decode('utf-8')
+           mediapath = fullpath.replace("%s/" % mediadir, '')
+#           print mediapath
+           filehash[mediapath] = 1
+           mediafilehash[mediapath] = guess_file_format(mediapath)
+
+    unregistered = {}
+    missingfile = {}
+    for file in filehash:
+        if file in mediafilehash and file in regfilehash:
+            True # all OK
+        elif file in mediafilehash:
+            errors.append("video %d: found unregistered file %s format %d" % (id, file, mediafilehash[file]))
+            unregistered[file] = mediafilehash[file]
+        else:
+            errors.append("video %d: found missing registered file id %s %s format %d" % (id, filehash[file], file, regfilehash[file]))
+            missingfile[file] = regfilehash[file]
+
+    if 0 < len(errors):
+        metainfo = frikanalen_video_info(mech, id)
+        print
+        print "Issues with video id %d (%s)" % (id, metainfo['name'])
+        print "\n".join(sorted(errors))
+        print
+        if 0 < len(regfilehash.keys()):
+            print "Already registered files:"
+            for file in regfilehash.keys():
+                print "  %s format %d" % (file, regfilehash[file])
+            print
+        if 0 < len(unregistered):
+            i = ''
+            i = raw_input("Add missing files to API database? y/[n]/q: ") 
+            if i == '' or i == "no" or i == "n": 
+                print "not adding unregistered files"
+            elif i == "yes" or i == "y": 
+                for file in unregistered.keys():
+                    videofile_add(mech, id, file, unregistered[file])
+            elif i == 'q':
+                return False
+        if 0 < len(missingfile):
+            i = ''
+            i = raw_input("Remove registration for missing files to API database? y/[n]/q: ") 
+            if i == '' or i == "no" or i == "n": 
+                print "not adding unregistered files"
+            elif i == "yes" or i == "y": 
+                for file in missingfile.keys():
+                    videofile_id = filehash[file]
+                    videofile_delete(mech, videofile_id)
+            elif i == 'q':
+                return False
+
+    return True
+
+def analyze(filepath):
+  filepath = sys.argv[2]
+  system('ffprobe "{filepath}" 1>/dev/null'.format(filepath=filepath))
+
+if __name__=="__main__":
+    username = config.get('auth', 'username')
+    try:
+        password = config.get('auth', 'password')
+    except ConfigParser.NoOptionError:
+        password = getpass.getpass("Password for %s: " % username)
+
+    mech = frikanalen_login(username, password)
+
+    if len(sys.argv) > 1:
+        for id in sys.argv[1:]:
+            if not videofile_find_unregistered(mech, "%s/%s" % (mediadir, id)):
+                print "Exiting"
+                break
+    else:
+        for videodir in sorted(glob.glob('%s/[0-9]*' % mediadir), reverse=True):
+            if not videofile_find_unregistered(mech, videodir):
+                print "Exiting"
+                break
