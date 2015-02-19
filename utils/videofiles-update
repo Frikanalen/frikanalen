@@ -21,13 +21,14 @@ if not config.has_section('auth'):
     print """
 error: no %s or missing auth section in file.
 
-The content should look something like this:
+The content of %s should look something like this:
 
 [auth]
 username=myusername
 password=mypassword
 
-""" % configfilename
+""" % (configfilename, configfilename)
+    exit(1)
 
 mediadir = '/tank/new_media/media'
 
