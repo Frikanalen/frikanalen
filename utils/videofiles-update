@@ -106,7 +106,7 @@ class DeleteRequest(mechanize.Request):
 def videofile_delete(mech, videofile_id):
     print "DELETE videofile id %d" % videofile_id
     try:
-        url = "%s/%d" % ( videofilesurl, videofile_id)
+        url = "%s%d" % ( videofilesurl, videofile_id)
         mech.open(DeleteRequest(url))
     except Exception, e:
         print "DELETE failed: %s" % str(e)
