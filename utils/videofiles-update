@@ -33,15 +33,23 @@ password=mypassword
 mediadir = '/tank/new_media/media'
 
 loginurl = 'http://beta.frikanalen.tv/api/api-auth/login/?next=/api/'
+apiurl        = 'http://beta.frikanalen.tv/api/'
 videofilesurl = 'http://beta.frikanalen.tv/api/videofiles/' 
 
 def frikanalen_login(username, password):
     """
 Log into Frikanalen and provide a mechanize object to use this
-session.
+session.  The API and the django pages uses different login mechanisms,
+make sure to log into both.
 """
     try:
         mech = mechanize.Browser()
+
+        # API login
+        res = mech.open(apiurl)
+        mech.add_password(apiurl, username, password)
+
+        # Django login
         res = mech.open(loginurl)
         mech.select_form(nr=0);
         mech['username'] = username
