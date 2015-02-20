@@ -200,8 +200,8 @@ def videofile_find_unregistered(mech, videodir):
         print
         if 0 < len(regfilehash.keys()):
             print "Already registered files:"
-            for file in regfilehash.keys():
-                print "  %s format %d" % (file, regfilehash[file])
+            for file in sorted regfilehash.keys():
+                print "  format %d %s" % (file, regfilehash[file])
             print
         if 0 < len(unregistered):
             i = ''
