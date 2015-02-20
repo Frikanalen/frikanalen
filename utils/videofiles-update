@@ -217,7 +217,7 @@ def videofile_find_unregistered(mech, videodir):
             i = ''
             i = raw_input("Remove registration for missing files to API database? y/[n]/q: ") 
             if i == '' or i == "no" or i == "n": 
-                print "not adding unregistered files"
+                print "not removing registation for missing files"
             elif i == "yes" or i == "y": 
                 for file in missingfile.keys():
                     videofile_id = filehash[file]
