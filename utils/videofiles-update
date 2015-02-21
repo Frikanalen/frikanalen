@@ -262,7 +262,7 @@ def videofile_find_unregistered(mech, videodir):
             i = ''
             i = raw_input("Remove generated files with wrong length? y/[n]/q: ") 
             if i == '' or i == "no" or i == "n": 
-                print "not removing files with wrong length"
+                print "not removing generated files with wrong length"
             elif i == "yes" or i == "y": 
                 for file in wronglengthfile.keys():
                     fullpath = os.path.join(mediadir, file).decode('utf-8')
