@@ -194,14 +194,20 @@ def videofile_find_unregistered(mech, videodir):
            mediafilehash[mediapath] = format
            if isvideo:
                duration = get_file_duration(fullpath)
-               filelength = duration2sec(duration)
-               if 1 < abs(videolength-filelength):
-                   msg = "video %d: length mismatch (%f) for %d format %s (%f)"\
-                       % (id, videolength, format, mediapath, filelength)
+               if duration is None:
+                   msg = "video %d: no duration %d format %s" % (id, format, mediapath)
                    errors.append(msg)
-                   # only over to remove generated Ogg Theora files
                    if format in [7]:
                        wronglengthfile[mediapath] = format
+               else:
+                   filelength = duration2sec(duration)
+                   if 1 < abs(videolength-filelength):
+                       msg = "video %d: length mismatch (%f) for %d format %s (%f)"\
+                           % (id, videolength, format, mediapath, filelength)
+                       errors.append(msg)
+                   # only over to remove generated Ogg Theora files
+                       if format in [7]:
+                           wronglengthfile[mediapath] = format
     if 0 == len(regfiles):
         errors.append("video %d: no files registered" % id)
     for regfile in regfiles:
