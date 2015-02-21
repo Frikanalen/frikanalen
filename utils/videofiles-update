@@ -15,6 +15,7 @@ import ConfigParser
 import re
 import pipes
 from subprocess import *
+import codecs
 
 config = ConfigParser.ConfigParser()
 configfilename = '~/.frikanalen.ini'
@@ -301,6 +302,9 @@ def duration2sec(duration):
     return s
 
 if __name__=="__main__":
+    # Always output in UTF-8
+    sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
     username = config.get('auth', 'username')
     try:
         password = config.get('auth', 'password')
