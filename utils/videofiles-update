@@ -268,10 +268,6 @@ def videofile_find_unregistered(mech, videodir):
 
     return True
 
-def analyze(filepath):
-  filepath = sys.argv[2]
-  system('ffprobe "{filepath}" 1>/dev/null'.format(filepath=filepath))
-
 def get_file_duration(filepath):
     """
 Run ffprobe to get the video file duration, return duration using the
