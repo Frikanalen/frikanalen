@@ -10,7 +10,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.reverse import reverse
 
 import fkvod.search
@@ -41,7 +40,7 @@ class ObtainAuthToken(generics.RetrieveAPIView):
     Use the header with HTTP like:
         Authorization: Token 000000000000...
     """
-    model = Token
+    queryset = Token.objects.all()
     permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):
@@ -70,7 +69,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
     * surrounding
         Fetch the first event before and after the given period
     """
-    model = Scheduleitem
+    queryset = Scheduleitem.objects.all()
     serializer_class = ScheduleitemSerializer
     paginate_by = 50
     paginate_by_param = 'page_size'
@@ -86,7 +85,9 @@ class ScheduleitemList(generics.ListCreateAPIView):
             date = datetime.datetime.strptime(params['date'], '%Y%m%d')
         except (KeyError, ValueError):
             date = datetime.date.today()
-        queryset = self.model.objects.by_day(
+        # by_day should be on queryset but need to upgrade
+        # django first
+        queryset = Scheduleitem.objects.by_day(
             date=date, days=days, surrounding=bool(params.get('surrounding')))
         return queryset.order_by('starttime')
 
@@ -95,7 +96,7 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Schedule item details
     """
-    model = Scheduleitem
+    queryset = Scheduleitem.objects.all()
     serializer_class = ScheduleitemSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
 
@@ -111,14 +112,14 @@ class VideoList(generics.ListAPIView):
         How many items per page. If set to 0 it will list all items.
         Default is 50 items.
     """
-    model = Video
+    queryset = Video.objects.filter(proper_import=True)
     serializer_class = VideoSerializer
     paginate_by = 50
     paginate_by_param = 'page_size'
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(proper_import=True)
+        queryset = self.queryset
         search_query = self.request.QUERY_PARAMS.get('q')
         if search_query:
             queryset = fkvod.search.search_videos(queryset,
@@ -130,7 +131,7 @@ class VideoDetail(generics.RetrieveAPIView):
     """
     Video details
     """
-    model = Video
+    queryset = Video.objects.all()
     serializer_class = VideoSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
 
@@ -146,14 +147,14 @@ class VideoFileList(generics.ListCreateAPIView):
         How many items per page. If set to 0 it will list all items.
         Default is 50 items.
     """
-    model = VideoFile
+    queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     paginate_by = 50
     paginate_by_param = 'page_size'
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
-        queryset = self.model.objects.all()
+        queryset = self.queryset
         video_id = self.request.QUERY_PARAMS.get('video_id')
         if video_id is not None:
             queryset = queryset.filter(video_id=video_id)
@@ -164,7 +165,7 @@ class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Video file details
     """
-    model = VideoFile
+    queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
 

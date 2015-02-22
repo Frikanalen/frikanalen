@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsInOrganizationOrReadOnly(permissions.BasePermission):
+class IsInOrganizationOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
     """
     Object-level edit permission to users in the object's organization
 
@@ -16,7 +16,7 @@ class IsInOrganizationOrReadOnly(permissions.BasePermission):
             return True
 
         # Staff are allowed to change everything
-        if not request.user.is_staff:
+        if request.user.is_staff:
             return True
 
         # We expect either the object to have an organization directly

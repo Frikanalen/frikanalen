@@ -30,7 +30,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer',
         'rest_framework.renderers.XMLRenderer',
-    )
+    ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # Channel ID per RFC 2838 (Uniform Resource Identifier for Television Broadcasts)
@@ -255,6 +256,7 @@ LOCAL_APPS = (
     'fk',
     'fknews',
     'fkprofile',
+    'fkws',
     'media_processor',
 )
 
