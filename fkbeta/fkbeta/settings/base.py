@@ -102,24 +102,14 @@ DATABASES = {
 
 
 ########## GENERAL CONFIGURATION
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#time-zone
 TIME_ZONE = 'Europe/Oslo'
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en-us'
-#LANGUAGE_CODE = 'nn' # Norwegian
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
 USE_I18N = True
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
 USE_L10N = True
-
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ########## END GENERAL CONFIGURATION
 
 
@@ -245,8 +235,6 @@ THIRD_PARTY_APPS = (
     'registration',
     'rest_framework',
     'rest_framework.authtoken',
-    # Database migration helpers:
-    'south',
 )
 
 # Apps specific for this project go here.

@@ -130,7 +130,7 @@ class Category(models.Model):
 class VideoManager(models.Manager):
     def public(self):
         return (super(VideoManager, self)
-                .get_query_set()
+                .get_queryset()
                 .filter(publish_on_web=True, proper_import=True))
 
 
@@ -145,9 +145,9 @@ class Video(models.Model):
     # production_code = models.CharField(null=True,max_length=255)
     categories = models.ManyToManyField(Category)
     editor = models.ForeignKey(User)
-    has_tono_records = models.BooleanField()
-    is_filler = models.BooleanField()  # Find a better name?
-    publish_on_web = models.BooleanField()
+    has_tono_records = models.BooleanField(default=False)
+    is_filler = models.BooleanField(default=False)  # Find a better name?
+    publish_on_web = models.BooleanField(default=True)
 
     # disabled = models.BooleanField() # Not migrated
     # uploader = models.ForeignKey(User)
@@ -284,7 +284,7 @@ class ScheduleitemManager(models.Manager):
                 .order_by("starttime"))
             if after:
                 enddate = after[0].starttime
-        return self.get_query_set().filter(starttime__gte=date,
+        return self.get_queryset().filter(starttime__gte=date,
                                            starttime__lte=enddate)
 
 

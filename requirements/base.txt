@@ -1,8 +1,7 @@
-South == 1.0.2
-django-registration >= 0.8
+django-registration-redux == 1.1
 djangorestframework >= 2.2.0, < 3
 Twisted >= 12
 python-dateutil == 2.1
-Django >= 1.5, < 1.6
+Django >= 1.7, < 1.8
 pytz
 django-colorful
