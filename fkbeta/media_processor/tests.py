@@ -1,28 +1,24 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
+import logging
+import sys
 
 from django.test import TestCase
-from django.conf import settings
+
+from fk.models import VideoFile
+from media_processor.models import Task
+
 
 _TESTDB_NUM_VIDEOS = 2
 _TESTDB_NUM_MISSING_FILES = 2
-import logging, sys
-from fk.models import Video, VideoFile
-from models import Task
-from queue import JobQueue
+
 
 class SimpleTest(TestCase):
     log = logging.getLogger()
     log.addHandler(logging.StreamHandler(sys.stdout))
     log.level = logging.CRITICAL
     fixtures = ['test_data.json']
-    
+
     def test_will_generate_jobs(self):
-        from management.commands.find_missing import Command as find_missing 
+        from management.commands.find_missing import Command as find_missing
 
         self.assertEqual(Task.objects.count(), 0)
         find_missing().handle()
