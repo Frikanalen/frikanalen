@@ -236,7 +236,12 @@ def videofile_find_unregistered(mech, videodir):
             print "Already registered files:"
             for file in sorted(regfilehash.keys()):
                 print "  format %d %s" % (regfilehash[file], file)
+                if file in mediafilehash:
+                    print "  format %d %s" % (regfilehash[file], file)
+                else:
+                    print " *format %d %s" % (regfilehash[file], file)
             print
+            print "Missing files are marked with (*)."
         if 0 < len(missingfile):
             i = ''
             i = raw_input("Remove registration for missing files to API database? y/[n]/q: ") 
@@ -250,7 +255,7 @@ def videofile_find_unregistered(mech, videodir):
                 return False
         if 0 < len(unregistered):
             i = ''
-            i = raw_input("Add missing files to API database? y/[n]/q: ") 
+            i = raw_input("Add files missing to API database? y/[n]/q: ") 
             if i == '' or i == "no" or i == "n": 
                 print "not adding unregistered files"
             elif i == "yes" or i == "y": 
