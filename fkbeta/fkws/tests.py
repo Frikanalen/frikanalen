@@ -14,20 +14,38 @@ class PermissionsTest(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION='Token ' + user.auth_token.key)
 
-    def test_anonymous_can_read_root(self):
-        r = self.client.get(reverse('api-root'))
-        keys = r.data.keys()
-        self.assertEqual(status.HTTP_200_OK, r.status_code)
-        for k in ['obtain-token', 'scheduleitems', 'videofiles', 'videos']:
-            self.assertIn(k, keys)
+    def test_anonymous_reading_all_pages_from_root_expecting_status(self):
+        pages = [
+            ('scheduleitems', status.HTTP_200_OK),
+            ('asrun', status.HTTP_200_OK),
+            ('videofiles', status.HTTP_200_OK),
+            ('videos', status.HTTP_200_OK),
+            ('obtain-token', status.HTTP_401_UNAUTHORIZED),
+        ]
+        self._helper_test_reading_all_pages_from_root(pages)
 
-    def test_nuug_user_can_read_root(self):
+    def test_nuug_user_reading_all_pages_from_root_expecting_status(self):
+        pages = [
+            ('scheduleitems', status.HTTP_200_OK),
+            ('asrun', status.HTTP_200_OK),
+            ('videofiles', status.HTTP_200_OK),
+            ('videos', status.HTTP_200_OK),
+            ('obtain-token', status.HTTP_200_OK),
+        ]
         self._user_auth('nuug_user')
-        r = self.client.get(reverse('api-root'))
-        keys = r.data.keys()
-        self.assertEqual(status.HTTP_200_OK, r.status_code)
-        for k in ['obtain-token', 'scheduleitems', 'videofiles', 'videos']:
-            self.assertIn(k, keys)
+        self._helper_test_reading_all_pages_from_root(pages)
+
+    def _helper_test_reading_all_pages_from_root(self, pages):
+        root_response = self.client.get(reverse('api-root'))
+        self.assertEqual(status.HTTP_200_OK, root_response.status_code)
+        # Every page exists
+        self.assertEqual([p[0] for p in pages], root_response.data.keys())
+        for (name, code), url in zip(pages, root_response.data.values()):
+            page_response = self.client.get(url)
+            self.assertEqual(
+                code, page_response.status_code,
+                "{} status is {} expected {}"
+                .format(name, page_response.status_code, code))
 
     def test_anonymous_does_not_have_token(self):
         r = self.client.get(reverse('api-token-auth'))
@@ -83,9 +101,19 @@ class PermissionsTest(APITestCase):
             self.assertEqual(status.HTTP_200_OK, r.status_code)
             self.assertEqual(r.data['name'], name)
 
+    def test_anonymous_can_list_asrun(self):
+        """
+        Will list all asrun log items
+        """
+        r = self.client.get(reverse('asrun-list'))
+        self.assertEqual(status.HTTP_200_OK, r.status_code)
+        self.assertEqual(
+            [(1, 1, 2014), (2, 1, 2015)],
+            [(i['id'], i['video'], i['played_at'].year) for i in r.data])
+
     def test_anonymous_cannot_add(self):
         list_pages = ('api-video-list', 'api-videofile-list',
-                      'api-scheduleitem-list')
+                      'api-scheduleitem-list', 'asrun-list')
         results = []
         for list_page in list_pages:
             r = self.client.post(reverse(list_page), data={})
@@ -98,7 +126,7 @@ class PermissionsTest(APITestCase):
 
     def test_anonymous_cannot_edit(self):
         detail_pages = ('api-video-detail', 'api-videofile-detail',
-                        'api-scheduleitem-detail')
+                        'api-scheduleitem-detail', 'asrun-detail')
         results = []
         for detail_page in detail_pages:
             r = self.client.post(reverse(detail_page, args=(1,),))
@@ -111,25 +139,88 @@ class PermissionsTest(APITestCase):
 
     def test_nuug_user_can_add_things(self):
         self._user_auth('nuug_user')
-        thing_tests = [
-            (reverse('api-videofile-list'),
-             {'video': 1, 'format': 1, 'filename': 'test.mov',
-              'old_filename': 'a'},
-             {'id': 5, 'video': 1, 'filename': 'test.mov'}),
-            (reverse('api-scheduleitem-list') + '?date=20150101',
-             {'video_id': 'http://testserver/api/videos/1',
-              'schedulereason': 2, 'starttime': '2015-01-01T10:00:00+00:00',
-              'duration': '10000'},
-             {'id': 3, 'video_id': 'http://testserver/api/videos/1'}),
+        # [(url, object_to_post, object_to_test_against, status)]
+        tests = [
+            (
+                reverse('api-videofile-list'),
+                {'video': 1, 'format': 1, 'filename': 'test.mov',
+                 'old_filename': 'a'},
+                {'id': 5, 'video': 1, 'filename': 'test.mov'},
+                status.HTTP_201_CREATED,
+            ),
+            (
+                reverse('api-scheduleitem-list') + '?date=20150101',
+                {'video_id': 'http://testserver/api/videos/1',
+                 'schedulereason': 2, 'starttime': '2015-01-01T10:00:00+00:00',
+                 'duration': '10000'},
+                {'id': 3, 'video_id': 'http://testserver/api/videos/1'},
+                status.HTTP_201_CREATED,
+            ),
+            (
+                reverse('asrun-list'),
+                {'video': 2, 'played_at': '2015-01-01 11:00:00'},
+                {'detail': 'You do not have permission to '
+                           'perform this action.'},
+                status.HTTP_403_FORBIDDEN,
+            ),
         ]
-        for url, obj, new_obj in thing_tests:
+        self._helper_test_add_things(tests)
+
+    def test_staff_user_can_add_things(self):
+        self._user_auth('staff_user')
+        # [(url, object_to_post, object_to_test_against, status)]
+        tests = [
+            (
+                reverse('api-videofile-list'),
+                {'video': 1, 'format': 1, 'filename': 'test.mov',
+                 'old_filename': 'a'},
+                {'id': 5, 'video': 1, 'filename': 'test.mov'},
+                status.HTTP_201_CREATED,
+            ),
+            (
+                reverse('api-scheduleitem-list') + '?date=20150101',
+                {'video_id': 'http://testserver/api/videos/1',
+                 'schedulereason': 2, 'starttime': '2015-01-01T10:00:00+00:00',
+                 'duration': '10000'},
+                {'id': 3, 'video_id': 'http://testserver/api/videos/1'},
+                status.HTTP_201_CREATED,
+            ),
+            (
+                reverse('asrun-list'),
+                {'video': 2, 'played_at': '2015-01-01T11:00:00+00:00'},
+                {'id': 3, 'video': 2, 'playout': 'main'},
+                status.HTTP_201_CREATED,
+            ),
+        ]
+        self._helper_test_add_things(tests)
+
+    def _helper_test_add_things(self, tests):
+        for url, obj, response_obj, exp_status in tests:
             r = self.client.post(url, obj)
-            self.assertEqual(status.HTTP_201_CREATED, r.status_code)
-            self.assertEqual(new_obj,
-                             {k: r.data[k] for k in new_obj.keys()})
+            self.assertEqual(exp_status, r.status_code,
+                             "Expected status {} but got {} (for {})"
+                             .format(exp_status, r.status_code, url))
+            self.assertEqual(response_obj,
+                             {k: r.data[k] for k in response_obj.keys()})
 
     def test_nuug_user_can_edit_own_things(self):
         self._user_auth('nuug_user')
+        thing_tests = [
+            ('api-videofile-detail',
+             VideoFile.objects.get(video__name='tech video'),
+             'old_filename'),
+            ('api-scheduleitem-detail',
+             Scheduleitem.objects.get(video__name='tech video'),
+             'default_name'),
+        ]
+        for url_name, obj, attr in thing_tests:
+            r = self.client.patch(
+                reverse(url_name, args=[obj.id]), {attr: 'test fn'})
+            self.assertEqual('test fn', r.data[attr])
+            self.assertEqual(status.HTTP_200_OK, r.status_code)
+
+    def test_staff_user_can_edit_nonowned_things(self):
+        self._user_auth('staff_user')
         thing_tests = [
             ('api-videofile-detail',
              VideoFile.objects.get(video__name='tech video'),

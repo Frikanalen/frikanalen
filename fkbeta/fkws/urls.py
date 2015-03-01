@@ -1,10 +1,15 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.conf.urls import url
+from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from fkws import views
 
+
+router = SimpleRouter()
+router.register(r'api/asrun', views.AsRunViewSet)
 
 urlpatterns = [
     url(r'^ws/(.*)', views.wschange_redirect_view),
@@ -24,6 +29,8 @@ urlpatterns = [
     url(r'^api/videofiles/(?P<pk>\d+)$',
         views.VideoFileDetail.as_view(), name='api-videofile-detail'),
 ]
+
+urlpatterns += router.urls
 
 
 # Format suffixes

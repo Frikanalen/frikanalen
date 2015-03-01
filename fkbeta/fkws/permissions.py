@@ -29,3 +29,15 @@ class IsInOrganizationOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
         # User must be part of organization to do changes
         return (
             request.user.organization_set.filter(id=organization_id).exists())
+
+
+class IsStaffOrReadOnly(permissions.BasePermission):
+    """
+    The request user is staff, or is a read-only request.
+    """
+
+    def has_permission(self, request, view):
+        return (
+            request.method in permissions.SAFE_METHODS or
+            request.user and request.user.is_staff
+        )

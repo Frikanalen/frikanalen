@@ -124,3 +124,14 @@
     schedulereason: 4
     starttime: 2015-01-01 11:00:00 +00:00
     duration: 01:00:00
+
+- model: fk.asrun
+  pk: 1
+  fields:
+    video: 1
+    played_at: 2014-01-01 10:00:00 +00:00
+- model: fk.asrun
+  pk: 2
+  fields:
+    video: 1
+    played_at: 2015-01-01 10:00:00 +00:00

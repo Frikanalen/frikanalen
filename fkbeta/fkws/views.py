@@ -6,6 +6,7 @@ import datetime
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
@@ -13,8 +14,13 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 import fkvod.search
-from fk.models import Scheduleitem, Video, VideoFile
+from fk.models import AsRun
+from fk.models import Scheduleitem
+from fk.models import Video
+from fk.models import VideoFile
 from fkws.permissions import IsInOrganizationOrReadOnly
+from fkws.permissions import IsStaffOrReadOnly
+from fkws.serializers import AsRunSerializer
 from fkws.serializers import ScheduleitemSerializer
 from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
@@ -27,6 +33,7 @@ def api_root(request, format=None):
     """
     return Response({
         'obtain-token': reverse('api-token-auth', request=request),
+        'asrun': reverse('asrun-list', request=request),
         'scheduleitems': reverse('api-scheduleitem-list', request=request),
         'videos': reverse('api-video-list', request=request),
         'videofiles': reverse('api-videofile-list', request=request),
@@ -45,6 +52,15 @@ class ObtainAuthToken(generics.RetrieveAPIView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Token, user=self.request.user)
+
+
+class AsRunViewSet(viewsets.ModelViewSet):
+    """
+    As run, history log over what was sent through playout
+    """
+    queryset = AsRun.objects.all()
+    serializer_class = AsRunSerializer
+    permission_classes = (IsStaffOrReadOnly,)
 
 
 class ScheduleitemList(generics.ListCreateAPIView):

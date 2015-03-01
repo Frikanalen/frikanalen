@@ -11,9 +11,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_save
+from django.utils import timezone
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 from model_utils import Choices
+from model_utils.models import TimeStampedModel
 
 from fk import fields
 
@@ -466,6 +468,21 @@ class WeeklySlot(models.Model):
     def __unicode__(self):
         return (u"{day} {s.start_time} ({s.purpose})"
                 u"".format(day=self.get_day_display(), s=self))
+
+
+class AsRun(TimeStampedModel):
+    video = models.ForeignKey(Video, blank=True, null=True)
+    program_name = models.CharField(max_length=160, blank=True, default='')
+    playout = models.CharField(max_length=255, blank=True, default='main')
+    played_at = models.DateTimeField(blank=True, default=timezone.now)
+
+    in_ms = models.IntegerField(blank=True, default=0)
+    out_ms = models.IntegerField(blank=True, null=True)
+
+    def __unicode__(self):
+        if self.video:
+            return '{s.playout} video: {s.video}'.format(s=self)
+        return '{s.playout}: {s.program_name}'.format(s=self)
 
 
 '''
