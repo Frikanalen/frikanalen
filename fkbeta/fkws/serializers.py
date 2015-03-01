@@ -1,7 +1,13 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
-from fk.models import Scheduleitem, Video, VideoFile
-from rest_framework import serializers, fields
+from rest_framework import fields
+from rest_framework import serializers
+
+from fk.models import AsRun
+from fk.models import Scheduleitem
+from fk.models import Video
+from fk.models import VideoFile
+
 
 class VideoFileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,6 +19,7 @@ class VideoFileSerializer(serializers.ModelSerializer):
             "filename",
             "old_filename"
             )
+
 
 class VideoSerializer(serializers.ModelSerializer):
     editor = fields.Field(source="editor.username")
@@ -37,6 +44,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "ref_url",
             )
 
+
 class ScheduleitemSerializer(serializers.ModelSerializer):
     video = VideoSerializer(required=False)
     video_id = serializers.HyperlinkedRelatedField(
@@ -55,3 +63,8 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
             "starttime",
             "duration"
             )
+
+
+class AsRunSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AsRun
