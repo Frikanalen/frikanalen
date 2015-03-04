@@ -62,7 +62,7 @@ make sure to log into both.
         j = json.loads(jsonstr.decode('utf8'))
         token = j[u'key']
         mech.extraheaders = [('Authorization', 'Token %s' % token)]
-        mech.addheaders = extraheaders
+        mech.addheaders = mech.extraheaders
 
         return mech
     except urllib2.HTTPError, e:
