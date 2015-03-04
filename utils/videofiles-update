@@ -39,6 +39,7 @@ mediadir = '/tank/new_media/media'
 loginurl = 'http://beta.frikanalen.tv/api/api-auth/login/?next=/api/'
 apiurl        = 'http://beta.frikanalen.tv/api/'
 videofilesurl = 'http://beta.frikanalen.tv/api/videofiles/' 
+tokenurl      = 'http://beta.frikanalen.tv/api/obtain-token'
 
 def frikanalen_login(username, password):
     """
@@ -49,16 +50,20 @@ make sure to log into both.
     try:
         mech = mechanize.Browser()
 
-        # API login
-        res = mech.open(apiurl)
-        mech.add_password(apiurl, username, password)
-
         # Django login
         res = mech.open(loginurl)
         mech.select_form(nr=0);
         mech['username'] = username
         mech['password'] = password
         response = mech.submit()
+
+        mech.open(tokenurl)
+        jsonstr = mech.response().read()
+        j = json.loads(jsonstr.decode('utf8'))
+        token = j[u'key']
+        mech.extraheaders = [('Authorization', 'Token %s' % token)]
+        mech.addheaders = extraheaders
+
         return mech
     except urllib2.HTTPError, e:
         print "HTTP error for %s: %s" % (loginurl, str(e))
@@ -124,6 +129,7 @@ def videofile_delete(mech, videofile_id):
     print "DELETE videofile id %d" % videofile_id
     try:
         url = "%s%d" % ( videofilesurl, videofile_id)
+        mech.addheaders = mech.extraheaders
         mech.open(DeleteRequest(url))
     except Exception, e:
         print "DELETE failed: %s" % str(e)
