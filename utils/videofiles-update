@@ -17,23 +17,6 @@ import pipes
 from subprocess import *
 import codecs
 
-config = ConfigParser.ConfigParser()
-configfilename = '~/.frikanalen.ini'
-config.read(os.path.expanduser(configfilename))
-
-if not config.has_section('auth'):
-    print """
-error: no %s or missing auth section in file.
-
-The content of %s should look something like this:
-
-[auth]
-username=myusername
-password=mypassword
-
-""" % (configfilename, configfilename)
-    exit(1)
-
 mediadir = '/tank/new_media/media'
 
 loginurl = 'http://beta.frikanalen.tv/api/api-auth/login/?next=/api/'
@@ -311,10 +294,30 @@ def duration2sec(duration):
         s += float(part)
     return s
 
+def load_config():
+    config = ConfigParser.ConfigParser()
+    configfilename = '~/.frikanalen.ini'
+    config.read(os.path.expanduser(configfilename))
+
+    if not config.has_section('auth'):
+        print """
+error: no %s or missing auth section in file.
+
+The content of %s should look something like this:
+
+[auth]
+username=myusername
+password=mypassword
+
+""" % (configfilename, configfilename)
+        exit(1)
+    return config
+
 if __name__=="__main__":
     # Always output in UTF-8
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
+    config = load_config()
     username = config.get('auth', 'username')
     try:
         password = config.get('auth', 'password')
