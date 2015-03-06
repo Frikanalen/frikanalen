@@ -13,6 +13,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
+from model_utils import Choices
 
 from fk import fields
 
@@ -135,7 +136,6 @@ class VideoManager(models.Manager):
 
 
 class Video(models.Model):
-    objects = VideoManager()
     id = models.AutoField(primary_key=True)
     # Retire, use description instead
     header = models.TextField(blank=True, null=True, max_length=2048)
@@ -174,7 +174,8 @@ class Video(models.Model):
         blank=True, max_length=1024, help_text='URL for reference')
     duration = fields.MillisecondField()
 
-    # TODO: Tono-records
+    objects = VideoManager()
+
     class Meta:
         db_table = u'Video'
         get_latest_by = 'uploaded_time'
@@ -360,41 +361,61 @@ post_save.connect(create_user_profile, sender=User)
 
 
 class SchedulePurpose(models.Model):
-    """A block of video files having a similar purpose.
+    """
+    A block of video files having a similar purpose.
+
     Either an organization and its videos (takes preference) or manually
     connected videos.
     """
+    STRATEGY = Choices('latest', 'random', 'least_scheduled')
+    TYPE = Choices('videos', 'organization')
+
     name = models.CharField(max_length=100)
+    type = models.CharField(max_length=32, choices=TYPE)
+    strategy = models.CharField(max_length=32, choices=STRATEGY)
+
+    # You probably need one of these depending on type and strategy
     organization = models.ForeignKey(Organization, blank=True, null=True)
     direct_videos = models.ManyToManyField(Video, blank=True)
 
     def videos_str(self):
-        return u", ".join([unicode(x) for x in self.videos()])
+        return u", ".join([unicode(x) for x in self.videos_queryset()])
     videos_str.short_description = "videos"
     videos_str.admin_order_field = "videos"
 
-    def videos(self, max_duration=None):
-        if self.organization:
+    def videos_queryset(self, max_duration=None):
+        """
+        Get the queryset for the available videos
+        """
+        if self.type == self.TYPE.organization:
             qs = self.organization.video_set.all()
-        else:
+        elif self.type == self.TYPE.videos:
             qs = self.direct_videos.all()
+        else:
+            raise Exception("Unhandled type %s" % self.type)
         if max_duration:
             qs = qs.filter(duration__lte=max_duration)
         return qs
 
     def single_video(self, max_duration=None):
-        qs = self.videos(max_duration)
-        if self.organization:
+        """
+        Get a single video based on the settings of this purpose
+        """
+        qs = self.videos_queryset(max_duration)
+        if self.strategy == self.STRATEGY.latest:
             try:
                 return qs.latest()
             except Video.DoesNotExist:
                 return None
-        try:
-            # If direct videos, we just get a random one
-            # (might be slow, but hopefully few records)
-            return qs.order_by('?')[0]
-        except IndexError:
-            return None
+        elif self.strategy == self.STRATEGY.random:
+            # This might be slow, but hopefully few records
+            return qs.order_by('?').first()
+        elif self.strategy == self.STRATEGY.least_scheduled:
+            # Get the video which has been scheduled the least
+            return (qs.annotate(num_sched=models.Count('scheduleitem'))
+                    .order_by('num_sched').first())
+        else:
+            raise Exception("Unhandled strategy %s" % self.strategy)
 
     def __unicode__(self):
         return self.name
