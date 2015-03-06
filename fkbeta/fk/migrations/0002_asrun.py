@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
                 ('program_name', models.CharField(default=b'', max_length=160, blank=True)),
                 ('playout', models.CharField(default=b'main', max_length=255, blank=True)),
+                ('played_at', models.DateTimeField(default=django.utils.timezone.now, blank=True)),
                 ('in_ms', models.IntegerField(default=0, blank=True)),
                 ('out_ms', models.IntegerField(null=True, blank=True)),
                 ('video', models.ForeignKey(blank=True, to='fk.Video', null=True)),
