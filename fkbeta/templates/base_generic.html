@@ -1,242 +1,192 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <!-- No idea what this does, but makes IE9 behave when run on localhost -->
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-        <title>Frikanalen Beta - {{ title|default:""}}</title>
-        <link rel="stylesheet" href="/static/vod.css">
-        <!--
-        <link rel="stylesheet" href="/static/normalize.css">
-        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        -->
-    </head>
-    <style type="text/css">
-        a img {
-            border: none;
-        }
-        a:link {
-            color: rgb(70, 43, 3);
-        }
-        a:visited {
-            color: rgb(42, 26, 2);
-            color: rgba(70, 73, 3, 0.6);
-        }
-        a:hover {
-            color: rgb(42, 26, 2);
-            color: rgba(70, 43, 3, 0.6);
-        }
-        a:active {
-            color: rgb(70, 43, 3);
-        }
+<meta charset="utf-8">
+<!-- No idea what this does, but makes IE9 behave when run on localhost -->
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<title>Frikanalen Beta - {{ title|default:""}}</title>
+<link rel="stylesheet" href="/static/vod.css">
+<!--
+<link rel="stylesheet" href="/static/normalize.css">
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+-->
+<style>
+a img {
+  border: none;
+}
+a:link {
+  color: rgb(70, 43, 3);
+}
+a:visited {
+  color: rgb(42, 26, 2);
+  color: rgba(70, 73, 3, 0.6);
+}
+a:hover {
+  color: rgb(42, 26, 2);
+  color: rgba(70, 43, 3, 0.6);
+}
+a:active {
+  color: rgb(70, 43, 3);
+}
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
+body {
+  font-family: Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
+}
+h1 {
+  color: #555;
+  font-size: 24px;
+  margin: 0 0 6px;
+}
 
-        #container {
-            position: relative;
-            min-height: 100%;
-            margin-left: 64px;
-            margin-right: 64px;
-            margin-top: 0px;
-            margin-bottom: 0px;
-            padding: 0;
-        }
+#container {
+  position: relative;
+  min-height: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0;
+}
 
-        #header-container {
-        }
+#header-container {
+}
 
-        #header-logo {
-            padding: 30px 0;
-        }
+#header-logo {
+  padding: 30px 0;
+  display: inline-block;
+}
 
-        #header-title {
-            font-size: 16pt;
-            color: #5C4A31 ;
-        }
+#header-title {
+  font-size: 16pt;
+  color: #5C4A31 ;
+}
 
-        #header-subtitle {
-            font-size: 16pt;
-            padding: 16px 8px 16px 16px;
-        }
+#content {
+}
 
-        #header-subtitle a {
-            text-decoration: none;
-        }
+#spacer {
+  height: 1.7em;
+}
 
-        #content {
-        }
+#footer {
+  position: absolute;
+  bottom:0;
+  height: 2em;
+  right: 0%;
+  width: 30em;
 
-        #spacer {
-            height: 1.7em;
-        }
+  font-size: 75%;
+  font-style: italic;
+  text-align: center;
+}
 
-        #footer {
-            position: absolute;
-            bottom:0;
-            height: 2em;
-            right: 0%;
-            width: 30em;
+#footer p {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  padding-top: 0.5em;
+  height: 1.5em;
+  background-color: rgb(204, 204, 204);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 16px 16px 0 0;
+}
 
-            font-size: 75%;
-            font-style: italic;
-            text-align: center;
-        }
+.top-nav {
+  display: inline-block;
+  position: relative;
+  top: -5px;
+}
+.top-nav ul {
+  margin: 0;
+  margin-bottom: 20px;
+}
+.top-nav li {
+  display: inline-block;
+  margin-left: 30px;
+}
+.top-nav a {
+  text-decoration: none;
+}
+.top-nav form { display: inline-block }
+.top-nav input[type=text], .top-nav input[type=password] {
+  width: 80px;
+  padding: 1px 4px;
+}
 
-        #footer p {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            padding-top: 0.5em;
-            height: 1.5em;
-            background-color: rgb(204, 204, 204);
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 16px 16px 0 0;
-        }
 
-        #top_bar ul {
-            margin: 0;
-            margin-bottom: 20px;
-        }
+.login_box ul {
+  margin: 0;
+}
 
-        #top_bar li {
-            display: inline-block;
-            margin-right: 20px;
-        }
+.login_box li {
+  display: inline-block;
+  margin-right: 20px;
+}
 
-        #top_bar a {
-            text-decoration: none;
-        }
+#right_bar {
+  float: right;
+  width: 300px;
+}
 
-        #right_bar {
-            float: right;
-            width: 300px;
-        }
+.search {
+  position: absolute;
+  top: 120px;
+  right: 0;
+}
+</style>
+{% block style %}
+{% endblock style %}
 
-        .login_box {
-            position: absolute;
-            right: 0;
-            top: 77px;
-            font-size: 80%;
-        }
+<div id="container">
+  {% block heading %}
+    <div id="header-container">
+      <div id="header-logo">
+        <a href="/"><img src="/static/frikanalen.png"> </a>
+      </div>
 
-        .login_box ul {
-            margin: 0;
-        }
+      <nav class=top-nav>
+        <ul>
+          <li><a href="/guide/">Program Guide</a>
+          <li><a href="/video/">Videos</a>
+          <li>
+            <div class="login_box">
+              {% if not user.is_authenticated %}
+                <form action="/login/" method="POST">
+                  {% csrf_token %}
+                  <input id="id_username" type="text" name="username"
+                      placeholder="username" maxlength="30">
+                  <input id="id_password" type="password" name="password"
+                      placeholder="password" maxlength="4096">
+                  <input type="submit" value="Log in">
+                  <input type="hidden" name="next" value="/">
+                </form>
+                ...or <a href="/register/">register</a>
+              {% else %}
+                {{ user.first_name }} {{ user.last_name }} Logged in as
+                <a href=/user/ title='User page'>{{ user.username }}</a>
+                (<a href="/logout/?next=/">log out</a>)
+                {% comment %}
+                  <a href="/agenda/user/{{ user.username }}">Your page</a>
+                {% endcomment %}
+              {% endif %}
+            </div>{# .login-box #}
+        </ul>
+      </nav>
 
-        .login_box li {
-            display: inline-block;
-            margin-right: 20px;
-        }
-
-        .login_box a {
-            text-decoration: none;
-        }
-
-        .navigation_container {
-            width: 100%;
-            margin: 0 0 8px 16px;
-            overflow: hidden;
-        }
-
-        .navigation {
-            height: 36px;
-            display: inline-block;
-        }
-
-        .navigation .inner {
-            line-height: 32px;
-        }
-        .navigation form {
-            /* This is not elegant */
-            padding: 3px 16px 0px 16px;
-        }
-
-        .search {
-            position: absolute;
-            top: 118px;
-            right: 0;
-        }
-
-    </style>
-    {% block style %}
-    {% endblock style %}
-    <body>
-        <div id="container">
-            {% block heading %}
-            <div id="header-container">
-                <div id="header-logo">
-                    <a href="/">
-                        <img src="/static/frikanalen.png" />
-                    </a>
-                </div>
-                <div class="login_box">
-                    {% if not user.is_authenticated %}
-                    <form action="/login/" method="POST">
-                        {% csrf_token %}
-                        <table>
-                        <tr>
-                            <td><label for="id_username">Username</label></td>
-                            <td><label for="id_password">Password</label></td>
-                            <td>&nbsp;</td>
-                        </tr>
-                        <tr>
-                            <td><input id="id_username" type="text" name="username" maxlength="30" /></td>
-                            <td><input id="id_password" type="password" name="password" maxlength="4096" /></td>
-                            <td>
-                            <input type="submit" value="Go" />
-                            <input type="hidden" name="next" value="/" />
-                        </td>
-                        </tr>
-                    </table>
-                    </form>
-                    ...or <a href="/register/">Register</a>
-                    {% endif %}
-
-                    {% if user.is_authenticated %}
-                      {{ user.first_name }}
-                      {{ user.last_name }}
-                      ({{ user.username }}) logged in.<br/>
-                      <a href="/logout/?next=/">Logout</a><br/>
-                      <a href="/user/">User page</a><br/>
-                      {% comment %}
-                      <a href="/agenda/user/{{ user.username }}">Your page</a>
-                      {% endcomment %}
-                    {% endif %}
-                </div>
-                <div id="top_bar">
-
-                <nav class=top-nav>
-                <ul>
-                    <li><a href="/guide/">Program Guide</a></li>
-                    <li><a href="/video/">Videos</a></li>
-                </ul>
-                </nav>
-
-                <div id="header-subtitle" style="display: none;">
-                    {% block heading-title %}<a href="">{{ title|default:"No title" }}</a>{% endblock heading-title %}
-                </div>
-            </div>
-            {% endblock heading %}
-
-            <div id="content">
-                {% block content %}
-                <p>content not defined in template</p>
-                {% endblock content %}
-            </div>
-            <div style="clear:both;">&nbsp;</div>
-            <div id="spacer">
-            </div>
-            <div id="footer">
-                <p><a href="/api/">REST API</a>
-                |
-                <a href="http://github.com/Frikanalen">Source code</a> &copy; 2009-2015 Foreningen Frikanalen</p>
-            </div>
+      <div id="top_bar">
+        <div id="header-subtitle">
+          {% block heading-title %}<h1>{{ title }}</h1>{% endblock heading-title %}
         </div>
-    </body>
-</html>
+      </div>
+    </div>{# .header-container #}
+  {% endblock heading %}
+
+  <div id="content">
+    {% block content %}
+      <p>Content not defined in template</p>
+    {% endblock content %}
+  </div>
+  <div style="clear:both;">&nbsp;</div>
+  <div id="spacer"> </div>
+  <div id="footer">
+    <p><a href="/api/">REST API</a> |
+      <a href="http://github.com/Frikanalen">Source code</a>
+      &copy; 2009-2015 Foreningen Frikanalen
+  </div>
+</div>{# #container #}

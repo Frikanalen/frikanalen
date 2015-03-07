@@ -1,17 +1,26 @@
 {% extends "base_generic.html" %}
 
-{% block heading-title %}Create an account{% endblock %}
+{% block style %}
+<style>
+  th { text-align: right; vertical-align: top; font-weight: normal; }
+  .helptext { font-size: 0.8em; color: #666; }
+  .becomemember { padding: 10px; display: inline-block; background-color: rgb(230, 240, 230); border-radius: 6px; }
+</style>
+{% endblock %}
 
 {% block content %}
-<h1>Create an account</h1>
+  <h1>Create an account</h1>
 
-<form action="" method="post">
-{% csrf_token %}
-    {{ form.as_p }}
+  <p class=becomemember>
+    To become a member of Frikanalen, visit our
+    <a href="http://frikanalen.no/om/innmelding">registration form</a>.<br>
+    Here you can create an account to send videos on Frikanalen.
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
     <input type="submit" value="Create the account">
-</form>
-
-<p>To become a member of Frikanalen, visit our
-<a href="http://frikanalen.no/om/innmelding">registration form</a>.</p>
-
+  </form>
 {% endblock %}

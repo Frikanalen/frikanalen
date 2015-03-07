@@ -3,118 +3,105 @@
 {% block content %}
 <div>
 <style>
-	.dayblock {
-		float: left;
-	}
+  .dayblock {
+    float: left;
+  }
 
-	.event {
-		clear: both;
-		width: 100%;
-		padding-top: 5px;
-		padding-bottom: 5px;
-		margin: 0;
-		overflow: auto;
-	}
-	.event .content {
-		clear: both;
-	}
-	.week {
-		width: 10em;
-		font-size: 150%;
-	}
-	.date {
-		width: 20em;
-		font-size: 150%;
-	}
-	.time {
-		float: left;
-		width: 70px;
-	}
-	.hour {
-		float: left;
-		width: 2em;
-		margin-left: 0.25em;
-		color:gray;
-		font-weight: bold;
-	}
-	.event img {
-		float: left;
-		width: auto;
-		height: 2em;
-	}
-	.event .blurb {
-		float: left;
-	}
-	.blurb a {
-		text-decoration: none
-	}
-	ul {
-		margin: 0;
-		padding: 0;
-		padding-left: 16px;
-		padding-right: 16px;
-		list-style:none;
-	}
-	li {
-		margin: 0;
-		padding: 0;
-	}
+  .event {
+    clear: both;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 0;
+    overflow: auto;
+  }
+  .event .content {
+    clear: both;
+  }
+  .week {
+    width: 10em;
+    font-size: 140%;
+  }
+  .date {
+    width: 20em;
+    font-size: 120%;
+    margin: 1em 0 0.5em;
+  }
+  .time {
+    float: left;
+    width: 70px;
+  }
+  .hour {
+    float: left;
+    width: 2em;
+    margin-left: 0.25em;
+    color:gray;
+    font-weight: bold;
+  }
+  .event img {
+    float: left;
+    width: auto;
+    height: 2em;
+  }
+  .event .blurb {
+    float: left;
+  }
+  .blurb a {
+    text-decoration: none
+  }
+  .events, .events ul {
+    margin: 0;
+    padding: 0 16px;
+    list-style: none;
+  }
 </style>
 
 {% load tz %}
 {% timezone TIME_ZONE %}
-<ul>
+<ul class=events>
 {% for event in events %}
-	{% ifchanged event.starttime.week %}
-	<div class="event">
-		<div class="week">
-			<b>Week {{ event.starttime|date:"W" }}</b>
-		</div>
-	</div>
-	{% endifchanged %}
-	{% ifchanged event.starttime.date %}
-	<div class="event">
-		<div class="date">
-			<b>{{ event.starttime|date:"l N jS o" }}</b>
-		</div>
-	</div>
-	{% endifchanged %}
-	<li class="event" style="background-color:{% cycle '#f1f1f1' '#e7e7e7' %}">
-		<div class="content">
-			{% ifchanged event.starttime.hour event.starttime.date %}
-				<div class="hour">
-				{{ event.starttime|date:"H" }}
-				</div>
-			{% else %}
-				<div class="hour">
-					&nbsp;
-				</div>
-			{% endifchanged %}
-			<div class="time">
-				{{ event.starttime|date:"H:i"}}
-			</div>
-			<div class="blurb">
-				<b>
-					{% if event.video and event.video.is_public %}
-						<a href="/video/{{ event.video.id }}">{{ event.video.name }}</a>
-					{% elif event.video %}
-						{{ event.video.name }}
-					{% else %}
-						{{ event.default_name }}</a>
-					{% endif %}
-				</b>
-				<br/>
-				<small>
-					{% if event.video.organization %}
-	                <a href="/organization/{{ event.video.organization.id }}">{{ event.video.organization }}</a>
-	                {% endif %}
-					{% for category in event.video.category_list %}
-						<span style="background-color:{{ category.rgb }};border-radius: 4px;padding:2px;">{{ category }}</span>
-					{% endfor %}
-				</small>
-			</div>
-		</div>
-	</li>
+  {% ifchanged event.starttime.week %}
+    <h2 class="week">Week {{ event.starttime|date:"W" }}</h2>
+  {% endifchanged %}
+  {% ifchanged event.starttime.date %}
+    <h3 class="date">{{ event.starttime|date:"l N jS o" }}</h3>
+  {% endifchanged %}
+  <li class="event" style="background-color:{% cycle '#f1f1f1' '#e7e7e7' %}">
+    <div class="content">
+      {% ifchanged event.starttime.hour event.starttime.date %}
+        <div class="hour">
+        {{ event.starttime|date:"H" }}
+        </div>
+      {% else %}
+        <div class="hour">
+          &nbsp;
+        </div>
+      {% endifchanged %}
+      <div class="time">
+        {{ event.starttime|date:"H:i"}}
+      </div>
+      <div class="blurb">
+        <b>
+          {% if event.video and event.video.is_public %}
+            <a href="/video/{{ event.video.id }}">{{ event.video.name }}</a>
+          {% elif event.video %}
+            {{ event.video.name }}
+          {% else %}
+            {{ event.default_name }}</a>
+          {% endif %}
+        </b>
+        <br/>
+        <small>
+          {% if event.video.organization %}
+                  <a href="/organization/{{ event.video.organization.id }}">{{ event.video.organization }}</a>
+                  {% endif %}
+          {% for category in event.video.category_list %}
+            <span style="background-color:{{ category.rgb }};border-radius: 4px;padding:2px;">{{ category }}</span>
+          {% endfor %}
+        </small>
+      </div>
+    </div>
+  </li>
 {% endfor %}
 </ul>
 </div>
