@@ -3,6 +3,11 @@
 
 {% block style %}
   <style>
+  h1 {
+    color: #555;
+    font-size: 24px;
+    margin: 0 0 6px;
+  }
   ul {
     list-style: none;
     padding:5px;
@@ -40,6 +45,7 @@
       {% show_vod_widget video.id %}
     </div>
     <div class="video-info">
+      <h1>{{ video.name }}</h1>
       {% if video.organization %}
         <div>
           <a href="/organization/{{ video.organization.id }}">{{ video.organization }}</a>
