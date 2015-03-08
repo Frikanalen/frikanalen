@@ -1,5 +1,6 @@
 {% extends "base_generic.html" %}
 {% load vod %}
+{% load fk_utils %}
 
 {% block style %}
   <style>
@@ -57,7 +58,7 @@
         <small>Uploaded: <i>{{ video.uploaded_time|date:"d M Y"}}</i></small>
       </div>
       <div>
-        <small>Length: {{ video.duration }}</small>
+        <small>Length: {{ video.duration|truncate_duration }}</small>
       </div>
       <div>
         {% if video.first_broadcast %}

@@ -1,8 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django import template
 from django.conf import settings
+
 from fk.models import Video
+
+
 register = template.Library()
+
 
 @register.inclusion_tag("fkvod/vod_widget.html")
 def show_vod_widget(video_id):
@@ -28,5 +32,3 @@ def show_vod_widget(video_id):
         "title": title
         }
     return context
-   
-   

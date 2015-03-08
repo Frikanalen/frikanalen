@@ -10,8 +10,9 @@ def duration_millisecond_to_microsecond(apps, schema_editor):
         Model = apps.get_model('fk', modelname)
         for item in Model.objects.all():
             # Old duration used milliseconds, new one uses microseconds
-            item.duration = item.duration * 1000
-            item.save()
+            if item.duration:
+                item.duration = item.duration * 1000
+                item.save()
 
 
 class Migration(migrations.Migration):
