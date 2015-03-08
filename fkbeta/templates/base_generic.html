@@ -158,8 +158,8 @@ h1 {
                 </form>
                 ...or <a href="/register/">register</a>
               {% else %}
-                {{ user.first_name }} {{ user.last_name }} Logged in as
-                <a href=/user/ title='User page'>{{ user.username }}</a>
+                Logged in as
+                <a href=/user/ title='User page for {{ user.first_name }} {{ user.last_name }}'>{{ user.username }}</a>
                 (<a href="/logout/?next=/">log out</a>)
                 {% comment %}
                   <a href="/agenda/user/{{ user.username }}">Your page</a>
