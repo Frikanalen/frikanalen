@@ -152,8 +152,9 @@ class PermissionsTest(APITestCase):
                 reverse('api-scheduleitem-list') + '?date=20150101',
                 {'video_id': 'http://testserver/api/videos/1',
                  'schedulereason': 2, 'starttime': '2015-01-01T10:00:00+00:00',
-                 'duration': '10000'},
-                {'id': 3, 'video_id': 'http://testserver/api/videos/1'},
+                 'duration': '0:00:00.10'},
+                {'id': 3, 'video_id': 'http://testserver/api/videos/1',
+                 'duration': '0:00:00.100000'},
                 status.HTTP_201_CREATED,
             ),
             (
@@ -181,8 +182,9 @@ class PermissionsTest(APITestCase):
                 reverse('api-scheduleitem-list') + '?date=20150101',
                 {'video_id': 'http://testserver/api/videos/1',
                  'schedulereason': 2, 'starttime': '2015-01-01T10:00:00+00:00',
-                 'duration': '10000'},
-                {'id': 3, 'video_id': 'http://testserver/api/videos/1'},
+                 'duration': '0:00:13.10'},
+                {'id': 3, 'video_id': 'http://testserver/api/videos/1',
+                 'duration': '0:00:13.100000'},
                 status.HTTP_201_CREATED,
             ),
             (
@@ -253,3 +255,21 @@ class PermissionsTest(APITestCase):
                            'to perform this action.'},
                 r.data)
             self.assertEqual(status.HTTP_403_FORBIDDEN, r.status_code)
+
+
+class ScheduleitemTest(APITestCase):
+    fixtures = ['test.yaml']
+
+    def setUp(self):
+        self.client.login(username='staff_user', password='test')
+
+    def test_creating_new_scheduleitem(self):
+        r = self.client.post(
+            reverse('api-scheduleitem-list'),
+            {'video_id': '/api/videos/2',
+             'starttime': '2015-01-01T10:00:00+00:00',
+             'duration': '00:00:58.312',
+             'schedulereason': 1})
+        self.assertEqual('0:00:58.312000', r.data['duration'])
+        self.assertEqual('dummy video', r.data['video']['name'])
+        self.assertEqual(status.HTTP_201_CREATED, r.status_code)
