@@ -21,6 +21,26 @@ class PermissionsTest(APITestCase):
         for k in ['obtain-token', 'scheduleitems', 'videofiles', 'videos']:
             self.assertIn(k, keys)
 
+    def test_nuug_user_can_read_root(self):
+        self._user_auth('nuug_user')
+        r = self.client.get(reverse('api-root'))
+        keys = r.data.keys()
+        self.assertEqual(status.HTTP_200_OK, r.status_code)
+        for k in ['obtain-token', 'scheduleitems', 'videofiles', 'videos']:
+            self.assertIn(k, keys)
+
+    def test_anonymous_does_not_have_token(self):
+        r = self.client.get(reverse('api-token-auth'))
+        error_msg = {'detail': 'Authentication credentials were not provided.'}
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, r.status_code)
+        self.assertEqual(error_msg, r.data)
+
+    def test_nuug_user_do_have_token(self):
+        self._user_auth('nuug_user')
+        r = self.client.get(reverse('api-token-auth'))
+        self.assertEqual(status.HTTP_200_OK, r.status_code)
+        self.assertEqual(len(r.data['key']), 40)
+
     def test_anonymous_can_list_videos(self):
         """
         Will list all videos except ones without proper_import
@@ -28,7 +48,7 @@ class PermissionsTest(APITestCase):
         r = self.client.get(reverse('api-video-list'))
         videos = [v['name'] for v in r.data['results']]
         self.assertEqual(videos, ['tech video', 'dummy video',
-                                     'unpublished video'])
+                                  'unpublished video'])
         self.assertEqual(status.HTTP_200_OK, r.status_code)
 
     def test_anonymous_can_list_videofiles(self):

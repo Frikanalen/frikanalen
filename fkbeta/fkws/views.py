@@ -40,7 +40,7 @@ class ObtainAuthToken(generics.RetrieveAPIView):
     Use the header with HTTP like:
         Authorization: Token 000000000000...
     """
-    queryset = Token.objects.all()
+    model = Token
     permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):
