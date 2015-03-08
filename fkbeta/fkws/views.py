@@ -58,6 +58,8 @@ class AsRunViewSet(viewsets.ModelViewSet):
     """
     As run, history log over what was sent through playout
     """
+    __doc__ = AsRun.__doc__
+
     queryset = AsRun.objects.all()
     serializer_class = AsRunSerializer
     permission_classes = (IsStaffOrReadOnly,)
