@@ -1,2 +1,1 @@
-# To register our signal receivers on startup
-from . import signals # NOQA
+default_app_config = 'fkbeta.apps.FrikanalenAppConfig'
