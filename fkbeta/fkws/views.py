@@ -119,7 +119,7 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsInOrganizationOrReadOnly,)
 
 
-class VideoList(generics.ListAPIView):
+class VideoList(generics.ListCreateAPIView):
     """
     Video list
 
@@ -145,7 +145,7 @@ class VideoList(generics.ListAPIView):
         return queryset
 
 
-class VideoDetail(generics.RetrieveAPIView):
+class VideoDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Video details
     """
