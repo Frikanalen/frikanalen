@@ -1,6 +1,5 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
-from rest_framework import fields
 from rest_framework import serializers
 
 from fk.models import AsRun
@@ -22,10 +21,10 @@ class VideoFileSerializer(serializers.ModelSerializer):
 
 
 class VideoSerializer(serializers.ModelSerializer):
-    editor = fields.Field(source="editor.username")
-    organization = fields.Field(source="organization")
-    #videofiles = VideoFileSerializer(source="videofiles")
-    categories = fields.Field(source="category_list")
+    editor = serializers.SlugRelatedField(slug_field='username')
+    organization = serializers.SlugRelatedField(slug_field='name')
+    categories = serializers.SlugRelatedField(slug_field='name', many=True)
+
     class Meta:
         model = Video
         fields = (
@@ -52,6 +51,7 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
                     view_name="api-video-detail",
                     read_only=False,
                     required=False)
+
     class Meta:
         model = Scheduleitem
         fields = (
