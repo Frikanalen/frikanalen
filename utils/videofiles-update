@@ -24,7 +24,28 @@ apiurl        = 'http://beta.frikanalen.tv/api/'
 videofilesurl = 'http://beta.frikanalen.tv/api/videofiles/' 
 tokenurl      = 'http://beta.frikanalen.tv/api/obtain-token'
 videosurl     = 'http://beta.frikanalen.tv/api/videos/'
-addvideofileurl = 'http://beta.frikanalen.tv/admin/fk/videofile/add/'
+
+def json_post(mech, url, jsondata):
+    """
+Post JSON data to the API.
+
+Tried to use mechanize, but did not find a way to set content-type
+with POST request.  Using urllib2 until I find a way to do it.
+
+"""
+    json_data = json.dumps(jsondata)
+    headers = {
+        'Content-type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'X-Requested-With' : 'XMLHttpRequest'
+        }
+#        print headers
+    for tup in mech.extraheaders:
+        headers[tup[0]] = tup[1]
+    req = urllib2.Request(url, data = json_data, headers = headers)
+    f = urllib2.urlopen(req)
+        # FIXME check return value
+    return f
 
 def frikanalen_login(username, password):
     """
@@ -106,11 +127,6 @@ Return tuple with format number and video status.
         return (8, False)
     return (-1, False)
 
-class PutRequest(mechanize.Request):
-    "Extend the mechanize Request class to allow a http PUT"
-    def get_method(self):
-        return "PUT"
-
 class DeleteRequest(mechanize.Request):
     "Extend the mechanize Request class to allow a http DELETE"
     def get_method(self):
@@ -127,41 +143,14 @@ def videofile_delete(mech, videofile_id):
         raise
 
 def videofile_add(mech, video_id, filepath, fileformat):
-    print "PUT video id %d filename %s format %d" % (video_id, filepath, fileformat)
-    if False: # FIXME use this when API POST/PUT is working
-
-        params = {
-            'video' : video_id,
-            'format' : fileformat,
-            'filename' : filepath,
-            'old_filename' : filepath, 
-            }
-        params_json = json.dumps(params)
-        headers = {"Content-type":"application/json"}
-        try:
-            mech.open(PutRequest(videofilesurl, data=params_json, headers=headers))
-        except Exception, e:
-            print mech.response()
-            raise
-    else:
-        try:
-            mech.open(addvideofileurl)
-#            print mech.response().read()
-            form = mech.select_form(nr=0);
-#            print form
-            mech['filename'] = filepath
-            mech['old_filename'] = filepath
-            mech['video'] = [str(video_id)]
-            mech['format'] = [str(fileformat)]
-            response = mech.submit()
-#            print response.read()
-        except urllib2.HTTPError, e:
-            print "HTTP error for %s: %s" % (loginurl, str(e))
-            raise
-        except urllib2.URLError, e:
-            print "URL error for %s: %s" % (loginurl, str(e))
-            raise
-        
+    print "POST video id %d filename %s format %d" % (video_id, filepath, fileformat)
+    params = {
+        'video' : video_id,
+        'format' : fileformat,
+        'filename' : filepath,
+        'old_filename' : filepath, 
+        }
+    json_post(mech, videofilesurl, params)
 
 def videofile_find_unregistered(mech, videodir):
     id = int(videodir.split('/')[-1])
