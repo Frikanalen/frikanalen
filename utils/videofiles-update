@@ -23,6 +23,8 @@ loginurl = 'http://beta.frikanalen.tv/api/api-auth/login/?next=/api/'
 apiurl        = 'http://beta.frikanalen.tv/api/'
 videofilesurl = 'http://beta.frikanalen.tv/api/videofiles/' 
 tokenurl      = 'http://beta.frikanalen.tv/api/obtain-token'
+videosurl     = 'http://beta.frikanalen.tv/api/videos/'
+addvideofileurl = 'http://beta.frikanalen.tv/admin/fk/videofile/add/'
 
 def frikanalen_login(username, password):
     """
@@ -32,6 +34,7 @@ make sure to log into both.
 """
     try:
         mech = mechanize.Browser()
+#        mech.set_debug_http(True)
 
         # Django login
         res = mech.open(loginurl)
@@ -46,6 +49,9 @@ make sure to log into both.
         token = j[u'key']
         mech.extraheaders = [('Authorization', 'Token %s' % token)]
         mech.addheaders = mech.extraheaders
+        
+        # Don't handle cookies when talking to the API, use token instead
+        mech.set_cookiejar(None)
 
         return mech
     except urllib2.HTTPError, e:
@@ -56,7 +62,7 @@ make sure to log into both.
         raise
 
 def frikanalen_video_info(mech, id):
-    mech.open('http://beta.frikanalen.tv/api/videos/%d' % id)
+    mech.open('%s%d' % (videosurl, id))
     jsonstr = mech.response().read()
     j = json.loads(jsonstr.decode('utf8'))
     return j
@@ -137,7 +143,7 @@ def videofile_add(mech, video_id, filepath, fileformat):
             raise
     else:
         try:
-            mech.open('http://beta.frikanalen.tv/admin/fk/videofile/add/')
+            mech.open(addvideofileurl)
 #            print mech.response().read()
             form = mech.select_form(nr=0);
 #            print form
