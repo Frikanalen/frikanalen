@@ -102,7 +102,9 @@ Return tuple with format number and video status.
         return (6, True)
     if -1 != filepath.find("theora"):
         return (7, True)
-    return -1
+    if -1 != filepath.find("srt"):
+        return (8, False)
+    return (-1, False)
 
 class PutRequest(mechanize.Request):
     "Extend the mechanize Request class to allow a http PUT"
