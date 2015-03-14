@@ -144,9 +144,8 @@ h1 {
         <ul>
           <li><a href="/guide/">Program Guide</a>
           <li><a href="/video/">Videos</a>
-          <li>
-            <div class="login_box">
-              {% if not user.is_authenticated %}
+          {% if not user.is_authenticated %}
+            <li><div class="login_box">
                 <form action="/login/" method="POST">
                   {% csrf_token %}
                   <input id="id_username" type="text" name="username"
@@ -157,15 +156,21 @@ h1 {
                   <input type="hidden" name="next" value="/">
                 </form>
                 ...or <a href="/register/">register</a>
-              {% else %}
+              </div>{# .login-box #}
+            </li>
+          {% else %}
+            <li><a href="/members/plan/">Plan</a></li>
+            <li><a href="/members/videos/">My videos</a></li>
+            <li><div class="login_box">
                 Logged in as
                 <a href=/user/ title='User page for {{ user.first_name }} {{ user.last_name }}'>{{ user.username }}</a>
                 (<a href="/logout/?next=/">log out</a>)
                 {% comment %}
                   <a href="/agenda/user/{{ user.username }}">Your page</a>
                 {% endcomment %}
-              {% endif %}
-            </div>{# .login-box #}
+              </div>{# .login-box #}
+            </li>
+          {% endif %}
         </ul>
       </nav>
 
