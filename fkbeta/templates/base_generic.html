@@ -70,7 +70,6 @@ h1 {
   bottom:0;
   height: 2em;
   right: 0%;
-  width: 30em;
 
   font-size: 75%;
   font-style: italic;
@@ -190,8 +189,10 @@ h1 {
   <div style="clear:both;">&nbsp;</div>
   <div id="spacer"> </div>
   <div id="footer">
-    <p><a href="{% url 'api-root' %}">REST API</a> |
+    <p>
+      <a href="{% url 'api-root' %}">REST API</a> |
+      <a href="{% url 'xmltv-home' %}">XMLTV</a> |
       <a href="http://github.com/Frikanalen">Source code</a>
-      &copy; 2009-2015 Foreningen Frikanalen
+      &copy; 2009-2016 Foreningen Frikanalen
   </div>
 </div>{# #container #}

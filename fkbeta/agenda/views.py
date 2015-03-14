@@ -5,6 +5,7 @@ import logging
 
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.shortcuts import render
 from django.shortcuts import render_to_response, redirect
@@ -211,6 +212,19 @@ def fill_next_weeks_agenda():
                   starttime=next_datetime,
                   duration=video.duration)
         item.save()
+
+
+def xmltv_home(request):
+    """ Information about the XMLTV schedule presentation. """
+    now = timezone.now()
+    today_url = reverse('xmltv-feed', args=(now.year,
+                                            '{:02}'.format(now.month),
+                                            '{:02}'.format(now.day)))
+    return render(request, 'agenda/xmltv_home.html', {
+        'channel_display_names': settings.CHANNEL_DISPLAY_NAMES,
+        'today_url': today_url,
+        'site_url': settings.SITE_URL,
+    })
 
 
 def xmltv(request, year, month, day):

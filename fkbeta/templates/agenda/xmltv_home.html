@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Schedule as XMLTV</h1>
+
+  <p>The {{ channel_display_name }} schedule is provided
+    in <a href="http://www.xmltv.org/">XMLTV format</a>, with one URL
+    per day.  The URL is <code>/xmltv/YYYY/MM/DD</code>.
+  <p>For example this is the URL of today:
+  <p><blockquote><a href="{{ today_url }}">{{ site_url }}{{ today_url }}</a></blockquote>
+{% endblock %}
