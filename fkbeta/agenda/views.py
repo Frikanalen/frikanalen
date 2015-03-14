@@ -201,6 +201,17 @@ def fill_next_weeks_agenda():
         item.save()
 
 
+def xmltvInfo(request):
+  """ Information about the XMLTV schedule presentation. """
+    return render(
+        request,
+        'agenda/xmltvInfo.html',
+        {
+            'site_url': settings.SITE_URL,
+            'channel_display_names': settings.CHANNEL_DISPLAY_NAMES,
+        })
+
+
 def xmltv(request, year, month, day):
     """ Program guide as XMLTV """
     date = (datetime.datetime(year=int(year), month=int(month), day=int(day))
