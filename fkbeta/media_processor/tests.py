@@ -1,20 +1,15 @@
 import logging
-import sys
 
 from django.test import TestCase
 
 from fk.models import VideoFile
+from fk.models import FileFormat
 from media_processor.models import Task
 
 
-_TESTDB_NUM_VIDEOS = 2
-_TESTDB_NUM_MISSING_FILES = 2
-
+logging.disable(logging.INFO)
 
 class SimpleTest(TestCase):
-    log = logging.getLogger()
-    log.addHandler(logging.StreamHandler(sys.stdout))
-    log.level = logging.CRITICAL
     fixtures = ['test_data.json']
 
     def test_will_generate_jobs(self):
@@ -22,7 +17,7 @@ class SimpleTest(TestCase):
 
         self.assertEqual(Task.objects.count(), 0)
         find_missing().handle()
-        self.assertEqual(Task.objects.count(), _TESTDB_NUM_MISSING_FILES)
+        self.assertEqual(Task.objects.count(), 2 * 2)
 
     # Twisted will not let us destroy the global reactor. Essentially
     # there does not seem to be any way to unit test twisted without
@@ -30,9 +25,12 @@ class SimpleTest(TestCase):
     def test_everything_about_encoder(self):
         from management.commands.run_queue import Command as run_queue
         random_videofile = VideoFile.objects.all()[0]
+        wait = FileFormat.objects.create(fsname='waitasecond')
 
-        for task in range(0,10):
-            Task(source_file = random_videofile, target_format = 1337, status = Task.STATE_PENDING).save()
+        for task in range(0, 3):
+            Task(source_file=random_videofile,
+                 target_format=wait,
+                 status=Task.STATE_PENDING).save()
 
         run_queue().handle()
 
