@@ -9,7 +9,7 @@ from django.forms import ModelForm
 from django.shortcuts import render
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.utils.timezone import utc
+from django.utils import timezone
 from django.views.generic import TemplateView
 
 from fk.models import Organization
@@ -30,11 +30,13 @@ class ProgramguideView(TemplateView):
   flowing formatting.
   """
   def get(self, request, form = None):
-    starttime = datetime.datetime.utcnow().replace(tzinfo=utc).date()
-    events = Scheduleitem.objects.by_day(starttime, days=7).order_by("starttime")
+    starttime = timezone.now()
+    events = (Scheduleitem.objects
+              .by_day(starttime.date(), days=7)
+              .order_by('starttime'))
     context = {
         'events': events,
-        'title': 'Program Guide - This week'
+        'title': "Program Guide - This week"
     }
     return render(
       request,

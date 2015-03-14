@@ -143,7 +143,7 @@ class LargeThumbEncoder(ThumbEncoder, WorkingClass):
     resolution = '720:405'
 
 class WaitASecond(WorkingClass):
-    job_type = 1337
+    job_type = 'waitasecond'
 
     def _run_engine(self):
         self.defer = defer.Deferred()

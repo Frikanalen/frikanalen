@@ -159,7 +159,7 @@ class PermissionsTest(APITestCase):
             ),
             (
                 reverse('asrun-list'),
-                {'video': 2, 'played_at': '2015-01-01 11:00:00'},
+                {'video': 2, 'played_at': '2015-01-01 11:00:00Z'},
                 {'detail': 'You do not have permission to '
                            'perform this action.'},
                 status.HTTP_403_FORBIDDEN,
