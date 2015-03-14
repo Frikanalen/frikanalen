@@ -269,25 +269,32 @@ class Video(models.Model):
 class ScheduleitemManager(models.Manager):
     def by_day(self, date=None, days=1, surrounding=False):
         if not date:
-            date = datetime.datetime.utcnow().replace(tzinfo=utc).date()
-        enddate = date + datetime.timedelta(days=days)
+            date = timezone.now().date()
+        elif hasattr(date, 'date'):
+            date = date.date()
+        # Take current date, but make an object at 00:00.
+        # Then make that an aware datetime so our comparisons
+        # are correct.
+        day_start = datetime.datetime.combine(date, datetime.time(0))
+        startdt = timezone.make_aware(day_start, timezone.get_current_timezone())
+        enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
             # Try to find the event before the given date
             before = (
                 Scheduleitem.objects
-                .filter(starttime__lte=date)
+                .filter(starttime__lte=startdt)
                 .order_by("-starttime"))
             if before:
-                date = before[0].starttime
+                startdt = before[0].starttime
             # Try to find the event after the end date
             after = (
                 Scheduleitem.objects
-                .filter(starttime__gte=enddate)
+                .filter(starttime__gte=enddt)
                 .order_by("starttime"))
             if after:
-                enddate = after[0].starttime
-        return self.get_queryset().filter(starttime__gte=date,
-                                           starttime__lte=enddate)
+                enddt = after[0].starttime
+        return self.get_queryset().filter(starttime__gte=startdt,
+                                          starttime__lte=enddt)
 
 
 class Scheduleitem(models.Model):
