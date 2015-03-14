@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^members/video/new/$', views.ManageVideoNew.as_view(), name='manage-video-new'),
     url(r'^members/video/edit/(?P<id>[0-9]+)$', views.ManageVideoEdit.as_view(), name='manage-video-edit'),
     url(r'^xmltv/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/?$', views.xmltv, name='xmltv-feed'),
+    url(r'^xmltv/?$', views.xmltvInfo, name='xmltv-info'),
     )
