@@ -5,6 +5,7 @@ import datetime
 
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from rest_framework import filters
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
@@ -63,11 +64,16 @@ class AsRunViewSet(viewsets.ModelViewSet):
 
     `page_size` - How many items per page. If set to 0 it will list
                   all items.  Default is 50 items.
+
+    `ordering` - You can order the results by any visible field.
+                 Prepend a minus to order in descending order.  I.e.
+                 `?ordering=-played_at` to show newest items first.
     """
     __doc__ = AsRun.__doc__ + __doc__
 
     queryset = AsRun.objects.all()
     serializer_class = AsRunSerializer
+    filter_backends = (filters.OrderingFilter,)
     paginate_by = 50
     paginate_by_param = 'page_size'
     permission_classes = (IsStaffOrReadOnly,)
@@ -77,26 +83,27 @@ class ScheduleitemList(generics.ListCreateAPIView):
     """
     Video events schedule
 
-    HTTP parameters:
-    * date
-        Year, Month, Day as digits, for example ...?date=20130130
-        "today", for example ...?date=today
-        Default is today.
+    Query parameters
+    ----------------
 
-    * days
-        If date is specified, how many days to return, for example,
-            ...?date=today&days=7
-        Default is 7 days.
+    `date` - YearMonthDay as digits, for example `?date=20130130` or
+             "today", for example `?date=today`.  Default is today.
 
-    * page_size
-        How many items per page. If set to 0 it will list all items.
-        Default is 50 items.
+    `days` - How many days to return, for example, `?days=7`.
+             Default is 7 days.
 
-    * surrounding
-        Fetch the first event before and after the given period
+    `page_size` - How many items per page. If set to 0 it will list
+                  all items.  Default is 50 items.
+
+    `surrounding` - Fetch the first event before and after the given
+                    period
+
+    `ordering` - Order results by specified field.  Prepend a minus for
+                 descending order.  I.e. `?ordering=-starttime`.
     """
     queryset = Scheduleitem.objects.all()
     serializer_class = ScheduleitemSerializer
+    filter_backends = (filters.OrderingFilter,)
     paginate_by = 50
     paginate_by_param = 'page_size'
     permission_classes = (IsInOrganizationOrReadOnly,)
@@ -129,17 +136,22 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class VideoList(generics.ListCreateAPIView):
     """
-    Video list
+    List of videos
 
-    HTTP parameters:
-    * q
-        Free search query.
-    * page_size
-        How many items per page. If set to 0 it will list all items.
-        Default is 50 items.
+    Query parameters
+    ----------------
+
+    `q` - Free search query.
+
+    `page_size` - How many items per page. If set to 0 it will list
+                  all items.  Default is 50 items.
+
+    `ordering` - Order results by specified field.  Prepend a minus for
+                 descending order.  I.e. `?ordering=-id`.
     """
     queryset = Video.objects.filter(proper_import=True)
     serializer_class = VideoSerializer
+    filter_backends = (filters.OrderingFilter,)
     paginate_by = 50
     paginate_by_param = 'page_size'
     permission_classes = (IsInOrganizationOrReadOnly,)
@@ -166,15 +178,21 @@ class VideoFileList(generics.ListCreateAPIView):
     """
     Video file list
 
+    Query parameters
+    ----------------
+
     HTTP parameters:
-    * video_id
-        The video by ID
-    * page_size
-        How many items per page. If set to 0 it will list all items.
-        Default is 50 items.
+    `video_id` - The (parent) video by ID
+
+    `page_size` - How many items per page. If set to 0 it will list
+                  all items.  Default is 50 items.
+
+    `ordering` - Order results by specified field.  Prepend a minus for
+                 descending order.  I.e. `?ordering=-starttime`.
     """
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
+    filter_backends = (filters.OrderingFilter,)
     paginate_by = 50
     paginate_by_param = 'page_size'
     permission_classes = (IsInOrganizationOrReadOnly,)
