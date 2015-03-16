@@ -83,7 +83,7 @@
       <div class="blurb">
         <b>
           {% if event.video and event.video.is_public %}
-            <a href="/video/{{ event.video.id }}">{{ event.video.name }}</a>
+            <a href="{% url 'vod-video-detail' event.video.id %}">{{ event.video.name }}</a>
           {% elif event.video %}
             {{ event.video.name }}
           {% else %}
@@ -93,7 +93,7 @@
         <br/>
         <small>
           {% if event.video.organization %}
-                  <a href="/organization/{{ event.video.organization.id }}">{{ event.video.organization }}</a>
+                  <a href="{% url 'vod-org-video-list' event.video.organization.id %}">{{ event.video.organization }}</a>
                   {% endif %}
           {% for category in event.video.category_list %}
             <span style="background-color:{{ category.rgb }};border-radius: 4px;padding:2px;">{{ category }}</span>

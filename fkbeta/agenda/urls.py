@@ -6,7 +6,7 @@ from agenda import views
 
 urlpatterns = patterns('',
     url(r'^guide/', views.ProgramguideView.as_view(), name='guide'),
-    url(r'^members/plan/$', views.ProgramplannerView.as_view(), name='manage-video-list'),
+    url(r'^members/plan/$', views.ProgramplannerView.as_view(), name='manage-schedule'),
     url(r'^members/video/$', views.ManageVideoList.as_view(), name='manage-video-list'),
     url(r'^members/video/new/$', views.ManageVideoNew.as_view(), name='manage-video-new'),
     url(r'^members/video/edit/(?P<id>[0-9]+)$', views.ManageVideoEdit.as_view(), name='manage-video-edit'),

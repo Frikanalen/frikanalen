@@ -82,13 +82,13 @@
     <li>
         <a href="{% url 'manage-video-edit' video.id %}">
             <b>{{ video.name }}</b>
-        <a href="/agenda/video/{{ video.id }}">
+        </a>
     </li>
-    <li><a href="/agenda/user/{{ video.editor }}"><i>{{ video.editor }}</i></a></li>
+    <li><i>{{ video.editor }}</i></li>
     {% if video.tags %}
-    <li>{{ video.tags }}</li>
+      <li>{{ video.tags }}</li>
     {% else %}
-    <li>&nbsp;</li>
+      <li>&nbsp;</li>
     {% endif %}
     <li>{{ video.last_broadcast.starttime }}&nbsp;</li>
     <li><a href="{% url 'vod-video-detail' video.id %}">public page</a></li>
@@ -104,4 +104,3 @@
 {% endfor %}
 </div>
 {% endblock content %}
-

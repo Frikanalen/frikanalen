@@ -104,16 +104,16 @@
 <div class="video_container">
     <ul>
         <li>
-            <a href="/video/{{ video.id }}">
+            <a href="{% url 'vod-video-detail' video.id %}">
                 <img src="{{ video.small_thumbnail_url }}" class="small_thumbnail"/>
             </a>
         </li>
         <li class="header">
-            <a href="/video/{{ video.id }}"><span class="name">{{ video.name }}</span></a>
+            <a href="{% url 'vod-video-detail' video.id %}"><span class="name">{{ video.name }}</span></a>
             <span class="duration">({{ video.duration|truncate_duration }})</span>
         </li>
         <li class="editor">
-            <a href="/organization/{{ video.organization.id }}">
+            <a href="{% url 'vod-org-video-list' video.organization.id %}">
             <i>{{ video.organization }}</i>
             </a>
         </li>

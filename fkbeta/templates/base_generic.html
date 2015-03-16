@@ -1,9 +1,10 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <meta charset="utf-8">
 <!-- No idea what this does, but makes IE9 behave when run on localhost -->
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <title>Frikanalen Beta - {{ title|default:""}}</title>
-<link rel="stylesheet" href="/static/vod.css">
+<link rel="stylesheet" href="{% static 'vod.css' %}">
 <!--
 <link rel="stylesheet" href="/static/normalize.css">
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -142,12 +143,12 @@ h1 {
 
       <nav class=top-nav>
         <ul>
-          <li><a href="/guide/">Program Guide</a>
-          <li><a href="/video/">Videos</a>
+          <li><a href="{% url 'guide' %}">Program Guide</a>
+          <li><a href="{% url 'vod-video-list' %}">Videos</a>
           {% if not user.is_authenticated %}
             <li>
               <div class="login_box">
-                <form action="/login/" method="POST">
+                <form action="{% url 'login' %}" method="POST">
                   {% csrf_token %}
                   <input id="id_username" type="text" name="username"
                       placeholder="username" maxlength="30">
@@ -156,20 +157,17 @@ h1 {
                   <input type="submit" value="Log in">
                   <input type="hidden" name="next" value="/">
                 </form>
-                ...or <a href="/register/">register</a>
+                ...or <a href="{% url 'register' %}">register</a>
               </div>{# .login-box #}
             </li>
           {% else %}
-            <li><a href="/members/plan/">Plan</a>
-            <li><a href="/members/videos/">My videos</a>
+            <li><a href="{% url 'manage-schedule' %}">Plan</a>
+            <li><a href="{% url 'manage-video-list' %}">My videos</a>
             <li>
               <div class="login_box">
                 Logged in as
-                <a href=/user/ title='User page for {{ user.first_name }} {{ user.last_name }}'>{{ user.username }}</a>
-                (<a href="/logout/?next=/">log out</a>)
-                {% comment %}
-                  <a href="/agenda/user/{{ user.username }}">Your page</a>
-                {% endcomment %}
+                <a href="{% url 'profile' %}" title='User page for {{ user.first_name }} {{ user.last_name }}'>{{ user.username }}</a>
+                (<a href="{% url 'logout' %}">log out</a>)
               </div>{# .login-box #}
             </li>
           {% endif %}
@@ -192,7 +190,7 @@ h1 {
   <div style="clear:both;">&nbsp;</div>
   <div id="spacer"> </div>
   <div id="footer">
-    <p><a href="/api/">REST API</a> |
+    <p><a href="{% url 'api-root' %}">REST API</a> |
       <a href="http://github.com/Frikanalen">Source code</a>
       &copy; 2009-2015 Foreningen Frikanalen
   </div>

@@ -1,6 +1,7 @@
 {% extends "base_generic.html" %}
 {% load vod %}
 {% load fk_utils %}
+{% load staticfiles %}
 
 {% block style %}
   <style>
@@ -37,7 +38,7 @@
     <div class="video-info">
       {% if video.organization %}
         <div>
-          <a href="/organization/{{ video.organization.id }}">{{ video.organization }}</a>
+          <a href="{% url 'vod-org-video-list' video.organization.id %}">{{ video.organization }}</a>
         </div>
       {% endif %}
       {% if video.ref_url %}
@@ -69,7 +70,7 @@
         <!-- <div>Previous broadcast: <i> {{ video.last_broadcast.starttime }}</i></div> -->
       </div>
       {% if video.has_tono_records %}
-        <div><img src="/static/tono-logo.gif" alt="TONO" style="margin:5px;"/></div>
+        <div><img src="{% static 'tono-logo.gif' %}" alt="TONO" style="margin:5px;"/></div>
       {% endif %}
     </div> {# .video-info #}
   </div> {# .video-container #}
