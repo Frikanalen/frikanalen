@@ -33,11 +33,11 @@ def api_root(request, format=None):
     The root of the FK API / web services
     """
     return Response({
-        'obtain-token': reverse('api-token-auth', request=request),
         'asrun': reverse('asrun-list', request=request),
+        'obtain-token': reverse('api-token-auth', request=request),
         'scheduleitems': reverse('api-scheduleitem-list', request=request),
-        'videos': reverse('api-video-list', request=request),
         'videofiles': reverse('api-videofile-list', request=request),
+        'videos': reverse('api-video-list', request=request),
     })
 
 
@@ -58,12 +58,18 @@ class ObtainAuthToken(generics.RetrieveAPIView):
 
 class AsRunViewSet(viewsets.ModelViewSet):
     """
-    As run, history log over what was sent through playout
+    Query parameters
+    ----------------
+
+    `page_size` - How many items per page. If set to 0 it will list
+                  all items.  Default is 50 items.
     """
-    __doc__ = AsRun.__doc__
+    __doc__ = AsRun.__doc__ + __doc__
 
     queryset = AsRun.objects.all()
     serializer_class = AsRunSerializer
+    paginate_by = 50
+    paginate_by_param = 'page_size'
     permission_classes = (IsStaffOrReadOnly,)
 
 
