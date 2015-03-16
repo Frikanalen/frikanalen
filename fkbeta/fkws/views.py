@@ -22,6 +22,7 @@ from fkws.permissions import IsInOrganizationOrReadOnly
 from fkws.permissions import IsStaffOrReadOnly
 from fkws.serializers import AsRunSerializer
 from fkws.serializers import ScheduleitemSerializer
+from fkws.serializers import TokenSerializer
 from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
 
@@ -47,7 +48,8 @@ class ObtainAuthToken(generics.RetrieveAPIView):
     Use the header with HTTP like:
         Authorization: Token 000000000000...
     """
-    model = Token
+    queryset = Token.objects.all()
+    serializer_class = TokenSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):

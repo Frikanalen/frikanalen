@@ -108,8 +108,8 @@ class PermissionsTest(APITestCase):
         r = self.client.get(reverse('asrun-list'))
         self.assertEqual(status.HTTP_200_OK, r.status_code)
         self.assertEqual(
-            [(1, 1, 2014), (2, 1, 2015)],
-            [(i['id'], i['video'], i['played_at'].year) for i in r.data])
+            [(1, 1, '2014-'), (2, 1, '2015-')],
+            [(i['id'], i['video'], i['played_at'][:5]) for i in r.data])
 
     def test_anonymous_cannot_add(self):
         list_pages = ('api-video-list', 'api-videofile-list',
