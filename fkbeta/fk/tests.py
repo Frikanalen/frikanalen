@@ -1,7 +1,6 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 import datetime
-import functools
 
 from django.test import TestCase
 from django.utils import timezone
@@ -18,6 +17,7 @@ class WebPageTest(TestCase):
                          [v.name for v in r.context['videos']])
         self.assertContains(r, 'dummy video', count=1)
         self.assertContains(r, 'tech video', count=1)
+        self.assertContains(r, 'class="video_container"', count=2)
 
     def test_video_detail(self):
         r = self.client.get('/video/1')
@@ -33,6 +33,13 @@ class WebPageTest(TestCase):
         r = self.client.get('/guide/')
         self.assertContains(r, '<li class="event"', count=1)
         self.assertContains(r, 'tech video', count=1)
+
+    def test_xmltv(self):
+        r = self.client.get('/xmltv/2015/01/01')
+        self.assertContains(r, '<title lang="no">tech video</title>', count=1)
+        self.assertContains(r, '<title lang="no">dummy video</title>', count=1)
+        self.assertContains(r, '<url>http://beta.frikanalen.tv/video/2</url>', count=1)
+        self.assertContains(r, '</programme>', count=2)
 
 
 class ScheduleitemModelTests(TestCase):

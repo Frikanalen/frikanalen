@@ -204,7 +204,7 @@ def fill_next_weeks_agenda():
 def xmltv(request, year, month, day):
     """ Program guide as XMLTV """
     date = (datetime.datetime(year=int(year), month=int(month), day=int(day))
-            .replace(tzinfo=utc))
+            .replace(tzinfo=timezone.utc))
     events = (Scheduleitem.objects
               .by_day(date, days=1)
               .order_by('starttime'))

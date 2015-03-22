@@ -1,6 +1,7 @@
-# Local development dependencies go here
+# Local development and testing dependencies go here
 -r base.txt
 django-debug-toolbar==0.9.4
+PyYAML==3.11
 
 #coverage==3.6
 #django-discover-runner==0.4
