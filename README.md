@@ -7,7 +7,7 @@ The latest version of the source is available from [our GitHub page](http://gith
 
 This is all under the GNU LGPL license, see the file COPYING for more details.
 
-Read `INSTALL.txt` to get started with development.
+Read `INSTALL.md` to get started with development.
 
 Please report bugs as issues at github and submit patches as pull requests there.
 
