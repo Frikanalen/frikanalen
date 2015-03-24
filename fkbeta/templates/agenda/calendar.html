@@ -1,0 +1,222 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<script src=https://cdnjs.cloudflare.com/ajax/libs/react/0.13.1/react-with-addons.js></script>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/react/0.13.1/JSXTransformer.js></script>
+<script type=text/jsx>
+'use strict';
+
+var HOUR_HEIGHT = 42;
+
+var Days = React.createClass({
+  getDefaultProps: function() {
+    return {
+      hoursInDay: 24,
+      startDay: new Date(),
+      numberOfDays: 7,
+    };
+  },
+
+  generateDays: function(from, num_days) {
+    var days = [];
+    var start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    for (var i=0; i<num_days; i++) {
+      // Omfg, Date is mutable
+      var newdate = new Date(start.valueOf());
+      newdate.setDate(newdate.getDate() + i);
+      days.push(newdate);
+    }
+    return days;
+  },
+
+  getDaysWithEvents: function() {
+    var days_events = []
+    var days = this.generateDays(
+        this.props.startDay, this.props.numberOfDays);
+    var event_i = 0;
+    for (var i=0; i<days.length; i++) {
+      var events = [];
+      var date_str = days[i].toDateString();
+      for (; event_i<this.props.events.length; event_i++) {
+        var evt = this.props.events[event_i];
+        if (date_str === evt.start.toDateString()) {
+          events.push(evt);
+        }
+        else if (days[i] > evt.start) {
+          continue;
+        }
+        else {
+          break;
+        }
+      }
+
+      days_events.push({day: days[i], events: events});
+    }
+
+    return days_events;
+  },
+
+  displayHours: function() {
+    var disp = []
+    for (var i=0; i<this.props.hoursInDay; i++) {
+      if (i < 10) {
+        disp.push('0' + i + ':00');
+      }
+      else {
+        disp.push(i + ':00');
+      }
+    }
+    return disp;
+  },
+
+  render: function() {
+    return (
+      <div className="Days">
+        <table>
+          <tr height="1" className="Days-markingContainer">
+            <td></td>
+            <td colSpan={this.props.numberOfDays} className="Days-hourContainer">
+              <div className="Days-innerHourContainer">
+                {this.displayHours().map(function (hour, i) {
+                  return <HourRow key={'hour' + i} />;
+                })}
+              </div>
+            </td>
+          </tr>
+          <tr className="Days-columnContainer">
+            <td>
+              {this.displayHours().map(function (hour, i) {
+                return <div className="Days-hourMark">{hour}</div>;
+              })}
+            </td>
+            {this.getDaysWithEvents().map(function(day, i) {
+              return <Day events={day.events} key={'day-' + i} />;
+            })}
+          </tr>
+        </table>
+      </div>
+    );
+  },
+});
+
+var HourRow = React.createClass({
+  render: function() {
+    return (
+      <div className="Days-hour">
+        <div className="Days-halfHour"></div>
+      </div>
+    );
+  },
+});
+
+var Day = React.createClass({
+  render: function() {
+    return (
+      <td className="Days-dayColumn">
+        <div>
+          {this.props.events.map(function(evt, i) {
+            return <Event evt={evt} />;
+          })}
+        </div>
+      </td>
+    );
+  },
+});
+
+var Event = React.createClass({
+  render: function() {
+    var evt = this.props.evt
+    var style = {
+      top: HOUR_HEIGHT * evt.start.getHours(),
+      height: HOUR_HEIGHT * (evt.duration / (60*60)),
+    };
+    var isTight = style.height < 20;
+    return (
+      <div className="Event" style={style}>
+        <div className={'Event-text' + (isTight ? ' Event-text--tight' : '')}>
+          {this.props.evt.title}
+        </div>
+      </div>
+    );
+  },
+});
+
+var events = [
+{% for event in events %}
+  { start: new Date("{{ event.starttime.isoformat }}"),
+    duration: {{ event.duration.total_seconds }},
+    title: "{{ event.video.name|default:event.default_name }}" },
+{% endfor %}
+];
+
+var start = new Date("{{ starttime.isoformat }}");
+var calendar = document.getElementById('calendar');
+React.render(<Days startDay={start} events={events} />, calendar);
+</script>
+
+<style>
+body {
+  font-family: sans-serif;
+}
+</style>
+
+<style>
+.Days table {
+  height: 1008px; /* 42 x 24  */
+  border-spacing: 0;
+}
+.Days td {
+  padding: 0;
+}
+.Days-columnContainer {
+  vertical-align: top;
+}
+
+.Days-hourContainer {
+  position: relative;
+}
+.Days-innerHourContainer {
+  border-bottom: 2px solid #ccc;
+  position: absolute;
+  width: 100%;
+}
+.Days-hour {
+  height: 42px;
+}
+.Days-halfHour {
+  border-bottom: 1px dotted #ddd;
+  border-top: 1px solid #ddd;
+  height: calc(50% - 2px);
+}
+.Days-hourMark {
+  border-right: 1px solid #ccc;
+  color: #555;
+  font-size: 0.8em;
+  height: 42px;
+  padding-right: 5px;
+}
+.Days-dayColumn {
+  border-right: 1px solid #ccc;
+  position: relative;
+  width: 200px;
+}
+
+.Event {
+  background-color: #E6EEF7;
+  border-radius: 3px;
+  box-sizing: border-box;
+  position: absolute;
+  width: 90%;
+}
+.Event-text {
+  padding: 10px;
+}
+.Event-text--tight {
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 0.8em;
+}
+</style>
+
+<div id=calendar></div>
+{% endblock %}

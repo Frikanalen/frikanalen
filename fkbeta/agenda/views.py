@@ -29,20 +29,28 @@ class ProgramguideView(TemplateView):
   Improvement would be to give out days presorted as days to facilitate
   flowing formatting.
   """
-  def get(self, request, form = None):
+  template_name = 'agenda/events.html'
+  title = 'Program guide - this week'
+
+  def get_context_data(self, **kwargs):
+    context = super(ProgramguideView, self).get_context_data(**kwargs)
+
     starttime = timezone.now()
     events = (Scheduleitem.objects
               .by_day(starttime.date(), days=7)
               .order_by('starttime'))
-    context = {
-        'events': events,
-        'title': "Program Guide - This week"
-    }
-    return render(
-      request,
-      'agenda/events.html',
-      context,
+    context.update(
+        events=events,
+        starttime=starttime,
+        title=self.title,
     )
+    return context
+
+
+class ProgramguideCalendarView(ProgramguideView):
+  template_name = 'agenda/calendar.html'
+  title = 'Calendar - this week'
+
 
 class ProgramplannerView(TemplateView):
   def get(self, request, form = None):
