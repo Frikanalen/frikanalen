@@ -30,6 +30,10 @@ Load some default data (fixtures) into the database
     (env)$ python manage.py loaddata frikanalen
         ...
 
+Create a new admin user
+
+    (env)$ python manage.py createsuperuser
+
 Start the webserver
 
     (env)$ python manage.py runserver
