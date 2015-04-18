@@ -1,9 +1,8 @@
 Creating a local development environment
 ========================================
 
-Install virtualenv and sqlite3:
-
-    $ apt-get install sqlite3 python-virtualenv python-pip
+Let's start by installing some of the dependencies by running the
+`install-debian-deps.sh`.
 
 Create virtual env:
 
@@ -33,6 +32,6 @@ Load some default data (fixtures) into the database
 
 Start the webserver
 
-    (env)$ manage.py runserver
+    (env)$ python manage.py runserver
 
 Point your browser to http://127.0.0.1:8000/admin and log in.
