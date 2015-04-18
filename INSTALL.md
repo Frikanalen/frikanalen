@@ -20,21 +20,22 @@ Use pip to install the rest of the requirements:
 Open fkbeta/settings.py in your editor and edit paths and database-settings.
 You should set SECRET_KEY to a random string.
 
-Initialize the database
+Initialize the database:
 
     (env)$ cd fkbeta
     (env)$ python manage.py migrate
         ...
 
-Load some default data (fixtures) into the database
+Load some default data (fixtures) into the database:
+
     (env)$ python manage.py loaddata frikanalen
         ...
 
-Create a new admin user
+Create a new admin user:
 
     (env)$ python manage.py createsuperuser
 
-Start the webserver
+Start the webserver:
 
     (env)$ python manage.py runserver
 
