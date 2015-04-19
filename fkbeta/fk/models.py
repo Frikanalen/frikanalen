@@ -467,9 +467,9 @@ class WeeklySlot(models.Model):
 
     def next_datetime(self, from_date=None):
         next_date = self.next_date(from_date)
-        return datetime.datetime.combine(
-            next_date, self.start_time.replace(
-                tzinfo=pytz.timezone(settings.TIME_ZONE)))
+        naive_dt = datetime.datetime.combine(next_date, self.start_time)
+        tz = pytz.timezone(settings.TIME_ZONE)
+        return tz.localize(naive_dt)
 
     def __unicode__(self):
         return (u"{day} {s.start_time} ({s.purpose})"
