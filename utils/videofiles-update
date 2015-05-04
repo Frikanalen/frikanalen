@@ -19,11 +19,11 @@ import codecs
 
 mediadir = '/tank/new_media/media'
 
-loginurl = 'http://beta.frikanalen.tv/api/api-auth/login/?next=/api/'
-apiurl        = 'http://beta.frikanalen.tv/api/'
-videofilesurl = 'http://beta.frikanalen.tv/api/videofiles/' 
-tokenurl      = 'http://beta.frikanalen.tv/api/obtain-token'
-videosurl     = 'http://beta.frikanalen.tv/api/videos/'
+loginurl = 'http://beta.frikanalen.no/api/api-auth/login/?next=/api/'
+apiurl        = 'http://beta.frikanalen.no/api/'
+videofilesurl = 'http://beta.frikanalen.no/api/videofiles/' 
+tokenurl      = 'http://beta.frikanalen.no/api/obtain-token'
+videosurl     = 'http://beta.frikanalen.no/api/videos/'
 
 def json_post(mech, url, jsondata):
     """
