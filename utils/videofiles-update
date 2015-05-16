@@ -109,21 +109,21 @@ def guess_file_format(filepath):
 Guess file format, and if it is a video file or not.
 Return tuple with format number and video status.
 """
-    if -1 != filepath.find("large_thumb"):
+    if -1 != filepath.find("large_thumb/"):
         return (1, False)
-    if -1 != filepath.find("broadcast"):
+    if -1 != filepath.find("broadcast/"):
         return (2, True)
-    if -1 != filepath.find("vc1"):
+    if -1 != filepath.find("vc1/"):
         return (3, True)
-    if -1 != filepath.find("med_thumb"):
+    if -1 != filepath.find("med_thumb/"):
         return (4, False)
-    if -1 != filepath.find("small_thumb"):
+    if -1 != filepath.find("small_thumb/"):
         return (5, False)
-    if -1 != filepath.find("original"):
+    if -1 != filepath.find("original/"):
         return (6, True)
-    if -1 != filepath.find("theora"):
+    if -1 != filepath.find("theora/"):
         return (7, True)
-    if -1 != filepath.find("srt"):
+    if -1 != filepath.find("srt/"):
         return (8, False)
     return (-1, False)
 
