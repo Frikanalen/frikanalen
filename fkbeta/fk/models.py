@@ -173,7 +173,7 @@ class Video(models.Model):
         Organization, null=True, help_text='Organization for video')
     ref_url = models.CharField(
         blank=True, max_length=1024, help_text='URL for reference')
-    duration = DurationField()
+    duration = DurationField(blank=True, null=True)
 
     objects = VideoManager()
 
