@@ -10,6 +10,13 @@
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 -->
 <style>
+
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 a img {
   border: none;
 }
@@ -89,6 +96,7 @@ h1 {
 }
 
 .top-nav {
+  font-size: 100%;
   display: inline-block;
   position: relative;
   top: -5px;
@@ -99,7 +107,7 @@ h1 {
 }
 .top-nav li {
   display: inline-block;
-  margin-left: 30px;
+  margin-left: 40px;
 }
 .top-nav a {
   text-decoration: none;
@@ -127,7 +135,7 @@ h1 {
 
 .search {
   position: absolute;
-  top: 120px;
+  top: 170px;
   right: 0;
 }
 </style>
@@ -160,9 +168,12 @@ h1 {
                 ...or <a href="{% url 'register' %}">register</a>
               </div>{# .login-box #}
             </li>
-          {% else %}
+          {% endif %}
+
+        {% if user.is_authenticated %}
             <li><a href="{% url 'manage-schedule' %}">Plan</a>
             <li><a href="{% url 'manage-video-list' %}">My videos</a>
+            <li><a href="{% url 'manage-media-uploads' %}">My uploads</a>
             <li>
               <div class="login_box">
                 Logged in as
@@ -170,8 +181,8 @@ h1 {
                 (<a href="{% url 'logout' %}">log out</a>)
               </div>{# .login-box #}
             </li>
-          {% endif %}
-        </ul>
+        {% endif %}
+          </ul>
       </nav>
 
       <div id="top_bar">

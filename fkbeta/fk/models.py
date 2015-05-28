@@ -516,6 +516,21 @@ class AsRun(TimeStampedModel):
             return '{s.playout} video: {s.video}'.format(s=self)
         return '{s.playout}: {s.program_name}'.format(s=self)
 
+"""
+class Site:
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=256)
+
+class SiteNode:
+    ROLE = Choices('upload', 'store', 'playout')
+
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=256)
+    hostname = models.CharField(max_length=256)
+    role = models.CharField(max_length=256, choices=ROLE)
+    site = models.ForeignKey(Site, blank=True, null=True)
+"""
+
 
 '''
 class Scheduleregion(models.Model):

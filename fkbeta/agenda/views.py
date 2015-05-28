@@ -110,6 +110,7 @@ class AbstractVideoFormView(TemplateView):
 
         # Request manual intervention before the video end in rotation
         initial["is_filler"] = False
+        initial["duration"] = datetime.timedelta()
 
       if request.user.is_superuser:
         initial["editor"] = request.user.id

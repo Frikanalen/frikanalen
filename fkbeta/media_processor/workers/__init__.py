@@ -6,6 +6,8 @@ from fk.models import FileFormat
 from fk.models import VideoFile
 from media_processor.models import Task
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG) # run_query -v 3 does not trigger this :(
 
 class WorkerFactory():
     workers = []
@@ -75,8 +77,16 @@ class FFmpegProcess(protocol.ProcessProtocol):
 
     def _run_engine(self):
         self.deferred = defer.Deferred()
-        logging.debug('Starting ffmpeg process...')
-        reactor.spawnProcess(self, "ffmpeg", self.arguments(), {})
+        logger.debug('Starting ffmpeg process...')
+        try: 
+            #reactor.spawnProcess(self, "ffmpeg", self.arguments(), {})
+            reactor.spawnProcess(self, "/utils/ffmpeg.exe", self.arguments(), {})
+        except OSError as e:
+            logger.debug('ffmpeg failed to run: ' + str(e))
+            #self.task.status = Task.STATE_FAILED
+            self.task.status = Task.STATE_PENDING
+            self.task.save()
+            self.deferred.errback()
         return self.deferred
 
     def processEnded(self, status):
@@ -84,14 +94,14 @@ class FFmpegProcess(protocol.ProcessProtocol):
         rc = status.value.exitCode
         if rc == 0:
             self.newfile.save()
-            logging.debug('ffmpeg process ended successfully.')
+            logger.debug('ffmpeg process ended successfully.')
             self.task.status = Task.STATE_COMPLETE
             self.task.save()
             self.deferred.callback(self)
         else:
             self.task.status = Task.STATE_FAILED
             self.task.save()
-            logging.debug('ffmpeg process returned failure.')
+            logger.debug('ffmpeg process returned failure.')
             self.deferred.errback(rc)
 
     def connectionMade(self):
@@ -99,16 +109,16 @@ class FFmpegProcess(protocol.ProcessProtocol):
         pass
 
     def outReceived(self, data):
-        print data
+        #print data
         #fixme, should log
         pass
 
     def errReceived(self, data):
-        print data
+        #print data
         if data[:6] == 'frame=':
             # FIXME: probably stupidly parsed.
             self.frame = data.split('=')[1].strip().split(' ')[0]
-        logging.debug(data)
+        logger.debug(data)
 
 class ThumbEncoder(FFmpegProcess):
     extension = '.jpg'

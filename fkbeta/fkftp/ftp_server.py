@@ -1,11 +1,21 @@
-# Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
-# This file is covered by the LGPLv3 or later, read COPYING for details.
+import os
 from twisted.python import filepath
 from twisted.protocols import ftp
 from twisted.cred import portal
 from twisted.python import log
-from twisted.internet import defer, reactor
+from twisted.internet import defer, reactor, interfaces
+from zope.interface import Interface, implements
 import djangoauth
+import file_watching
+
+"""
+This is pretty spagetti, but this is the price of overloading the complexity 
+of the Twisted FTP implementation and the general inflexibility of the aging protocol.
+
+This is basically the normal twisted FTP server, but it adds support for encoded filenames, append/restore,
+django authentication, and messages events via zmq to a broker. 
+
+"""
 
 class SaferDTP(ftp.DTP):
     "DTP with text encoding"
@@ -19,8 +29,7 @@ class SaferDTP(ftp.DTP):
 
 class SaferDTPFactory(ftp.DTPFactory):
     def buildProtocol(self, addr):
-        log.msg('DTPFactory.buildProtocol', debug=True)
-
+        #log.msg('DTPFactory.buildProtocol', debug=True)
         if self._state is not self._IN_PROGRESS:
             return None
         self._state = self._FINISHED
@@ -46,10 +55,11 @@ class UploadFTPProtocol(ftp.FTP):
         ftp.FTP.sendLine(self, line)
 
     def ftp_PASV(self):
-        if self.dtpFactory is not None:
-            # cleanupDTP sets dtpFactory to none.  Later we'll do
-            # cleanup here or something.
-            self.cleanupDTP()
+        log.msg("PASV - %r %r" % (self.dtpFactory, self.dtpPort))
+        # cleanupDTP sets dtpFactory to none.  Later we'll do
+        # cleanup here or something.
+        self.cleanupDTP()
+
         self.dtpFactory = SaferDTPFactory(pi=self)
         self.dtpFactory.setTimeout(self.dtpTimeout)
         self.dtpPort = self.getDTPPort(self.dtpFactory)
@@ -64,18 +74,20 @@ class UploadFTPProtocol(ftp.FTP):
         port = addr[4] << 8 | addr[5]
 
         # if we have a DTP port set up, lose it.
-        if self.dtpFactory is not None:
-            self.cleanupDTP()
+        log.msg("PASV - %r %r" % (self.dtpFactory, self.dtpPort))
+        #if (self.dtpFactory is None) and self.dtpPort: log.msg("%s - PORT - dtpFactory true but dtpPort false. Possible bug")
+        #if self.dtpFactory is not None:
+        self.cleanupDTP()
 
         self.dtpFactory = SaferDTPFactory(pi=self, peerHost=self.transport.getPeer().host)
         self.dtpFactory.setTimeout(self.dtpTimeout)
         self.dtpPort = reactor.connectTCP(ip, port, self.dtpFactory)
 
         def connected(ignored):
-            return ENTERING_PORT_MODE
+            return ftp.ENTERING_PORT_MODE
         def connFailed(err):
-            err.trap(PortConnectionError)
-            return CANT_OPEN_DATA_CNX
+            err.trap(ftp.PortConnectionError)
+            return ftp.CANT_OPEN_DATA_CNX
         return self.dtpFactory.deferred.addCallbacks(connected, connFailed)
 
     def ftp_LIST(self, path=''):
@@ -104,20 +116,67 @@ class UploadFTPProtocol(ftp.FTP):
         self.shell.append = True
         return self.ftp_STOR(path)
 
+    def cleanupDTP(self):
+        """
+        Call when DTP connection exits
+        """
+        #log.msg('Cleaning up connections', debug=True)
+        dtpPort, self.dtpPort = self.dtpPort, None
+        if dtpPort is None:
+            pass
+        elif interfaces.IListeningPort.providedBy(dtpPort):
+            #log.msg("Try to stop listening", debug=True)
+            dtpPort.stopListening()
+        elif interfaces.IConnector.providedBy(dtpPort):
+            #log.msg("Try to disconnect", debug=True)
+            dtpPort.disconnect()
+        else:
+            assert False, "dtpPort should be an IListeningPort or IConnector, instead is %r" % (dtpPort,)
+        if self.dtpFactory:
+            self.dtpFactory.stopFactory()
+            self.dtpFactory = None
+
+        if self.dtpInstance is not None:
+            self.dtpInstance = None
+
 
 class UploadFTPFactory(ftp.FTPFactory):
     allowAnonymous = False
     welcomeMessage = """Welcome to Frikanalen FTP - Velkommen til Frikanalen FTP"""
     protocol = UploadFTPProtocol
-    passivePortRange = range(5024, 5024+10)
-    
+    passivePortRange = range(62000, 62000+1000)
+    zmq_reporter = None
+
 class UploadFTPShell(ftp.FTPShell):
+    """An extended FTPShell that supports REST/APPE, and wraps the file reader/writer"""
     pos = 0
     append = False
+    FileWrapper = None
+    zmq_reporter = None
+
+    def __init__(self, root, zmq_reporter):
+        super(self.__class__, self).__init__(root)
+        self.root = root
+        self.zmq_reporter = zmq_reporter
+
+    def removeFile(self, path):
+        d = super(self.__class__, self).removeFile(path)
+        p = self._path(path)
+        report = {"filename": self.zmq_reporter.relative_filename(p), "action": "delete", "username": self.avatarId.username}
+        self.zmq_reporter.send_message("file.delete", report)
+        return d
+
+    def rename(self, fromPath, toPath):
+        d = super(self.__class__, self).rename(fromPath, toPath)
+        fp = self._path(fromPath)
+        tp = self._path(toPath)
+        report = {"from_filename":  self.zmq_reporter.relative_filename(fp), "to_filename": self.zmq_reporter.relative_filename(tp), "action": "rename", "username": self.avatarId.username}
+        self.zmq_reporter.send_message("file.rename", report)
+        return d
+
     def openForReading(self, path):
         '''
-        Overwrite openForReading of ftp.FTPAnonymousShell,
-        make it support ftp_REST
+        Extended to support ftp_REST
         '''
         p = self._path(path)
         if p.isdir():
@@ -129,37 +188,49 @@ class UploadFTPShell(ftp.FTPShell):
             if self.pos != 0:
                 f.seek(self.pos, 0)
                 self.pos = 0
-        except (IOError, OSError), e:
+        except (IOError, OSError) as e:
             return ftp.errnoToFailure(e.errno, path)
-        except:
-            return defer.fail()
-        else:
-            return defer.succeed(ftp._FileReader(f))
+        except Exception as e:
+            return defer.fail(e)
+        f = self.FileWrapper(f, file_watching.TransferTypeDownload, filepath=p)
+        f.zmq_reporter = self.zmq_reporter
+        f.avatarId = self.avatarId
+        return defer.succeed(ftp._FileReader(f))
 
     def openForWriting(self, path):
         '''
-        Overwrite openForReading of ftp.FTPShell,
-        make it support ftp_APPE
+        Extended to support ftp_APPE
         '''
         p = self._path(path)
+        do_hashing = True
         if p.isdir():
             # Normally, we would only check for EISDIR in open, but win32
             # returns EACCES in this case, so we check before
             return defer.fail(ftp.IsADirectoryError(path))
         try:
             if self.append:
-                fObj = p.open('ab')
+                f = p.open('ab')
                 self.append = False
+                do_hashing = False
             else:
-                fObj = p.open('wb')
-        except (IOError, OSError), e:
+                f = p.open('wb')
+        except (IOError, OSError) as e:
             return ftp.errnoToFailure(e.errno, path)
-        except:
-            return defer.fail()
-        return defer.succeed(ftp._FileWriter(fObj))    
+        except Exception as e:
+            return defer.fail(e)
+        f = self.FileWrapper(f, file_watching.TransferTypeUpload, do_hashing=do_hashing, filepath=p)
+        f.zmq_reporter = self.zmq_reporter
+        f.avatarId = self.avatarId
+        return defer.succeed(ftp._FileWriter(f))
 
-class UploadFTPRealm(ftp.BaseFTPRealm):
-    root = None
+class UploadFTPRealm:
+    implements(portal.IRealm)
+
+    FileWrapper = file_watching.WatchingFileWrapper
+    def __init__(self, root, zmq_reporter=None):
+        self.root = root
+        self.zmq_reporter = zmq_reporter
+
     def getHomeDirectory(self, avatarId):
         if avatarId.is_superuser:
             path = filepath.FilePath(self.root)
@@ -174,20 +245,22 @@ class UploadFTPRealm(ftp.BaseFTPRealm):
     def requestAvatar(self, avatarId, mind, *interfaces):
         for iface in interfaces:
             if iface is ftp.IFTPShell:
-                avatar = UploadFTPShell(self.getHomeDirectory(avatarId))
+                avatar = UploadFTPShell(self.getHomeDirectory(avatarId), self.zmq_reporter)
                 avatar.avatarId = avatarId # To allow the connection to be more aware of the logged in user
+                avatar.FileWrapper = self.FileWrapper
                 return (ftp.IFTPShell, avatar,
                         getattr(avatar, 'logout', lambda: None))
-        raise NotImplementedError(
-            "Only IFTPShell interface is supported by this realm")
+        raise NotImplementedError("Only IFTPShell interface is supported by this realm")
 
-
-def start_ftp(port, root):
+def start_ftp(port, root, zmq_reporter=None):
+    root = os.path.expanduser(root)
     from twisted.internet import reactor
     checker = djangoauth.DjangoAuthChecker()
-    realm = UploadFTPRealm("")
-    realm.root = root
+    realm = UploadFTPRealm(root, zmq_reporter)
+    if zmq_reporter:
+        realm.FileWrapper = file_watching.ReportingFileWrapper
+        realm.zmq_reporter = zmq_reporter
+    log.msg("FTP server serving from", root)
     fkportal = portal.Portal(realm, [checker])
-
     ftpfactory = UploadFTPFactory(portal=fkportal)
     reactor.listenTCP(port, ftpfactory)

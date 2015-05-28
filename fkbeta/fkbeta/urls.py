@@ -29,6 +29,10 @@ urlpatterns += fkvod.urls.urlpatterns
 import fkws.urls
 urlpatterns += fkws.urls.urlpatterns
 
+# Add media_encoder pages
+import media_processor.urls
+urlpatterns += media_processor.urls.urlpatterns
+
 # Add user authentication/management views
 from django.contrib.auth.views import login, logout
 from fk.views import register, user_profile

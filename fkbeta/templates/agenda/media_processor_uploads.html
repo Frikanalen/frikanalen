@@ -1,0 +1,65 @@
+{% extends "base_generic.html" %}
+
+{% block style %}
+<style>
+.table_container {
+    margin: 0px 0px 0 0;
+    overflow: hidden;
+}
+
+.table_container {
+    clear:both;
+    font-size: 12px;
+}
+
+.table_container ul {
+    list-style: none;
+    padding: 5px 0 5px 5px;
+    margin: 5px 5px 5px 5px;
+    clear: both;
+}
+
+.table_container li {
+    padding:0;
+    margin:0;
+    float: left;
+    width: 200px;
+    vertical-align: bottom;
+}
+</style>
+{% endblock style %}
+
+{% block content %}
+<div class="videolist_container">
+{% for upload in uploads %}
+<div class="table_container">
+<ul>
+    <li>
+        {{ upload.filename }}
+    </li>
+
+    <li>
+        {{ upload.size }}
+    </li>
+
+    <li>
+        {{ upload.state }}
+    </li>
+
+    <li>
+        {{ upload.last_write_at }}
+    </li>
+    <li>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="upload_id" value="{{ upload.id }}" />
+        Video id:
+        <input type="number" name="video_id" style="width:50;" />
+        <input type="submit" value="Ingest" />
+    </form>
+    </li>
+</ul>
+</div>
+{% endfor %}
+</div>
+{% endblock content %}
