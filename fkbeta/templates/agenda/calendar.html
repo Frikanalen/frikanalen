@@ -6,9 +6,9 @@
 <script type=text/jsx>
 'use strict';
 
-var HOUR_HEIGHT = 42;
+let HOUR_HEIGHT = 64;
 
-var Days = React.createClass({
+let Days = React.createClass({
   getDefaultProps: function() {
     return {
       hoursInDay: 24,
@@ -18,11 +18,11 @@ var Days = React.createClass({
   },
 
   generateDays: function(from, num_days) {
-    var days = [];
-    var start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
-    for (var i=0; i<num_days; i++) {
+    let days = [];
+    let start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    for (let i=0; i<num_days; i++) {
       // Omfg, Date is mutable
-      var newdate = new Date(start.valueOf());
+      let newdate = new Date(start.valueOf());
       newdate.setDate(newdate.getDate() + i);
       days.push(newdate);
     }
@@ -30,15 +30,15 @@ var Days = React.createClass({
   },
 
   getDaysWithEvents: function() {
-    var days_events = []
-    var days = this.generateDays(
+    let days_events = []
+    let days = this.generateDays(
         this.props.startDay, this.props.numberOfDays);
-    var event_i = 0;
-    for (var i=0; i<days.length; i++) {
-      var events = [];
-      var date_str = days[i].toDateString();
+    let event_i = 0;
+    for (let i=0; i<days.length; i++) {
+      let events = [];
+      let date_str = days[i].toDateString();
       for (; event_i<this.props.events.length; event_i++) {
-        var evt = this.props.events[event_i];
+        let evt = this.props.events[event_i];
         if (date_str === evt.start.toDateString()) {
           events.push(evt);
         }
@@ -57,8 +57,8 @@ var Days = React.createClass({
   },
 
   displayHours: function() {
-    var disp = []
-    for (var i=0; i<this.props.hoursInDay; i++) {
+    let disp = []
+    for (let i=0; i<this.props.hoursInDay; i++) {
       if (i < 10) {
         disp.push('0' + i + ':00');
       }
@@ -70,9 +70,15 @@ var Days = React.createClass({
   },
 
   render: function() {
+    let tableStyle = {
+      height: HOUR_HEIGHT * 24,
+    };
+    let hourMarkStyle = {
+      height: HOUR_HEIGHT,
+    };
     return (
       <div className="Days">
-        <table>
+        <table style={tableStyle}>
           <tr height="1" className="Days-markingContainer">
             <td></td>
             <td colSpan={this.props.numberOfDays} className="Days-hourContainer">
@@ -86,7 +92,10 @@ var Days = React.createClass({
           <tr className="Days-columnContainer">
             <td>
               {this.displayHours().map(function (hour, i) {
-                return <div className="Days-hourMark">{hour}</div>;
+                return (
+                  <div className="Days-hourMark" style={hourMarkStyle}>
+                    {hour}
+                  </div>);
               })}
             </td>
             {this.getDaysWithEvents().map(function(day, i) {
@@ -99,23 +108,26 @@ var Days = React.createClass({
   },
 });
 
-var HourRow = React.createClass({
+let HourRow = React.createClass({
   render: function() {
+    let style = {
+      height: HOUR_HEIGHT,
+    };
     return (
-      <div className="Days-hour">
+      <div className="Days-hour" style={style}>
         <div className="Days-halfHour"></div>
       </div>
     );
   },
 });
 
-var Day = React.createClass({
+let Day = React.createClass({
   render: function() {
     return (
       <td className="Days-dayColumn">
         <div>
           {this.props.events.map(function(evt, i) {
-            return <Event evt={evt} />;
+            return <Event key={'event-' + evt.pk} evt={evt} />;
           })}
         </div>
       </td>
@@ -123,34 +135,47 @@ var Day = React.createClass({
   },
 });
 
-var Event = React.createClass({
+let Event = React.createClass({
+  toTimeString: function() {
+    let evt = this.props.evt;
+    return (
+        ('0' + evt.start.getHours()).slice(-2) + ':' +
+        ('0' + evt.start.getMinutes()).slice(-2));
+  },
+
   render: function() {
-    var evt = this.props.evt
-    var style = {
-      top: HOUR_HEIGHT * evt.start.getHours(),
+    let evt = this.props.evt;
+    let style = {
+      top: HOUR_HEIGHT * (evt.start.getHours() + evt.start.getMinutes()/60.0),
       height: HOUR_HEIGHT * (evt.duration / (60*60)),
     };
-    var isTight = style.height < 20;
+    let isTight = style.height < 20;
+    let minutes = Math.ceil(evt.duration / 60);
+    let time_data = this.toTimeString() + ', ' + minutes + 'm';
     return (
       <div className="Event" style={style}>
         <div className={'Event-text' + (isTight ? ' Event-text--tight' : '')}>
-          {this.props.evt.title}
+          <div>{evt.title}</div>
+          <div className='Event-timedata'>
+            <small>{time_data}</small>
+           </div>
         </div>
       </div>
     );
   },
 });
 
-var events = [
+let events = [
 {% for event in events %}
   { start: new Date("{{ event.starttime.isoformat }}"),
     duration: {{ event.duration.total_seconds }},
+    pk: {{ event.pk }},
     title: "{{ event.video.name|default:event.default_name }}" },
 {% endfor %}
 ];
 
-var start = new Date("{{ starttime.isoformat }}");
-var calendar = document.getElementById('calendar');
+let start = new Date("{{ starttime.isoformat }}");
+let calendar = document.getElementById('calendar');
 React.render(<Days startDay={start} events={events} />, calendar);
 </script>
 
@@ -162,8 +187,8 @@ body {
 
 <style>
 .Days table {
-  height: 1008px; /* 42 x 24  */
   border-spacing: 0;
+  font-size: 11px;
 }
 .Days td {
   padding: 0;
@@ -181,7 +206,6 @@ body {
   width: 100%;
 }
 .Days-hour {
-  height: 42px;
 }
 .Days-halfHour {
   border-bottom: 1px dotted #ddd;
@@ -191,8 +215,6 @@ body {
 .Days-hourMark {
   border-right: 1px solid #ccc;
   color: #555;
-  font-size: 0.8em;
-  height: 42px;
   padding-right: 5px;
 }
 .Days-dayColumn {
@@ -202,19 +224,41 @@ body {
 }
 
 .Event {
-  background-color: #E6EEF7;
+  background: #E6EEF7;
   border-radius: 3px;
   box-sizing: border-box;
+  overflow: hidden;
   position: absolute;
   width: 90%;
 }
+.Event:hover {
+  background: #F9F7B6;
+  overflow: visible;
+  z-index: 10;
+}
 .Event-text {
-  padding: 10px;
+  background: inherit;
+  padding: 5px;
+}
+.Event-text:hover {
 }
 .Event-text--tight {
   padding-top: 0;
   padding-bottom: 0;
-  font-size: 0.8em;
+  line-height: 0.6;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+.Event-text--tight:hover {
+  line-height: initial;
+  white-space: normal;
+}
+.Event-timedata {
+  text-align: right;
+  visibility: hidden;
+}
+.Event-text:hover .Event-timedata {
+  visibility: visible;
 }
 </style>
 

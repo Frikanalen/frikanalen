@@ -10,6 +10,7 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from django.views.generic import TemplateView
 
 from fk.models import Organization
@@ -35,7 +36,10 @@ class ProgramguideView(TemplateView):
   def get_context_data(self, **kwargs):
     context = super(ProgramguideView, self).get_context_data(**kwargs)
 
-    starttime = timezone.now()
+    if 'date' in self.request.GET:
+        starttime = parse_datetime(self.request.GET['date'] + " 00:00")
+    else:
+        starttime = timezone.now()
     events = (Scheduleitem.objects
               .by_day(starttime.date(), days=7)
               .order_by('starttime'))
