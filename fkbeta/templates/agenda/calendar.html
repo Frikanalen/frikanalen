@@ -9,6 +9,8 @@
 var HOUR_HEIGHT = 64;
 
 var Days = React.createClass({
+  days_: undefined,
+
   getDefaultProps: function() {
     return {
       hoursInDay: 24,
@@ -17,22 +19,26 @@ var Days = React.createClass({
     };
   },
 
-  generateDays: function(from, num_days) {
-    var days = [];
+  getDays: function() {
+    if (this.days_) {
+      return this.days_;
+    }
+    var from = this.props.startDay;
+    var num_days = this.props.numberOfDays;
     var start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    this.days_ = [];
     for (var i=0; i<num_days; i++) {
       // Omfg, Date is mutable
       var newdate = new Date(start.valueOf());
       newdate.setDate(newdate.getDate() + i);
-      days.push(newdate);
+      this.days_.push(newdate);
     }
-    return days;
+    return this.days_;
   },
 
   getDaysWithEvents: function() {
     var days_events = []
-    var days = this.generateDays(
-        this.props.startDay, this.props.numberOfDays);
+    var days = this.getDays();
     var event_i = 0;
     for (var i=0; i<days.length; i++) {
       var events = [];
@@ -79,6 +85,17 @@ var Days = React.createClass({
     return (
       <div className="Days">
         <table style={tableStyle}>
+          <thead>
+            <tr className="Days-titleContainer">
+              <td></td>
+              {this.getDays().map(function (day, i) {
+                return (
+                  <th className="Days-title">
+                    {day.toDateString()}
+                  </th>);
+              })}
+            </tr>
+          </thead>
           <tr height="1" className="Days-markingContainer">
             <td></td>
             <td colSpan={this.props.numberOfDays} className="Days-hourContainer">
@@ -153,13 +170,15 @@ var Event = React.createClass({
     var minutes = Math.ceil(evt.duration / 60);
     var time_data = this.toTimeString() + ', ' + minutes + 'm';
     return (
-      <div className="Event" style={style}>
-        <div className={'Event-text' + (isTight ? ' Event-text--tight' : '')}>
-          <div>{evt.title}</div>
-          <div className='Event-timedata'>
-            <small>{time_data}</small>
-           </div>
-        </div>
+      <div className={'Event' + (isTight ? ' Event--tight' : '')} style={style}>
+        <a href={evt.url}>
+          <div className='Event-text'>
+            <div>{evt.title}</div>
+            <div className='Event-timedata'>
+              <small>{time_data}</small>
+            </div>
+          </div>
+        </a>
       </div>
     );
   },
@@ -170,7 +189,8 @@ var events = [
   { start: new Date("{{ event.starttime.isoformat }}"),
     duration: {{ event.duration.total_seconds }},
     pk: {{ event.pk }},
-    title: "{{ event.video.name|default:event.default_name }}" },
+    url: "{{ event.video.get_absolute_url }}",
+    title: "{{ event.video.name|default:event.default_name|escapejs }}" },
 {% endfor %}
 ];
 
@@ -186,6 +206,10 @@ body {
 </style>
 
 <style>
+.Days a {
+  color: black;
+  text-decoration: none;
+}
 .Days table {
   border-spacing: 0;
   font-size: 11px;
@@ -196,7 +220,9 @@ body {
 .Days-columnContainer {
   vertical-align: top;
 }
-
+.Days-title {
+  font-weight: normal;
+}
 .Days-hourContainer {
   position: relative;
 }
@@ -226,39 +252,35 @@ body {
 .Event {
   background: #E6EEF7;
   border-radius: 3px;
+  border-top: 1px solid #bad0e8;
   box-sizing: border-box;
   overflow: hidden;
   position: absolute;
+  transition: all 0.4s;
   width: 90%;
 }
 .Event:hover {
   background: #F9F7B6;
+  border-top: 1px solid #DAC16C;
   overflow: visible;
   z-index: 10;
 }
 .Event-text {
-  background: inherit;
   padding: 5px;
 }
 .Event-text:hover {
+  background: #F9F7B6;
+  transition: background-color 0.4s;
 }
-.Event-text--tight {
-  padding-top: 0;
-  padding-bottom: 0;
-  line-height: 0.6;
-  white-space: nowrap;
-  margin-bottom: 4px;
+.Event--tight .Event-text {
+  opacity: 0;
+  transition: opacity 0.4s;
 }
-.Event-text--tight:hover {
-  line-height: initial;
-  white-space: normal;
+.Event--tight:hover .Event-text {
+  opacity: 1;
 }
 .Event-timedata {
   text-align: right;
-  visibility: hidden;
-}
-.Event-text:hover .Event-timedata {
-  visibility: visible;
 }
 </style>
 
