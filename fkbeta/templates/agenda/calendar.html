@@ -6,9 +6,9 @@
 <script type=text/jsx>
 'use strict';
 
-let HOUR_HEIGHT = 64;
+var HOUR_HEIGHT = 64;
 
-let Days = React.createClass({
+var Days = React.createClass({
   getDefaultProps: function() {
     return {
       hoursInDay: 24,
@@ -18,11 +18,11 @@ let Days = React.createClass({
   },
 
   generateDays: function(from, num_days) {
-    let days = [];
-    let start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
-    for (let i=0; i<num_days; i++) {
+    var days = [];
+    var start = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    for (var i=0; i<num_days; i++) {
       // Omfg, Date is mutable
-      let newdate = new Date(start.valueOf());
+      var newdate = new Date(start.valueOf());
       newdate.setDate(newdate.getDate() + i);
       days.push(newdate);
     }
@@ -30,15 +30,15 @@ let Days = React.createClass({
   },
 
   getDaysWithEvents: function() {
-    let days_events = []
-    let days = this.generateDays(
+    var days_events = []
+    var days = this.generateDays(
         this.props.startDay, this.props.numberOfDays);
-    let event_i = 0;
-    for (let i=0; i<days.length; i++) {
-      let events = [];
-      let date_str = days[i].toDateString();
+    var event_i = 0;
+    for (var i=0; i<days.length; i++) {
+      var events = [];
+      var date_str = days[i].toDateString();
       for (; event_i<this.props.events.length; event_i++) {
-        let evt = this.props.events[event_i];
+        var evt = this.props.events[event_i];
         if (date_str === evt.start.toDateString()) {
           events.push(evt);
         }
@@ -57,8 +57,8 @@ let Days = React.createClass({
   },
 
   displayHours: function() {
-    let disp = []
-    for (let i=0; i<this.props.hoursInDay; i++) {
+    var disp = []
+    for (var i=0; i<this.props.hoursInDay; i++) {
       if (i < 10) {
         disp.push('0' + i + ':00');
       }
@@ -70,10 +70,10 @@ let Days = React.createClass({
   },
 
   render: function() {
-    let tableStyle = {
+    var tableStyle = {
       height: HOUR_HEIGHT * 24,
     };
-    let hourMarkStyle = {
+    var hourMarkStyle = {
       height: HOUR_HEIGHT,
     };
     return (
@@ -108,9 +108,9 @@ let Days = React.createClass({
   },
 });
 
-let HourRow = React.createClass({
+var HourRow = React.createClass({
   render: function() {
-    let style = {
+    var style = {
       height: HOUR_HEIGHT,
     };
     return (
@@ -121,7 +121,7 @@ let HourRow = React.createClass({
   },
 });
 
-let Day = React.createClass({
+var Day = React.createClass({
   render: function() {
     return (
       <td className="Days-dayColumn">
@@ -135,23 +135,23 @@ let Day = React.createClass({
   },
 });
 
-let Event = React.createClass({
+var Event = React.createClass({
   toTimeString: function() {
-    let evt = this.props.evt;
+    var evt = this.props.evt;
     return (
         ('0' + evt.start.getHours()).slice(-2) + ':' +
         ('0' + evt.start.getMinutes()).slice(-2));
   },
 
   render: function() {
-    let evt = this.props.evt;
-    let style = {
+    var evt = this.props.evt;
+    var style = {
       top: HOUR_HEIGHT * (evt.start.getHours() + evt.start.getMinutes()/60.0),
       height: HOUR_HEIGHT * (evt.duration / (60*60)),
     };
-    let isTight = style.height < 20;
-    let minutes = Math.ceil(evt.duration / 60);
-    let time_data = this.toTimeString() + ', ' + minutes + 'm';
+    var isTight = style.height < 20;
+    var minutes = Math.ceil(evt.duration / 60);
+    var time_data = this.toTimeString() + ', ' + minutes + 'm';
     return (
       <div className="Event" style={style}>
         <div className={'Event-text' + (isTight ? ' Event-text--tight' : '')}>
@@ -165,7 +165,7 @@ let Event = React.createClass({
   },
 });
 
-let events = [
+var events = [
 {% for event in events %}
   { start: new Date("{{ event.starttime.isoformat }}"),
     duration: {{ event.duration.total_seconds }},
@@ -174,8 +174,8 @@ let events = [
 {% endfor %}
 ];
 
-let start = new Date("{{ starttime.isoformat }}");
-let calendar = document.getElementById('calendar');
+var start = new Date("{{ starttime.isoformat }}");
+var calendar = document.getElementById('calendar');
 React.render(<Days startDay={start} events={events} />, calendar);
 </script>
 
