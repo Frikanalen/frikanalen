@@ -1,0 +1,166 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2015-2016 Petter Reinholdtsen <pere@hungry.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation; either
+# version 2.0 of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA  02110-1301  USA
+
+# Run using PYTHONPATH=`pwd`/frikanalen/utils after copying Frikanalen
+# from fk-member-tools/ to utils/.
+
+import os
+import sys
+import Frikanalen
+import hashlib
+import shutil
+import grp
+import pipes
+import re
+from subprocess import *
+ 
+uploadpath = "/tank/upload"
+mediapath = "/tank/new_media/media"
+
+def helptext():
+    print " s = skip"
+    print " d = delete file"
+    print " a = associate file with video entry (prompted for video ID)"
+    print " r = register new video entry and add file as orig format"
+    print " q = quit processing"
+    print " ? = show instructions"
+    print
+
+def chgrp(path, group):
+    """Set group of target path
+    """
+#    print "chgrp(", path, ",", group, ")"
+    try:
+        g = grp.getgrnam(group)[2]
+    except KeyError:
+        raise Exception("unknown group %s" % group)
+    try:
+        os.chown(path, -1, g)
+    except EnvironmentError, e:
+        raise Exception("could not change group")
+
+def fix_group_access(path):
+    chgrp(path, "fkmedia_rw")
+
+def makedir(dir):
+    if not os.path.isdir(dir):
+        os.mkdir(dir, 0775)
+        os.chmod(dir, 0775) # FIXME figure out why this is needed?  umask?
+        fix_group_access(dir)
+
+def associate_file(frikanalen, filepath, video = None):
+    if video is None:
+        video_id = raw_input("Associate with video id: ")
+        videolist = frikanalen.video_find(video_id = int(video_id))
+        video = videolist[0]
+    try:
+        filename = os.path.basename(filepath)
+        broadcastdir = "%s/%s/broadcast" % ( mediapath, video.id)
+        newpath = "%s/%s" % ( broadcastdir, filename)
+        print
+        print "Title:", video.name()
+        print "Header:", video.header()
+        print
+        if os.path.exists(newpath):
+            print "warning: this video ID already have the file %s" % newpath
+        ok = raw_input("Is this the correct video entry? [yn]")
+        if 'y' != ok:
+            return False
+#        print calculating sha256 sum of file
+#        sha256 = hashlib.sha256(open(filepath, 'rb').read()).digest()
+#        filename = sha256
+
+        print "moving %s\nto %s" %(filepath, broadcastdir)
+        makedir("%s/%s" % ( mediapath, video.id))
+        makedir("%s/%s/broadcast" % (mediapath, video.id))
+        shutil.move(filepath, newpath)
+        fix_group_access(newpath)
+
+        # FIXME register new file using API
+        #videofile = f.new_videofile(video, newpath, format=None)
+        #videofile.save()
+        # or perhaps just call # ~/frikanalen/utils/videofiles-update
+
+        return True
+    except Exception, e:
+        print "error: unable to associate file to video ID %s" % video_id
+        print e
+        pass
+        return False
+
+def register_new_video(frikanalen, uploader, filepath):
+    # add new video entry
+    duration = Frikanalen.Video.extract_videofile_duration(filepath)
+    videoinfo = {
+       'name'           : os.path.basename(filepath),
+       'duration'       : duration,
+       'editor'         : uploader,
+       'organization'   : 'NUUG', # FIXME find way to extract this from editor
+       'categories'     : [],
+#       'publish_on_web' : False,
+       # could also set has_tono_records, is_filler, ref_url
+    }
+    video = frikanalen.video_new(videoinfo)
+    retval = associate_file(frikanalen, filepath, video)
+    print """
+
+Now you can visit http://beta.frikanalen.no/admin/fk/video/%s/ to
+modify the 'Proper import' flag and set the Update and Uploaded
+time stamps.
+
+The name and header should be cleaned up too.
+
+""" % video.id
+    return retval
+
+def process_file_list(filelist):
+    # Process files, newest first
+    for file in sorted(filelist, key=lambda f: os.stat(f).st_mtime, reverse=True):
+        uploader = file.split("/")[3]
+        again = True
+        frikanalen = Frikanalen.API()
+        frikanalen.login()
+        while again:
+            again=False
+            s = raw_input("Upload choice for '%s'? [s/d/a/r/q/?]:" % file)
+            if 'q' == s: # Stop processing
+                return
+            elif 'a' == s: # Associate with video ID
+                if not associate_file(frikanalen, file):
+                    again=True
+            elif 'r' == s: # Add video entry and add file as orig format
+                if not register_new_video(frikanalen, uploader, file):
+                    again = True
+            elif 'd' == s:
+                # FIXME ask for confirmation and unlink file
+                True
+            elif 's' == s:
+                break
+            else:
+                helptext()
+                again=True
+
+if __name__ == '__main__':
+    uploadfiles = []
+    for root, subFolders, files in os.walk(uploadpath):
+        for file in files:
+            filepath = os.path.join(root,file)
+            uploadfiles.append(filepath)
+    process_file_list(uploadfiles)
