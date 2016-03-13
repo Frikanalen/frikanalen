@@ -35,6 +35,8 @@ class VideoSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
 
+    duration = serializers.CharField(required=True)
+
     class Meta:
         model = Video
         fields = (
@@ -47,6 +49,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "duration",
             #'videofiles',
             "categories",
+            "framerate",
+            "proper_import",
             "has_tono_records",
             "publish_on_web",
             "is_filler",
@@ -54,7 +58,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "updated_time",
             "uploaded_time",
             )
-        read_only_fields = ("updated_time", "uploaded_time")
+        read_only_fields = ("framerate", "updated_time", "uploaded_time")
 
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
