@@ -156,16 +156,19 @@ class Video(models.Model):
     # planned_duration = models.IntegerField()
     # Time when it is to be published on web
     # published_time = models.DateTimeField()
-    # Time the program record was created # Not migrated
-    # created_time = models.DateTimeField()
 
     proper_import = models.BooleanField(default=False)
     played_count_web = models.IntegerField(
         default=0, help_text='Number of times it has been played')
+    created_time = models.DateTimeField(
+        auto_now_add=True, null=True,
+        help_text='Time the program record was created')
     updated_time = models.DateTimeField(
-        null=True, help_text='Time the program record has been updated')
+        auto_now=True, null=True,
+        help_text='Time the program record has been updated')
     uploaded_time = models.DateTimeField(
-        null=True, help_text='Time the program record was created')
+        blank=True, null=True,
+        help_text='Time the original video for the program was uploaded')
     framerate = models.IntegerField(
         default=25000,
         help_text='Framerate of master video in thousands / second')
