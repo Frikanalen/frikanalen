@@ -182,6 +182,7 @@ def process_file_list(filelist):
                     again = True
             elif 'd' == s:
                 # FIXME ask for confirmation and unlink file
+                print "WARNING: Deletion not implemented."
                 True
             elif 's' == s:
                 break
