@@ -65,21 +65,41 @@ def makedir(dir):
         os.chmod(dir, 0775) # FIXME figure out why this is needed?  umask?
         fix_group_access(dir)
 
+def direct_playable(filepath):
+    """
+Run ffprobe to get video metadata, and check if the file is one the
+playout can play.
+
+"""
+    cmd = u'ffprobe {} 2>&1'.format(pipes.quote(filepath))
+    sb = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    output = sb.stdout.read()
+    sb.kill()
+    for line in output.split('\n'):
+        m = re.match( r".* Video: dvvideo (dvsd / 0x64737664),.*", line)
+        if m:
+            return True
+    return False
+    
 def associate_file(frikanalen, filepath, video = None):
-    if video is None:
-        video_id = raw_input("Associate with video id: ")
-        videolist = frikanalen.video_find(video_id = int(video_id))
-        video = videolist[0]
     try:
+        if video is None:
+            video_id = raw_input("Associate with video id: ")
+            videolist = frikanalen.video_find(video_id = int(video_id))
+            video = videolist[0]
         filename = os.path.basename(filepath)
-        broadcastdir = "%s/%s/broadcast" % ( mediapath, video.id)
+        if direct_playable(filepath):
+            broadcastdir = "%s/%s/broadcast" % ( mediapath, video.id)
+        else:
+            broadcastdir = "%s/%s/original" % ( mediapath, video.id)
         newpath = "%s/%s" % ( broadcastdir, filename)
         print
+        print "Target directory:" , broadcastdir
         print "Title:", video.name()
         print "Header:", video.header()
         print
         if os.path.exists(newpath):
-            print "warning: this video ID already have the file %s" % newpath
+            print "warning: this video ID already have the file\n  %s" % newpath
         ok = raw_input("Is this the correct video entry? [yn]")
         if 'y' != ok:
             return False
@@ -100,10 +120,20 @@ def associate_file(frikanalen, filepath, video = None):
 
         return True
     except Exception, e:
-        print "error: unable to associate file to video ID %s" % video_id
         print e
+        print "error: unable to associate file to video ID %s" % video_id
         pass
         return False
+
+def cleanup_new_video_entry(frikanalen, id):
+    """
+The Frikanalen API fail to set a few important fields when adding an
+entry (confirmed 2016-03-07).  These fields can only be set using the
+Django admin interface.  Set them to make sure the registered entries
+can be used right away to attach files to.
+
+"""
+    pass
 
 def register_new_video(frikanalen, uploader, filepath):
     # add new video entry
@@ -118,16 +148,18 @@ def register_new_video(frikanalen, uploader, filepath):
        # could also set has_tono_records, is_filler, ref_url
     }
     video = frikanalen.video_new(videoinfo)
-    retval = associate_file(frikanalen, filepath, video)
     print """
 
 Now you can visit http://beta.frikanalen.no/admin/fk/video/%s/ to
 modify the 'Proper import' flag and set the Update and Uploaded
 time stamps.
 
-The name and header should be cleaned up too.
+The name and header should be cleaned up too, next, visit
+http://beta.frikanalen.no/members/video/edit/%s to
+update the video description and categories.
 
-""" % video.id
+""" % (video.id, video.id)
+    retval = associate_file(frikanalen, filepath, video)
     return retval
 
 def process_file_list(filelist):
