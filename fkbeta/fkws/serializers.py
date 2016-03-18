@@ -55,10 +55,12 @@ class VideoSerializer(serializers.ModelSerializer):
             "publish_on_web",
             "is_filler",
             "ref_url",
+            "created_time",
             "updated_time",
             "uploaded_time",
             )
-        read_only_fields = ("framerate", "updated_time", "uploaded_time")
+        read_only_fields = (
+            "framerate", "created_time", "updated_time", "uploaded_time")
 
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
