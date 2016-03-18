@@ -64,6 +64,21 @@ class VideoSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "framerate", "created_time", "updated_time", "uploaded_time")
 
+    def validate(self, data):
+        is_creation = not self.instance
+        if is_creation and not data.get('organization'):
+            potential_orgs = data['editor'].organization_set.all()
+            if len(potential_orgs) == 0:
+                raise serializers.ValidationError(
+                    {'organization': "Field required when "
+                      "editor has no organization."})
+            elif len(potential_orgs) > 1:
+                raise serializers.ValidationError(
+                    [{'organization': "Field required when "
+                      "editor has more than one organization."}])
+            data['organization'] = potential_orgs[0]
+        return data
+
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
     video = VideoSerializer(required=False, read_only=True)
