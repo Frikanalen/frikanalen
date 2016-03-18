@@ -5,6 +5,7 @@ import datetime
 
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.utils import timezone
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import viewsets
@@ -203,6 +204,14 @@ class VideoFileList(generics.ListCreateAPIView):
         if video_id is not None:
             queryset = queryset.filter(video_id=video_id)
         return queryset
+
+    def perform_create(self, serializer):
+        video = serializer.validated_data['video']
+        # If we don't have a uploaded time, creating a file should set one.
+        if not video.uploaded_time:
+            video.uploaded_time = timezone.now()
+            video.save()
+        super(VideoFileList, self).perform_create(serializer)
 
 
 class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
