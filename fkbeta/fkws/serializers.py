@@ -29,9 +29,11 @@ class VideoFileSerializer(serializers.ModelSerializer):
 
 class VideoSerializer(serializers.ModelSerializer):
     editor = serializers.SlugRelatedField(
-        slug_field='username', queryset=User.objects.all())
+        slug_field='username', queryset=User.objects.all(),
+        default=serializers.CurrentUserDefault())
     organization = serializers.SlugRelatedField(
-        slug_field='name', queryset=Organization.objects.all())
+        slug_field='name', queryset=Organization.objects.all(),
+        required=False)
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
 
