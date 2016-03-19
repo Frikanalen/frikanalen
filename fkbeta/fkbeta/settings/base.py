@@ -27,7 +27,7 @@ CHANNEL_ID = "frikanalen.tv"
 CHANNEL_DISPLAY_NAMES = [u"Frikanalen"]
 
 # URL to the website for references in feeds (No trailing slash)
-SITE_URL = 'http://beta.frikanalen.tv'
+SITE_URL = 'http://beta.frikanalen.no'
 
 # For django-registration
 ACCOUNT_ACTIVATION_DAYS = 7
