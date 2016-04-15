@@ -38,7 +38,7 @@ def helptext():
     print " s = skip"
     print " d = delete file"
     print " a = associate file with video entry (prompted for video ID)"
-    print " r = register new video entry and add file as orig format"
+    print " r = register new video entry and add file as original or broadcast format"
     print " q = quit processing"
     print " ? = show instructions"
     print
