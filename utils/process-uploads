@@ -109,7 +109,7 @@ def associate_file(frikanalen, filepath, video = None):
 
         print "moving %s\nto %s" %(filepath, broadcastdir)
         makedir("%s/%s" % ( mediapath, video.id))
-        makedir("%s/%s/broadcast" % (mediapath, video.id))
+        makedir(broadcastdir)
         shutil.move(filepath, newpath)
         fix_group_access(newpath)
 
@@ -121,7 +121,7 @@ def associate_file(frikanalen, filepath, video = None):
         return True
     except Exception, e:
         print e
-        print "error: unable to associate file to video ID %s" % video_id
+        print "error: unable to associate file to video ID %s" % video.id
         pass
         return False
 
