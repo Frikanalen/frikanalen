@@ -81,7 +81,7 @@ playout can play.
             return True
     return False
     
-def associate_file(frikanalen, filepath, video = None):
+def associate_file(frikanalen, filepath, video = None, interactive = True):
     try:
         if video is None:
             video_id = raw_input("Associate with video id: ")
@@ -100,9 +100,10 @@ def associate_file(frikanalen, filepath, video = None):
         print
         if os.path.exists(newpath):
             print "warning: this video ID already have the file\n  %s" % newpath
-        ok = raw_input("Is this the correct video entry? [yn]")
-        if 'y' != ok:
-            return False
+        if interactive:
+            ok = raw_input("Is this the correct video entry? [yn]")
+            if 'y' != ok:
+                return False
 #        print calculating sha256 sum of file
 #        sha256 = hashlib.sha256(open(filepath, 'rb').read()).digest()
 #        filename = sha256
@@ -116,7 +117,9 @@ def associate_file(frikanalen, filepath, video = None):
         # FIXME register new file using API
         #videofile = f.new_videofile(video, newpath, format=None)
         #videofile.save()
-        # or perhaps just call # ~/frikanalen/utils/videofiles-update
+        # just call ~/frikanalen/utils/videofiles-update while the the API method is missing
+        import subprocess
+        subprocess.call([os.path.expanduser('~pere/frikanalen/utils/videofiles-update'), str(video.id)])
 
         return True
     except Exception, e:
@@ -125,16 +128,6 @@ def associate_file(frikanalen, filepath, video = None):
         pass
         return False
 
-def cleanup_new_video_entry(frikanalen, id):
-    """
-The Frikanalen API fail to set a few important fields when adding an
-entry (confirmed 2016-03-07).  These fields can only be set using the
-Django admin interface.  Set them to make sure the registered entries
-can be used right away to attach files to.
-
-"""
-    pass
-
 def register_new_video(frikanalen, uploader, filepath):
     # add new video entry
     duration = Frikanalen.Video.extract_videofile_duration(filepath)
@@ -142,24 +135,20 @@ def register_new_video(frikanalen, uploader, filepath):
        'name'           : os.path.basename(filepath),
        'duration'       : duration,
        'editor'         : uploader,
-       'organization'   : 'NUUG', # FIXME find way to extract this from editor
        'categories'     : [],
 #       'publish_on_web' : False,
+       'proper_import'  : True,
        # could also set has_tono_records, is_filler, ref_url
     }
     video = frikanalen.video_new(videoinfo)
     print """
 
-Now you can visit http://beta.frikanalen.no/admin/fk/video/%s/ to
-modify the 'Proper import' flag and set the Update and Uploaded
-time stamps.
-
-The name and header should be cleaned up too, next, visit
+The name and header should be cleaned up.  Next, visit
 http://beta.frikanalen.no/members/video/edit/%s to
 update the video description and categories.
 
 """ % (video.id, video.id)
-    retval = associate_file(frikanalen, filepath, video)
+    retval = associate_file(frikanalen, filepath, video, interactive = False)
     return retval
 
 def process_file_list(filelist):
