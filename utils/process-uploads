@@ -147,7 +147,7 @@ The name and header should be cleaned up.  Next, visit
 http://beta.frikanalen.no/members/video/edit/%s to
 update the video description and categories.
 
-""" % (video.id, video.id)
+""" % (video.id)
     retval = associate_file(frikanalen, filepath, video, interactive = False)
     return retval
 
