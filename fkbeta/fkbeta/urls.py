@@ -11,7 +11,7 @@ import agenda.urls
 import fkvod.urls
 import fkws.urls
 from fk.views import register, user_profile
-from fknews.views import Frontpage
+from fkbeta.views import Frontpage
 
 
 admin.autodiscover()

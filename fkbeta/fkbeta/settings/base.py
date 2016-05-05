@@ -229,7 +229,6 @@ LOCAL_APPS = (
     'fkbeta',
     'agenda',
     'fk',
-    'fknews',
     'fkprofile',
     'fkws',
     'media_processor',
