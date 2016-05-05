@@ -1,47 +1,35 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
+
 from django.conf.urls import patterns, include, url
-
-# Enable the admin:
 from django.contrib import admin
-admin.autodiscover()
-urlpatterns = patterns('', (r'^admin/', include(admin.site.urls)))
-
-# Only used with DEBUG. Serves static content right from source
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-urlpatterns += staticfiles_urlpatterns()
-
-# Add pages from organization profile.
-urlpatterns += patterns('',
-    url(r'^member/', include('fkprofile.urls')),
-)
-
-# Add pages from agenda.
-import agenda.urls
-urlpatterns += agenda.urls.urlpatterns
-
-# Add public vod pages
-import fkvod.urls
-urlpatterns += fkvod.urls.urlpatterns
-
-# Add webservices
-import fkws.urls
-urlpatterns += fkws.urls.urlpatterns
-
-# Add user authentication/management views
 from django.contrib.auth.views import login, logout
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+import agenda.urls
+import fkvod.urls
+import fkws.urls
 from fk.views import register, user_profile
-
-urlpatterns += patterns('',
-        url(r'^register/$', register, name='register'),
-        url(r'^login/$', login, name='login'),
-        url(r'^user/$', user_profile, name='profile'),
-        url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
-        )
-
 from fknews.views import Frontpage
 
-urlpatterns += patterns('',
-    url(r'^$', Frontpage.as_view(), name="frontpage"),
-    )
+
+admin.autodiscover()
+
+urlpatterns = patterns('',
+    url(r'^$', Frontpage.as_view(), name='frontpage'),
+    url(r'^register/$', register, name='register'),
+    url(r'^login/$', login, name='login'),
+    url(r'^user/$', user_profile, name='profile'),
+    url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+
+    url(r'^member/', include('fkprofile.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+)
+
+urlpatterns += agenda.urls.urlpatterns
+urlpatterns += fkvod.urls.urlpatterns
+urlpatterns += fkws.urls.urlpatterns
+
+# Only used with DEBUG. Serves static content right from source
+urlpatterns += staticfiles_urlpatterns()
