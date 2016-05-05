@@ -76,7 +76,7 @@ playout can play.
     output = sb.stdout.read()
     sb.kill()
     for line in output.split('\n'):
-        m = re.match( r".* Video: dvvideo (dvsd / 0x64737664),.*", line)
+        m = re.match( r".* Video: dvvideo( \(dvsd / 0x64737664\))?, .*", line)
         if m:
             return True
     return False
