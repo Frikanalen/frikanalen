@@ -4,61 +4,36 @@
 
 {% block style %}
   <style>
-    h1, p {
-      font-family: Arial, Helvetica, "Bitstream Vera Sans", sans-serif;
-    }
-
-    p {
-      margin: .5em 2em;
-      width: 80%;
-    }
-
-    #mainbox {
-      margin: 0 350px 30px 50px;
-    }
-
-    .top_news_box {
-      max-width: 100%;
-    }
-
-    .top_news_box h2 {
-        margin: 0; padding: 0;
-        margin-left: 7px;
-        text-transform: uppercase;
-        font-size: 14pt;
-    }
-
-    .featured_video {
-        color: white;
-        background-color: #333;
-    }
-    .featured_video a {
-        color: #bcb;
-    }
+  #live {
+    background-color: black;
+  }
+  #live h1 {
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    padding: 5px 0 3px;
+    margin: 0;
+  }
+  video {
+    max-height: 65vh;
+    max-width: 100%;
+  }
+  #twitter {
+    margin: 20px auto;
+    max-width: 520px;
+  }
   </style>
 {% endblock style %}
 
 {% block content %}
-<div id="right_bar">
+<div id="mainbox">
+  <div id=live>
+    <h1>Frikanalen-sending</h1>
+    <video width=1024 height=576 controls src="http://video.nuug.no/frikanalen.webm"></video>
+  </div>
+  <div id=twitter>
     <a class="twitter-timeline" href="https://twitter.com/Frikanalen" data-widget-id="389487927782162432">Tweets by @Frikanalen</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </div>
 </div>
-<div id="mainbox">
-    <div class="top_news_box">
-        <div class="featured_video">
-            <h2>ukens video <small><a href="/video/625446">Civic Tech and the Sad Story of Freedom of Information in Hungary?</a></small></h2>
-            {% load vod %}
-            {% show_vod_widget 625446 %}
-        </div>
-        <!--div id="coming_attractions">
-            <h2>kommende sendinger</h2>
-        </div-->
-    </div>
-  <div id="latest-news">
-    {% for article in article_list %}
-    <h2>{{ article.title }}</h2>
-    <p>{{ article.text|safe }}</p>
-    {% endfor %}
-  </div>
-  </div>
 {% endblock content %}
