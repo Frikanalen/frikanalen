@@ -180,6 +180,7 @@ def videofile_find_unregistered(mech, videodir):
 #    print id
     regfilehash = {}
     mediafilehash = {}
+    formathash = {}
     filehash = {}
     wronglengthfile = {}
     regfiles = videofile_for_video(id)
@@ -195,6 +196,7 @@ def videofile_find_unregistered(mech, videodir):
 #           print mediapath
            filehash[mediapath] = 1
            format, isvideo = guess_file_format(mediapath)
+           formathash[format] = mediapath
            mediafilehash[mediapath] = format
            if isvideo:
                duration = get_file_duration(fullpath)
@@ -218,6 +220,9 @@ def videofile_find_unregistered(mech, videodir):
         regfilehash[regfile['filename']] = regfile['format']
         filehash[regfile['filename']] = regfile['id']
 
+    if 6 in formathash and not 2 in formathash:
+        msg = "video %d: original but no broadcast format - will crash playout"%id
+        errors.append(msg)
     unregistered = {}
     missingfile = {}
     for file in filehash:
