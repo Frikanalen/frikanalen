@@ -42,6 +42,8 @@ videofilesurl = 'http://beta.frikanalen.no/api/videofiles/'
 tokenurl      = 'http://beta.frikanalen.no/api/obtain-token'
 videosurl     = 'http://beta.frikanalen.no/api/videos/'
 
+args = {}
+
 def json_post(mech, url, jsondata):
     """
 Post JSON data to the API.
@@ -262,7 +264,10 @@ def videofile_find_unregistered(mech, videodir):
                 return False
         if 0 < len(unregistered):
             i = ''
-            i = raw_input("Add files missing to API database? y/[n]/q: ") 
+            if args.autoappend:
+                i = 'yes'
+            else:
+                i = raw_input("Add files missing to API database? y/[n]/q: ") 
             if i == '' or i == "no" or i == "n": 
                 print "not adding unregistered files"
             elif i == "yes" or i == "y": 
@@ -332,9 +337,20 @@ password=mypassword
         exit(1)
     return config
 
-if __name__=="__main__":
+def main():
     # Always output in UTF-8
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Update video file list in Frikanalen.')
+    parser.add_argument('videoid', metavar='videoid', type=int, nargs='+',
+                    help='the video id to investigate')
+    parser.add_argument('--autoappend', dest='autoappend', action='store_const',
+                        const=True, default=False,
+                        help='Automatically add new files found on disk.')
+
+    args = parser.parse_args()
 
     config = load_config()
     username = config.get('auth', 'username')
@@ -345,8 +361,8 @@ if __name__=="__main__":
 
     mech = frikanalen_login(username, password)
 
-    if len(sys.argv) > 1:
-        for id in sys.argv[1:]:
+    if len(args.videoid) > 0:
+        for id in args.videoid:
             if not videofile_find_unregistered(mech, "%s/%s" % (mediadir, id)):
                 print "Exiting"
                 break
@@ -355,3 +371,6 @@ if __name__=="__main__":
             if not videofile_find_unregistered(mech, videodir):
                 print "Exiting"
                 break
+
+if __name__=="__main__":
+    main()
