@@ -34,16 +34,16 @@ class VideoDetail(TemplateView):
 class AbstractVideoList(TemplateView):
     template = 'fkvod/video_list.html'
 
-    def videoset_name(self, *kw, **kwargs):
+    def videoset_name(self, *args, **kwargs):
         return "abstract videos"
 
-    def initial_queryset(self, *kw, **kwargs):
+    def initial_queryset(self, *args, **kwargs):
         """Method that returns videos to browse"""
         pass
 
-    def get(self, request, *kw, **kwargs):
-        videos = self.initial_queryset(*kw, **kwargs)
-        videoset_name = self.videoset_name(*kw, **kwargs)
+    def get(self, request, *args, **kwargs):
+        videos = self.initial_queryset(*args, **kwargs)
+        videoset_name = self.videoset_name(*args, **kwargs)
         s = request.GET.get("page")
         if str(s).isdigit():
             page_nr = int(s)
