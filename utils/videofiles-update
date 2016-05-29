@@ -21,6 +21,7 @@
 # Look for unregistered files in /tank/new_media/media/, and ask if
 # they should be registered in the database.
 
+import argparse
 import os
 import sys
 import json
@@ -338,10 +339,9 @@ password=mypassword
     return config
 
 def main():
+    global args
     # Always output in UTF-8
     sys.stdout = codecs.getwriter('utf8')(sys.stdout)
-
-    import argparse
 
     parser = argparse.ArgumentParser(description='Update video file list in Frikanalen.')
     parser.add_argument('videoid', metavar='videoid', type=int, nargs='*',
