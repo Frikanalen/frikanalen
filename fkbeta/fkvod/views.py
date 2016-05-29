@@ -33,6 +33,8 @@ class VideoDetail(TemplateView):
 
 class AbstractVideoList(TemplateView):
     template = 'fkvod/video_list.html'
+    # FIXME how can this be the default for HTML rendering?
+    contenttype = 'text/html; charset=utf-8'
 
     def videoset_name(self, *args, **kwargs):
         return "abstract videos"
@@ -72,7 +74,8 @@ class AbstractVideoList(TemplateView):
         }
         return render_to_response(self.template,
                                   context,
-                                  context_instance=RequestContext(request))
+                                  context_instance=RequestContext(request),
+                                  content_type=self.contenttype)
 
 class VideoList(AbstractVideoList):
     def videoset_name(self):
@@ -104,6 +107,7 @@ class OrganizationVideos(AbstractVideoList):
 
 class RssVideos(AbstractVideoList):
     template = 'fkvod/video_list.rss'
+    contenttype = 'application/xml'
 
     def videoset_name(self, orgid=None, *args, **kwargs):
         if self.org is not None:

@@ -32,13 +32,11 @@
     </image>
     <itunes:image href="http://www.frikanalen.no/images/logo_small.png"/>
 
-<div class="videolist_container">
 {% for video in videos %}
-
     <item>
       <title>{{ video.name }}</title>
        <pubDate>{{ video.uploaded_time }}</pubDate>
-      <itunes:duration>{{ video.duration }}<b/itunes:duration>
+      <itunes:duration>{{ video.duration }}</itunes:duration>
       <enclosure url="{{ video.ogv_url }}"/>
     </item>
 
