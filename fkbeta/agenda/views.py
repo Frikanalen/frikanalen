@@ -13,6 +13,7 @@ from django.template import RequestContext
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.generic import TemplateView
+from django.http import HttpResponseForbidden
 
 from fk.models import Organization
 from fk.models import Scheduleitem
@@ -166,9 +167,14 @@ class ManageVideoNew(AbstractVideoFormView):
 class ManageVideoEdit(AbstractVideoFormView):
   Form = VideoFormForUsers
   def get(self, request, id=None, form=None):
-    if not request.user.is_authenticated() or not request.user.is_superuser:
+    if not request.user.is_authenticated():
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
+    if not ((video.organization and
+             video.organization.members.filter(pk=request.user.id).exists()) or
+            request.user.is_superuser):
+      return HttpResponseForbidden(
+          "You are not a member of the organization that owns this videos.")
     form = self.get_form(request, form=form, instance=video)
     context = {
                "form": form,
@@ -179,13 +185,19 @@ class ManageVideoEdit(AbstractVideoFormView):
       context_instance=RequestContext(request))
 
   def post(self, request, id):
-    if not request.user.is_authenticated() or not request.user.is_superuser:
+    if not request.user.is_authenticated():
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
+    if not ((video.organization and
+             video.organization.members.filter(pk=request.user.id).exists()) or
+            request.user.is_superuser):
+      return HttpResponseForbidden(
+          "You are not a member of the organization that owns this videos.")
     form = self.get_form(request, data=request.POST, instance=video)
     if form.is_valid():
       form.save()
     return self.get(request, id=id, form=form)
+
 
 def fill_next_weeks_agenda():
     slots = WeeklySlot.objects.all()
