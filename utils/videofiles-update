@@ -344,8 +344,8 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Update video file list in Frikanalen.')
-    parser.add_argument('videoid', metavar='videoid', type=int, nargs='+',
-                    help='the video id to investigate')
+    parser.add_argument('videoid', metavar='videoid', type=int, nargs='*',
+                    help='The video ID(s) to investigate.')
     parser.add_argument('--autoappend', dest='autoappend', action='store_const',
                         const=True, default=False,
                         help='Automatically add new files found on disk.')
