@@ -1,7 +1,7 @@
 # Pro-tip: Try not to put anything here. There should be no dependency in
-#	production that isn't in development.
+# production that isn't in development.
 -r base.txt
 
-#gunicorn==0.17.4
+#gunicorn == 0.17.4
 
-psycopg2
+psycopg2 == 2.6.2
