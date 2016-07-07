@@ -6,5 +6,5 @@ django-durationfield == 0.5.2
 django-model-utils == 2.5
 django-registration-redux == 1.4
 djangorestframework == 3.3.3
-python-dateutil == 2.1
+python-dateutil == 2.5.3
 pytz == 2016.4
