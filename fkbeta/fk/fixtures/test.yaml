@@ -49,7 +49,7 @@
     editor: 1
     name: "tech video"
     organization: 1
-    duration: 10
+    duration: 10010000  # 10.01s
     publish_on_web: true
     proper_import: true
 - model: fk.video
@@ -58,7 +58,7 @@
     editor: 2
     name: "dummy video"
     organization: 2  # Dummy org
-    duration: 10
+    duration: 60000000  # 1m
     publish_on_web: true
     proper_import: true
 - model: fk.video
@@ -90,7 +90,7 @@
   fields:
     video: 1
     format: 1
-    filename: tech_video.mov
+    filename: tech_video.mp4
 - model: fk.videofile
   pk: 2
   fields:
@@ -102,7 +102,7 @@
   fields:
     video: 3
     format: 1
-    filename: unpublished_video.mov
+    filename: unpublished_video.dv
 - model: fk.videofile
   pk: 4
   fields:

@@ -2,6 +2,7 @@
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 import datetime
 
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import timezone
 
@@ -168,3 +169,46 @@ def create_scheduleitem(starttime=None):
 def parse_to_datetime(dt_str):
     dt = datetime.datetime.strptime(dt_str, '%Y-%m-%d %H:%M')
     return timezone.make_aware(dt, timezone.get_current_timezone())
+
+
+class APITest(TestCase):
+    fixtures = ['test.yaml']
+
+    def test_api_root(self):
+        r = self.client.get(reverse('api-root'))
+
+        self.assertEqual(
+            ['scheduleitems', 'asrun', 'videofiles', 'videos', 'obtain-token'],
+            r.data.keys())
+
+    def test_api_video_list(self):
+        r = self.client.get(reverse('api-video-list'))
+
+        self.assertEqual(
+            ['tech video', 'dummy video', 'unpublished video'],
+            [v['name'] for v in r.data['results']])
+
+    def test_api_videofiles_list(self):
+        r = self.client.get(reverse('api-videofile-list'))
+
+        self.assertEqual(
+            ['tech_video.mp4', 'dummy_video.mov', 'unpublished_video.dv',
+             'broken_video.mov'],
+            [v['filename'] for v in r.data['results']])
+
+    def test_api_scheduleitems_list(self):
+        r = self.client.get(reverse('api-scheduleitem-list') + '?date=20141231')
+
+        self.assertEqual(
+            ['tech video', 'dummy video'],
+            [v['video']['name'] for v in r.data['results']])
+        self.assertEqual(
+            ['http://testserver/api/videos/1',
+             'http://testserver/api/videos/2'],
+            [v['video_id'] for v in r.data['results']])
+        self.assertEqual(
+            ['0:00:10.010000', '0:01:00'],
+            [v['video']['duration'] for v in r.data['results']])
+        self.assertEqual(
+            ['nuug_user', 'dummy_user'],
+            [v['video']['editor'] for v in r.data['results']])
