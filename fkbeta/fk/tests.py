@@ -20,11 +20,11 @@ class WebPageTest(TestCase):
         self.assertContains(r, 'class="video_container"', count=2)
 
     def test_video_detail(self):
-        r = self.client.get('/video/1')
+        r = self.client.get('/video/1/')
         self.assertContains(
             r, 'First broadcast: <i>Jan. 1, 2015, 10 a.m.</i>', count=1)
         self.assertContains(r, '<h1>Video not available</h1>', count=1)
-        self.assertContains(r, '<a href="/organization/1">NUUG</a>', count=1)
+        self.assertContains(r, '<a href="/organization/1/">NUUG</a>', count=1)
 
     def test_video_guide(self):
         sched = Scheduleitem.objects.get(video__name='tech video')
@@ -38,7 +38,7 @@ class WebPageTest(TestCase):
         r = self.client.get('/xmltv/2015/01/01')
         self.assertContains(r, '<title lang="no">tech video</title>', count=1)
         self.assertContains(r, '<title lang="no">dummy video</title>', count=1)
-        self.assertContains(r, '<url>http://beta.frikanalen.tv/video/2</url>', count=1)
+        self.assertContains(r, '<url>http://beta.frikanalen.no/video/2/</url>', count=1)
         self.assertContains(r, '</programme>', count=2)
 
 
