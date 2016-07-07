@@ -11,6 +11,7 @@ from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -58,6 +59,12 @@ class ObtainAuthToken(generics.RetrieveAPIView):
         return get_object_or_404(Token, user=self.request.user)
 
 
+class Pagination(PageNumberPagination):
+    page_size = 50
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+
 class AsRunViewSet(viewsets.ModelViewSet):
     """
     Query parameters
@@ -75,9 +82,8 @@ class AsRunViewSet(viewsets.ModelViewSet):
     queryset = AsRun.objects.all()
     serializer_class = AsRunSerializer
     filter_backends = (filters.OrderingFilter,)
-    paginate_by = 50
-    paginate_by_param = 'page_size'
     permission_classes = (IsStaffOrReadOnly,)
+    pagination_class = Pagination
 
 
 class ScheduleitemList(generics.ListCreateAPIView):
@@ -105,12 +111,11 @@ class ScheduleitemList(generics.ListCreateAPIView):
     queryset = Scheduleitem.objects.all()
     serializer_class = ScheduleitemSerializer
     filter_backends = (filters.OrderingFilter,)
-    paginate_by = 50
-    paginate_by_param = 'page_size'
+    pagination_class = Pagination
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
-        params = self.request.QUERY_PARAMS
+        params = self.request.query_params
         try:
             days = int(params['days'])
         except (KeyError, ValueError):
@@ -153,13 +158,12 @@ class VideoList(generics.ListCreateAPIView):
     queryset = Video.objects.filter(proper_import=True)
     serializer_class = VideoSerializer
     filter_backends = (filters.OrderingFilter,)
-    paginate_by = 50
-    paginate_by_param = 'page_size'
+    pagination_class = Pagination
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
-        queryset = self.queryset
-        search_query = self.request.QUERY_PARAMS.get('q')
+        queryset = super(VideoList, self).get_queryset()
+        search_query = self.request.query_params.get('q')
         if search_query:
             queryset = fkvod.search.search_videos(queryset,
                                                   query=search_query)
@@ -194,13 +198,12 @@ class VideoFileList(generics.ListCreateAPIView):
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     filter_backends = (filters.OrderingFilter,)
-    paginate_by = 50
-    paginate_by_param = 'page_size'
+    pagination_class = Pagination
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
-        queryset = self.queryset
-        video_id = self.request.QUERY_PARAMS.get('video_id')
+        queryset = super(VideoFileList, self).get_queryset()
+        video_id = self.request.query_params.get('video_id')
         if video_id is not None:
             queryset = queryset.filter(video_id=video_id)
         return queryset

@@ -2,7 +2,7 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -16,7 +16,7 @@ from fkbeta.views import Frontpage
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', Frontpage.as_view(), name='frontpage'),
     url(r'^register/$', register, name='register'),
     url(r'^login/$', login, name='login'),
@@ -25,7 +25,7 @@ urlpatterns = patterns('',
 
     url(r'^member/', include('fkprofile.urls')),
     url(r'^admin/', include(admin.site.urls)),
-)
+]
 
 urlpatterns += agenda.urls.urlpatterns
 urlpatterns += fkvod.urls.urlpatterns

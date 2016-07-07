@@ -1,6 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
+
 from fkprofile.views import ProfileDetailView
 
-urlpatterns = patterns('',
-        url(r'^(?P<pk>\w+)/$', ProfileDetailView.as_view(), name='profile-view'),
-        )
+
+urlpatterns = [
+    url(r'^(?P<pk>\w+)/$', ProfileDetailView.as_view(), name='profile-view'),
+]

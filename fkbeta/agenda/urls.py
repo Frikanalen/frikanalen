@@ -1,10 +1,10 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from agenda import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^guide/',
         views.ProgramguideView.as_view(), name='guide'),
     url(r'^calendar/$',
@@ -20,4 +20,4 @@ urlpatterns = patterns('',
     url(r'^xmltv/$', views.xmltv_home, name='xmltv-home'),
     url(r'^xmltv/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/?$',
         views.xmltv, name='xmltv-feed'),
-)
+]

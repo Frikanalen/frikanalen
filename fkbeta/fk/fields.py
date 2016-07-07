@@ -7,8 +7,8 @@ from fkutils import timeutils
 import datetime
 
 from django.forms.fields import CharField
-from django.forms.util import ValidationError as FormValidationError
-from django.forms.util import ValidationError
+from django.forms.utils import ValidationError as FormValidationError
+from django.forms.utils import ValidationError
 
 class FramesField(IntegerField):
     pass
