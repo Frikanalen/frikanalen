@@ -59,7 +59,7 @@
         <small>Uploaded: <i>{{ video.uploaded_time|date:"d M Y"}}</i></small>
       </div>
       <div>
-        <small>Length: {{ video.duration|truncate_duration }}</small>
+        <small>Length: {{ video.duration|truncate_duration }} {% if video.is_filler %}(filler){% endif %}
       </div>
       <div>
         {% if video.first_broadcast %}
