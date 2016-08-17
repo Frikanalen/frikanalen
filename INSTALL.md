@@ -40,3 +40,10 @@ Start the webserver:
     (env)$ python manage.py runserver
 
 Point your browser to http://127.0.0.1:8000/admin and log in.
+
+## Docker
+
+If you want to use docker, the following commands should set you up:
+
+    $ docker build -t "frikanalen" .
+    $ docker run -p 8000:8000 frikanalen
