@@ -47,3 +47,7 @@ If you want to use docker, the following commands should set you up:
 
     $ docker build -t "frikanalen" .
     $ docker run -p 8000:8000 frikanalen
+
+Alternatively you can pull down a image from Docker Hub:
+
+    $ docker run -p 8000:8000 frikanalen/frikanalen
