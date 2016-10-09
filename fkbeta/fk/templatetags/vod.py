@@ -24,7 +24,7 @@ def show_vod_widget(video_id):
             video_error = "Video is not published on web"
         elif settings.WEB_NO_TONO and video.has_tono_records:
             video_error = "Video not available"
-            video_error_explanation = "Due to budget constraints, videos containing music requiring fees to TONO are not viewable"
+            video_error_explanation = "Videofila inneheld avgiftsbelagt musikk og er difor ikkje tilgjengeleg."
     context = {
         "video": video,
         "video_error": video_error,
