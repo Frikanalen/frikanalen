@@ -12,6 +12,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
+from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 from django.http import HttpResponseForbidden
 
@@ -55,14 +56,14 @@ class ProgramguideView(TemplateView):
 
 class ProgramguideCalendarView(ProgramguideView):
   template_name = 'agenda/calendar.html'
-  title = 'Calendar - this week'
+  title = _('Calendar - this week')
 
 
 class ProgramplannerView(TemplateView):
   def get(self, request, form = None):
     context = {
         #'events': events,
-        'title': 'Schedule planner'
+        'title': _('Schedule planner')
       }
     return render_to_response('agenda/planner.html',
       context,
@@ -73,7 +74,7 @@ class ManageVideoList(TemplateView):
     if not request.user.is_authenticated():
       return redirect('/login/?next=%s' % request.path)
     context = {}
-    context["title"] = "My videos"
+    context["title"] = _('My videos')
     videos = Video.objects.filter(editor=request.user).order_by('name')
 
     p = Paginator(videos, 20)
@@ -141,7 +142,7 @@ class ManageVideoNew(AbstractVideoFormView):
     form = self.get_form(request, initial=initial, form=form)
     context = {
                "form": form,
-               "title": u"New Video"
+               "title": _('New Video')
                }
     return render_to_response('agenda/manage_video_new.html',
       context,
@@ -174,11 +175,11 @@ class ManageVideoEdit(AbstractVideoFormView):
              video.organization.members.filter(pk=request.user.id).exists()) or
             request.user.is_superuser):
       return HttpResponseForbidden(
-          "You are not a member of the organization that owns this videos.")
+          _('You are not a member of the organization that owns this videos.'))
     form = self.get_form(request, form=form, instance=video)
     context = {
                "form": form,
-               "title": u"Edit video"
+               "title": _("Edit video")
                }
     return render_to_response('agenda/manage_video_new.html',
       context,
@@ -192,7 +193,7 @@ class ManageVideoEdit(AbstractVideoFormView):
              video.organization.members.filter(pk=request.user.id).exists()) or
             request.user.is_superuser):
       return HttpResponseForbidden(
-          "You are not a member of the organization that owns this videos.")
+          _('You are not a member of the organization that owns this videos.'))
     form = self.get_form(request, data=request.POST, instance=video)
     if form.is_valid():
       form.save()
