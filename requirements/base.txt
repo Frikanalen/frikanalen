@@ -1,4 +1,4 @@
-Django == 1.9.8
+Django == 1.9.10
 Markdown == 2.6.6
 Twisted == 16.3.0
 django-colorful == 1.2
