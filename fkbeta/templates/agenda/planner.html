@@ -145,7 +145,8 @@ ko.bindingHandlers.moment = {
         var allBindings = allBindingsAccessor();
         var valueUnwrapped = ko.utils.unwrapObservable(value);
         var pattern = allBindings.pattern || 'YYYY-MM-DD HH:mm:ss';
-        $(element).text(valueUnwrapped.format(pattern));
+        if (valueUnwrapped)
+            $(element).text(valueUnwrapped.format(pattern));
     }
 }
 
@@ -293,22 +294,24 @@ PlannerViewModel = function() {
                 programevents.push(programevent)
             });
             // Now fill in empty spaces
-            events = []
+            events = [];
+            var pause_duration;
             for (i = 0; i < programevents.length; i++) {
+                var pause_duration = null;
                 current = programevents[i];
                 events.push(current);
-                if (i < programevents.length - 1) {
-                    next = programevents[i+1];
+                // make empty event (space)
+                empty = new ProgramEvent();
+                next = programevents[i+1];
+                if (next) {
                     pause_duration = moment(next.starttime().diff(current.endtime())).utc();
-
-                    empty = new ProgramEvent();
                     empty.duration(pause_duration.format("HH:mm:ss.SS"));
-                    empty.starttime(current.endtime());
-                    empty.event_type("pause");
-                    empty.default_name("")
-                    if (pause_duration > 0)
-                        events.push(empty);
                 }
+                empty.starttime(current.endtime());
+                empty.event_type("pause");
+                empty.default_name("");
+                if (pause_duration === null || pause_duration > 0)
+                    events.push(empty);
             }
             self.events (events);
         })
