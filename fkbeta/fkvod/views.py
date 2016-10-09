@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
 from fk.models import Video, Organization
@@ -21,7 +22,7 @@ class VideoDetail(TemplateView):
             title = u"%s" % unicode(video.name)
         except ObjectDoesNotExist:
             video = None
-            title = "Video #%i not found" % int(video_id)
+            title = _('Video #%i not found' % int(video_id))
         context = {
             "video": video,
             "title": title
@@ -56,7 +57,7 @@ class AbstractVideoList(TemplateView):
         if search_query:
             # This is a search!
             videos = search.search_videos(videos, request)
-            title = "Searching %s for %s" % (videoset_name, search_query)
+            title = _('Searching %s for %s' % (videoset_name, search_query))
             url_query_postfix = "&q=%s" % urllib.quote(search_query.encode('utf8'))
         else:
             title = videoset_name

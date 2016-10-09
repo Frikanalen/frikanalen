@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import ugettext as _
 from django import template
 from django.conf import settings
 
@@ -17,14 +18,14 @@ def show_vod_widget(video_id):
         video_error = None
     except ObjectDoesNotExist:
         video = None
-        title = "Video #%i not found" % int(video_id)
+        title = _('Video #%i not found' % int(video_id))
         video_error = title
     else:
         if not video.publish_on_web:
-            video_error = "Video is not published on web"
+            video_error = _('Video is not published on web')
         elif settings.WEB_NO_TONO and video.has_tono_records:
-            video_error = "Video not available"
-            video_error_explanation = "Due to budget constraints, videos containing music requiring fees to TONO are not viewable"
+            video_error = _('Video not available')
+            video_error_explanation = _('Due to budget constraints, videos containing music requiring fees to TONO are not viewable')
     context = {
         "video": video,
         "video_error": video_error,
