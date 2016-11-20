@@ -258,12 +258,16 @@ class Video(models.Model):
         return videofile.old_filename.split('/')[0]
 
     def ogv_url(self):
-        url = settings.FK_MEDIA_URLPREFIX + self.videofile_url("theora")
-        return url
+        try:
+            return settings.FK_MEDIA_URLPREFIX + self.videofile_url("theora")
+        except ObjectDoesNotExist:
+            return
 
     def mp4_url(self):
-        url = settings.FK_MEDIA_URLPREFIX + self.videofile_url("mp4")
-        return url
+        try:
+            return settings.FK_MEDIA_URLPREFIX + self.videofile_url("mp4")
+        except ObjectDoesNotExist:
+            return
 
     def get_absolute_url(self):
         return reverse('vod-video-detail', kwargs={'video_id': self.id})
