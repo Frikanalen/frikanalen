@@ -84,6 +84,10 @@
   pk: 1
   fields:
     fsname: 'original'
+- model: fk.fileformat
+  pk: 2
+  fields:
+    fsname: 'large_thumb'
 
 - model: fk.videofile
   pk: 1

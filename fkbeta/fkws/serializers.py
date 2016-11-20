@@ -61,6 +61,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "updated_time",
             "uploaded_time",
             "ogv_url",
+            "large_thumbnail_url",
             )
         read_only_fields = (
             "framerate", "created_time", "updated_time", "uploaded_time")
