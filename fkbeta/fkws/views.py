@@ -204,7 +204,7 @@ class VideoFileList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = super(VideoFileList, self).get_queryset()
         video_id = self.request.query_params.get('video_id')
-        if video_id is not None and video_id.isdigit():
+        if video_id and video_id.isdigit():
             queryset = queryset.filter(video_id=int(video_id))
         return queryset
 
