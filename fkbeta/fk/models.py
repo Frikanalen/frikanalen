@@ -410,6 +410,8 @@ class SchedulePurpose(models.Model):
             raise Exception("Unhandled type %s" % self.type)
         if max_duration:
             qs = qs.filter(duration__lte=max_duration)
+        # Workaround playout not handling broken files correctly
+        qs = qs.filter(proper_import=True)
         return qs
 
     def single_video(self, max_duration=None):
