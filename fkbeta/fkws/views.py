@@ -56,7 +56,8 @@ def jukebox_csv(request, format=None):
               .split('|'))
     writer = csv.DictWriter(response, fields, delimiter='|')
     writer.writeheader()
-    for video in Video.objects.filter(is_filler=True, has_tono_records=False):
+    for video in Video.objects.filter(is_filler=True, has_tono_records=False,
+            organization__fkmember=True):
         try:
             videofile = video.videofile_set.get(format__fsname='broadcast')
         except VideoFile.DoesNotExist:
