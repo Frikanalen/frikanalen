@@ -16,8 +16,9 @@ class PermissionsTest(APITestCase):
 
     def test_anonymous_reading_all_pages_from_root_expecting_status(self):
         pages = [
-            ('scheduleitems', status.HTTP_200_OK),
             ('asrun', status.HTTP_200_OK),
+            ('jukebox-csv', status.HTTP_200_OK),
+            ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_401_UNAUTHORIZED),
@@ -26,11 +27,12 @@ class PermissionsTest(APITestCase):
 
     def test_nuug_user_reading_all_pages_from_root_expecting_status(self):
         pages = [
-            ('scheduleitems', status.HTTP_200_OK),
             ('asrun', status.HTTP_200_OK),
+            ('jukebox-csv', status.HTTP_200_OK),
+            ('obtain-token', status.HTTP_200_OK),
+            ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
-            ('obtain-token', status.HTTP_200_OK),
         ]
         self._user_auth('nuug_user')
         self._helper_test_reading_all_pages_from_root(pages)
@@ -39,8 +41,10 @@ class PermissionsTest(APITestCase):
         root_response = self.client.get(reverse('api-root'))
         self.assertEqual(status.HTTP_200_OK, root_response.status_code)
         # Every page exists
-        self.assertEqual([p[0] for p in pages], root_response.data.keys())
-        for (name, code), url in zip(pages, root_response.data.values()):
+        self.assertEqual(
+            set(p[0] for p in pages), set(root_response.data.keys()))
+        for name, code in pages:
+            url = root_response.data[name]
             page_response = self.client.get(url)
             self.assertEqual(
                 code, page_response.status_code,
