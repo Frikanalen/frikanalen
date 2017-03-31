@@ -14,6 +14,7 @@ router.register(r'api/asrun', views.AsRunViewSet)
 urlpatterns = [
     url(r'^ws/(.*)', views.wschange_redirect_view),
     url(r'^api/$', views.api_root, name='api-root'),
+    url(r'^api/jukebox_csv$', views.jukebox_csv, name='jukebox-csv'),
     url(r'^api/obtain-token$',
         views.ObtainAuthToken.as_view(), name='api-token-auth'),
     url(r'^api/scheduleitems/$',
