@@ -156,7 +156,7 @@ class PermissionsTest(APITestCase):
             (
                 reverse('api-scheduleitem-list') + '?date=20150101',
                 {'video_id': 'http://testserver/api/videos/1',
-                 'schedulereason': 2, 'starttime': '2015-01-01T10:00:00+00:00',
+                 'schedulereason': 2, 'starttime': '2015-01-01T11:00:00Z',
                  'duration': '0:00:00.10'},
                 {'id': 3, 'video_id': 'http://testserver/api/videos/1',
                  'duration': '0:00:00.100000'},
@@ -186,7 +186,7 @@ class PermissionsTest(APITestCase):
             (
                 reverse('api-scheduleitem-list') + '?date=20150101',
                 {'video_id': 'http://testserver/api/videos/1',
-                 'schedulereason': 2, 'starttime': '2015-01-01T10:00:00+00:00',
+                 'schedulereason': 2, 'starttime': '2015-01-01T11:00:00Z',
                  'duration': '0:00:13.10'},
                 {'id': 3, 'video_id': 'http://testserver/api/videos/1',
                  'duration': '0:00:13.100000'},
@@ -269,12 +269,38 @@ class ScheduleitemTest(APITestCase):
         self.client.login(username='staff_user', password='test')
 
     def test_creating_new_scheduleitem(self):
-        r = self.client.post(
-            reverse('api-scheduleitem-list'),
-            {'video_id': '/api/videos/2',
-             'starttime': '2015-01-01T10:00:00+00:00',
-             'duration': '00:00:58.312',
-             'schedulereason': 1})
-        self.assertEqual('0:00:58.312000', r.data['duration'])
-        self.assertEqual('dummy video', r.data['video']['name'])
-        self.assertEqual(status.HTTP_201_CREATED, r.status_code)
+        times = [
+            '2015-01-01T11:00:00Z',
+            '2015-01-01T08:59:00Z',
+            '2015-01-01T09:58:00+01:00',
+            '2015-01-01T11:00:59Z']
+        for time in times:
+            r = self.client.post(
+                reverse('api-scheduleitem-list'),
+                {'video_id': '/api/videos/2',
+                 'starttime': time,
+                 'duration': '00:00:58.312',
+                 'schedulereason': 1})
+            self.assertEqual(status.HTTP_201_CREATED, r.status_code)
+            self.assertEqual(time, r.data['starttime'])
+            self.assertEqual('0:00:58.312000', r.data['duration'])
+            self.assertEqual('dummy video', r.data['video']['name'])
+
+    def test_schedule_item_cant_overlap(self):
+        times = [
+            ('09:00:00.00: tech video', '2015-01-01T08:59:30Z'),
+            ('09:00:00.00: tech video', '2015-01-01T09:59:59.999Z'),
+            ('10:00:00.00: dummy video', '2015-01-01T10:00:00Z'),
+            ('10:00:00.00: dummy video', '2015-01-01T10:30:00Z'),
+            ('10:00:00.00: dummy video', '2015-01-01T10:59:59.9Z'),
+        ]
+        for conflict, starttime in times:
+            r = self.client.post(
+                reverse('api-scheduleitem-list'),
+                {'video_id': '/api/videos/2',
+                 'starttime': starttime,
+                 'duration': '00:00:58.312',
+                 'schedulereason': 1})
+            self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
+            self.assertEqual("Conflict with '2015-01-01 %s'." % conflict,
+                             r.data['duration'][0])

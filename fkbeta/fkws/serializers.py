@@ -1,5 +1,6 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -99,6 +100,25 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
             "starttime",
             "duration"
             )
+
+    def validate(self, data):
+        if 'starttime' in data or 'duration' in data:
+            def g(v):
+                return self.instance and getattr(self.instance, v)
+            start = data.get('starttime', g('starttime'))
+            end = start + data.get('duration', g('duration'))
+            sur_start, sur_end = (
+                Scheduleitem.objects.expand_to_surrounding(start, end))
+            items = Scheduleitem.objects.filter(
+                starttime__gte=sur_start, starttime__lte=sur_end)
+            for entry in items:
+                if entry.starttime <= start < entry.endtime():
+                    raise serializers.ValidationError(
+                        {'duration': "Conflict with '%s'." % entry})
+                if entry.starttime < end < entry.endtime():
+                    raise serializers.ValidationError(
+                        {'duration': "Conflict with '%s'." % entry})
+        return data
 
 
 class AsRunSerializer(serializers.ModelSerializer):

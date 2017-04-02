@@ -286,22 +286,26 @@ class ScheduleitemManager(models.Manager):
         startdt = timezone.make_aware(day_start, timezone.get_current_timezone())
         enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
-            # Try to find the event before the given date
-            before = (
-                Scheduleitem.objects
-                .filter(starttime__lte=startdt)
-                .order_by("-starttime"))
-            if before:
-                startdt = before[0].starttime
-            # Try to find the event after the end date
-            after = (
-                Scheduleitem.objects
-                .filter(starttime__gte=enddt)
-                .order_by("starttime"))
-            if after:
-                enddt = after[0].starttime
+            startdt, enddt = self.expand_to_surrounding(startdt, enddt)
         return self.get_queryset().filter(starttime__gte=startdt,
                                           starttime__lte=enddt)
+
+    def expand_to_surrounding(self, startdt, enddt):
+        # Try to find the event before the given date
+        try:
+            startdt = (Scheduleitem.objects
+                .filter(starttime__lte=startdt)
+                .order_by("-starttime")[0].starttime)
+        except IndexError:
+            pass
+        # Try to find the event after the end date
+        try:
+            enddt = (Scheduleitem.objects
+                .filter(starttime__gte=enddt)
+                .order_by("starttime")[0].starttime)
+        except IndexError:
+            pass
+        return startdt, enddt
 
 
 class Scheduleitem(models.Model):
