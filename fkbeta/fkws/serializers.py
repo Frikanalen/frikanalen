@@ -124,8 +124,22 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
 class AsRunSerializer(serializers.ModelSerializer):
     class Meta:
         model = AsRun
+        fields = (
+            'id',
+            'video',
+            'program_name',
+            'playout',
+            'played_at',
+            'in_ms',
+            'out_ms',
+        )
 
 
 class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
+        fields = (
+            'created',
+            'key',
+            'user',
+        )

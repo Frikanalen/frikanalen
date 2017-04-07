@@ -5,7 +5,7 @@ django-colorful == 1.2
 django-durationfield == 0.5.4
 django-model-utils == 2.6.1
 django-registration-redux == 1.4
-djangorestframework == 3.3.3
+djangorestframework == 3.6.2
 psycopg2 == 2.7.1
 python-dateutil == 2.6
 pytz == 2017.2

@@ -61,6 +61,7 @@ class PermissionsTest(APITestCase):
         self._user_auth('nuug_user')
         r = self.client.get(reverse('api-token-auth'))
         self.assertEqual(status.HTTP_200_OK, r.status_code)
+        self.assertEqual(r.data.keys(), ['created', 'key', 'user'])
         self.assertEqual(len(r.data['key']), 40)
 
     def test_anonymous_can_list_videos(self):
