@@ -1,7 +1,7 @@
 -r requirements.txt
 
 # Local development and testing dependencies go here
-django-debug-toolbar == 1.5
+django-debug-toolbar == 1.7
 PyYAML == 3.12
 
 #coverage == 3.6

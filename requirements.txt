@@ -1,11 +1,11 @@
 Django == 1.9.13
 Markdown == 2.6.8
-Twisted == 16.3.0
+Twisted == 17.1.0
 django-colorful == 1.2
 django-durationfield == 0.5.4
-django-model-utils == 2.5
+django-model-utils == 2.6.1
 django-registration-redux == 1.4
 djangorestframework == 3.3.3
 psycopg2 == 2.7.1
-python-dateutil == 2.5.3
+python-dateutil == 2.6
 pytz == 2017.2
