@@ -7,14 +7,13 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
+from django.http import HttpResponseForbidden
+from django.shortcuts import redirect
 from django.shortcuts import render
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
-from django.http import HttpResponseForbidden
 
 from fk.models import Organization
 from fk.models import Scheduleitem
@@ -65,9 +64,7 @@ class ProgramplannerView(TemplateView):
         #'events': events,
         'title': _('Schedule planner')
       }
-    return render_to_response('agenda/planner.html',
-      context,
-      context_instance=RequestContext(request))
+    return render(request, 'agenda/planner.html', context)
 
 class ManageVideoList(TemplateView):
   def get(self, request):
@@ -87,9 +84,7 @@ class ManageVideoList(TemplateView):
 
     context["videos"] = page.object_list
     context["page"] = page
-    return render_to_response('agenda/manage_video_list.html',
-      context,
-      context_instance=RequestContext(request))
+    return render(request, 'agenda/manage_video_list.html', context)
 
 class VideoFormForUsers(ModelForm):
   #organization = ModelChoiceField(queryset=Organization.objects.filter(name="Frikanalen"))
@@ -144,9 +139,7 @@ class ManageVideoNew(AbstractVideoFormView):
                "form": form,
                "title": _('New Video')
                }
-    return render_to_response('agenda/manage_video_new.html',
-      context,
-      context_instance=RequestContext(request))
+    return render('agenda/manage_video_new.html', context)
 
   def post(self, request):
     if not request.user.is_authenticated() or not request.user.is_superuser:
@@ -181,9 +174,7 @@ class ManageVideoEdit(AbstractVideoFormView):
                "form": form,
                "title": _("Edit video")
                }
-    return render_to_response('agenda/manage_video_new.html',
-      context,
-      context_instance=RequestContext(request))
+    return render('agenda/manage_video_new.html', context)
 
   def post(self, request, id):
     if not request.user.is_authenticated():

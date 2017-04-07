@@ -5,8 +5,7 @@ import urllib
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.http import Http404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
@@ -27,9 +26,7 @@ class VideoDetail(TemplateView):
             "video": video,
             "title": title
         }
-        return render_to_response('fkvod/video_details.html',
-            context,
-            context_instance=RequestContext(request))
+        return render(request, 'fkvod/video_details.html', context)
 
 
 class AbstractVideoList(TemplateView):
@@ -73,10 +70,8 @@ class AbstractVideoList(TemplateView):
             "url_query_postfix": url_query_postfix,
             "search_query": search_query
         }
-        return render_to_response(self.template,
-                                  context,
-                                  context_instance=RequestContext(request),
-                                  content_type=self.contenttype)
+        return render(
+            request, self.template, context, content_type=self.contenttype)
 
 class VideoList(AbstractVideoList):
     def videoset_name(self):
