@@ -139,7 +139,7 @@ class ManageVideoNew(AbstractVideoFormView):
                "form": form,
                "title": _('New Video')
                }
-    return render('agenda/manage_video_new.html', context)
+    return render(request, 'agenda/manage_video_new.html', context)
 
   def post(self, request):
     if not request.user.is_authenticated() or not request.user.is_superuser:
@@ -174,7 +174,7 @@ class ManageVideoEdit(AbstractVideoFormView):
                "form": form,
                "title": _("Edit video")
                }
-    return render('agenda/manage_video_new.html', context)
+    return render(request, 'agenda/manage_video_new.html', context)
 
   def post(self, request, id):
     if not request.user.is_authenticated():

@@ -28,7 +28,6 @@ class MillisecondFormField(CharField):
         return value
 
 class MillisecondField(IntegerField):
-    __metaclass__ = models.SubfieldBase
     widget = MillisecondWidget
     def __init__(self, *args, **kwargs):
         super(MillisecondField, self).__init__(*args, **kwargs)
