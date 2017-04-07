@@ -15,10 +15,10 @@ Activate your new python environment:
 
 Use pip to install the rest of the requirements:
 
-    (env)$ pip install -r requirements.txt
+    (env)$ pip install -r requirements-dev.txt
 
 Open fkbeta/settings.py in your editor and edit paths and database-settings.
-You should set SECRET_KEY to a random string.
+You should set `SECRET_KEY` to a random string.
 
 Initialize the database:
 

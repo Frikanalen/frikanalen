@@ -2,7 +2,7 @@ sudo: false
 language: python
 python:
   - "2.7"
-install: pip install -r requirements/local.txt
+install: pip install -r requirements-dev.txt
 script: python fkbeta/manage.py test fkbeta
 cache:
   directories:
