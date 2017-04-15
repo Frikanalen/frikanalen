@@ -12,6 +12,9 @@ from .utils import handle_upload
 from .utils import UploadError
 
 
+UPLOAD_DIR = os.environ.get('UPLOAD_DIR', os.path.join(
+    os.getcwd(), 'uploaded_files'))
+
 app = Flask(__name__)
 
 
@@ -26,7 +29,7 @@ def upload():
         finished = handle_upload(request.values, request.files, dest_dir)
     except UploadError as e:
         return jsonify({'error': e.message}), 400
-    return jsonify({'status': 'ok'} if finished else {})
+    return jsonify({'finished': True} if finished else {})
 
 
 @app.route('/')
