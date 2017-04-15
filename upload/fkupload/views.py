@@ -8,8 +8,9 @@ from flask import jsonify
 from flask import render_template
 from flask import request
 
-from .utils import handle_upload
 from .utils import UploadError
+from .utils import check_video
+from .utils import handle_upload
 
 
 UPLOAD_DIR = os.environ.get('UPLOAD_DIR', os.path.join(
@@ -18,18 +19,27 @@ UPLOAD_DIR = os.environ.get('UPLOAD_DIR', os.path.join(
 app = Flask(__name__)
 
 
+def upload_err(func):
+    def decorator(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except UploadError as e:
+            return jsonify({'error': str(e)}), 400
+    return decorator
+
+
 @app.route('/upload', methods=['POST'])
+@upload_err
 def upload():
-    video_id = request.values.get('video_id', 0)
-    if not video_id:
-        return jsonify({'error': 'Missing video_id'}), 400
-    dest_dir = os.path.join(UPLOAD_DIR, video_id)
-    os.makedirs(dest_dir, exist_ok=True)
     try:
-        finished = handle_upload(request.values, request.files, dest_dir)
-    except UploadError as e:
-        return jsonify({'error': e.message}), 400
-    return jsonify({'finished': True} if finished else {})
+        video_id = int(request.values['video_id'])
+    except:
+        raise UploadError('Missing video_id')
+    check_video(video_id)
+    dest_dir = os.path.join(UPLOAD_DIR, str(video_id))
+    os.makedirs(dest_dir, exist_ok=True)
+    finished = handle_upload(request.values, request.files, dest_dir)
+    return jsonify({'finished': bool(finished)})
 
 
 @app.route('/')
