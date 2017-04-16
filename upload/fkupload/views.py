@@ -35,7 +35,7 @@ def upload():
         video_id = int(request.values['video_id'])
     except:
         raise UploadError('Missing video_id')
-    check_video(video_id)
+    check_video(video_id, request.values.get('upload_token'))
     dest_dir = os.path.join(UPLOAD_DIR, str(video_id))
     os.makedirs(dest_dir, exist_ok=True)
     finished = handle_upload(request.values, request.files, dest_dir)

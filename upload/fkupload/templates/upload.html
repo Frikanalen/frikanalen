@@ -18,7 +18,7 @@ var uploader = new plupload.Uploader({
         browse_button: 'browse', // this can be an id of a DOM element or the DOM element itself
         runtimes : 'html5,html4',
         url : "/upload",
-        multipart_params: {video_id: 625000},
+        multipart_params: {video_id: 625000, upload_token: 'test'},
 
         // Maximum file size
         max_file_size : '10mb',

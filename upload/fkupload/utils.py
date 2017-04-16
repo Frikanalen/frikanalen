@@ -12,24 +12,25 @@ class UploadError(Exception):
 
 
 _upload_token_cache = {}
-def check_video(video_id):
+def check_video(video_id, upload_token):
     if video_id not in _upload_token_cache:
-        video = _get_video(video_id)
-        _upload_token_cache[video_id] = video['editor']
-    return _upload_token_cache[video_id]
+        _upload_token_cache[video_id] = _get_video_token(video_id)
+    if _upload_token_cache[video_id] != upload_token:
+        raise UploadError('Your upload token "%s" is incorrect' % upload_token)
 
 
-def _get_video(video_id):
+def _get_video_token(video_id):
     response = requests.get(
-        '%s/videos/%d.json' % (FK_API, video_id),
-        #headers={'Authorization': 'Token %s' % FK_TOKEN}
+        '%s/videos/%d/upload_token.json' % (FK_API, video_id),
+        headers={'Authorization': 'Token %s' % FK_TOKEN}
     )
     data = response.json()
+    print(data)
     if response.status_code != 200:
         raise UploadError('Upstream gave %d' % response.status_code)
-    if 'id' not in data or data['id'] != video_id:
+    if 'upload_token' not in data or not data['upload_token']:
         raise UploadError('Auth fail for video')
-    return data
+    return data['upload_token']
 
 
 def handle_upload(forms, files, dest):
