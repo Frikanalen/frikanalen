@@ -83,6 +83,12 @@ class VideoSerializer(serializers.ModelSerializer):
         return data
 
 
+class VideoUploadTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = ('upload_token',)
+
+
 class ScheduleitemSerializer(serializers.ModelSerializer):
     video = VideoSerializer(required=False, read_only=True)
     video_id = serializers.HyperlinkedRelatedField(

@@ -23,6 +23,7 @@ from fk.models import AsRun
 from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
+from fkws.permissions import IsInOrganizationOrDisallow
 from fkws.permissions import IsInOrganizationOrReadOnly
 from fkws.permissions import IsStaffOrReadOnly
 from fkws.serializers import AsRunSerializer
@@ -30,6 +31,7 @@ from fkws.serializers import ScheduleitemSerializer
 from fkws.serializers import TokenSerializer
 from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
+from fkws.serializers import VideoUploadTokenSerializer
 
 
 @api_view(['GET'])
@@ -212,6 +214,14 @@ class VideoDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
+
+class VideoUploadTokenDetail(generics.RetrieveAPIView):
+    """
+    Video details
+    """
+    queryset = Video.objects.all()
+    serializer_class = VideoUploadTokenSerializer
+    permission_classes = (IsInOrganizationOrDisallow,)
 
 
 class VideoFileList(generics.ListCreateAPIView):

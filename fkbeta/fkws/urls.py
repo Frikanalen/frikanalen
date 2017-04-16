@@ -23,6 +23,8 @@ urlpatterns = [
         views.ScheduleitemDetail.as_view(), name='api-scheduleitem-detail'),
     url(r'^api/videos/$',
         views.VideoList.as_view(), name='api-video-list'),
+    url(r'^api/videos/(?P<pk>\d+)/upload_token$',
+        views.VideoUploadTokenDetail.as_view(), name='api-video-upload-token-detail'),
     url(r'^api/videos/(?P<pk>\d+)$',
         views.VideoDetail.as_view(), name='api-video-detail'),
     url(r'^api/videofiles/$',

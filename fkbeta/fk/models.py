@@ -2,6 +2,7 @@
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 import datetime
 import os
+import uuid
 
 import pytz
 from colorful.fields import RGBColorField
@@ -177,6 +178,9 @@ class Video(models.Model):
     ref_url = models.CharField(
         blank=True, max_length=1024, help_text='URL for reference')
     duration = DurationField(blank=True, null=True)
+    upload_token = models.CharField(
+        blank=True, default='', max_length=32,
+        help_text='Code for upload')
 
     objects = VideoManager()
 
@@ -186,6 +190,11 @@ class Video(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.upload_token = uuid.uuid4().hex
+        return super(Video, self).save(*args, **kwargs)
 
     def is_public(self):
         return self.publish_on_web and self.proper_import

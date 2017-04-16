@@ -106,6 +106,18 @@ class PermissionsTest(APITestCase):
             self.assertEqual(status.HTTP_200_OK, r.status_code)
             self.assertEqual(r.data['name'], name)
 
+    def test_anonymous_can_not_detail_video_upload_token(self):
+        """
+        Can not see upload_token
+        """
+        videos = [1, 2, 3, 4]
+        for id in videos:
+            r = self.client.get(reverse('api-video-upload-token-detail', args=(id,),))
+            self.assertEqual(status.HTTP_401_UNAUTHORIZED, r.status_code)
+            self.assertEqual({'detail': 'Authentication credentials '
+                                        'were not provided.'},
+                              r.data)
+
     def test_anonymous_can_list_asrun(self):
         """
         Will list all asrun log items
@@ -261,6 +273,34 @@ class PermissionsTest(APITestCase):
                            'to perform this action.'},
                 r.data)
             self.assertEqual(status.HTTP_403_FORBIDDEN, r.status_code)
+
+    def test_staff_user_can_see_all_upload_tokens(self):
+        self._user_auth('staff_user')
+        thing_tests = [
+            (VideoFile.objects.get(video__name='tech video'),
+             200, {'upload_token': 'deadbeef'}),
+            (VideoFile.objects.get(video__name='dummy video'),
+             200, {'upload_token': ''}),
+        ]
+        self._get_upload_token_helper(thing_tests)
+
+    def test_nuug_user_can_only_see_own_upload_tokens(self):
+        self._user_auth('nuug_user')
+        thing_tests = [
+            (VideoFile.objects.get(video__name='tech video'),
+             200, {'upload_token': 'deadbeef'}),
+            (VideoFile.objects.get(video__name='dummy video'),
+             403, {'detail': 'You do not have permission '
+                             'to perform this action.'}),
+        ]
+        self._get_upload_token_helper(thing_tests)
+
+    def _get_upload_token_helper(self, thing_tests):
+        for obj, status, data in thing_tests:
+            r = self.client.get(
+                reverse('api-video-upload-token-detail', args=[obj.id]))
+            self.assertEqual(data, r.data)
+            self.assertEqual(status, r.status_code)
 
 
 class ScheduleitemTest(APITestCase):

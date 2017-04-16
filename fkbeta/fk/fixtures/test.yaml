@@ -52,6 +52,7 @@
     duration: 10010000  # 10.01s
     publish_on_web: true
     proper_import: true
+    upload_token: deadbeef
 - model: fk.video
   pk: 2
   fields:
