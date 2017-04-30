@@ -2,6 +2,7 @@
 # encoding: utf-8
 import logging
 import os
+import shutil
 import subprocess
 import sys
 
@@ -9,8 +10,8 @@ from inotify import constants
 from inotify.adapters import Inotify
 
 
-DIR = b'/tmp'
-TO_DIR = b'/tank/new_media/media/'
+DIR = '/tmp'
+TO_DIR = '/tank/new_media/media/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -20,7 +21,8 @@ def run(watch_dir, move_to_dir):
     for evt in i.event_gen():
         if evt is None:
             continue
-        (header, type_names, path, fn) = evt
+        (_header, type_names, _path, fn) = evt
+        fn = fn.decode('utf-8')
         if 'IN_ISDIR' not in type_names or not fn.isdigit():
             print('Skipped %s' % fn)
             continue
@@ -33,7 +35,7 @@ def run(watch_dir, move_to_dir):
         # move to real location
         new_path = os.path.join(move_to_dir, fn, folder)
         os.makedirs(new_path)
-        os.rename(
+        shutil.move(
             os.path.join(from_dir, video_fn),
             os.path.join(new_path, video_fn))
         print('Processing %s - %s' % (new_path, video_fn))
