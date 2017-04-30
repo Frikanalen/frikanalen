@@ -109,6 +109,8 @@ fi
 for id in $ids ; do
     theora=""
     orig=""
+    chgrp -R fkmedia_rw "$id"
+    chmod -R g+w "$id"
 #    echo ============
     for file in $id/*/*; do
 #        echo "$file"
