@@ -1,13 +1,14 @@
 [Unit]
-AssertPathExists={{app_dir}}/app
+AssertPathExists={{upload_app_dir}}
 
 [Service]
 User={{app_user}}
 Group={{app_user}}
 PIDFile=/run/fkupload/gunicorn.pid
-WorkingDirectory={{app_dir}}/app
-Environment=UPLOAD_DIR={{app_dir}}/uploaded_files
-Environment=FK_TOKEN={{ fk_auth_token }}
+WorkingDirectory={{upload_app_dir}}
+Environment=UPLOAD_DIR={{upload_dir}}
+Environment=FINISHED_DIR={{upload_finished_dir}}
+Environment=FK_TOKEN={{fk_auth_token}}
 ExecStart={{app_dir}}/env/bin/gunicorn --pid /run/fkupload/gunicorn.pid fkupload:app -b {{app_bind}}
 Restart=always
 PrivateTmp=true

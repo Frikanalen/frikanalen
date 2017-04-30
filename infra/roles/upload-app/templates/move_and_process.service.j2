@@ -1,0 +1,15 @@
+[Unit]
+AssertPathExists={{scripts_dir}}
+
+[Service]
+User={{app_user}}
+Group={{app_user}}
+WorkingDirectory={{scripts_dir}}
+Environment=FK_TOKEN={{fk_auth_token}}
+ExecStart={{app_dir}}/env/bin/python3 move_and_process.py "{{upload_finished_dir}}"
+Restart=always
+PrivateTmp=true
+#NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target

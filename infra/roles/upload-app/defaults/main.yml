@@ -4,3 +4,7 @@ app_dir: /srv/fkupload
 app_user: fkupload
 app_bind: 0.0.0.0:3000
 fk_auth_token: test
+scripts_dir: "{{app_dir}}/scripts"
+upload_app_dir: "{{app_dir}}/upload"
+upload_dir: "{{app_dir}}/upload_files"
+upload_finished_dir: "{{app_dir}}/finished_uploads"
