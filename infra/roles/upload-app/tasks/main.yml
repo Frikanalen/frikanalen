@@ -42,4 +42,4 @@
 - name: install move_and_process systemd unit file
   template: src=move_and_process.service.j2 dest=/etc/systemd/system/move_and_process.service
 - name: start move_and_process service
-  systemd: state=reloaded name=move_and_process daemon_reload=yes enabled=true
+  systemd: state=restarted name=move_and_process daemon_reload=yes enabled=true
