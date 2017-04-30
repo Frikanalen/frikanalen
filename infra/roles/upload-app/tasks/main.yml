@@ -1,0 +1,24 @@
+---
+- name: Add group {{app_user}}
+  group: name={{app_user}}
+- name: Add user {{app_user}}
+  user: name={{app_user}} group={{app_user}} home={{app_dir}}
+- name: git pull project
+  git: repo={{repo_url}} dest={{app_dir}}/git version=master
+  become_user: "{{app_user}}"
+- name: create symlink
+  file:
+    src: "{{app_dir}}/git/upload"
+    dest: "{{app_dir}}/app"
+    state: link
+  become_user: "{{app_user}}"
+- name: install requirements
+  pip:
+    requirements: "{{app_dir}}/app/requirements.txt"
+    virtualenv: "{{app_dir}}/env/"
+    virtualenv_python: python3
+  become_user: "{{app_user}}"
+- name: install fkupload systemd unit file
+  template: src=systemd.service.j2 dest=/etc/systemd/system/fkupload.service
+- name: start fkupload service
+  systemd: state=reloaded name=fkupload daemon_reload=yes enabled=true

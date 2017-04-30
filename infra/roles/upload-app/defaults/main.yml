@@ -1,0 +1,6 @@
+---
+repo_url: https://github.com/frikanalen/frikanalen.git
+app_dir: /srv/fkupload
+app_user: fkupload
+app_bind: 0.0.0.0:3000
+fk_auth_token: test

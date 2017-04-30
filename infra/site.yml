@@ -1,0 +1,6 @@
+---
+- name: Install upload app
+  hosts: upload
+  become: true
+  roles:
+    - upload-app

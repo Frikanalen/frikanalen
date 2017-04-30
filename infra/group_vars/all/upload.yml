@@ -1,0 +1,2 @@
+---
+fk_auth_token: "{{ vault_fk_auth_token }}"
