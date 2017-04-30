@@ -14,7 +14,9 @@ from .utils import handle_upload
 
 
 UPLOAD_DIR = os.environ.get('UPLOAD_DIR', os.path.join(
-    os.getcwd(), 'uploaded_files'))
+    os.getcwd(), 'upload_files'))
+FINISHED_DIR = os.environ.get('FINISHED_DIR', os.path.join(
+    UPLOAD_DIR, 'finished'))
 
 app = Flask(__name__)
 
@@ -39,6 +41,9 @@ def upload():
     dest_dir = os.path.join(UPLOAD_DIR, str(video_id))
     os.makedirs(dest_dir, exist_ok=True)
     finished = handle_upload(request.values, request.files, dest_dir)
+    if finished:
+        final_dir = os.path.join(FINISHED_DIR, str(video_id))
+        os.renames(dest_dir, final_dir)
     return jsonify({'finished': bool(finished)})
 
 
