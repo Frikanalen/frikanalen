@@ -9,14 +9,14 @@ from inotify import constants
 from inotify.adapters import Inotify
 
 
-DIR = '/tmp'
-TO_DIR = '/tank/new_media/media/'
+DIR = b'/tmp'
+TO_DIR = b'/tank/new_media/media/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def run(watch_dir, move_to_dir):
     i = Inotify(block_duration_s=300)
-    i.add_watch(watch_dir, constants.IN_MOVED_TO)
+    i.add_watch(bytes(watch_dir, 'utf-8'), constants.IN_MOVED_TO)
     for evt in i.event_gen():
         if evt is None:
             continue
@@ -44,7 +44,7 @@ def run(watch_dir, move_to_dir):
 
 
 if __name__ == '__main__':
-    dir = sys.argv[1] if len(sys.argv) else DIR
+    dir = sys.argv[1] if len(sys.argv) > 1 else DIR
     to_dir = sys.argv[2] if len(sys.argv) > 2 else TO_DIR
 
     try:
