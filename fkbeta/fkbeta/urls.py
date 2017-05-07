@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^user/$', user_profile, name='profile'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
 
+    url(r'^create/', include('create.urls')),
     url(r'^member/', include('fkprofile.urls')),
     url(r'^admin/', include(admin.site.urls)),
 ]

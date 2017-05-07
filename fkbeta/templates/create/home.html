@@ -1,0 +1,133 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block content %}
+<script src="{% static "plupload.full.min.js" %}" async></script>
+<h1>Create new video</h1>
+<ul id=filelist></ul>
+
+<button type=button id=upload disabled>Upload video file</button>
+<pre id=console></pre>
+
+<script>
+window.addEventListener('load', init);
+
+// From here: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+var upload_button = document.getElementById('upload');
+function init() {
+    console.log('init');
+    var new_video = {
+        name: '-',
+        duration: '00:00',
+        categories: [],
+        editor: '{{ request.user }}',
+    };
+    var f = fetch('/api/videos/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify(new_video),
+    }).then(function(res) {
+        console.log('res is', res);
+        var contenttype = res.headers.get('content-type');
+        if (res.ok && contenttype && contenttype.includes('application/json'))
+            return res.json();
+        return res.text().then(function(t) { return Promise.reject(t); });
+    }).then(function(video) {
+        console.log('json is', video);
+        get_key(video);
+    }).catch(function(err) {
+        console.error('Create video error', err);
+    });
+}
+
+function get_key(video) {
+    console.log("has video", video);
+    var f = fetch('/api/videos/'+video.id+'/upload_token', {
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    }).then(function(res) {
+        console.log('res is', res);
+        var contenttype = res.headers.get('content-type');
+        if (res.ok && contenttype && contenttype.includes('application/json'))
+            return res.json();
+        return res.text().then(function(t) { return Promise.reject(t); });
+    }).then(function(json) {
+        console.log('json is', json);
+        ready_for_upload(video.id, json.upload_token);
+    }).catch(function(err) {
+        console.error('Get token error', err);
+    });
+}
+
+function ready_for_upload(video_id, token) {
+    var settings = {
+        browse_button: upload_button,
+        runtimes : 'html5,html4',
+        url : 'http://ftp.frikanalen.tv/upload',
+        multipart_params: {video_id: video_id, upload_token: token},
+        // Maximum file size
+        max_file_size : '2gb',
+        chunk_size: '500kb',
+        // Specify what files to browse for
+        filters : [
+          {title : 'Video files', extensions : 'mov,wmv,mp4,avi,webm,ogv,dv'},
+        ],
+        // Enable ability to drag'n'drop files onto the widget (currently only HTML5 supports that)
+        dragdrop: true,
+    };
+
+    var uploader = new plupload.Uploader(settings);
+    toggle_upload_ready(true);
+
+    uploader.init();
+
+    uploader.bind('FilesAdded', function(up, files) {
+        var html = '';
+        plupload.each(files, function(file) {
+            html += '<li id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
+        });
+        document.getElementById('filelist').innerHTML += html;
+        toggle_upload_ready(false);
+        uploader.start();
+    });
+
+    uploader.bind('UploadProgress', function(up, file) {
+        document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+    });
+
+    uploader.bind('Error', function(up, err) {
+        document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
+    });
+}
+
+function toggle_upload_ready(enabled) {
+    upload_button.disabled = !enabled;
+}
+</script>
+{% endblock content %}
