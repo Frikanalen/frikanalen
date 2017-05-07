@@ -7,6 +7,7 @@ from flask import Flask
 from flask import jsonify
 from flask import render_template
 from flask import request
+from flask_cors import CORS
 
 from .utils import UploadError
 from .utils import check_video
@@ -19,6 +20,7 @@ FINISHED_DIR = os.environ.get('FINISHED_DIR', os.path.join(
     UPLOAD_DIR, 'finished'))
 
 app = Flask(__name__)
+CORS(app)
 
 
 def upload_err(func):
