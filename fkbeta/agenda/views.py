@@ -86,16 +86,39 @@ class ManageVideoList(TemplateView):
     context["page"] = page
     return render(request, 'agenda/manage_video_list.html', context)
 
+
 class VideoFormForUsers(ModelForm):
-  #organization = ModelChoiceField(queryset=Organization.objects.filter(name="Frikanalen"))
   class Meta:
     model = Video
-    exclude = ("editor", "framerate", "played_count_web", "description", "proper_import", "updated_time", "uploaded_time")
+    fields = (
+      'name',
+      'categories',
+      'organization',
+      'has_tono_records',
+      'is_filler',
+      'publish_on_web',
+      'header',
+      'ref_url',
+      'duration',
+    )
+
 
 class VideoFormForAdmin(ModelForm):
   class Meta:
     model = Video
-    exclude = ("framerate", "played_count_web", "description", "proper_import", "updated_time", "uploaded_time")
+    fields = (
+      'name',
+      'categories',
+      'editor',
+      'organization',
+      'has_tono_records',
+      'is_filler',
+      'publish_on_web',
+      'header',
+      'ref_url',
+      'duration',
+    )
+
 
 class AbstractVideoFormView(TemplateView):
   UserForm = VideoFormForUsers
