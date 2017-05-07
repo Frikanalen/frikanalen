@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+    ServerName ftp.frikanalen.tv
+    ServerAlias ftp.frikanalen.no
+    ErrorLog {{app_dir}}/logs/error.log
+    CustomLog {{app_dir}}/logs/access.log combined
+
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:3000/
+    ProxyPassReverse / http://127.0.0.1:3000/
+</VirtualHost>

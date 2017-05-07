@@ -35,6 +35,13 @@
     dest: "{{upload_finished_dir}}"
     state: directory
   become_user: "{{app_user}}"
+- name: ensure logs dir exists
+  file:
+    dest: "{{app_dir}}/logs"
+    state: directory
+  become_user: "{{app_user}}"
+- name: install fkupload apache file
+  template: src=apache.conf.j2 dest=/etc/apache2/sites-enabled/fkupload.conf
 - name: install fkupload systemd unit file
   template: src=fkupload.service.j2 dest=/etc/systemd/system/fkupload.service
 - name: start fkupload service
