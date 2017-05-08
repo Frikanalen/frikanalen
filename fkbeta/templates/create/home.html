@@ -3,15 +3,54 @@
 
 {% block content %}
 <script src="{% static "plupload.full.min.js" %}" async></script>
+<style>
+* {
+    box-sizing: border-box;
+}
+.video-form {
+    width: 600px;
+}
+input, textarea, button {
+    font-size: 15px;
+    padding: 4px 8px;
+}
+label {
+    display: block;
+    margin: 10px 0;
+}
+label :last-child {
+    width: calc(100% - 85px);
+}
+label span {
+    display: inline-block;
+    width: 80px;
+    vertical-align: top;
+}
+input[type=submit] {
+    width: auto;
+    float: right;
+}
+</style>
 <h1>Create new video</h1>
 <ul id=filelist></ul>
 
 <button type=button id=upload disabled>Upload video file</button>
 <pre id=console></pre>
+<template id=video-form-tmpl>
+  <form class=video-form>
+    <label>
+      <span>Title</span>
+      <input name=name type=text>
+    </label>
+    <label>
+      <span>Header</span>
+      <textarea name=header rows=4></textarea>
+    </label>
+    <input type=submit value='Update metadata'>
+  </form>
+</template>
 
 <script>
-window.addEventListener('load', init);
-
 // From here: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
 function getCookie(name) {
     var cookieValue = null;
@@ -126,20 +165,24 @@ function init_upload(video_ready) {
     uploader.init();
 
     uploader.bind('FilesAdded', function(up, files) {
-        var html = '';
-        plupload.each(files, function(file) {
-            html += '<li id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
-        });
+        var file = files[0];
+        var html = '<li id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></li>';
         document.getElementById('filelist').innerHTML += html;
         toggle_upload_ready(false);
 
         video_ready.then(function(video) {
+            video.name = file.name;
             uploader.setOption('multipart_params', {
                 upload_token: video.upload_token,
                 video_id: video.id,
             });
             uploader.start();
         });
+    });
+
+    uploader.bind('BeforeUpload', function(up, files) {
+        upload_button.hidden = true;
+        video_ready.then(show_video_form);
     });
 
     uploader.bind('UploadProgress', function(up, file) {
@@ -151,8 +194,52 @@ function init_upload(video_ready) {
     });
 }
 
+function update_video(video_id, form) {
+    var url = '{% url 'api-video-detail' 1234 %}';
+    var fd = new FormData(form);
+    return fetch(url.replace('1234', video_id), {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRFToken': csrftoken,
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: new FormData(form),
+    }).then(function(res) {
+        var contenttype = res.headers.get('content-type');
+        if (res.ok && contenttype && contenttype.includes('application/json'))
+            return res.json();
+        return res.text().then(function(t) { return Promise.reject(t); });
+    });
+}
+
 function toggle_upload_ready(enabled) {
     upload_button.disabled = !enabled;
 }
+
+function show_video_form(video) {
+    var tmpl = document.getElementById('video-form-tmpl');
+    var clone = tmpl.content.cloneNode(true);
+    var form = clone.firstElementChild;
+    var inputs = form.querySelectorAll('input[type=text]');
+    Array.from(inputs).forEach(function(input) {
+        if (video[input.name])
+            input.value = video[input.name];
+    });
+    var textareas = form.querySelectorAll('textarea');
+    Array.from(textareas).forEach(function(ta) {
+        if (video[ta.name])
+            ta.textContent = video[ta.name];
+    });
+    var submit = form.querySelector('input[type=submit]');
+    submit.onclick = function(evt) {
+        evt.preventDefault();
+        update_video(video.id, form);
+    }
+    tmpl.parentElement.appendChild(form);
+}
+
+window.addEventListener('load', init);
 </script>
 {% endblock content %}
