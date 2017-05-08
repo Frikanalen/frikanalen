@@ -49,6 +49,14 @@ input[type=submit] {
     <input type=submit value='Update metadata'>
   </form>
 </template>
+<div id=finished hidden>
+  <h1>Finished!</h1>
+  <ul>
+    <li><a href="{% url 'manage-schedule' %}">Plan your new video in the schedule</a></li>
+    <li><a class=edit-url>Edit more about your video</a></li>
+    <li><a class=video-url>Public video page</a></li>
+  </ul>
+</div>
 
 <script>
 // From here: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#ajax
@@ -69,20 +77,30 @@ function getCookie(name) {
 }
 var csrftoken = getCookie('csrftoken');
 
+function ExternalPromise() {
+    var resolve, reject;
+    var p = new Promise(function(y, n) {
+        resolve = y;
+        reject = n;
+    });
+    p.resolve = resolve;
+    p.reject = reject;
+    return p;
+}
 var upload_button = document.getElementById('upload');
 function init() {
-    var video_ready = new Promise(function(resolve) {
-        var cb = function() {
-            create_new_video().then(function(video) {
-                resolve(video);
-                // We've already created a video, no need for a new if user cancels
-                // file browser and retries
-                upload_button.removeEventListener('click', cb);
-            });
-        };
-        upload_button.addEventListener('click', cb);
+    var video_ready = ExternalPromise();
+    upload_button.addEventListener('click', function() {
+        var self = this;
+        create_new_video().then(function(video) {
+            video_ready.resolve(video);
+            // We've already created a video, no need for a new if user cancels
+            // file browser and retries
+            upload_button.removeEventListener('click', self);
+        });
     });
-    init_upload(video_ready);
+    var metadata_updated = ExternalPromise();
+    init_upload(video_ready, metadata_updated);
 }
 
 function create_new_video() {
@@ -99,7 +117,7 @@ function create_new_video() {
 function _create_new_video() {
     var new_video = {
         name: '-',
-        duration: '00:00',
+        duration: '0:00:01',
         categories: [],
         editor: '{{ request.user }}',
     };
@@ -143,7 +161,7 @@ function get_upload_token(video_id) {
     });
 }
 
-function init_upload(video_ready) {
+function init_upload(video_ready, metadata_updated) {
     var settings = {
         browse_button: upload_button,
         runtimes : 'html5,html4',
@@ -182,11 +200,24 @@ function init_upload(video_ready) {
 
     uploader.bind('BeforeUpload', function(up, files) {
         upload_button.hidden = true;
-        video_ready.then(show_video_form);
+        video_ready.then(function(video) {
+            show_video_form(video, metadata_updated.resolve);
+        });
     });
 
     uploader.bind('UploadProgress', function(up, file) {
         document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span>' + file.percent + "%</span>";
+    });
+
+    uploader.bind('UploadComplete', function(up, files) {
+        metadata_updated.then(function(upd) {
+            var finished = document.getElementById('finished');
+            var edit_url = '{% url 'manage-video-edit' 1234 %}'.replace('1234', upd.id);
+            var video_url = '{% url 'vod-video-detail' 1234 %}'.replace('1234', upd.id);
+            finished.querySelector('.edit-url').href = edit_url;
+            finished.querySelector('.video-url').href = video_url;
+            finished.hidden = false;
+        });
     });
 
     uploader.bind('Error', function(up, err) {
@@ -218,7 +249,7 @@ function toggle_upload_ready(enabled) {
     upload_button.disabled = !enabled;
 }
 
-function show_video_form(video) {
+function show_video_form(video, updated_cb) {
     var tmpl = document.getElementById('video-form-tmpl');
     var clone = tmpl.content.cloneNode(true);
     var form = clone.firstElementChild;
@@ -235,7 +266,7 @@ function show_video_form(video) {
     var submit = form.querySelector('input[type=submit]');
     submit.onclick = function(evt) {
         evt.preventDefault();
-        update_video(video.id, form);
+        update_video(video.id, form).then(updated_cb);
     }
     tmpl.parentElement.appendChild(form);
 }
