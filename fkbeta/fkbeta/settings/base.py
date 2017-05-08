@@ -18,6 +18,8 @@ WEB_NO_TONO = True
 FK_MEDIA_URLPREFIX = 'http://simula.gunkies.org/media/'
 FK_MEDIA_ROOT = '/tank/new_media/media'
 
+FK_UPLOAD_URL = 'http://ftp.frikanalen.tv/upload'
+
 AUTH_PROFILE_MODULE = 'fk.UserProfile'
 
 # Channel ID per RFC 2838 (Uniform Resource Identifier for Television Broadcasts)

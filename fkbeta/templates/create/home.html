@@ -39,7 +39,7 @@ function init() {
         categories: [],
         editor: '{{ request.user }}',
     };
-    var f = fetch('/api/videos/', {
+    var f = fetch('{% url 'api-video-list' %}', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -64,8 +64,8 @@ function init() {
 }
 
 function get_key(video) {
-    console.log("has video", video);
-    var f = fetch('/api/videos/'+video.id+'/upload_token', {
+    var url = '{% url 'api-video-upload-token-detail' 1234 %}';
+    var f = fetch(url.replace('1234', video.id), {
         credentials: 'include',
         headers: {
             'Accept': 'application/json',
@@ -89,7 +89,7 @@ function ready_for_upload(video_id, token) {
     var settings = {
         browse_button: upload_button,
         runtimes : 'html5,html4',
-        url : 'http://ftp.frikanalen.tv/upload',
+        url : '{{ FK_UPLOAD_URL }}',
         multipart_params: {video_id: video_id, upload_token: token},
         // Maximum file size
         max_file_size : '2gb',
