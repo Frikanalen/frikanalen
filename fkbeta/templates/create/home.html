@@ -32,14 +32,39 @@ var csrftoken = getCookie('csrftoken');
 
 var upload_button = document.getElementById('upload');
 function init() {
-    console.log('init');
+    var video_ready = new Promise(function(resolve) {
+        var cb = function() {
+            create_new_video().then(function(video) {
+                resolve(video);
+                // We've already created a video, no need for a new if user cancels
+                // file browser and retries
+                upload_button.removeEventListener('click', cb);
+            });
+        };
+        upload_button.addEventListener('click', cb);
+    });
+    init_upload(video_ready);
+}
+
+function create_new_video() {
+    var video;
+    return _create_new_video().then(function(v) {
+        video = v;
+        return get_upload_token(video.id);
+    }).then(function(token) {
+        video.upload_token = token;
+        return video;
+    });
+}
+
+function _create_new_video() {
     var new_video = {
         name: '-',
         duration: '00:00',
         categories: [],
         editor: '{{ request.user }}',
     };
-    var f = fetch('{% url 'api-video-list' %}', {
+    return fetch('{% url 'api-video-list' %}', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -50,47 +75,40 @@ function init() {
         },
         body: JSON.stringify(new_video),
     }).then(function(res) {
-        console.log('res is', res);
         var contenttype = res.headers.get('content-type');
         if (res.ok && contenttype && contenttype.includes('application/json'))
             return res.json();
         return res.text().then(function(t) { return Promise.reject(t); });
     }).then(function(video) {
-        console.log('json is', video);
-        get_key(video);
+        return video;
     }).catch(function(err) {
         console.error('Create video error', err);
     });
 }
 
-function get_key(video) {
+function get_upload_token(video_id) {
     var url = '{% url 'api-video-upload-token-detail' 1234 %}';
-    var f = fetch(url.replace('1234', video.id), {
+    return fetch(url.replace('1234', video_id), {
         credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
         },
     }).then(function(res) {
-        console.log('res is', res);
         var contenttype = res.headers.get('content-type');
         if (res.ok && contenttype && contenttype.includes('application/json'))
             return res.json();
         return res.text().then(function(t) { return Promise.reject(t); });
     }).then(function(json) {
-        console.log('json is', json);
-        ready_for_upload(video.id, json.upload_token);
-    }).catch(function(err) {
-        console.error('Get token error', err);
+        return json.upload_token;
     });
 }
 
-function ready_for_upload(video_id, token) {
+function init_upload(video_ready) {
     var settings = {
         browse_button: upload_button,
         runtimes : 'html5,html4',
         url : '{{ FK_UPLOAD_URL }}',
-        multipart_params: {video_id: video_id, upload_token: token},
         // Maximum file size
         max_file_size : '2gb',
         chunk_size: '500kb',
@@ -114,7 +132,14 @@ function ready_for_upload(video_id, token) {
         });
         document.getElementById('filelist').innerHTML += html;
         toggle_upload_ready(false);
-        uploader.start();
+
+        video_ready.then(function(video) {
+            uploader.setOption('multipart_params', {
+                upload_token: video.upload_token,
+                video_id: video.id,
+            });
+            uploader.start();
+        });
     });
 
     uploader.bind('UploadProgress', function(up, file) {
