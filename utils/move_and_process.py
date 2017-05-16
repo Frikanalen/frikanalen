@@ -25,7 +25,7 @@ def get_metadata(filepath):
         filepath,
     ]
     output = subprocess.check_output(cmd)
-    return json.loads(output)
+    return json.loads(output.decode('utf-8'))
 
 def direct_playable(metadata):
     def is_pal(s):
