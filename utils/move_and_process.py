@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # encoding: utf-8
+import json
 import logging
 import os
 import shutil
@@ -14,6 +15,25 @@ DIR = '/tmp'
 TO_DIR = '/tank/new_media/media/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
+def get_metadata(filepath):
+    cmd = [
+        'ffprobe',
+        '-v', 'quiet',
+        '-show_format',
+        '-show_streams',
+        '-of', 'json',
+        filepath,
+    ]
+    output = subprocess.check_output(cmd)
+    return json.loads(output)
+
+def direct_playable(metadata):
+    def is_pal(s):
+        return (
+            s.get('codec_name') == 'dvvideo' and
+            s.get('codec_time_base') == '1/25' and
+            s.get('width') == 720)
+    return any(is_pal(s) for s in metadata['streams'])
 
 def run(watch_dir, move_to_dir):
     i = Inotify(block_duration_s=300)
@@ -29,8 +49,9 @@ def run(watch_dir, move_to_dir):
         print ('Found %s' % fn)
         from_dir = os.path.join(watch_dir, fn)
         video_fn = os.listdir(from_dir)[0]
+        metadata = get_metadata(os.path.join(from_dir, video_fn))
         folder = 'original'
-        if video_fn.endswith('.dv'):
+        if direct_playable(metadata):
             folder = 'broadcast'
         # move to real location
         new_path = os.path.join(move_to_dir, fn, folder)
