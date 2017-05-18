@@ -47,23 +47,27 @@ def run(watch_dir, move_to_dir):
             print('Skipped %s' % fn)
             continue
         print ('Found %s' % fn)
-        from_dir = os.path.join(watch_dir, fn)
-        video_fn = os.listdir(from_dir)[0]
-        metadata = get_metadata(os.path.join(from_dir, video_fn))
-        folder = 'original'
-        if direct_playable(metadata):
-            folder = 'broadcast'
-        # move to real location
-        new_path = os.path.join(move_to_dir, fn, folder)
-        os.makedirs(new_path)
-        shutil.move(
-            os.path.join(from_dir, video_fn),
-            os.path.join(new_path, video_fn))
-        print('Processing %s - %s' % (new_path, video_fn))
-        video_gen_script = os.path.join(SCRIPT_DIR, 'generate-video-files')
-        subprocess.check_call([video_gen_script, fn])
-        os.rmdir(from_dir)
-        print ('Finished with %s' % fn)
+        handle_file(watch_dir, move_to_dir, fn)
+
+
+def handle_file(watch_dir, move_to_dir, fn):
+    from_dir = os.path.join(watch_dir, fn)
+    video_fn = os.listdir(from_dir)[0]
+    metadata = get_metadata(os.path.join(from_dir, video_fn))
+    folder = 'original'
+    if direct_playable(metadata):
+        folder = 'broadcast'
+    # move to real location
+    new_path = os.path.join(move_to_dir, fn)
+    os.makedirs(os.path.join(new_path, folder))
+    new_file = os.path.join(new_path, folder, video_fn)
+    shutil.move(
+        os.path.join(from_dir, video_fn), new_file)
+    print('Processing %s - %s - %s' % (fn, folder, video_fn))
+    video_gen_script = os.path.join(SCRIPT_DIR, 'generate-video-files')
+    subprocess.check_call([video_gen_script, fn])
+    os.rmdir(from_dir)
+    print ('Finished with %s' % fn)
 
 
 if __name__ == '__main__':
@@ -71,6 +75,9 @@ if __name__ == '__main__':
     to_dir = sys.argv[2] if len(sys.argv) > 2 else TO_DIR
 
     try:
-        run(dir, to_dir)
+        if len(sys.argv) > 3:
+            handle_file(dir, to_dir, sys.argv[3])
+        else:
+            run(dir, to_dir)
     except KeyboardInterrupt:
         pass
