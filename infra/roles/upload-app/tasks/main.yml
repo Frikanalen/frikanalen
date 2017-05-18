@@ -26,7 +26,9 @@
   become_user: "{{app_user}}"
 - name: install script requirements
   pip:
-    name: inotify
+    name:
+    - inotify
+    - requests
     virtualenv: "{{app_dir}}/env/"
     virtualenv_python: python3
   become_user: "{{app_user}}"

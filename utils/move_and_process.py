@@ -3,14 +3,18 @@
 import json
 import logging
 import os
+import re
 import shutil
 import subprocess
 import sys
 
+import requests
 from inotify import constants
 from inotify.adapters import Inotify
 
 
+FK_API = os.environ.get('FK_API', 'http://beta.frikanalen.no/api')
+FK_TOKEN = os.environ.get('FK_TOKEN')
 DIR = '/tmp'
 TO_DIR = '/tank/new_media/media/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -26,6 +30,27 @@ def get_metadata(filepath):
     ]
     output = subprocess.check_output(cmd)
     return json.loads(output.decode('utf-8'))
+
+def get_mlt_duration(filepath):
+    cmd = ['melt', '-consumer', 'xml', filepath]
+    output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
+    output = output.decode('utf-8')
+    m = re.search(r' name="length">(\d+)</', output)
+    if not m:
+        return
+    frames = int(m.group(1))
+    m = re.search(r'\.frame_rate">([\d.]+)</', output)
+    if not m:
+        return
+    fps = float(m.group(1))
+    return frames/fps
+
+def get_duration(new_file, metadata):
+    mlt_duration = get_mlt_duration(new_file)
+    duration = mlt_duration or metadata['format']['duration']
+    min, sec = divmod(duration, 60)
+    hours, _ = divmod(min, 60)
+    return '{:d}:{:02d}:{:02f}'.format(int(hours), int(min), sec)
 
 def direct_playable(metadata):
     def is_pal(s):
@@ -63,12 +88,19 @@ def handle_file(watch_dir, move_to_dir, fn):
     new_file = os.path.join(new_path, folder, video_fn)
     shutil.move(
         os.path.join(from_dir, video_fn), new_file)
+    _update_video(int(fn), {'duration': get_duration(new_file, metadata)})
     print('Processing %s - %s - %s' % (fn, folder, video_fn))
     video_gen_script = os.path.join(SCRIPT_DIR, 'generate-video-files')
     subprocess.check_call([video_gen_script, fn])
     os.rmdir(from_dir)
     print ('Finished with %s' % fn)
 
+def _update_video(video_id, data):
+    response = requests.patch(
+        '%s/videos/%d' % (FK_API, video_id),
+        headers={'Authorization': 'Token %s' % FK_TOKEN},
+        data=data,
+    )
 
 if __name__ == '__main__':
     dir = sys.argv[1] if len(sys.argv) > 1 else DIR
