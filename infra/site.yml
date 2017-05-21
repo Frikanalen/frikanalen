@@ -4,3 +4,8 @@
   become: true
   roles:
     - upload-app
+- name: Set up web server
+  hosts: web
+  become: true
+  roles:
+    - web

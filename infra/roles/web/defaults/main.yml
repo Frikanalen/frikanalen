@@ -1,0 +1,4 @@
+---
+app_user: fkweb
+app_dir: /srv/fkweb
+app_bind: 127.0.0.1:3000

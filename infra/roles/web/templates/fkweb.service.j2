@@ -1,0 +1,19 @@
+[Unit]
+AssertPathExists={{app_dir}}/app/fkbeta
+
+[Service]
+User={{app_user}}
+Group={{app_user}}
+PIDFile=/run/fkweb/gunicorn.pid
+WorkingDirectory={{app_dir}}/app/fkbeta/
+Environment=SECRET_KEY=aeou
+ExecStart={{app_dir}}/env/bin/gunicorn --pid /run/fkweb/gunicorn.pid fkbeta.wsgi:application -b {{app_bind}}
+Restart=always
+PrivateTmp=true
+RuntimeDirectory=fkweb
+#NoNewPrivileges=true
+ExecReload=/bin/kill -s TERM $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=default.target

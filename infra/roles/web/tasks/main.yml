@@ -1,0 +1,49 @@
+---
+- name: Add group
+  group: name={{app_user}}
+- name: Add user
+  user:
+    name={{app_user}}
+    group={{app_user}}
+    home={{app_dir}}
+    shell=/usr/bin/git-shell
+- name: Install packages
+  apt: name={{item}}
+  with_items:
+    - virtualenv
+    - build-essential
+    - python-dev
+- name: Create .ssh dir
+  file: dest={{app_dir}}/.ssh state=directory mode=700
+        owner={{app_user}} group={{app_user}}
+- name: Create normal dirs
+  file: dest={{app_dir}}/{{item}} state=directory owner={{app_user}}
+        group={{app_user}}
+  with_items:
+    - app
+    - logs
+- name: Set up authorized keys
+  copy: content={{vault_authorized_keys}} owner={{app_user}} group={{app_user}}
+        dest={{app_dir}}/.ssh/authorized_keys mode=0600
+- name: Create git project
+  command: git init --bare git chdir={{app_dir}} creates={{app_dir}}/git/HEAD
+  become_user: "{{app_user}}"
+- name: Create virtualenv
+  pip: name=pip virtualenv={{app_dir}}/env/
+  become_user: "{{app_user}}"
+- name: Install deploy git hook
+  template:
+    src=update.githook.j2
+    dest={{app_dir}}/git/hooks/update
+    mode=u+x
+    owner={{app_user}}
+    group={{app_user}}
+- name: Install systemd unit file
+  template: src=fkweb.service.j2 dest=/etc/systemd/system/fkweb.service
+- name: Enable and start service
+  systemd: state=restarted name=fkweb daemon_reload=yes enabled=true
+- name: Allow {{app_user}} restart service
+  lineinfile:
+    dest: /etc/sudoers
+    line: "%{{app_user}} ALL=(ALL) NOPASSWD: /bin/systemctl restart fkweb"
+    validate: visudo -cf %s

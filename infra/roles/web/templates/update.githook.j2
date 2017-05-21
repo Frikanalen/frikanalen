@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+refname="$1"
+oldrev="$2"
+newrev="$3"
+
+if [ -z "$GIT_DIR" ]; then echo GIT_DIR missing; exit 1; fi
+if [ -z "$refname" ]; then echo params missing; exit 1; fi
+
+echo "> Deploying app"
+dir={{app_dir}}/app
+git --work-tree="$dir" checkout -qf "$newrev"
+
+# activate virtualenv
+. "{{app_dir}}/env/bin/activate"
+pip install -qr "$dir/requirements.txt"
+
+sudo systemctl restart fkweb
+
+exit 0
