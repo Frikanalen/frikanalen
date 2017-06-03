@@ -65,7 +65,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "large_thumbnail_url",
             )
         read_only_fields = (
-            "framerate", "created_time", "updated_time", "uploaded_time")
+            "framerate", "created_time", "updated_time")
 
     def validate(self, data):
         is_creation = not self.instance

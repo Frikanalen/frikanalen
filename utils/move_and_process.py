@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
+from datetime import datetime
 
 import requests
 from inotify import constants
@@ -88,7 +89,10 @@ def handle_file(watch_dir, move_to_dir, fn):
     new_file = os.path.join(new_path, folder, video_fn)
     shutil.move(
         os.path.join(from_dir, video_fn), new_file)
-    _update_video(int(fn), {'duration': get_duration(new_file, metadata)})
+    _update_video(int(fn), {
+        'duration': get_duration(new_file, metadata),
+        'uploaded_time': datetime.utcnow().isoformat(),
+    })
     print('Processing %s - %s - %s' % (fn, folder, video_fn))
     video_gen_script = os.path.join(SCRIPT_DIR, 'generate-video-files')
     subprocess.check_call([video_gen_script, fn])
@@ -101,6 +105,7 @@ def _update_video(video_id, data):
         headers={'Authorization': 'Token %s' % FK_TOKEN},
         data=data,
     )
+    response.raise_for_status()
 
 if __name__ == '__main__':
     dir = sys.argv[1] if len(sys.argv) > 1 else DIR
