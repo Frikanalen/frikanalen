@@ -20,7 +20,24 @@ DIR = '/tmp'
 TO_DIR = '/tank/new_media/media/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
+# XXX very hacky
+VF_FORMATS = {
+    'large_thumb': 1,
+    'broadcast': 2,
+    'vc1': 3,
+    'med_thumb': 4,
+    'small_thumb': 5,
+    'original': 6,
+    'theora': 7,
+    'srt': 8,
+}
+
 def get_metadata(filepath):
+    md = get_metadata_(filepath)
+    md['pretty_duration'] = get_duration(filepath, md)
+    return md
+
+def get_metadata_(filepath):
     cmd = [
         'ffprobe',
         '-v', 'quiet',
@@ -31,6 +48,13 @@ def get_metadata(filepath):
     ]
     output = subprocess.check_output(cmd)
     return json.loads(output.decode('utf-8'))
+
+def get_duration(new_file, metadata):
+    mlt_duration = get_mlt_duration(new_file)
+    duration = mlt_duration or metadata['format']['duration']
+    min, sec = divmod(duration, 60)
+    hours, _ = divmod(min, 60)
+    return '{:d}:{:02d}:{:02f}'.format(int(hours), int(min), sec)
 
 def get_mlt_duration(filepath):
     cmd = ['melt', '-consumer', 'xml', filepath]
@@ -46,13 +70,6 @@ def get_mlt_duration(filepath):
     fps = float(m.group(1))
     return frames/fps
 
-def get_duration(new_file, metadata):
-    mlt_duration = get_mlt_duration(new_file)
-    duration = mlt_duration or metadata['format']['duration']
-    min, sec = divmod(duration, 60)
-    hours, _ = divmod(min, 60)
-    return '{:d}:{:02d}:{:02f}'.format(int(hours), int(min), sec)
-
 def direct_playable(metadata):
     def is_pal(s):
         return (
@@ -60,6 +77,56 @@ def direct_playable(metadata):
             s.get('codec_time_base') == '1/25' and
             s.get('width') == 720)
     return any(is_pal(s) for s in metadata['streams'])
+
+def move_original(from_dir, to_dir, metadata, fn):
+    folder = 'broadcast' if direct_playable(metadata) else 'original'
+    os.makedirs(os.path.join(to_dir, folder))
+    new_filepath = os.path.join(to_dir, folder, fn)
+    shutil.move(os.path.join(from_dir, fn), new_filepath)
+    return new_filepath
+
+def generate_videos(id, new_filepath):
+    print('Processing - %s' % new_filepath)
+    video_gen_script = os.path.join(SCRIPT_DIR, 'generate-video-files')
+    subprocess.check_call([video_gen_script, str(id)])
+
+def register_videofiles(id, folder):
+    files = get_videofiles(id)
+    if len(files):
+        raise Exception('%d already have video files: %s' % (
+            id, ', '.join(f['filename'] for f in files)))
+    for file_folder in os.listdir(folder):
+        for fn in os.listdir(os.path.join(folder, file_folder)):
+            create_videofile(id, {
+                'filename': os.path.join(str(id), file_folder, fn),
+                'format': VF_FORMATS[file_folder],
+            })
+
+def _update_video(video_id, data):
+    response = requests.patch(
+        '%s/videos/%d' % (FK_API, video_id),
+        headers={'Authorization': 'Token %s' % FK_TOKEN},
+        data=data,
+    )
+    response.raise_for_status()
+
+def get_videofiles(video_id):
+    response = requests.get(
+        '%s/videofiles/' % FK_API,
+        params={'video_id': video_id},
+        headers={'Authorization': 'Token %s' % FK_TOKEN},
+    )
+    response.raise_for_status()
+    return response.json()['results']
+
+def create_videofile(video_id, data):
+    data.update({'video': video_id})
+    response = requests.post(
+        '%s/videofiles/' % FK_API,
+        headers={'Authorization': 'Token %s' % FK_TOKEN},
+        data=data,
+    )
+    response.raise_for_status()
 
 def run(watch_dir, move_to_dir):
     i = Inotify(block_duration_s=300)
@@ -75,37 +142,21 @@ def run(watch_dir, move_to_dir):
         print ('Found %s' % fn)
         handle_file(watch_dir, move_to_dir, fn)
 
+def handle_file(watch_dir, move_to_dir, str_id):
+    id = int(str_id)
+    from_dir = os.path.join(watch_dir, str_id)
+    fn = os.listdir(from_dir)[0]
+    metadata = get_metadata(os.path.join(from_dir, fn))
+    to_dir = os.path.join(move_to_dir, str_id)
 
-def handle_file(watch_dir, move_to_dir, fn):
-    from_dir = os.path.join(watch_dir, fn)
-    video_fn = os.listdir(from_dir)[0]
-    metadata = get_metadata(os.path.join(from_dir, video_fn))
-    folder = 'original'
-    if direct_playable(metadata):
-        folder = 'broadcast'
-    # move to real location
-    new_path = os.path.join(move_to_dir, fn)
-    os.makedirs(os.path.join(new_path, folder))
-    new_file = os.path.join(new_path, folder, video_fn)
-    shutil.move(
-        os.path.join(from_dir, video_fn), new_file)
-    _update_video(int(fn), {
-        'duration': get_duration(new_file, metadata),
+    new_filepath = move_original(from_dir, to_dir, metadata, fn)
+    _update_video(id, {
+        'duration': metadata['pretty_duration'],
         'uploaded_time': datetime.utcnow().isoformat(),
     })
-    print('Processing %s - %s - %s' % (fn, folder, video_fn))
-    video_gen_script = os.path.join(SCRIPT_DIR, 'generate-video-files')
-    subprocess.check_call([video_gen_script, fn])
+    generate_videos(id, new_filepath or str_id)
+    register_videofiles(id, to_dir)
     os.rmdir(from_dir)
-    print ('Finished with %s' % fn)
-
-def _update_video(video_id, data):
-    response = requests.patch(
-        '%s/videos/%d' % (FK_API, video_id),
-        headers={'Authorization': 'Token %s' % FK_TOKEN},
-        data=data,
-    )
-    response.raise_for_status()
 
 if __name__ == '__main__':
     dir = sys.argv[1] if len(sys.argv) > 1 else DIR
