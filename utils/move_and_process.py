@@ -156,6 +156,7 @@ def handle_file(watch_dir, move_to_dir, str_id):
     })
     generate_videos(id, new_filepath or str_id)
     register_videofiles(id, to_dir)
+    _update_video(id, { 'proper_import': True })
     os.rmdir(from_dir)
 
 if __name__ == '__main__':
