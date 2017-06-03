@@ -24,7 +24,8 @@ class VideoFileSerializer(serializers.ModelSerializer):
             "video",
             "format",
             "filename",
-            "old_filename"
+            "old_filename",
+            "created_time",
             )
 
 

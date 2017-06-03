@@ -91,9 +91,11 @@ class VideoFile(models.Model):
     video = models.ForeignKey("Video")
     format = models.ForeignKey("FileFormat")
     filename = models.CharField(max_length=256)
-    old_filename = models.CharField(max_length=256)
+    old_filename = models.CharField(max_length=256, default='')
     # source = video = models.ForeignKey("VideoFile")
-    # created_time = models.DateTimeField()# encoded_time?
+    created_time = models.DateTimeField(
+        auto_now_add=True, null=True,
+        help_text='Time the video  file was created')
     # metadata frames, width, height, framerate? mlt profile name?
     # edl for in/out?
 
@@ -260,11 +262,6 @@ class Video(models.Model):
         except ObjectDoesNotExist:
             return "/static/default_large_thumbnail.png"
         return settings.FK_MEDIA_URLPREFIX+videofile.location(relative=True)
-
-    def old_id(self):
-        format = FileFormat.objects.get(fsname="broadcast")
-        videofile = VideoFile.objects.get(video=self, format=format)
-        return videofile.old_filename.split('/')[0]
 
     def ogv_url(self):
         try:
