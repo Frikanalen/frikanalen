@@ -39,7 +39,7 @@ mediadir = '/tank/new_media/media'
 
 loginurl = 'http://beta.frikanalen.no/api/api-auth/login/?next=/api/'
 apiurl        = 'http://beta.frikanalen.no/api/'
-videofilesurl = 'http://beta.frikanalen.no/api/videofiles/' 
+videofilesurl = 'http://beta.frikanalen.no/api/videofiles/'
 tokenurl      = 'http://beta.frikanalen.no/api/obtain-token'
 videosurl     = 'http://beta.frikanalen.no/api/videos/'
 
@@ -90,7 +90,7 @@ make sure to log into both.
         token = j[u'key']
         mech.extraheaders = [('Authorization', 'Token %s' % token)]
         mech.addheaders = mech.extraheaders
-        
+
         # Don't handle cookies when talking to the API, use token instead
         mech.set_cookiejar(None)
 
@@ -168,7 +168,7 @@ def videofile_add(mech, video_id, filepath, fileformat):
         'video' : video_id,
         'format' : fileformat,
         'filename' : filepath,
-        'old_filename' : filepath, 
+        'old_filename' : filepath,
         }
     json_post(mech, videofilesurl, params)
 
@@ -254,10 +254,11 @@ def videofile_find_unregistered(mech, videodir):
             print "Missing files are marked with (*)."
         if 0 < len(missingfile):
             i = ''
-            i = raw_input("Remove registration for missing files to API database? y/[n]/q: ") 
-            if i == '' or i == "no" or i == "n": 
+            if not args.auto:
+                i = raw_input("Remove registration for missing files to API database? y/[n]/q: ")
+            if i == '' or i == "no" or i == "n":
                 print "not removing registation for missing files"
-            elif i == "yes" or i == "y": 
+            elif i == "yes" or i == "y":
                 for file in missingfile.keys():
                     videofile_id = filehash[file]
                     videofile_delete(mech, videofile_id)
@@ -265,23 +266,24 @@ def videofile_find_unregistered(mech, videodir):
                 return False
         if 0 < len(unregistered):
             i = ''
-            if args.autoappend:
+            if args.autoappend or args.auto:
                 i = 'yes'
             else:
-                i = raw_input("Add files missing to API database? y/[n]/q: ") 
-            if i == '' or i == "no" or i == "n": 
+                i = raw_input("Add files missing to API database? y/[n]/q: ")
+            if i == '' or i == "no" or i == "n":
                 print "not adding unregistered files"
-            elif i == "yes" or i == "y": 
+            elif i == "yes" or i == "y":
                 for file in unregistered.keys():
                     videofile_add(mech, id, file, unregistered[file])
             elif i == 'q':
                 return False
         if 0 < len(wronglengthfile):
             i = ''
-            i = raw_input("Remove generated files with wrong length? y/[n]/q: ") 
-            if i == '' or i == "no" or i == "n": 
+            if not args.auto:
+                i = raw_input("Remove generated files with wrong length? y/[n]/q: ")
+            if i == '' or i == "no" or i == "n":
                 print "not removing generated files with wrong length"
-            elif i == "yes" or i == "y": 
+            elif i == "yes" or i == "y":
                 for file in wronglengthfile.keys():
                     fullpath = os.path.join(mediadir, file).decode('utf-8')
                     print "Removing %s" % fullpath
@@ -346,6 +348,8 @@ def main():
     parser = argparse.ArgumentParser(description='Update video file list in Frikanalen.')
     parser.add_argument('videoid', metavar='videoid', type=int, nargs='*',
                     help='The video ID(s) to investigate.')
+    parser.add_argument('--auto', action='store_true',
+                        help='No questions, add new files but no more')
     parser.add_argument('--autoappend', dest='autoappend', action='store_const',
                         const=True, default=False,
                         help='Automatically add new files found on disk.')
