@@ -61,10 +61,11 @@ orig2ogv() {
         if [ "$durdiff" -le 4 ] ; then
             mv "$theora.new.ogv" "$theora"
         else
-            echo "error: incorrect duration $ogvduration do not match original $duration, removing $theora.new.ogv."
+            echo "error: incorrect duration $ogvduration do not match original $duration, for $theora.new.ogv."
             #ffprobe -show_streams "$theora.new.ogv"
             #exit 0
-            rm -f "$theora.new.ogv"
+            # Better to have a file than no file
+            #rm -f "$theora.new.ogv"
         fi
     else
         echo "error: ffmpeg failed, removing file $theora.new.ogv."
@@ -92,8 +93,9 @@ orig2broadcast() {
         if [ "$durdiff" -le 4 ] ; then
             mv "$bcast.new.dv" "$bcast"
         else
-            echo "error: incorrect duration $dvduration do not match original $duration, removing $bcast.new.dv."
-            rm -f "$bcast.new.dv"
+            echo "error: incorrect duration $dvduration do not match original $duration, for $bcast.new.dv."
+            # Better to have a file than no file
+            #rm -f "$bcast.new.dv"
         fi
     else
         echo "error: ffmpeg failed, removing file $bcast.new.dv."
