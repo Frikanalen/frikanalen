@@ -42,33 +42,33 @@ orig2ogv() {
     echo "$id ->" "$orig" "$theora"
     duration=$(duration "$orig")
     if ffmpeg \
-	-nostats \
-	-i "$orig" \
-	-v verbose \
-	-y \
-	-threads 8 \
-	-vcodec libtheora \
-	-acodec libvorbis \
-	-qscale:v 7 \
-	-qscale:a 2 \
-	-vf scale=720:-1 \
-	"$theora.new.ogv"
+        -nostats \
+        -i "$orig" \
+        -v verbose \
+        -y \
+        -threads 8 \
+        -vcodec libtheora \
+        -acodec libvorbis \
+        -qscale:v 7 \
+        -qscale:a 2 \
+        -vf scale=720:-1 \
+        "$theora.new.ogv"
     then
-	fixperms "$theora.new.ogv"
+        fixperms "$theora.new.ogv"
         ogvduration="$(duration "$theora.new.ogv")"
         # Reject file if the time difference is more than two seconds
         durdiff=$(echo "($duration - $ogvduration)^2" | bc -l)
         if [ "$durdiff" -le 4 ] ; then
-	    mv "$theora.new.ogv" "$theora"
+            mv "$theora.new.ogv" "$theora"
         else
             echo "error: incorrect duration $ogvduration do not match original $duration, removing $theora.new.ogv."
-#            ffprobe -show_streams "$theora.new.ogv"
-#            exit 0
-	    rm -f "$theora.new.ogv"
+            #ffprobe -show_streams "$theora.new.ogv"
+            #exit 0
+            rm -f "$theora.new.ogv"
         fi
     else
         echo "error: ffmpeg failed, removing file $theora.new.ogv."
-	rm -f "$theora.new.ogv"
+        rm -f "$theora.new.ogv"
     fi
 }
 
@@ -79,25 +79,25 @@ orig2broadcast() {
     echo "$id ->" "$orig" "$bcast"
     duration=$(duration "$orig")
     if ffmpeg \
-	-nostats \
-	-y \
-	-i "$orig" \
-	-target pal-dv \
-	"$bcast.new.dv"
+        -nostats \
+        -y \
+        -i "$orig" \
+        -target pal-dv \
+        "$bcast.new.dv"
     then
-	fixperms "$bcast.new.dv"
+        fixperms "$bcast.new.dv"
         dvduration="$(duration "$bcast.new.dv")"
         # Reject file if the time difference is more than two seconds
         durdiff=$(echo "($duration - $dvduration)^2" | bc -l)
         if [ "$durdiff" -le 4 ] ; then
-	    mv "$bcast.new.dv" "$bcast"
+            mv "$bcast.new.dv" "$bcast"
         else
             echo "error: incorrect duration $dvduration do not match original $duration, removing $bcast.new.dv."
-	    rm -f "$bcast.new.dv"
+            rm -f "$bcast.new.dv"
         fi
     else
         echo "error: ffmpeg failed, removing file $bcast.new.dv."
-	rm -f "$bcast.new.dv"
+        rm -f "$bcast.new.dv"
     fi
 }
 
@@ -111,31 +111,31 @@ for id in $ids ; do
     orig=""
     chgrp -R fkmedia_rw "$id"
     chmod -R g+w "$id"
-#    echo ============
+    #echo ============
     for file in $id/*/*; do
-#        echo "$file"
-	case "$file" in
-	    */theora/*.new.ogv) # Ignore
-		;;
-	    */theora/*.ogv)
-		theora="$file"
-		;;
-	    */original/*)
-		orig="$file"
-		;;
-	    */broadcast/*.new.dv) # Ignore
-		;;
-	    */broadcast/*)
+        #echo "$file"
+        case "$file" in
+            */theora/*.new.ogv) # Ignore
+                ;;
+            */theora/*.ogv)
+                theora="$file"
+                ;;
+            */original/*)
+                orig="$file"
+                ;;
+            */broadcast/*.new.dv) # Ignore
+                ;;
+            */broadcast/*)
                 broadcast="$file"
-		;;
-	esac
+                ;;
+        esac
     done
     if [ "$orig" ] && [ -z "$broadcast" ]; then
         b=$(basename "$orig" |cut -d. -f-1)
         bcast="$id/broadcast/$b.dv"
         if makedir "$id/broadcast" ; then
             orig2broadcast "$id" "$orig" "$bcast"
-	fi
+        fi
     fi
     if [ "$broadcast" ] && [ -z "$orig" ]; then
         orig="$broadcast"
@@ -144,7 +144,7 @@ for id in $ids ; do
         b=$(basename "$orig" |cut -d. -f-1)
         theora="$id/theora/$b.ogv"
         if makedir "$id/theora" ; then
-	    orig2ogv "$id" "$orig" "$theora"
-	fi
+            orig2ogv "$id" "$orig" "$theora"
+        fi
     fi
 done

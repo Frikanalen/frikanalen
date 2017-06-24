@@ -21,19 +21,20 @@
 # Look for unregistered files in /tank/new_media/media/, and ask if
 # they should be registered in the database.
 
-import argparse
-import os
-import sys
-import json
-import glob
-import getpass
-import mechanize
-import urllib2
 import ConfigParser
-import re
-import pipes
-from subprocess import *
+import argparse
 import codecs
+import getpass
+import glob
+import json
+import os
+import pipes
+import re
+import sys
+import urllib2
+from subprocess import *
+
+import mechanize
 
 mediadir = '/tank/new_media/media'
 
