@@ -345,3 +345,32 @@ class ScheduleitemTest(APITestCase):
             self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
             self.assertEqual("Conflict with '2015-01-01 %s'." % conflict,
                              r.data['duration'][0])
+
+    def test_schedule_item_can_update(self):
+        times = [
+            (1, {'starttime': '2015-01-01T08:59:30Z'}),
+            (1, {'starttime': '2015-01-01T09:50:00Z', 'duration': '0:09:00'}),
+            (2, {'starttime': '2015-01-01T10:00:00Z'}),
+            (2, {'starttime': '2015-01-01T10:30:00Z'}),
+            (2, {'starttime': '2015-01-01T10:59:59.900000Z'}),
+        ]
+        for schedule_pk, changes in times:
+            changes.update({'schedulereason': 1})
+            r = self.client.patch(
+                reverse('api-scheduleitem-detail', args=[schedule_pk]),
+                changes)
+            self.assertEqual(status.HTTP_200_OK, r.status_code)
+            for k, v in changes.items():
+                self.assertEqual(v, r.data[k])
+
+    def test_schedule_item_update_can_not_override(self):
+        times = [
+            (1, {'duration': '1:10:00'}),
+            (1, {'starttime': '2015-01-01T09:50:00Z'}),
+            (2, {'starttime': '2015-01-01T09:50:00Z'}),
+        ]
+        for schedule_pk, changes in times:
+            r = self.client.patch(
+                reverse('api-scheduleitem-detail', args=[schedule_pk]),
+                changes)
+            self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
