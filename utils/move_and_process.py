@@ -31,6 +31,66 @@ VF_FORMATS = {
     'theora': 7,
     'srt': 8,
 }
+for k, v in list(VF_FORMATS.items()):
+    VF_FORMATS[v] = k
+
+logging.basicConfig(level=logging.DEBUG)
+
+
+class Converter(object):
+    CONVERT = {
+        'theora': {
+            'ffmpeg': (
+                '-vcodec libtheora -acodec libvorbis '
+                '-qscale:v 7 -qscale:a 2 -vf scale=720:-1'),
+            'ext': 'ogv',
+        },
+        'broadcast': {
+            'ffmpeg': '-target pal-dv',
+            'ext': 'dv',
+        },
+    }
+
+    @classmethod
+    def new_filepath(cls, path, format):
+        c = cls.CONVERT[format]
+        fn = os.path.splitext(os.path.basename(path))[0]
+        return os.path.join(
+            os.path.dirname(os.path.dirname(path)),
+            format,
+            "%s.%s" % (fn, c['ext']))
+
+    @classmethod
+    def convert_cmds(cls, filepath, format):
+        c = cls.CONVERT[format]
+        to_fn = cls.new_filepath(filepath, format)
+        cmd = ['ffmpeg', '-nostats', '-i', filepath, '-y',
+               '-threads', '8']
+        cmd.extend(c['ffmpeg'].split())
+        cmd.append(to_fn)
+        return cmd, to_fn
+
+    @classmethod
+    def get_formats(cls, filepath):
+        formats = []
+        path = os.path.dirname(filepath)
+        if 'original' in path:
+            formats.append('broadcast')
+        else:
+            assert 'broadcast' in path
+        formats.append('theora')
+        return formats
+
+
+class Runner(object):
+    @classmethod
+    def run(cls, cmd, filepath=None):
+        logging.debug('Running: %s', ' '.join(cmd))
+        if filepath:
+            os.makedirs(os.path.dirname(filepath))
+        return subprocess.check_output(
+            cmd, stderr=subprocess.STDOUT)
+
 
 def get_metadata(filepath):
     md = get_metadata_(filepath)
@@ -85,11 +145,6 @@ def move_original(from_dir, to_dir, metadata, fn):
     shutil.move(os.path.join(from_dir, fn), new_filepath)
     return new_filepath
 
-def generate_videos(id, new_filepath):
-    print('Processing - %s' % new_filepath)
-    video_gen_script = os.path.join(SCRIPT_DIR, 'generate-video-files')
-    subprocess.check_call([video_gen_script, str(id)])
-
 def register_videofiles(id, folder):
     files = get_videofiles(id)
     if len(files):
@@ -101,6 +156,16 @@ def register_videofiles(id, folder):
                 'filename': os.path.join(str(id), file_folder, fn),
                 'format': VF_FORMATS[file_folder],
             })
+
+def generate_videos(
+        id, filepath, runner_run=Runner.run, converter=Converter):
+    logging.info('Processing: %s', filepath)
+    base_path = os.path.dirname(os.path.dirname(filepath))
+    formats = converter.get_formats(filepath)
+    for t in formats:
+        cmds, new_fn = converter.convert_cmds(filepath, t)
+        runner_run(cmds, new_fn)
+
 
 def _update_video(video_id, data):
     response = requests.patch(
