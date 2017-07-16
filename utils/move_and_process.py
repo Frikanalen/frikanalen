@@ -49,6 +49,10 @@ class Converter(object):
             'ffmpeg': '-target pal-dv',
             'ext': 'dv',
         },
+        'large_thumb': {
+            'ffmpeg': '-vframes 1 -ss {thumb_sec} -vf scale=720:-1 -aspect 16:9',
+            'ext': 'jpg',
+        },
     }
 
     @classmethod
@@ -61,18 +65,19 @@ class Converter(object):
             "%s.%s" % (fn, c['ext']))
 
     @classmethod
-    def convert_cmds(cls, filepath, format):
+    def convert_cmds(cls, filepath, format, metadata=None):
         c = cls.CONVERT[format]
         to_fn = cls.new_filepath(filepath, format)
         cmd = ['ffmpeg', '-nostats', '-i', filepath, '-y',
                '-threads', '8']
-        cmd.extend(c['ffmpeg'].split())
+        dur = int(metadata and metadata['duration'] * 0.25 or 30)
+        cmd.extend(c['ffmpeg'].format(thumb_sec=dur).split())
         cmd.append(to_fn)
         return cmd, to_fn
 
     @classmethod
     def get_formats(cls, filepath):
-        formats = []
+        formats = ['large_thumb']
         path = os.path.dirname(filepath)
         if 'original' in path:
             formats.append('broadcast')
@@ -94,7 +99,9 @@ class Runner(object):
 
 def get_metadata(filepath):
     md = get_metadata_(filepath)
-    md['pretty_duration'] = get_duration(filepath, md)
+    md['mlt_duration'] = get_mlt_duration(filepath)
+    md['duration'] = md['mlt_duration'] or md['format']['duration']
+    md['pretty_duration'] = pretty_duration(md['duration'])
     return md
 
 def get_metadata_(filepath):
@@ -109,9 +116,7 @@ def get_metadata_(filepath):
     output = subprocess.check_output(cmd)
     return json.loads(output.decode('utf-8'))
 
-def get_duration(new_file, metadata):
-    mlt_duration = get_mlt_duration(new_file)
-    duration = mlt_duration or metadata['format']['duration']
+def pretty_duration(duration):
     min, sec = divmod(duration, 60)
     hours, _ = divmod(min, 60)
     return '{:d}:{:02d}:{:02f}'.format(int(hours), int(min), sec)
@@ -159,13 +164,13 @@ def register_videofiles(id, folder):
             })
 
 def generate_videos(
-        id, filepath, runner_run=Runner.run, converter=Converter,
-        register=register_videofiles):
+        id, filepath, metadata=None, runner_run=Runner.run,
+        converter=Converter, register=register_videofiles):
     logging.info('Processing: %s', filepath)
     base_path = os.path.dirname(os.path.dirname(filepath))
     formats = converter.get_formats(filepath)
     for t in formats:
-        cmds, new_fn = converter.convert_cmds(filepath, t)
+        cmds, new_fn = converter.convert_cmds(filepath, t, metadata)
         runner_run(cmds, new_fn)
         register(id, base_path)
 
@@ -222,7 +227,7 @@ def handle_file(watch_dir, move_to_dir, str_id):
         'duration': metadata['pretty_duration'],
         'uploaded_time': datetime.utcnow().isoformat(),
     })
-    generate_videos(id, new_filepath or str_id)
+    generate_videos(id, new_filepath or str_id, metadata)
     _update_video(id, { 'proper_import': True })
     os.rmdir(from_dir)
 

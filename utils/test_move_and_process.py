@@ -43,9 +43,11 @@ class ProcessGenerate(unittest.TestCase):
     def test_generate(self):
         tests = (
             ('/tmp/original/test.ogv', [
+                '/tmp/large_thumb/test.jpg',
                 '/tmp/broadcast/test.dv',
                 '/tmp/theora/test.ogv']),
             ('/tmp/broadcast/test.ogv', [
+                '/tmp/large_thumb/test.jpg',
                 '/tmp/theora/test.ogv']),
         )
         nop = lambda *_: None
