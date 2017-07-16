@@ -202,6 +202,8 @@ def create_videofile(video_id, data):
     response.raise_for_status()
 
 def run(watch_dir, move_to_dir):
+    logging.info('Starting move_and_process, watch: %s, move_to: %s',
+                 watch_dir, move_to_dir)
     i = Inotify(block_duration_s=300)
     i.add_watch(bytes(watch_dir, 'utf-8'), constants.IN_MOVED_TO)
     for evt in i.event_gen():
