@@ -147,10 +147,11 @@ def move_original(from_dir, to_dir, metadata, fn):
 
 def register_videofiles(id, folder):
     files = get_videofiles(id)
-    if len(files):
-        raise Exception('%d already have video files: %s' % (
-            id, ', '.join(f['filename'] for f in files)))
+    has_formats = {VF_FORMATS[f['format']] for f in files}
     for file_folder in os.listdir(folder):
+        if file_folder in has_formats:
+            logging.debug('format %s already exists', file_folder)
+            continue
         for fn in os.listdir(os.path.join(folder, file_folder)):
             create_videofile(id, {
                 'filename': os.path.join(str(id), file_folder, fn),
@@ -158,13 +159,15 @@ def register_videofiles(id, folder):
             })
 
 def generate_videos(
-        id, filepath, runner_run=Runner.run, converter=Converter):
+        id, filepath, runner_run=Runner.run, converter=Converter,
+        register=register_videofiles):
     logging.info('Processing: %s', filepath)
     base_path = os.path.dirname(os.path.dirname(filepath))
     formats = converter.get_formats(filepath)
     for t in formats:
         cmds, new_fn = converter.convert_cmds(filepath, t)
         runner_run(cmds, new_fn)
+        register(id, base_path)
 
 
 def _update_video(video_id, data):
@@ -220,7 +223,6 @@ def handle_file(watch_dir, move_to_dir, str_id):
         'uploaded_time': datetime.utcnow().isoformat(),
     })
     generate_videos(id, new_filepath or str_id)
-    register_videofiles(id, to_dir)
     _update_video(id, { 'proper_import': True })
     os.rmdir(from_dir)
 
