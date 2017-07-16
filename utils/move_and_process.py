@@ -90,11 +90,11 @@ class Converter(object):
 class Runner(object):
     @classmethod
     def run(cls, cmd, filepath=None):
-        logging.debug('Running: %s', ' '.join(cmd))
+        logging.info('Running: %s', ' '.join(cmd))
         if filepath:
             os.makedirs(os.path.dirname(filepath))
-        return subprocess.check_output(
-            cmd, stderr=subprocess.STDOUT)
+        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        logging.debug(output.decode('utf-8'))
 
 
 def get_metadata(filepath):
