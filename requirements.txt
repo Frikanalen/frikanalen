@@ -10,3 +10,4 @@ gunicorn == 19.7.1
 psycopg2 == 2.7.1
 python-dateutil == 2.6
 pytz == 2017.2
+requests==2.18.1

@@ -3,7 +3,7 @@ language: python
 python:
   - "2.7"
 install: pip install -r requirements-dev.txt
-script: python fkbeta/manage.py test fkbeta
+script: make test
 cache:
   directories:
     - $HOME/.cache/pip/wheels

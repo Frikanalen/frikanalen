@@ -47,3 +47,4 @@
     dest: /etc/sudoers
     line: "%{{app_user}} ALL=(ALL) NOPASSWD: /bin/systemctl restart fkweb"
     validate: visudo -cf %s
+- include: nginx.yml

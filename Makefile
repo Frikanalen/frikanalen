@@ -8,3 +8,6 @@ docker_run: docker
 	docker run -p 8000:8000 ${project}
 docker_push:
 	docker push ${project}
+test:
+	python fkbeta/manage.py test fkbeta
+	python utils/test_*.py

@@ -6,6 +6,8 @@ from os.path import join, normpath
 from base import *
 
 
+FK_UPLOAD_URL = 'http://127.0.0.1:5000/upload'
+
 ########## DEBUG CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = True
