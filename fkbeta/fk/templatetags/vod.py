@@ -9,27 +9,34 @@ from fk.models import Video
 register = template.Library()
 
 
-@register.inclusion_tag("fkvod/vod_widget.html")
-def show_vod_widget(video_id):
-    video_error_explanation = ""
+def _get_video(video_id):
+    try:
+        video_id = int(video_id)
+    except ValueError:
+        return (None, _('Invalid video id "%s"' % video_id))
     try:
         video = Video.objects.public().get(id=video_id)
-        title = u"%s" % unicode(video.name)
-        video_error = None
     except ObjectDoesNotExist:
-        video = None
-        title = _('Video #%i not found' % int(video_id))
-        video_error = title
-    else:
+        return (None, _('Video #%i not found' % int(video_id)))
+    return (video, None)
+
+
+@register.inclusion_tag('fkvod/vod_widget.html')
+def show_vod_widget(video_id):
+    video_error_explanation = ''
+    video, video_error = _get_video(video_id)
+    if video:
+        title = unicode(video.name)
         if not video.publish_on_web:
             video_error = _('Video is not published on web')
         elif settings.WEB_NO_TONO and video.has_tono_records:
             video_error = _('Video not available')
-            video_error_explanation = _('The video contains music which requires fees and are not viewable.')
-    context = {
-        "video": video,
-        "video_error": video_error,
-        "video_error_explanation": video_error_explanation,
-        "title": title
-        }
-    return context
+            video_error_explanation = _(
+                'The video contains music which '
+                'requires fees and are not viewable.')
+    return {
+        'video': video,
+        'video_error': video_error,
+        'video_error_explanation': video_error_explanation,
+        'title': title,
+    }
