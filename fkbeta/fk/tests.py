@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from fk.models import Scheduleitem
+from fk.templatetags import vod
 
 
 class WebPageTest(TestCase):
@@ -213,3 +214,28 @@ class APITest(TestCase):
         self.assertEqual(
             ['nuug_user', 'dummy_user'],
             [v['video']['editor'] for v in r.data['results']])
+
+
+class VodTemplateTag(TestCase):
+    fixtures = ['test.yaml']
+
+    def test_found(self):
+        for t in [(1, 'tech video'), ('2', 'dummy video')]:
+            l = vod.show_vod_widget(t[0])
+            self.assertEqual(l['video_error'], None)
+            self.assertEqual(l['video'].id, int(t[0]))
+            self.assertEqual(l['title'], t[1])
+
+    def test_not_found(self):
+        for t in [8, '8', 9]:
+            l = vod.show_vod_widget(t)
+            self.assertIn('not found', l['video_error'])
+            self.assertIn('not found', l['title'])
+            self.assertEqual(l['video'], None)
+
+    def test_invalid(self):
+        for t in ['', 'a']:
+            l = vod.show_vod_widget(t)
+            self.assertIn('Invalid video id', l['video_error'])
+            self.assertIn('Invalid video id', l['title'])
+            self.assertEqual(l['video'], None)
