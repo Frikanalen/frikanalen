@@ -18,13 +18,14 @@ class VideoDetail(TemplateView):
     def get(self, request, video_id):
         try:
             video = Video.objects.public().get(id=video_id)
-            title = u"%s" % unicode(video.name)
+            title = unicode(video.name)
         except ObjectDoesNotExist:
             video = None
             title = _('Video #%i not found' % int(video_id))
         context = {
-            "video": video,
-            "title": title
+            'video_id': video_id,
+            'video': video,
+            'title': title
         }
         return render(request, 'fkvod/video_details.html', context)
 

@@ -33,7 +33,7 @@
 {% block content %}
   <div class="video-container">
     <div class="widget-container">
-      {% show_vod_widget video.id %}
+      {% show_vod_widget video_id %}
     </div>
     <div class="video-info">
       {% if video.organization %}
@@ -55,12 +55,14 @@
           <span style="background-color:{{ category.rgb }};border-radius: 4px;padding:2px;">{{ category }}</span>
         {% endfor %}</i>
       </div>
-      <div>
-        <small>Uploaded: <i>{{ video.uploaded_time|date:"d M Y"}}</i></small>
-      </div>
-      <div>
-        <small>Length: {{ video.duration|truncate_duration }} {% if video.is_filler %}(filler){% endif %}
-      </div>
+      {% if video %}
+        <div>
+          <small>Uploaded: <i>{{ video.uploaded_time|date:"d M Y"}}</i></small>
+        </div>
+        <div>
+          <small>Length: {{ video.duration|truncate_duration }} {% if video.is_filler %}(filler){% endif %}
+        </div>
+      {% endif %}
       <div>
         {% if video.first_broadcast %}
           <small>First broadcast: <i>{{ video.first_broadcast.starttime }}</i></small>
