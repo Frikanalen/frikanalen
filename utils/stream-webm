@@ -1,0 +1,30 @@
+#!/bin/sh         
+# 
+# Inspiration: https://plus.google.com/+ThomasRuecker/posts/1RCeYxHhiY3
+
+. $HOME/icecast-cred                                                   
+
+inurl=udp://@224.17.43.129:1235
+inurl=http://localhost:9094/frikanalen.ts                              
+
+runstream() {
+ffmpeg -i $inurl \                                                     
+  -f webm \
+  -cluster_size_limit 2M \ 
+  -cluster_time_limit 5100 \                                           
+  -content_type video/webm \                                           
+  -c:a libvorbis -b:a 96K \                                            
+  -c:v libvpx -b:v 1.2M \ 
+  -g 5 \
+  -crf 32 \ 
+  -deadline good \         
+  -speed 3 \ 
+  -threads 5 \
+  icecast://$icecastuser:$icecastpwd@video.nuug.no:8000/frikanalen.webm
+}                 
+
+while sleep 1 ; do
+    echo "info: Starting webm stream"
+    runstream >> vlc-multicast.log 2>&1 < /dev/null
+    sleep 2
+done
