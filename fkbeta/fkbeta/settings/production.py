@@ -28,6 +28,8 @@ ALLOWED_HOSTS = [
     'beta.frikanalen.no',
     'beta.frikanalen.tv',
 ]
+DEFAULT_FROM_EMAIL = 'Frikanalen <noreply@frikanalen-dev.nuug.no>'
+
 ########## END HOST CONFIGURATION
 
 ########## EMAIL CONFIGURATION
@@ -59,8 +61,10 @@ SERVER_EMAIL = EMAIL_HOST_USER
 ########## DATABASE CONFIGURATION
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/srv/web/admin.beta.frikanalen.tv/db/frikanalen-db1',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': get_env_setting('DATABASE_NAME'),
+        'USER': get_env_setting('DATABASE_USER'),
+        'PASSWORD': get_env_setting('DATABASE_PASS'),
     }
 }
 ########## END DATABASE CONFIGURATION
