@@ -4,3 +4,13 @@
     name: nginx
     state: reloaded
     enabled: yes
+- name: reload postgresql
+  service:
+    name: postgresql
+    state: reloaded
+    enabled: yes
+- name: restart postgresql
+  service:
+    name: postgresql
+    state: restarted
+    enabled: yes

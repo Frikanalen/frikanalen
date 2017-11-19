@@ -8,6 +8,21 @@
     - python-psycopg2
   tags: packages
 
+- name: Update pg_hba file
+  notify: restart postgresql
+  lineinfile:
+    path=/etc/postgresql/9.6/main/pg_hba.conf
+    regexp='^hostssl public fkweb'
+    line='hostssl public fkweb 158.36.191.230/32 md5'
+
+- name: Update postgresql config file
+  notify: reload postgresql
+  lineinfile:
+    path=/etc/postgresql/9.6/main/postgresql.conf
+    regexp='^listen_addresses '
+    insertbefore='^#listen_addresses = '
+    line='listen_addresses = \'*\''
+
 - name: Ensure the PostgreSQL service is running
   service: name=postgresql state=started enabled=yes
 
