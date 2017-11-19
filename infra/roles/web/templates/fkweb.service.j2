@@ -6,7 +6,10 @@ User={{app_user}}
 Group={{app_user}}
 PIDFile=/run/fkweb/gunicorn.pid
 WorkingDirectory={{app_dir}}/app/fkbeta/
-Environment=SECRET_KEY=aeou
+Environment=SECRET_KEY={{app_secret_key}}
+Environment=DATABASE_USER={{app_user}}
+Environment=DATABASE_PASS={{app_db_pass}}
+Environment=DATABASE_NAME={{app_db_name}}
 ExecStart={{app_dir}}/env/bin/gunicorn --pid /run/fkweb/gunicorn.pid fkbeta.wsgi:application -b {{app_bind}}
 Restart=always
 PrivateTmp=true

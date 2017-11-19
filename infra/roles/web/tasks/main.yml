@@ -42,6 +42,7 @@
     group={{app_user}}
 - name: Install systemd unit file
   template: src=fkweb.service.j2 dest=/etc/systemd/system/fkweb.service
+  mode: 0640
 - name: Enable and start service
   systemd: state=restarted name=fkweb daemon_reload=yes enabled=true
 - name: Allow {{app_user}} restart service
@@ -51,3 +52,4 @@
     validate: visudo -cf %s
 - import_tasks: nginx.yml
 - import_tasks: letsencrypt.yml
+- import_tasks: postgresql.yml
