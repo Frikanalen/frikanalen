@@ -18,7 +18,7 @@ WEB_NO_TONO = True
 FK_MEDIA_URLPREFIX = 'http://simula.gunkies.org/media/'
 FK_MEDIA_ROOT = '/tank/new_media/media'
 
-FK_UPLOAD_URL = 'http://ftp.frikanalen.tv/upload'
+FK_UPLOAD_URL = 'https://upload.frikanalen.no/upload'
 
 AUTH_PROFILE_MODULE = 'fk.UserProfile'
 LOGIN_URL = '/login/'
