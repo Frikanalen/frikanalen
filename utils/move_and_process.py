@@ -14,7 +14,7 @@ from inotify import constants
 from inotify.adapters import Inotify
 
 
-FK_API = os.environ.get('FK_API', 'http://beta.frikanalen.no/api')
+FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
 FK_TOKEN = os.environ.get('FK_TOKEN')
 DIR = '/tmp'
 TO_DIR = '/tank/new_media/media/'

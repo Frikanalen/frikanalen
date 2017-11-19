@@ -6,8 +6,8 @@
 
   <channel>
     <title>Innslag på Frikanalen</title>
-    <link>http://www.frikanalen.no/</link>
-    <atom:link href="http://beta.frikanalen.no/video/rss" rel="self" type="application/rss+xml" />
+    <link>https://frikanalen.no/</link>
+    <atom:link href="https://frikanalen.no/video/rss" rel="self" type="application/rss+xml" />
     <description>Video recordings published via the Norwegian Open Channel Frikanalen.</description>
 
     <copyright>(c) 2009-2013 Frikanalen and contributors</copyright>
@@ -28,7 +28,7 @@
     <image>
         <title>Frikanalen</title>
         <url>http://www.frikanalen.no/images/logo_small.png</url>
-        <link>http://beta.frikanalen.no/video/rss</link>
+        <link>https://frikanalen.no/video/rss</link>
     </image>
     <itunes:image href="http://www.frikanalen.no/images/logo_small.png"/>
 

@@ -3,7 +3,7 @@ import os
 import requests
 
 
-FK_API = os.environ.get('FK_API', 'http://beta.frikanalen.no/api')
+FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
 FK_TOKEN = os.environ.get('FK_TOKEN')
 
 

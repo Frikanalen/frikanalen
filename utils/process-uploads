@@ -30,7 +30,7 @@ import grp
 import pipes
 import re
 from subprocess import *
- 
+
 uploadpath = "/tank/upload"
 mediapath = "/tank/new_media/media"
 
@@ -80,7 +80,7 @@ playout can play.
         if m:
             return True
     return False
-    
+
 def associate_file(frikanalen, filepath, video = None, interactive = True):
     try:
         if video is None:
@@ -144,7 +144,7 @@ def register_new_video(frikanalen, uploader, filepath):
     print """
 
 The name and header should be cleaned up.  Next, visit
-http://beta.frikanalen.no/members/video/edit/%s to
+https://frikanalen.no/members/video/edit/%s to
 update the video description and categories.
 
 """ % (video.id)

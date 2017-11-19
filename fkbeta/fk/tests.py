@@ -40,7 +40,7 @@ class WebPageTest(TestCase):
         r = self.client.get('/xmltv/2015/01/01')
         self.assertContains(r, '<title lang="no">tech video</title>', count=1)
         self.assertContains(r, '<title lang="no">dummy video</title>', count=1)
-        self.assertContains(r, '<url>http://beta.frikanalen.no/video/2/</url>', count=1)
+        self.assertContains(r, '<url>https://frikanalen.no/video/2/</url>', count=1)
         self.assertContains(r, '</programme>', count=2)
 
 

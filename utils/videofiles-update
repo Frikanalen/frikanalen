@@ -38,11 +38,11 @@ import mechanize
 
 mediadir = '/tank/new_media/media'
 
-loginurl = 'http://beta.frikanalen.no/api/api-auth/login/?next=/api/'
-apiurl        = 'http://beta.frikanalen.no/api/'
-videofilesurl = 'http://beta.frikanalen.no/api/videofiles/'
-tokenurl      = 'http://beta.frikanalen.no/api/obtain-token'
-videosurl     = 'http://beta.frikanalen.no/api/videos/'
+loginurl = 'https://frikanalen.no/api/api-auth/login/?next=/api/'
+apiurl        = 'https://frikanalen.no/api/'
+videofilesurl = 'https://frikanalen.no/api/videofiles/'
+tokenurl      = 'https://frikanalen.no/api/obtain-token'
+videosurl     = 'https://frikanalen.no/api/videos/'
 
 args = {}
 
