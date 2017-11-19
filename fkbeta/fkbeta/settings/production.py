@@ -20,7 +20,14 @@ def get_env_setting(setting):
 
 ########## HOST CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.5/releases/1.5/#allowed-hosts-required-in-production
-ALLOWED_HOSTS = ["beta.frikanalen.no", "beta.frikanalen.tv",]
+ALLOWED_HOSTS = [
+    'frikanalen.no',
+    'frikanalen-prod.nuug.no',
+    'frikanalen-dev.nuug.no',
+    'dev.frikanalen.no',
+    'beta.frikanalen.no',
+    'beta.frikanalen.tv',
+]
 ########## END HOST CONFIGURATION
 
 ########## EMAIL CONFIGURATION
