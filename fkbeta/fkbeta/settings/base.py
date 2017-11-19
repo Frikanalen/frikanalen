@@ -7,7 +7,7 @@
 """Common settings and globals."""
 
 from os.path import abspath, basename, dirname, join, normpath
-from sys import path
+import sys
 
 
 ########## CUSTOM FKBETA CONFIGURATION
@@ -50,7 +50,7 @@ SITE_NAME = basename(DJANGO_ROOT)
 
 # Add our project to our pythonpath, this way we don't need to type our project
 # name in our dotted import paths:
-path.append(DJANGO_ROOT)
+sys.path.append(DJANGO_ROOT)
 ########## END PATH CONFIGURATION
 
 
@@ -265,14 +265,33 @@ LOGGING = {
         }
     },
     'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
     },
     'loggers': {
+        'root': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
         'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'gunicorn': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
