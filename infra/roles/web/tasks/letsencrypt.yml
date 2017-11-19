@@ -1,0 +1,28 @@
+---
+- name: install certbot
+  apt:
+    name: certbot
+    state: present
+
+- name: ensure certbot well-known path exists
+  file:
+    path: "/srv/certbot/.well-known"
+    state: directory
+
+- name: Check if we already have cert
+  stat: path=/etc/letsencrypt/live/{{ domain }}/fullchain.pem
+  register: cert
+
+- name: ensure any pending nginx reload happens immediately
+  meta: flush_handlers
+  when: cert.stat.exists == false
+
+- name: Obtain initial cert
+  command: certbot certonly --non-interactive --webroot
+    -d {{ domain }} --email={{ email }} --agree-tos
+    -w /srv/certbot
+  when: cert.stat.exists == False
+
+#- name: Strong DH params
+#  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+#           creates=/etc/ssl/certs/dhparam.pem
