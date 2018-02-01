@@ -15,7 +15,7 @@ import sys
 WEB_NO_TONO = True
 
 # Where all the media files are stored (Must have trailing slash)
-FK_MEDIA_URLPREFIX = 'http://simula.gunkies.org/media/'
+FK_MEDIA_URLPREFIX = 'https://upload.frikanalen.no/media/'
 FK_MEDIA_ROOT = '/tank/new_media/media'
 
 FK_UPLOAD_URL = 'https://upload.frikanalen.no/upload'
