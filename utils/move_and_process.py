@@ -17,7 +17,7 @@ from inotify.adapters import Inotify
 FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
 FK_TOKEN = os.environ.get('FK_TOKEN')
 DIR = '/tmp'
-TO_DIR = '/tank/new_media/media/'
+TO_DIR = '/tank/media/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # XXX very hacky
