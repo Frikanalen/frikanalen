@@ -14,7 +14,6 @@
     - build-essential
     - python-dev
     - python-pip
-    - certbot
 - name: Create .ssh dir
   file: dest={{app_dir}}/.ssh state=directory mode=700
         owner={{app_user}} group={{app_user}}
@@ -52,6 +51,7 @@
     dest: /etc/sudoers
     line: "%{{app_user}} ALL=(ALL) NOPASSWD: /bin/systemctl restart fkweb"
     validate: visudo -cf %s
-- import_tasks: nginx.yml
-- import_tasks: letsencrypt.yml
 - import_tasks: postgresql.yml
+- name: Install nginx conf
+  template: src=nginx-server.conf.j2 dest=/etc/nginx/sites-enabled/{{domain}}.conf
+  notify: reload nginx

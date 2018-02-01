@@ -1,29 +1,41 @@
 ---
 - name: Add group {{app_user}}
   group: name={{app_user}}
+
 - name: Add user {{app_user}}
-  user: name={{app_user}} group={{app_user}} home={{app_dir}} groups=fkmedia_rw
+  user: name={{app_user}} group={{app_user}} home={{app_dir}}
+
+- name: Install packages
+  apt: name={{item}}
+  with_items:
+    - virtualenv
+    - python-pip
+
 - name: git pull project
   git: repo={{repo_url}} dest={{app_dir}}/git version=master
   become_user: "{{app_user}}"
+
 - name: create upload app symlink
   file:
     src: "{{app_dir}}/git/upload"
     dest: "{{upload_app_dir}}"
     state: link
   become_user: "{{app_user}}"
+
 - name: create utils script symlink
   file:
     src: "{{app_dir}}/git/utils"
     dest: "{{scripts_dir}}"
     state: link
   become_user: "{{app_user}}"
+
 - name: install requirements
   pip:
     requirements: "{{upload_app_dir}}/requirements.txt"
     virtualenv: "{{app_dir}}/env/"
     virtualenv_python: python3
   become_user: "{{app_user}}"
+
 - name: install script requirements
   pip:
     name:
@@ -32,23 +44,36 @@
     virtualenv: "{{app_dir}}/env/"
     virtualenv_python: python3
   become_user: "{{app_user}}"
+
 - name: ensure finished dir exists
   file:
     dest: "{{upload_finished_dir}}"
     state: directory
   become_user: "{{app_user}}"
+
 - name: ensure logs dir exists
   file:
     dest: "{{app_dir}}/logs"
     state: directory
   become_user: "{{app_user}}"
+
 - name: install fkupload apache file
   template: src=apache.conf.j2 dest=/etc/apache2/sites-enabled/fkupload.conf
+  when: not nginx
+
+- name: install fkupload nginx file
+  template: src=nginx.conf.j2 dest=/etc/nginx/sites-enabled/fkupload.conf
+  notify: reload nginx
+  when: nginx
+
 - name: install fkupload systemd unit file
   template: src=fkupload.service.j2 dest=/etc/systemd/system/fkupload.service
+
 - name: start fkupload service
   systemd: state=reloaded name=fkupload daemon_reload=yes enabled=true
+
 - name: install move_and_process systemd unit file
   template: src=move_and_process.service.j2 dest=/etc/systemd/system/move_and_process.service
+
 - name: start move_and_process service
   systemd: state=restarted name=move_and_process daemon_reload=yes enabled=true

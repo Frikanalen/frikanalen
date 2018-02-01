@@ -1,5 +1,6 @@
 [upload]
-simula.gunkies.org
+#simula.gunkies.org # deprecated
+file01.frikanalen.no nginx=true domain=upload.frikanalen.no
 
 [web]
 frikanalen-prod.nuug.no

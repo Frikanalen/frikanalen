@@ -1,21 +1,25 @@
 ---
-- name: install certbot
-  apt:
-    name: certbot
-    state: present
+- name: Install certbot
+  apt: name=certbot
+  when: ansible_distribution_release != 'jessie'
 
-- name: ensure certbot well-known path exists
+- name: Install certbot (jessie)
+  apt: name=certbot default_release='jessie-backports'
+  when: ansible_distribution_release == 'jessie'
+
+- name: Ensure certbot well-known path exists
   file:
     path: "/srv/certbot/.well-known"
     state: directory
 
 - name: Check if we already have cert
-  stat: path=/etc/letsencrypt/live/{{ domain }}/fullchain.pem
+  stat:
+    path: /etc/letsencrypt/live/{{ domain }}/fullchain.pem
   register: cert
 
-- name: ensure any pending nginx reload happens immediately
+- name: Ensure any pending nginx reload happens immediately
   meta: flush_handlers
-  when: cert.stat.exists == false
+  when: cert.stat.exists == False
 
 - name: Obtain initial cert
   command: certbot certonly --non-interactive --webroot
