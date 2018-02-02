@@ -41,8 +41,9 @@
 - name: install script requirements
   pip:
     name:
-    - inotify
+    - inotify # 0.2.9
     - requests
+    state: latest
     virtualenv: "{{app_dir}}/env/"
     virtualenv_python: python3
   become_user: "{{app_user}}"
