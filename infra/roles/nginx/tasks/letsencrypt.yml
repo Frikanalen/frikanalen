@@ -24,7 +24,7 @@
 - name: Obtain initial cert
   command: certbot certonly --non-interactive --webroot
     -d {{ domain }} --email={{ email }} --agree-tos
-    -w /srv/certbot
+    -w /srv/certbot --post-hook 'systemctl restart nginx'
   when: cert.stat.exists == False
 
 #- name: Strong DH params
