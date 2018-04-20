@@ -48,17 +48,15 @@
     virtualenv_python: python3
   become_user: "{{app_user}}"
 
-- name: ensure finished dir exists
+- name: ensure dirs exists
   file:
-    dest: "{{upload_finished_dir}}"
+    dest: "{{item}}"
     state: directory
   become_user: "{{app_user}}"
-
-- name: ensure logs dir exists
-  file:
-    dest: "{{app_dir}}/logs"
-    state: directory
-  become_user: "{{app_user}}"
+  with_items:
+    - "{{upload_dir}}"
+    - "{{upload_finished_dir}}"
+    - "{{app_dir}}/logs"
 
 - name: install fkupload apache file
   template: src=apache.conf.j2 dest=/etc/apache2/sites-enabled/fkupload.conf
