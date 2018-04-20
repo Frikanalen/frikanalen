@@ -1,6 +1,8 @@
 Frikanalen infrastructure
 =========================
 
+Requires Ansible >=2.4
+
 To deploy, run:
 
     ansible-playbook -i hosts -K --ask-vault-pass site.yml
