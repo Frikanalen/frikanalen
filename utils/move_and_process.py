@@ -135,6 +135,15 @@ def get_mlt_duration(filepath):
     fps = float(m.group(1))
     return frames/fps
 
+def rq(method, path, **kwargs):
+    response = requests.request(method,
+        FK_API + path,
+        headers={'Authorization': 'Token %s' % FK_TOKEN},
+        **kwargs,
+    )
+    response.raise_for_status()
+    return response
+
 def direct_playable(metadata):
     def is_pal(s):
         return (
@@ -176,30 +185,15 @@ def generate_videos(
 
 
 def _update_video(video_id, data):
-    response = requests.patch(
-        '%s/videos/%d' % (FK_API, video_id),
-        headers={'Authorization': 'Token %s' % FK_TOKEN},
-        data=data,
-    )
-    response.raise_for_status()
+    response = rq('PATCH', '/videos/%d' % video_id, data=data)
 
 def get_videofiles(video_id):
-    response = requests.get(
-        '%s/videofiles/' % FK_API,
-        params={'video_id': video_id},
-        headers={'Authorization': 'Token %s' % FK_TOKEN},
-    )
-    response.raise_for_status()
+    response = rq('GET', '/videofiles/', params={'video_id': video_id})
     return response.json()['results']
 
 def create_videofile(video_id, data):
     data.update({'video': video_id})
-    response = requests.post(
-        '%s/videofiles/' % FK_API,
-        headers={'Authorization': 'Token %s' % FK_TOKEN},
-        data=data,
-    )
-    response.raise_for_status()
+    rq('POST', '/videofiles/', data=data)
 
 def run(watch_dir, move_to_dir):
     logging.info('Starting move_and_process, watch: %s, move_to: %s',
