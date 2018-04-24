@@ -91,7 +91,7 @@ class VideoFile(models.Model):
     video = models.ForeignKey("Video")
     format = models.ForeignKey("FileFormat")
     filename = models.CharField(max_length=256)
-    old_filename = models.CharField(max_length=256, default='')
+    old_filename = models.CharField(max_length=256, default='', blank=True)
     # source = video = models.ForeignKey("VideoFile")
     created_time = models.DateTimeField(
         auto_now_add=True, null=True,
