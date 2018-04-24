@@ -136,7 +136,11 @@ def get_mlt_duration(filepath):
     return frames/fps
 
 def rq(method, path, **kwargs):
-    response = requests.request(method,
+    s = requests.Session()
+    adapter = requests.adapters.HTTPAdapter(max_retries=3)
+    s.mount('http://', adapter)
+    s.mount('https://', adapter)
+    response = s.request(method,
         FK_API + path,
         headers={'Authorization': 'Token %s' % FK_TOKEN},
         **kwargs,
