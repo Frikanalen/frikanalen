@@ -143,8 +143,7 @@ def rq(method, path, **kwargs):
     response = s.request(method,
         FK_API + path,
         headers={'Authorization': 'Token %s' % FK_TOKEN},
-        **kwargs,
-    )
+        **kwargs)
     response.raise_for_status()
     return response
 
