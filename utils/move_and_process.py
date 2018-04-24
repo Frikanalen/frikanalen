@@ -209,9 +209,9 @@ def run(watch_dir, move_to_dir):
             continue
         (_header, type_names, _path, fn) = evt
         if 'IN_ISDIR' not in type_names or not fn.isdigit():
-            print('Skipped %s' % fn)
+            logging.info('Skipped %s' % fn)
             continue
-        print ('Found %s' % fn)
+        logging.info('Found %s' % fn)
         handle_file(watch_dir, move_to_dir, fn)
 
 def handle_file(watch_dir, move_to_dir, str_id):
