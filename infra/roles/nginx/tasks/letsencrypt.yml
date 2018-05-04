@@ -27,6 +27,12 @@
     -w /srv/certbot --post-hook 'systemctl restart nginx'
   when: cert.stat.exists == False
 
+- name: Enable certbot timer
+  systemd:
+    name: certbot.timer
+    state: started
+    enabled: True
+
 #- name: Strong DH params
 #  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 #           creates=/etc/ssl/certs/dhparam.pem
