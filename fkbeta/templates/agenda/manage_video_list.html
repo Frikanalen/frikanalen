@@ -25,18 +25,20 @@
     float: left;
     width: 240px;
 }
+
+a.create {
+    background-color: crimson;
+    border-radius: 4px;
+    color: white;
+    display: inline-block;
+    padding: 12px;
+    text-decoration: none;
+}
 </style>
 {% endblock style %}
 
 {% block content %}
-<div class="navigation_container">
-    <div class="navigation">
-        <div class="inner">
-            <a href="{% url 'manage-video-new' %}">New video</a>
-        </div>
-    </div>
-</div>
-
+<a class=create href="{% url 'create_home' %}">New video</a>
 
 <div class="navigation_container">
 {% if page.paginator.num_pages > 1%}
