@@ -24,7 +24,7 @@
 - name: Obtain initial cert
   command: certbot certonly --non-interactive --webroot
     -d {{ domain }} --email={{ email }} --agree-tos
-    -w /srv/certbot --post-hook 'systemctl restart nginx'
+    -w /srv/certbot --post-hook 'systemctl reload nginx'
   when: cert.stat.exists == False
 
 - name: Enable certbot timer
