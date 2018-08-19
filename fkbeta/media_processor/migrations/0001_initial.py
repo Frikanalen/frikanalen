@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('fk', '0001_initial'),
+        ('fk', '0001_squashed_0008_remove_colorful_20180819_1810'),
     ]
 
     operations = [

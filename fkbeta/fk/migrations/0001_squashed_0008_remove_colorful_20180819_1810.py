@@ -12,8 +12,6 @@ import model_utils.fields
 
 class Migration(migrations.Migration):
 
-    initial = True
-
     replaces = [
         (b'fk', '0001_initial'),
         (b'fk', '0002_schedulepurpose_strategies'),
