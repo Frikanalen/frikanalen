@@ -226,7 +226,6 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-    'colorful',
     'registration',
     'rest_framework',
     'rest_framework.authtoken',

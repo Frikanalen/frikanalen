@@ -5,6 +5,9 @@ import durationfield.db.models.fields.duration
 from django.db import models, migrations
 
 
+def noop(*args):
+    return None
+
 def add_created_time(apps, schema_editor):
     Model = apps.get_model('fk', 'Video')
     for item in Model.objects.filter(created_time__isnull=True):
@@ -51,5 +54,5 @@ class Migration(migrations.Migration):
             field=models.DateTimeField(help_text=b'Time the original video for the program was uploaded', null=True, blank=True),
             preserve_default=True,
         ),
-        migrations.RunPython(add_created_time, lambda a, b: None),
+        migrations.RunPython(add_created_time, noop),
     ]

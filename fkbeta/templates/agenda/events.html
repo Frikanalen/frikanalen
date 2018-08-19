@@ -95,7 +95,7 @@
                   <a href="{% url 'vod-org-video-list' event.video.organization.id %}">{{ event.video.organization }}</a>
                   {% endif %}
           {% for category in event.video.category_list %}
-            <span style="background-color:{{ category.rgb }};border-radius: 4px;padding:2px;">{{ category }}</span>
+            <span style="background-color:#ccc; border-radius: 4px;padding:2px;">{{ category }}</span>
           {% endfor %}
         </small>
       </div>

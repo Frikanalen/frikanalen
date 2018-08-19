@@ -5,7 +5,6 @@ import os
 import uuid
 
 import pytz
-from colorful.fields import RGBColorField
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -70,7 +69,6 @@ class FileFormat(models.Model):
     description = models.TextField(
         unique=True, max_length=255, null=True, blank=True)
     fsname = models.CharField(max_length=20)
-    rgb = RGBColorField(default="cccccc")
 
     # httpprefix = models.CharField(max_length=200)
     # mime_type = models.CharField(max_length=256)
@@ -120,7 +118,6 @@ class VideoFile(models.Model):
 class Category(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
-    rgb = RGBColorField()
     desc = models.CharField(max_length=255, blank=True)
 
     class Meta:
@@ -540,7 +537,6 @@ class AsRun(TimeStampedModel):
 class Scheduleregion(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=255)
-    rgb = RGBColorField()
     starttime = models.TimeField()
     endtime = models.TimeField()
     class Meta:
