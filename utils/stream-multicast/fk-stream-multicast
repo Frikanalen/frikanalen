@@ -1,0 +1,5 @@
+#!/bin/sh
+
+source=http://localhost:9094/fk_obe.ts
+
+cvlc -vvv $source --ttl 254 --sout '#std{access=udp,mux=ts,dst=224.17.43.129:1234}'

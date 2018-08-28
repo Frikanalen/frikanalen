@@ -1,0 +1,15 @@
+[Unit]
+Description=Propagate stream to UiO multicast
+After=cubemap.service network.target
+Requisite=cubemap.service
+
+[Service]
+#Environment="ICECAST_URL=foo:bar@host:8000/frikanalen.webm"
+Type=simple
+User=nobody
+WorkingDirectory=/tmp
+ExecStart=/usr/bin/fk-stream-multicast
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
