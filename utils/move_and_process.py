@@ -221,13 +221,33 @@ def handle_file(watch_dir, move_to_dir, str_id):
     to_dir = os.path.join(move_to_dir, str_id)
 
     new_filepath = move_original(from_dir, to_dir, metadata, fn)
+    _handle_file(id, new_filepath or str_id, metadata)
+    os.rmdir(from_dir)
+
+def _handle_file(id, filepath, metadata):
     _update_video(id, {
         'duration': metadata['pretty_duration'],
         'uploaded_time': datetime.utcnow().isoformat(),
     })
-    generate_videos(id, new_filepath or str_id, metadata)
+    generate_videos(id, filepath, metadata)
     _update_video(id, { 'proper_import': True })
-    os.rmdir(from_dir)
+
+def update_existing_file(str_id, to_dir):
+    id = int(str_id)
+    if not os.path.isdir(os.path.join(to_dir, str_id)):
+        raise "No folder {} in {}".format(id, to_dir)
+    fn = None
+    path = None
+    for folder in ['original', 'broadcast']:
+        path = os.path.join(to_dir, str_id, folder)
+        if os.path.isdir(path):
+            fn = os.listdir(path)[0]
+            break
+    if not fn:
+        raise "Found no file in {}".format(to_dir, id)
+    filepath = os.path.join(path, fn)
+    metadata = get_metadata(filepath)
+    _handle_file(id, filepath, metadata)
 
 if __name__ == '__main__':
     dir = sys.argv[1] if len(sys.argv) > 1 else DIR
@@ -236,6 +256,8 @@ if __name__ == '__main__':
     try:
         if len(sys.argv) > 3:
             handle_file(dir, to_dir, sys.argv[3])
+        elif dir.isdigit():
+            update_existing_file(dir, to_dir)
         else:
             run(dir, to_dir)
     except KeyboardInterrupt:
