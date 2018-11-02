@@ -1,13 +1,13 @@
 Django == 1.11.16
-Markdown == 2.6.8
+Markdown == 3.0.1
 Twisted == 17.1.0
 django-durationfield == 0.5.5
-django-model-utils == 2.6.1
-django-registration-redux == 1.5
+django-model-utils == 3.1.2
+django-registration-redux == 2.5
 djangorestframework == 3.6.2
-gunicorn == 19.7.1
-inotify==0.2.8
-psycopg2 == 2.7.1
-python-dateutil == 2.6
+gunicorn == 19.9.0
+inotify == 0.2.10
+psycopg2-binary == 2.7.5
+python-dateutil == 2.7.5
 pytz == 2018.7
-requests==2.18.1
+requests == 2.20.0
