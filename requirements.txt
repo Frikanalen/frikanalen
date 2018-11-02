@@ -1,7 +1,7 @@
-Django == 1.10.8
+Django == 1.11.16
 Markdown == 2.6.8
 Twisted == 17.1.0
-django-durationfield == 0.5.4
+django-durationfield == 0.5.5
 django-model-utils == 2.6.1
 django-registration-redux == 1.5
 djangorestframework == 3.6.2
@@ -9,5 +9,5 @@ gunicorn == 19.7.1
 inotify==0.2.8
 psycopg2 == 2.7.1
 python-dateutil == 2.6
-pytz == 2017.2
+pytz == 2018.7
 requests==2.18.1
