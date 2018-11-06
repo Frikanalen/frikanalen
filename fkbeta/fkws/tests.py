@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -310,20 +311,22 @@ class ScheduleitemTest(APITestCase):
         self.client.login(username='staff_user', password='test')
 
     def test_creating_new_scheduleitem(self):
+        # Rest Framework now always sends back dates using configured TZ
         times = [
-            '2015-01-01T11:00:00Z',
-            '2015-01-01T08:59:00Z',
-            '2015-01-01T09:58:00+01:00',
-            '2015-01-01T11:00:59Z']
-        for time in times:
+            ('2015-01-01T11:00:00Z', '2015-01-01T12:00:00+01:00'),
+            ('2015-01-01T08:59:00Z', '2015-01-01T09:59:00+01:00'),
+            ('2015-01-01T09:58:00+01:00', '2015-01-01T09:58:00+01:00'),
+            ('2015-01-01T11:00:59Z', '2015-01-01T12:00:59+01:00'),
+        ]
+        for given_time, returned_time in times:
             r = self.client.post(
                 reverse('api-scheduleitem-list'),
                 {'video_id': '/api/videos/2',
-                 'starttime': time,
+                 'starttime': given_time,
                  'duration': '00:00:58.312',
                  'schedulereason': 1})
             self.assertEqual(status.HTTP_201_CREATED, r.status_code)
-            self.assertEqual(time, r.data['starttime'])
+            self.assertEqual(returned_time, r.data['starttime'])
             self.assertEqual('0:00:58.312000', r.data['duration'])
             self.assertEqual('dummy video', r.data['video']['name'])
 
@@ -361,7 +364,12 @@ class ScheduleitemTest(APITestCase):
                 changes)
             self.assertEqual(status.HTTP_200_OK, r.status_code)
             for k, v in changes.items():
-                self.assertEqual(v, r.data[k])
+                if k == 'starttime':
+                    p = parse_datetime(v)
+                    pk = parse_datetime(r.data[k])
+                    self.assertEqual(parse_datetime(v), parse_datetime(r.data[k]))
+                else:
+                    self.assertEqual(v, r.data[k])
 
     def test_schedule_item_update_can_not_override(self):
         times = [
