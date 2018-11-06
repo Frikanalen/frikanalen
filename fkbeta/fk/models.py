@@ -186,6 +186,7 @@ class Video(models.Model):
     class Meta:
         db_table = u'Video'
         get_latest_by = 'uploaded_time'
+        #ordering = ('-id',)
 
     def __unicode__(self):
         return self.name

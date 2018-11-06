@@ -4,7 +4,7 @@ Twisted == 17.1.0
 django-durationfield == 0.5.5
 django-model-utils == 3.1.2
 django-registration-redux == 2.5
-djangorestframework == 3.7.7
+djangorestframework == 3.9.0
 gunicorn == 19.9.0
 inotify == 0.2.10
 psycopg2-binary == 2.7.5
