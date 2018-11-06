@@ -44,6 +44,10 @@ class WebPageTest(TestCase):
         self.assertContains(r, '</programme>', count=2)
 
 
+def rev(iterable):
+    return list(reversed(iterable))
+
+
 class ScheduleitemModelTests(TestCase):
     fixtures = ['test.yaml']
 
@@ -58,7 +62,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         date = datetime.date(2014, 4, 4)
         by_day_items = Scheduleitem.objects.by_day(date)
-        self.assertEqual(items[1:4], list(by_day_items))
+        self.assertEqual(rev(items[1:4]), list(by_day_items))
 
     def test_by_zero(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -68,7 +72,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         date = datetime.date(2014, 4, 4)
         by_day_items = Scheduleitem.objects.by_day(date)
-        self.assertEqual(items[0:0], list(by_day_items))
+        self.assertEqual(rev(items[0:0]), list(by_day_items))
 
     def test_by_zero_surrounding(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -78,7 +82,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         date = datetime.date(2014, 4, 4)
         by_day_items = Scheduleitem.objects.by_day(date, surrounding=True)
-        self.assertEqual(items, list(by_day_items))
+        self.assertEqual(rev(items), list(by_day_items))
 
     def test_by_day_only_one(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -89,7 +93,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         date = datetime.date(2014, 4, 4)
         by_day_items = Scheduleitem.objects.by_day(date)
-        self.assertEqual(items[1:2], list(by_day_items))
+        self.assertEqual(rev(items[1:2]), list(by_day_items))
 
     def test_by_day_only_one_surrounding(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -101,7 +105,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         date = datetime.date(2014, 4, 8)
         by_day_items = Scheduleitem.objects.by_day(date, surrounding=True)
-        self.assertEqual(items[1:], list(by_day_items))
+        self.assertEqual(rev(items[1:]), list(by_day_items))
 
     def test_by_day_surrounding(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -116,7 +120,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         date = datetime.date(2014, 4, 4)
         by_day_items = Scheduleitem.objects.by_day(date, surrounding=True)
-        self.assertEqual(items[1:-1], list(by_day_items))
+        self.assertEqual(rev(items[1:-1]), list(by_day_items))
 
     def test_by_day_more_days(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -130,7 +134,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         date = datetime.date(2014, 4, 4)
         by_day_items = Scheduleitem.objects.by_day(date, days=2)
-        self.assertEqual(items[1:-1], list(by_day_items))
+        self.assertEqual(rev(items[1:-1]), list(by_day_items))
 
     def test_by_day_more_days_surrounding(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -143,7 +147,7 @@ class ScheduleitemModelTests(TestCase):
         date = datetime.date(2014, 4, 4)
         by_day_items = Scheduleitem.objects.by_day(date, days=2,
                                                    surrounding=True)
-        self.assertEqual(items, list(by_day_items))
+        self.assertEqual(rev(items), list(by_day_items))
 
     def test_by_day_datetime(self):
         c = lambda x: create_scheduleitem(starttime=parse_to_datetime(x))
@@ -155,7 +159,7 @@ class ScheduleitemModelTests(TestCase):
         ]
         dt = parse_to_datetime('2014-04-04 13:50')
         by_day_items = Scheduleitem.objects.by_day(dt)
-        self.assertEqual(items[1:-1], list(by_day_items))
+        self.assertEqual(rev(items[1:-1]), list(by_day_items))
 
 
 def create_scheduleitem(starttime=None):

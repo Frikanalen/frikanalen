@@ -342,6 +342,7 @@ class Scheduleitem(models.Model):
         db_table = u'ScheduleItem'
         verbose_name = u'TX schedule entry'
         verbose_name_plural = u'TX schedule entries'
+        ordering = ('-id',)
 
     def __unicode__(self):
         t = self.starttime

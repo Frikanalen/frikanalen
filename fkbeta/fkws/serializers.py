@@ -116,8 +116,9 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
             end = start + data.get('duration', g('duration'))
             sur_start, sur_end = (
                 Scheduleitem.objects.expand_to_surrounding(start, end))
-            items = Scheduleitem.objects.exclude(pk=g('id')).filter(
-                starttime__gte=sur_start, starttime__lte=sur_end)
+            items = (Scheduleitem.objects.exclude(pk=g('id'))
+                .filter(starttime__gte=sur_start, starttime__lte=sur_end)
+                .order_by('starttime'))
             for entry in items:
                 if entry.starttime <= start < entry.endtime():
                     raise serializers.ValidationError(
