@@ -71,8 +71,11 @@ class PermissionsTest(APITestCase):
         """
         r = self.client.get(reverse('api-video-list'))
         videos = [v['name'] for v in r.data['results']]
-        self.assertEqual(videos, ['tech video', 'dummy video',
-                                  'unpublished video'])
+        self.assertEqual(videos, [
+            'unpublished video',
+            'dummy video',
+            'tech video',
+        ])
         self.assertEqual(status.HTTP_200_OK, r.status_code)
 
     def test_anonymous_can_list_videofiles(self):
@@ -81,7 +84,7 @@ class PermissionsTest(APITestCase):
         """
         r = self.client.get(reverse('api-videofile-list'))
         video_ids = [v['id'] for v in r.data['results']]
-        self.assertEqual(video_ids, [1, 2, 3, 4])
+        self.assertEqual(video_ids, [4, 3, 2, 1])
         self.assertEqual(status.HTTP_200_OK, r.status_code)
 
     def test_anonymous_can_list_scheduleitem(self):
@@ -127,7 +130,7 @@ class PermissionsTest(APITestCase):
         self.assertEqual(status.HTTP_200_OK, r.status_code)
         results = r.data['results']
         self.assertEqual(
-            [(1, 1, '2014-'), (2, 1, '2015-')],
+            [(2, 1, '2015-'), (1, 1, '2014-')],
             [(i['id'], i['video'], i['played_at'][:5]) for i in results])
 
     def test_anonymous_cannot_add(self):

@@ -103,17 +103,17 @@
     format: 1
     filename: dummy_video.mov
 - model: fk.videofile
-  pk: 3
-  fields:
-    video: 3
-    format: 1
-    filename: unpublished_video.dv
-- model: fk.videofile
   pk: 4
   fields:
     video: 4
     format: 1
     filename: broken_video.mov
+- model: fk.videofile
+  pk: 3
+  fields:
+    video: 3
+    format: 1
+    filename: unpublished_video.dv
 
 - model: fk.scheduleitem
   pk: 1

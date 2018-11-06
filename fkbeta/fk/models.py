@@ -55,7 +55,7 @@ class Organization(models.Model):
 
     class Meta:
         db_table = u'Organization'
-        ordering = ('name',)
+        ordering = ('name', '-id')
 
     def __unicode__(self):
         return self.name
@@ -78,6 +78,7 @@ class FileFormat(models.Model):
         db_table = u'ItemType'
         verbose_name = u'video file format'
         verbose_name_plural = u'video file formats'
+        ordering = ('fsname', '-id')
 
     def __unicode__(self):
         return self.fsname
@@ -100,6 +101,7 @@ class VideoFile(models.Model):
     class Meta:
         verbose_name = u'video file'
         verbose_name_plural = u'video files'
+        ordering = ('-video_id', '-id',)
 
     def __unicode__(self):
         return "%s version of %s" % (self.format.fsname, self.video.name)
@@ -124,6 +126,7 @@ class Category(models.Model):
         db_table = u'Category'
         verbose_name = u'video category'
         verbose_name_plural = u'video categories'
+        ordering = ('name', '-id')
 
     def __unicode__(self):
         return self.name
@@ -186,7 +189,7 @@ class Video(models.Model):
     class Meta:
         db_table = u'Video'
         get_latest_by = 'uploaded_time'
-        #ordering = ('-id',)
+        ordering = ('-id',)
 
     def __unicode__(self):
         return self.name
@@ -401,6 +404,9 @@ class SchedulePurpose(models.Model):
     organization = models.ForeignKey(Organization, blank=True, null=True)
     direct_videos = models.ManyToManyField(Video, blank=True)
 
+    class Meta:
+        ordering = ('-id',)
+
     def videos_str(self):
         return u", ".join([unicode(x) for x in self.videos_queryset()])
     videos_str.short_description = "videos"
@@ -533,6 +539,8 @@ class AsRun(TimeStampedModel):
             return '{s.playout} video: {s.video}'.format(s=self)
         return '{s.playout}: {s.program_name}'.format(s=self)
 
+    class Meta:
+        ordering = ('-played_at', '-id',)
 
 '''
 class Scheduleregion(models.Model):
