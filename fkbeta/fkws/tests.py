@@ -18,6 +18,7 @@ class PermissionsTest(APITestCase):
     def test_anonymous_reading_all_pages_from_root_expecting_status(self):
         pages = [
             ('asrun', status.HTTP_200_OK),
+            ('category', status.HTTP_200_OK),
             ('jukebox-csv', status.HTTP_200_OK),
             ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
@@ -29,6 +30,7 @@ class PermissionsTest(APITestCase):
     def test_nuug_user_reading_all_pages_from_root_expecting_status(self):
         pages = [
             ('asrun', status.HTTP_200_OK),
+            ('category', status.HTTP_200_OK),
             ('jukebox-csv', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_200_OK),
             ('scheduleitems', status.HTTP_200_OK),
@@ -122,6 +124,17 @@ class PermissionsTest(APITestCase):
                                         'were not provided.'},
                               r.data)
 
+    def test_anonymous_can_list_category(self):
+        """
+        Will list all category items
+        """
+        r = self.client.get(reverse('category-list'))
+        self.assertEqual(status.HTTP_200_OK, r.status_code)
+        results = r.data['results']
+        self.assertEqual(
+            ['My Cat', 'Second Category'],
+            [i['name'] for i in results])
+
     def test_anonymous_can_list_asrun(self):
         """
         Will list all asrun log items
@@ -135,7 +148,8 @@ class PermissionsTest(APITestCase):
 
     def test_anonymous_cannot_add(self):
         list_pages = ('api-video-list', 'api-videofile-list',
-                      'api-scheduleitem-list', 'asrun-list')
+                      'api-scheduleitem-list', 'asrun-list',
+                      'category-list')
         results = []
         for list_page in list_pages:
             r = self.client.post(reverse(list_page), data={})

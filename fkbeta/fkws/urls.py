@@ -10,6 +10,7 @@ from fkws import views
 
 router = SimpleRouter()
 router.register(r'api/asrun', views.AsRunViewSet)
+router.register(r'api/categories', views.CategoryViewSet)
 
 urlpatterns = [
     url(r'^ws/(.*)', views.wschange_redirect_view),

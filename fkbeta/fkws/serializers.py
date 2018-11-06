@@ -151,3 +151,13 @@ class TokenSerializer(serializers.ModelSerializer):
             'key',
             'user',
         )
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            'id',
+            'name',
+            'desc',
+        )

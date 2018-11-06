@@ -29,6 +29,7 @@ from fkws.permissions import IsInOrganizationOrDisallow
 from fkws.permissions import IsInOrganizationOrReadOnly
 from fkws.permissions import IsStaffOrReadOnly
 from fkws.serializers import AsRunSerializer
+from fkws.serializers import CategorySerializer
 from fkws.serializers import ScheduleitemSerializer
 from fkws.serializers import TokenSerializer
 from fkws.serializers import VideoFileSerializer
@@ -43,6 +44,7 @@ def api_root(request, format=None):
     """
     return Response({
         'asrun': reverse('asrun-list', request=request),
+        'category': reverse('category-list', request=request),
         'jukebox-csv': reverse('jukebox-csv', request=request),
         'obtain-token': reverse('api-token-auth', request=request),
         'scheduleitems': reverse('api-scheduleitem-list', request=request),
@@ -124,6 +126,11 @@ class AsRunViewSet(viewsets.ModelViewSet):
     permission_classes = (IsStaffOrReadOnly,)
     pagination_class = Pagination
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsStaffOrReadOnly,)
+    pagination_class = Pagination
 
 class ScheduleitemList(generics.ListCreateAPIView):
     """

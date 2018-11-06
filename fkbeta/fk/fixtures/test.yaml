@@ -140,3 +140,12 @@
   fields:
     video: 1
     played_at: "2015-01-01 10:00:00+01:00"
+
+- model: fk.category
+  pk: 1
+  fields:
+    name: "My Cat"
+- model: fk.category
+  pk: 2
+  fields:
+    name: "Second Category"

@@ -183,7 +183,7 @@ class APITest(TestCase):
         r = self.client.get(reverse('api-root'))
 
         self.assertEqual(
-            set(['scheduleitems', 'asrun', 'videofiles',
+            set(['scheduleitems', 'asrun', 'category', 'videofiles',
                  'videos', 'obtain-token', 'jukebox-csv']),
             set(r.data.keys()))
 
