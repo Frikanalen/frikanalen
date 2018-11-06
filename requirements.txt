@@ -2,6 +2,8 @@ Django == 1.11.16
 Markdown == 3.0.1
 Twisted == 17.1.0
 django-durationfield == 0.5.5
+# django-filter 2 is only py3
+django-filter == 1.1.0
 django-model-utils == 3.1.2
 django-registration-redux == 2.5
 djangorestframework == 3.9.0

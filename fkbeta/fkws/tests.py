@@ -307,6 +307,33 @@ class PermissionsTest(APITestCase):
             self.assertEqual(status, r.status_code)
 
 
+class VideoFilterTest(APITestCase):
+    fixtures = ['test.yaml']
+
+    def setUp(self):
+        self.client.login(username='staff_user', password='test')
+
+    def test_can_filter(self):
+        lookups = [
+            ('?name=dummy', []),
+            ('?name=dummy+video', ['dummy video']),
+            ('?name__icontains=Dum', ['dummy video']),
+            ('?name__icontains=u', [
+                    'unpublished video',
+                    'dummy video',
+                ]),
+            ('?editor__username=nuug', []),
+            ('?editor__username=nuug_user', ['tech video']),
+            ('?editor__username=dummy_user&name=', ['dummy video']),
+        ]
+        for lookup, expect in lookups:
+            r = self.client.get(reverse('api-video-list') + lookup)
+            videos = [v['name'] for v in r.data['results']]
+
+            self.assertEqual(status.HTTP_200_OK, r.status_code)
+            self.assertEqual(expect, videos)
+
+
 class ScheduleitemTest(APITestCase):
     fixtures = ['test.yaml']
 

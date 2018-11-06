@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.utils import timezone
+from django_filters import rest_framework as djfilters
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework import viewsets
@@ -20,6 +21,7 @@ from rest_framework.reverse import reverse
 
 import fkvod.search
 from fk.models import AsRun
+from fk.models import Category
 from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
@@ -177,6 +179,30 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsInOrganizationOrReadOnly,)
 
 
+class VideoFilter(djfilters.FilterSet):
+    name__icontains = djfilters.CharFilter(
+        name='name', lookup_expr='icontains')
+    categories__name__icontains = djfilters.ModelMultipleChoiceFilter(
+        field_name='categories__name',
+        to_field_name='name',
+        lookup_expr='icontains',
+        queryset=Category.objects.all(),
+    )
+    created_time = djfilters.DateTimeFromToRangeFilter()
+    updated_time = djfilters.DateTimeFromToRangeFilter()
+    uploaded_time = djfilters.DateTimeFromToRangeFilter()
+
+    class Meta:
+        model = Video
+        fields = (
+            'name',
+            'name__icontains',
+            'editor__username',
+            'organization__name',
+            'is_filler',
+            'has_tono_records',
+        )
+
 class VideoList(generics.ListCreateAPIView):
     """
     List of videos
@@ -194,8 +220,8 @@ class VideoList(generics.ListCreateAPIView):
     """
     queryset = Video.objects.filter(proper_import=True)
     serializer_class = VideoSerializer
-    filter_backends = (filters.OrderingFilter,)
     pagination_class = Pagination
+    filter_class = VideoFilter
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
