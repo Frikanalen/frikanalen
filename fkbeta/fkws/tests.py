@@ -357,10 +357,10 @@ class ScheduleitemTest(APITestCase):
     def test_creating_new_scheduleitem(self):
         # Rest Framework now always sends back dates using configured TZ
         times = [
-            ('2015-01-01T11:00:00Z', '2015-01-01T12:00:00+01:00'),
-            ('2015-01-01T08:59:00Z', '2015-01-01T09:59:00+01:00'),
-            ('2015-01-01T09:58:00+01:00', '2015-01-01T09:58:00+01:00'),
-            ('2015-01-01T11:00:59Z', '2015-01-01T12:00:59+01:00'),
+            ('2015-01-01T11:00:00Z', '2015-01-01T11:00:00Z'),
+            ('2015-01-01T08:59:00Z', '2015-01-01T08:59:00Z'),
+            ('2015-01-01T09:58:00+01:00', '2015-01-01T08:58:00Z'),
+            ('2015-01-01T11:00:59Z', '2015-01-01T11:00:59Z'),
         ]
         for given_time, returned_time in times:
             r = self.client.post(
