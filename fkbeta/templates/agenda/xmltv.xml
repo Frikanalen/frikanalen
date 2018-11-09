@@ -1,23 +1,23 @@
 <tv generator-info-name="fkbeta.agenda.xmltv">
   <channel id="{{ channel_id }}">
-    <url>{{ site_url }}</url>
     {% for channel_display_name in channel_display_names %}
       <display-name>{{ channel_display_name }}</display-name>
     {% endfor %}
+    <url>{{ site_url }}</url>
   </channel>
   {% for program in events %}
     <programme
-      id="{{ channel_id }}"
+      channel="{{ channel_id }}"
       start="{{ program.starttime|date:'YmdHis O' }}"
-      end="{{ program.endtime|date:'YmdHis O' }}">
+      stop="{{ program.endtime|date:'YmdHis O' }}">
     {% if program.video %}
       <title lang="no">{{ program.video.name }}</title>
-      <desc lang="no"></desc>
+      <desc lang="no">{{ program.video.header }}</desc>
       <url>{{ site_url }}{{ program.video.get_absolute_url }}</url>
-      <length unit="seconds">{{ program.video.duration.seconds }}</length>
+      <length units="seconds">{{ program.video.duration.seconds }}</length>
     {% else %}
       <title lang="no">{{ program.default_name }}</title>
-      <length unit="seconds">{{ program.duration.seconds }}</length>
+      <length units="seconds">{{ program.duration.seconds }}</length>
     {% endif %}
     </programme>
   {% endfor %}
