@@ -166,7 +166,7 @@ def create_scheduleitem(starttime=None):
     if starttime is None:
         starttime = timezone.now()
     return Scheduleitem.objects.create(
-        video_id=1, duration=10,
+        video_id=1, duration=datetime.timedelta(10),
         schedulereason=1,
         starttime=starttime)
 
@@ -217,7 +217,7 @@ class APITest(TestCase):
              'http://testserver/api/videos/2'],
             [v['video_id'] for v in r.data['results']])
         self.assertEqual(
-            ['0:00:10.010000', '0:01:00'],
+            ['00:00:10.010000', '00:01:00'],
             [v['video']['duration'] for v in r.data['results']])
         self.assertEqual(
             ['nuug_user', 'dummy_user'],
