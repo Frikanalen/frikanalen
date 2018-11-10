@@ -185,6 +185,15 @@ class PermissionsTest(APITestCase):
                 status.HTTP_201_CREATED,
             ),
             (
+                reverse('api-video-list'),
+                {'name': 'created test video', 'duration': '01:2.3',
+                 'organization': 'Dummy org'}, # this should actually fail
+                {'id': 5, 'name': 'created test video',
+                    'duration': '00:01:02.300000', 'categories': [],
+                    'organization': 'Dummy org', 'editor': 'nuug_user'},
+                status.HTTP_201_CREATED,
+            ),
+            (
                 reverse('api-scheduleitem-list') + '?date=20150101',
                 {'video_id': 'http://testserver/api/videos/1',
                  'schedulereason': 2, 'starttime': '2015-01-01T11:00:00Z',
