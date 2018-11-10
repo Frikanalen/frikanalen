@@ -39,8 +39,6 @@ class VideoSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
 
-    duration = serializers.CharField(required=True)
-
     class Meta:
         model = Video
         fields = (

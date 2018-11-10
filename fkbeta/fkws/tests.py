@@ -190,7 +190,7 @@ class PermissionsTest(APITestCase):
                  'schedulereason': 2, 'starttime': '2015-01-01T11:00:00Z',
                  'duration': '0:00:00.10'},
                 {'id': 3, 'video_id': 'http://testserver/api/videos/1',
-                 'duration': '0:00:00.100000'},
+                 'duration': '00:00:00.100000'},
                 status.HTTP_201_CREATED,
             ),
             (
@@ -220,7 +220,7 @@ class PermissionsTest(APITestCase):
                  'schedulereason': 2, 'starttime': '2015-01-01T11:00:00Z',
                  'duration': '0:00:13.10'},
                 {'id': 3, 'video_id': 'http://testserver/api/videos/1',
-                 'duration': '0:00:13.100000'},
+                 'duration': '00:00:13.100000'},
                 status.HTTP_201_CREATED,
             ),
             (
@@ -367,11 +367,11 @@ class ScheduleitemTest(APITestCase):
                 reverse('api-scheduleitem-list'),
                 {'video_id': '/api/videos/2',
                  'starttime': given_time,
-                 'duration': '00:00:58.312',
+                 'duration': '58.312',
                  'schedulereason': 1})
             self.assertEqual(status.HTTP_201_CREATED, r.status_code)
             self.assertEqual(returned_time, r.data['starttime'])
-            self.assertEqual('0:00:58.312000', r.data['duration'])
+            self.assertEqual('00:00:58.312000', r.data['duration'])
             self.assertEqual('dummy video', r.data['video']['name'])
 
     def test_schedule_item_cant_overlap(self):
@@ -389,14 +389,14 @@ class ScheduleitemTest(APITestCase):
                  'starttime': starttime,
                  'duration': '00:00:58.312',
                  'schedulereason': 1})
-            self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
             self.assertEqual("Conflict with '2015-01-01 %s'." % conflict,
                              r.data['duration'][0])
+            self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
 
     def test_schedule_item_can_update(self):
         times = [
             (1, {'starttime': '2015-01-01T08:59:30Z'}),
-            (1, {'starttime': '2015-01-01T09:50:00Z', 'duration': '0:09:00'}),
+            (1, {'starttime': '2015-01-01T09:50:00Z', 'duration': '00:09:00'}),
             (2, {'starttime': '2015-01-01T10:00:00Z'}),
             (2, {'starttime': '2015-01-01T10:30:00Z'}),
             (2, {'starttime': '2015-01-01T10:59:59.900000Z'}),
