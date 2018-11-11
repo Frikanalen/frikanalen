@@ -1,0 +1,81 @@
+{% extends "base_generic.html" %}
+{% load fk_utils %}
+
+{% block style %}
+<style>
+
+.category_container {
+    clear: left;
+}
+
+.categorylist_container {
+}
+
+.category_container ul {
+    list-style: none;
+    margin: 5px;
+    padding: 5px;
+    /*margin: 15px 15px 0 0;*/
+    border-radius: 8px;
+    background-color:#eaeaea;
+    /*border: 3px solid;
+    border-color:#d8d8d8;*/
+}
+
+.category_container img {
+    float: left;
+    padding: 0px 8px 4px 4px;
+}
+.category_container img {
+    height: auto;
+    width: 300px;
+}
+
+.category_container .name {
+    font-weight: bold;
+}
+
+.category_container .description {
+    font-size: 75%;
+}
+
+.category_container .duration {
+    font-size: 67%;
+}
+
+.category_container .editor {
+    font-size: 75%;
+}
+
+.category_container li {
+    padding:0;
+    margin:0;
+}
+
+</style>
+
+{% endblock style %}
+
+{% block content %}
+
+<div class="categorylist_container">
+{% for category in categories %}
+<div class="category_container">
+    <ul>
+        <li class="header">
+            <a href="{% url 'vod-category-video-list' category.name %}"><span class="name">{{ category.name }}</span></a>
+	    ({{category.videocount}})
+        </li>
+        <li class="description">
+        {% if category.desc %}
+        <i>
+            {{ category.desc }}
+        </i></li>
+        {% endif %}
+
+    </ul>
+</div>
+{% endfor %}
+</div>
+
+{% endblock content %}
