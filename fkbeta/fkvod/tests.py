@@ -11,6 +11,6 @@ class VodTests(TestCase):
         response = self.client.get(reverse('vod-video-list'))
         self.assertContains(response, 'RSS', count=1)
 
-    def test_video_list(self):
+    def test_video_detail(self):
         response = self.client.get(reverse('vod-video-detail', args=[1]))
         self.assertContains(response, 'Category', count=1)
