@@ -52,7 +52,7 @@
       <div>
         Category: <i>
         {% for category in video.category_list %}
-          <span style="background-color:#ccc; border-radius: 4px; padding:2px;">{{ category }}</span>
+          <span style="background-color:#ccc; border-radius: 4px; padding:2px;"><a href="{% url 'vod-category-video-list' category %}">{{ category }}</a></span>
         {% endfor %}</i>
       </div>
       {% if video %}
