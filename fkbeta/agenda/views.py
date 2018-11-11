@@ -254,13 +254,9 @@ def xmltv_home(request):
     })
 
 
-def xmltv(request, year, month, day):
+def _xmltv(request, events):
     """ Program guide as XMLTV """
-    date = (datetime.datetime(year=int(year), month=int(month), day=int(day))
-            .replace(tzinfo=timezone.utc))
-    events = (Scheduleitem.objects
-              .by_day(date, days=1)
-              .order_by('starttime'))
+
     return render(
         request,
         'agenda/xmltv.xml',
@@ -271,3 +267,19 @@ def xmltv(request, year, month, day):
             'site_url': settings.SITE_URL,
         },
         content_type='application/xml')
+
+
+def xmltv_upcoming(request):
+    events = (Scheduleitem.objects
+              .by_day(days=7)
+              .order_by('starttime'))
+    return _xmltv(request, events)
+
+
+def xmltv_date(request, year, month, day):
+    date = (datetime.datetime(year=int(year), month=int(month), day=int(day))
+            .replace(tzinfo=timezone.utc))
+    events = (Scheduleitem.objects
+              .by_day(date, days=1)
+              .order_by('starttime'))
+    return _xmltv(request, events)
