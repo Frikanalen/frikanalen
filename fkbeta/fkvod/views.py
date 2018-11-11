@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
-from fk.models import Video, Organization
+from fk.models import Category, Video, Organization
 from fkvod import search
 
 
@@ -112,12 +112,57 @@ class RssVideos(AbstractVideoList):
         else:
             return "Video RSS"
 
-    def initial_queryset(self, orgid=None, *args, **kwargs):
+    def initial_queryset(self, orgid=None, categoryname=None, *args, **kwargs):
         self.org = None
+        videos = Video.objects.public().order_by('-id')
         if orgid is not None:
             self.org = Organization.objects.get(id=orgid)
-            videos = (Video.objects.public().filter(organization=self.org)
-                      .order_by('-id'))
-        else:
-            videos = Video.objects.public().order_by('-id')
+            videos = videos.filter(organization=self.org)
+        if categoryname is not None:
+            self.category = Category.objects.get(name=categoryname)
+            videos = videos.filter(categories=self.category)
+        return videos
+
+class CategoryList(TemplateView):
+    template = 'fkvod/category_list.html'
+    # FIXME how can this be the default for HTML rendering?
+    contenttype = 'text/html; charset=utf-8'
+
+    def categoryset_name(self):
+        return "All Categories"
+
+    def initial_queryset(self):
+        categories = (Category.objects
+                      .order_by('name'))
+        return categories
+
+    def get(self, request, *args, **kwargs):
+        categories = self.initial_queryset(*args, **kwargs)
+        title = self.categoryset_name(*args, **kwargs)
+        for category in categories:
+            category.videocount = (Video.objects
+                                   .public()
+                                   .filter(categories=category)
+                                   .count())
+
+        context = {
+            "categories": categories,
+            "title": title,
+        }
+        return render(
+            request, self.template, context, content_type=self.contenttype)
+
+class CategoryVideos(AbstractVideoList):
+    def videoset_name(self, categoryname):
+        return "Videos in category %s" % categoryname
+
+    def initial_queryset(self, categoryname, *args, **kwargs):
+        try:
+            self.category = Category.objects.get(name=categoryname)
+        except ObjectDoesNotExist:
+            raise Http404
+        videos = (Video.objects
+                  .public()
+                  .filter(categories=self.category)
+                  .order_by('-id'))
         return videos
