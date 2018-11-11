@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^members/video/edit/(?P<id>[0-9]+)$',
         views.ManageVideoEdit.as_view(), name='manage-video-edit'),
     url(r'^xmltv/$', views.xmltv_home, name='xmltv-home'),
+    url(r'^xmltv/upcoming/$', views.xmltv_upcoming, name='xmltv-feed-upcoming'),
     url(r'^xmltv/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/?$',
-        views.xmltv, name='xmltv-feed'),
+        views.xmltv_date, name='xmltv-feed'),
 ]
