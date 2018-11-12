@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.dateparse import parse_datetime
+from django.utils.translation import ugettext as _
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -57,7 +58,7 @@ class PermissionsTest(APITestCase):
 
     def test_anonymous_does_not_have_token(self):
         r = self.client.get(reverse('api-token-auth'))
-        error_msg = {'detail': 'Authentication credentials were not provided.'}
+        error_msg = {'detail': _('Authentication credentials were not provided.')}
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, r.status_code)
         self.assertEqual(error_msg, r.data)
 
@@ -121,8 +122,8 @@ class PermissionsTest(APITestCase):
         for id in videos:
             r = self.client.get(reverse('api-video-upload-token-detail', args=(id,),))
             self.assertEqual(status.HTTP_401_UNAUTHORIZED, r.status_code)
-            self.assertEqual({'detail': 'Authentication credentials '
-                                        'were not provided.'},
+            self.assertEqual({'detail': _('Authentication credentials '
+                                          'were not provided.')},
                               r.data)
 
     def test_anonymous_can_list_category(self):
@@ -155,7 +156,7 @@ class PermissionsTest(APITestCase):
         for list_page in list_pages:
             r = self.client.post(reverse(list_page), data={})
             results.append((list_page, r.status_code, r.data))
-        error_msg = {'detail': 'Authentication credentials were not provided.'}
+        error_msg = {'detail': _('Authentication credentials were not provided.')}
         self.assertEqual(
             [(p, status.HTTP_401_UNAUTHORIZED, error_msg)
                 for p in list_pages],
@@ -168,7 +169,7 @@ class PermissionsTest(APITestCase):
         for detail_page in detail_pages:
             r = self.client.post(reverse(detail_page, args=(1,),))
             results.append((detail_page, r.status_code, r.data))
-        error_msg = {'detail': 'Authentication credentials were not provided.'}
+        error_msg = {'detail': _('Authentication credentials were not provided.')}
         self.assertEqual(
             [(p, status.HTTP_401_UNAUTHORIZED, error_msg)
              for p in detail_pages],
@@ -206,8 +207,8 @@ class PermissionsTest(APITestCase):
             (
                 reverse('asrun-list'),
                 {'video': 2, 'played_at': '2015-01-01 11:00:00Z'},
-                {'detail': 'You do not have permission to '
-                           'perform this action.'},
+                {'detail': _('You do not have permission to '
+                             'perform this action.')},
                 status.HTTP_403_FORBIDDEN,
             ),
         ]
@@ -297,8 +298,8 @@ class PermissionsTest(APITestCase):
             r = self.client.patch(
                 reverse(url_name, args=[obj.id]), {attr: 'test fn'})
             self.assertEqual(
-                {'detail': 'You do not have permission '
-                           'to perform this action.'},
+                {'detail': _('You do not have permission '
+                             'to perform this action.')},
                 r.data)
             self.assertEqual(status.HTTP_403_FORBIDDEN, r.status_code)
 
@@ -318,8 +319,8 @@ class PermissionsTest(APITestCase):
             (VideoFile.objects.get(video__name='tech video'),
              200, {'upload_token': 'deadbeef', 'upload_url': settings.FK_UPLOAD_URL}),
             (VideoFile.objects.get(video__name='dummy video'),
-             403, {'detail': 'You do not have permission '
-                             'to perform this action.'}),
+             403, {'detail': _('You do not have permission '
+                               'to perform this action.')}),
         ]
         self._get_upload_token_helper(thing_tests)
 

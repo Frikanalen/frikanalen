@@ -5,7 +5,8 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.utils import timezone
+from django.utils import formats, timezone
+from django.utils.translation import ugettext as _
 
 from fk.models import Scheduleitem
 from fk.templatetags import vod
@@ -50,10 +51,12 @@ class WebPageTest(TestCase):
         self.assertContains(r, 'class="video_container"', count=2)
 
     def test_video_detail(self):
+        broadcast = parse_to_datetime("2015-01-01 10:00")
+        broadcast_str = formats.date_format(broadcast, "DATETIME_FORMAT")
         r = self.client.get('/video/1/')
         self.assertContains(
-            r, 'First broadcast: <i>Jan. 1, 2015, 10 a.m.</i>', count=1)
-        self.assertContains(r, '<h1>Video not available</h1>', count=1)
+            r, _('First broadcast:') + ' <i>%s</i>' % broadcast_str, count=1)
+        self.assertContains(r, '<h1>' + _('Video not available') + '</h1>', count=1)
         self.assertContains(r, '<a href="/organization/1/">NUUG</a>', count=1)
 
     def test_video_guide(self):

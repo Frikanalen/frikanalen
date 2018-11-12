@@ -1,0 +1,426 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-11-25 19:56+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: agenda/views.py:58
+msgid "Calendar - this week"
+msgstr ""
+
+#: agenda/views.py:65
+msgid "Schedule planner"
+msgstr ""
+
+#: agenda/views.py:74 templates/base_generic.html:175
+msgid "My videos"
+msgstr "Mine videoer"
+
+#: agenda/views.py:163
+msgid "New Video"
+msgstr ""
+
+#: agenda/views.py:198 agenda/views.py:212
+msgid "You are not a member of the organization that owns this videos."
+msgstr ""
+
+#: agenda/views.py:202
+msgid "Edit video"
+msgstr ""
+
+#: fk/models.py:463
+msgid "Monday"
+msgstr ""
+
+#: fk/models.py:464
+msgid "Tuesday"
+msgstr ""
+
+#: fk/models.py:465
+msgid "Wednesday"
+msgstr ""
+
+#: fk/models.py:466
+msgid "Thursday"
+msgstr ""
+
+#: fk/models.py:467
+msgid "Friday"
+msgstr ""
+
+#: fk/models.py:468
+msgid "Saturday"
+msgstr ""
+
+#: fk/models.py:469
+msgid "Sunday"
+msgstr ""
+
+#: fk/templates/fk/profile.html:4
+#, python-format
+msgid "User profile for %(user.username)s"
+msgstr ""
+
+#: fk/templates/fk/profile.html:9 templates/registration/login.html:10
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: fk/templates/fk/profile.html:19
+msgid "Save"
+msgstr ""
+
+#: fk/templatetags/vod.py:16
+#, python-format
+msgid "Invalid video id \"%s\""
+msgstr ""
+
+#: fk/templatetags/vod.py:20 fkvod/views.py:25
+#, python-format
+msgid "Video #%i not found"
+msgstr "Fant ikke video #%i"
+
+#: fk/templatetags/vod.py:31
+msgid "Video is not published on web"
+msgstr ""
+
+#: fk/templatetags/vod.py:33 fk/tests.py:57
+msgid "Video not available"
+msgstr ""
+
+#: fk/templatetags/vod.py:35
+msgid "The video contains music which requires fees and are not viewable."
+msgstr ""
+
+#: fk/tests.py:56 templates/fkvod/video_details.html:68
+msgid "First broadcast:"
+msgstr "Første kringkasting"
+
+#: fkbeta/views.py:9
+msgid "TV for alle"
+msgstr ""
+
+#: fkprofile/views.py:16 templates/base_generic.html:208
+msgid "Member organizations"
+msgstr ""
+
+#: fkvod/tests.py:17 templates/fkvod/video_details.html:53
+msgid "Category:"
+msgstr "Kategori:"
+
+#: fkvod/tests.py:21
+#, fuzzy
+#| msgid "Category:"
+msgid "All Categories"
+msgstr "Kategori:"
+
+#: fkvod/views.py:60
+#, fuzzy, python-brace-format
+#| msgid "Searching %s for %s"
+msgid "Searching %{name}s for %{query}s"
+msgstr "Søker %s etter %s"
+
+#: fkvod/views.py:81
+msgid "All videos"
+msgstr "Alle videoer"
+
+#: fkvod/views.py:93
+#, python-format
+msgid "Videos from %s"
+msgstr "Videoer fra %s"
+
+#: fkvod/views.py:113
+#, python-format
+msgid "Video RSS from %s"
+msgstr "Video-RSS fra %s"
+
+#: fkvod/views.py:115
+msgid "Video RSS"
+msgstr "Video-RSS"
+
+#: fkws/tests.py:61 fkws/tests.py:125 fkws/tests.py:159 fkws/tests.py:172
+msgid "Authentication credentials were not provided."
+msgstr ""
+
+#: fkws/tests.py:210 fkws/tests.py:301 fkws/tests.py:322
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: templates/404.html:3
+msgid "404, didn't find anything"
+msgstr ""
+
+#: templates/404.html:6
+msgid "Page not found"
+msgstr ""
+
+#: templates/404.html:7
+msgid ""
+"Maybe it was deleted/moved? If there should be something here, please "
+"contact us."
+msgstr ""
+
+#: templates/500.html:3
+msgid "500 internal server error"
+msgstr ""
+
+#: templates/500.html:6
+msgid "500, internal server error :-("
+msgstr ""
+
+#: templates/500.html:8
+msgid "Something went wrong. If this is a big problem, please contact us."
+msgstr ""
+
+#: templates/agenda/manage_video_list.html:48 templates/agenda/planner.html:432
+#: templates/fkvod/video_list.html:66 templates/fkvod/video_list.html:139
+msgid "Previous"
+msgstr "Forrige"
+
+#: templates/agenda/manage_video_list.html:50
+#: templates/fkvod/video_list.html:68 templates/fkvod/video_list.html:141
+msgid "First"
+msgstr "Første"
+
+#: templates/agenda/manage_video_list.html:57
+#, python-format
+msgid "%(page.number)s of %(page.paginator.num_pages)s"
+msgstr "%(page.number)s av %(page.paginator.num_pages)s"
+
+#: templates/agenda/manage_video_list.html:64 templates/agenda/planner.html:442
+#: templates/fkvod/video_list.html:84 templates/fkvod/video_list.html:157
+msgid "Next"
+msgstr "Neste"
+
+#: templates/agenda/manage_video_list.html:66
+#: templates/fkvod/video_list.html:86 templates/fkvod/video_list.html:159
+msgid "Last"
+msgstr "Siste"
+
+#: templates/agenda/manage_video_new.html:33
+#, fuzzy
+#| msgid "My videos"
+msgid "Save video"
+msgstr "Mine videoer"
+
+#: templates/agenda/planner.html:437
+msgid "Loading..."
+msgstr ""
+
+#: templates/agenda/planner.html:452 templates/agenda/planner.html:473
+msgid "Date"
+msgstr ""
+
+#: templates/agenda/planner.html:453 templates/agenda/planner.html:476
+msgid "Time"
+msgstr ""
+
+#: templates/agenda/planner.html:454 templates/agenda/planner.html:479
+#: templates/agenda/planner.html:507
+msgid "Name"
+msgstr ""
+
+#: templates/agenda/planner.html:455 templates/agenda/planner.html:489
+#: templates/agenda/planner.html:507
+msgid "Duration"
+msgstr ""
+
+#: templates/agenda/planner.html:481
+#, fuzzy
+#| msgid "Videos"
+msgid "Video"
+msgstr "Videoer"
+
+#: templates/agenda/planner.html:484
+msgid "Edit Video..."
+msgstr ""
+
+#: templates/agenda/planner.html:490
+msgid "Update"
+msgstr ""
+
+#: templates/agenda/planner.html:491
+msgid "Delete"
+msgstr ""
+
+#: templates/agenda/planner.html:503
+msgid "Search"
+msgstr ""
+
+#: templates/agenda/xmltv_home.html:4
+msgid "Schedule as XMLTV"
+msgstr ""
+
+#: templates/agenda/xmltv_home.html:6
+#, python-format
+msgid ""
+"The %(channel_display_name)s schedule is provided\n"
+"    in <a href=\"http://www.xmltv.org/\">XMLTV format</a>, with one URL\n"
+"    per day.  The URL is <code>/xmltv/YYYY/MM/DD</code> for a specific\n"
+"    day, and <code>/xmltv/upcoming/</code> for the scheduled entries\n"
+"    from today 00:00 and 7 days forward."
+msgstr ""
+
+#: templates/agenda/xmltv_home.html:12
+msgid "For example this is the URL of today:"
+msgstr ""
+
+#: templates/agenda/xmltv_home.html:14
+msgid "and this is the URL of the coming week:"
+msgstr ""
+
+#: templates/base_generic.html:7
+#, python-format
+msgid "Frikanalen - %(pagetitle)s"
+msgstr ""
+
+#: templates/base_generic.html:153
+msgid "Program Guide"
+msgstr "Sendeplan"
+
+#: templates/base_generic.html:154
+msgid "Calendar"
+msgstr "Kalender"
+
+#: templates/base_generic.html:155
+msgid "Videos"
+msgstr "Videoer"
+
+#: templates/base_generic.html:156
+#, fuzzy
+#| msgid "Category:"
+msgid "Categories"
+msgstr "Kategori:"
+
+#: templates/base_generic.html:166
+msgid "Log in"
+msgstr "Logg inn"
+
+#: templates/base_generic.html:170
+#, python-format
+msgid "...or <a href=\"%(register_url)s\">register</a>"
+msgstr ""
+
+#: templates/base_generic.html:174
+msgid "Plan"
+msgstr "Planlegg"
+
+#: templates/base_generic.html:180
+msgid "log out"
+msgstr ""
+
+#: templates/base_generic.html:197
+msgid "Content not defined in template."
+msgstr ""
+
+#: templates/base_generic.html:206
+msgid "Source code"
+msgstr ""
+
+#: templates/base_generic.html:207
+msgid "&copy; 2009-2018 Foreningen Frikanalen"
+msgstr ""
+
+#: templates/create/home.html:37
+msgid "Upload video file"
+msgstr ""
+
+#: templates/create/home.html:42
+msgid "Title"
+msgstr ""
+
+#: templates/create/home.html:46
+msgid "Header"
+msgstr ""
+
+#: templates/create/home.html:49
+msgid "Update metadata"
+msgstr ""
+
+#: templates/create/home.html:53
+msgid "Finished!"
+msgstr ""
+
+#: templates/create/home.html:55
+msgid "Plan your new video in the schedule"
+msgstr ""
+
+#: templates/create/home.html:56
+msgid "Edit more about your video"
+msgstr ""
+
+#: templates/create/home.html:57
+msgid "Public video page"
+msgstr ""
+
+#: templates/fkvod/video_details.html:50
+msgid "Editor:"
+msgstr "Redaktør:"
+
+#: templates/fkvod/video_details.html:60
+msgid "Uploaded:"
+msgstr "Lastet opp:"
+
+#: templates/fkvod/video_details.html:63
+msgid "Length:"
+msgstr "Lengde"
+
+#: templates/fkvod/video_details.html:70
+msgid "Not broadcast yet."
+msgstr "Ikke kringkastet ennå."
+
+#: templates/fkvod/video_details.html:78
+msgid "Edit metadata"
+msgstr ""
+
+#: templates/fkvod/video_list.html:76 templates/fkvod/video_list.html:149
+#, fuzzy, python-format
+#| msgid "%(page.number)s of %(page.paginator.num_pages)s"
+msgid "%(number)s of %(num_pages)s"
+msgstr "%(page.number)s av %(page.paginator.num_pages)s"
+
+#: templates/frontpage.html:31
+msgid "Frikanalen broadcast"
+msgstr "Frikanalen-sending"
+
+#: templates/frontpage.html:35
+msgid "Tweets by @Frikanalen"
+msgstr "Tvitringer fra @Frikanalen"
+
+#: templates/registration/login.html:4
+msgid "Please log in."
+msgstr ""
+
+#: templates/registration/register.html:12
+msgid "Create an account"
+msgstr ""
+
+#: templates/registration/register.html:14
+msgid ""
+"\n"
+"    To become a member of Frikanalen, visit our\n"
+"    <a href=\"http://frikanalen.no/om/innmelding\">registration form</a>."
+"<br>\n"
+"    Here you can create an account to send videos on Frikanalen.\n"
+"  "
+msgstr ""
+
+#: templates/registration/register.html:25
+msgid "Create the account"
+msgstr ""
+
+#~ msgid "Frikanalen-sending"
+#~ msgstr "Frikanalen-sending"
