@@ -80,6 +80,7 @@
     duration: "1"
     publish_on_web: false
     proper_import: false
+    has_tono_records: true
 
 - model: fk.fileformat
   pk: 1
