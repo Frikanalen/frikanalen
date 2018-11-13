@@ -47,27 +47,27 @@
        </div>
       {% endif %}
       <div>
-        Editor: <i>{{ video.editor.first_name }} {{ video.editor.last_name }}</i>
+        {% trans "Editor:" %} <i>{{ video.editor.first_name }} {{ video.editor.last_name }}</i>
       </div>
       <div>
-        Category: <i>
+        {% trans "Category:" %} <i>
         {% for category in video.category_list %}
           <span style="background-color:#ccc; border-radius: 4px; padding:2px;"><a href="{% url 'vod-category-video-list' category %}">{{ category }}</a></span>
         {% endfor %}</i>
       </div>
       {% if video %}
         <div>
-          <small>Uploaded: <i>{{ video.uploaded_time|date:"d M Y"}}</i></small>
+          <small>{% trans "Uploaded:" %} <i>{{ video.uploaded_time|date:"d M Y"}}</i></small>
         </div>
         <div>
-          <small>Length: {{ video.duration|truncate_duration }} {% if video.is_filler %}(filler){% endif %}
+          <small>{% trans "Length:" %} {{ video.duration|truncate_duration }} {% if video.is_filler %}(filler){% endif %}
         </div>
       {% endif %}
       <div>
         {% if video.first_broadcast %}
-          <small>First broadcast: <i>{{ video.first_broadcast.starttime }}</i></small>
+          <small>{% trans "First broadcast:" %} <i>{{ video.first_broadcast.starttime }}</i></small>
         {% else %}
-          <small>Not broadcast yet.</small>
+          <small>{% trans "Not broadcast yet." %}</small>
         {% endif %}
         <!-- <div>Previous broadcast: <i> {{ video.last_broadcast.starttime }}</i></div> -->
       </div>

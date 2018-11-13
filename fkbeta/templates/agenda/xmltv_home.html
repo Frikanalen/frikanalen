@@ -1,16 +1,16 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Schedule as XMLTV</h1>
+  <h1>{% trans "Schedule as XMLTV" %}</h1>
 
-  <p>The {{ channel_display_name }} schedule is provided
+  <p>{% blocktrans %}The {{ channel_display_name }} schedule is provided
     in <a href="http://www.xmltv.org/">XMLTV format</a>, with one URL
     per day.  The URL is <code>/xmltv/YYYY/MM/DD</code> for a specific
     day, and <code>/xmltv/upcoming/</code> for the scheduled entries
-    from today 00:00 and 7 days forward.</p>
+    from today 00:00 and 7 days forward.{% endblocktrans %}</p>
 
-  <p>For example this is the URL of today:
+  <p>{% trans "For example this is the URL of today:" %}</p>
   <p><blockquote><a href="{{ today_url }}">{{ site_url }}{{ today_url }}</a></blockquote>
-  <p>and this is the URL of the coming week:
+  <p>{% trans "and this is the URL of the coming week:" %}</p>
   <p><blockquote><a href="{% url 'xmltv-feed-upcoming' %}">{{ site_url }}{% url 'xmltv-feed-upcoming' %}</a></blockquote>
 {% endblock %}

@@ -45,25 +45,25 @@ a.create {
     <div class="navigation">
         <div class="inner">
             {% if page.has_previous %}
-            <a href="?page={{ page.previous_page_number }}"> Previous</a>
+            <a href="?page={{ page.previous_page_number }}">{% trans "Previous" %}</a>
             {% else %}
-            First
+            {% trans "First" %}
             {% endif %}
         </div>
     </div>
 
     <div class="navigation">
         <div class="inner">
-            {{ page.number }} of {{ page.paginator.num_pages }}
+            {% blocktrans %}{{ page.number }} of {{ page.paginator.num_pages }}{% endblocktrans %}
         </div>
     </div>
 
     <div class="navigation">
         <div class="inner">
             {% if page.has_next %}
-            <a href="?page={{ page.next_page_number }}"> Next</a>
+            <a href="?page={{ page.next_page_number }}">{% trans "Next" %}</a>
             {% else %}
-            Last
+            {% trans "Last" %}
             {% endif %}
         </div>
     </div>

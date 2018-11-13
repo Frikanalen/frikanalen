@@ -429,17 +429,17 @@ $(document).ready(function() {
     <div class="navigation_container">
     <div class="navigation">
         <div class="inner" data-bind="click: $root.previousDay">
-        <a href="#">Previous</a>
+        <a href="#">{% trans "Previous" %}</a>
         </div>
     </div>
     <div class="navigation">
         <div class="inner">
-        <span data-bind="text: display_editing_date">Loading...</span>
+        <span data-bind="text: display_editing_date">{% trans "Loading..." %}</span>
         </div>
     </div>
     <div class="navigation">
         <div class="inner">
-        <a href="#" data-bind="click: $root.nextDay">Next</a>
+        <a href="#" data-bind="click: $root.nextDay">{% trans "Next" %}</a>
         </div>
     </div>
     </div>
@@ -449,10 +449,10 @@ $(document).ready(function() {
     <div style="clear:both;">
     <table class="events">
         <thead><tr>
-            <th class="time">Date</th>
-            <th class="time">Time</th>
-            <th class="name">Name</th>
-            <th class="time">Duration</th>
+            <th class="time">{% trans "Date" %}</th>
+            <th class="time">{% trans "Time" %}</th>
+            <th class="name">{% trans "Name" %}</th>
+            <th class="time">{% trans "Duration" %}</th>
         </tr></thead>
         <tbody data-bind="foreach: events">
             <tr class="event-row" data-bind="click: $root.selectEvent">
@@ -470,25 +470,25 @@ $(document).ready(function() {
             <tr>
                 <td colspan="4" style="background:white;">
                     <div class="event-edit">
-                        <div class="clear"><label>Date</label>
+                        <div class="clear"><label>{% trans "Date" %}</label>
                             <input data-bind="value: starttime_date"/>
                         </div>
-                        <div class="clear"><label>Time</label>
+                        <div class="clear"><label>{% trans "Time" %}</label>
                             <input data-bind="value: starttime_time"/>
                         </div>
-                        <div class="clear"><label>Name</label><input data-bind="value: default_name"/></div>
+                        <div class="clear"><label>{% trans "Name" %}</label><input data-bind="value: default_name"/></div>
                         <div class="clear">
-                            <label>Video</label>
+                            <label>{% trans "Video" %}</label>
                             <div>
                                 <span data-bind="text: video_name"></span><br/>
-                                <a data-bind="attr: { href: edit_url }" target="_blank" href="#">Edit Video...</a>
+                                <a data-bind="attr: { href: edit_url }" target="_blank" href="#">{% trans "Edit Video..." %}</a>
                                 <a data-bind="click: $root.unsetEventVideo" href="#">Unset Video</a>
                                 <!--<small>#<span data-bind="text: video.id"></span></small>-->
                             </div>
                         </div>
-                        <div class="clear"><label>Duration</label> <input data-bind="value: duration"/></div>
-                        <button data-bind="click: $root.updateEvent">Update</button>
-                        <button data-bind="click: $root.deleteEvent">Delete</button>
+                        <div class="clear"><label>{% trans "Duration" %}</label> <input data-bind="value: duration"/></div>
+                        <button data-bind="click: $root.updateEvent">{% trans "Update" %}</button>
+                        <button data-bind="click: $root.deleteEvent">{% trans "Delete" %}</button>
                     </div>
                 </td>
             </tr>
@@ -500,11 +500,11 @@ $(document).ready(function() {
 </div>
 <div id="videobrowser">
         <input value="{{ search_query }}" placeholder="Search videos" style="float:left;" data-bind="value: video_search_query">
-        <button data-bind="click: $root.searchVideos">Search</button>
+        <button data-bind="click: $root.searchVideos">{% trans "Search" %}</button>
         <div style="clear:both;">
 
         <table class="videos">
-            <thead><tr><th class="name">Name</th><th class="time">Duration</th></tr></thead>
+            <thead><tr><th class="name">{% trans "Name" %}</th><th class="time">{% trans "Duration" %}</th></tr></thead>
             <tbody data-bind="foreach: videos">
                 <tr data-bind="click: $root.selectVideo">
                     <td data-bind="text: name"></td>

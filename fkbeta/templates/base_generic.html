@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <!-- No idea what this does, but makes IE9 behave when run on localhost -->
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-<title>Frikanalen Beta - {{ title|default:""}}</title>
+<title>{% blocktrans %}Frikanalen Beta - {{ title|default:""}}{% endblocktrans %}</title>
 <link rel="stylesheet" href="{% static 'vod.css' %}">
 <!--
 <link rel="stylesheet" href="/static/normalize.css">
@@ -147,10 +147,10 @@ h1 {
 
       <nav class=top-nav>
         <ul>
-          <li><a href="{% url 'guide' %}">Program Guide</a>
-          <li><a href="{% url 'calendar' %}">Calendar</a>
-          <li><a href="{% url 'vod-video-list' %}">Videos</a>
-          <li><a href="{% url 'vod-category-list' %}">Categories</a>
+          <li><a href="{% url 'guide' %}">{% trans "Program Guide" %}</a>
+          <li><a href="{% url 'calendar' %}">{% trans "Calendar" %}</a>
+          <li><a href="{% url 'vod-video-list' %}">{% trans "Videos" %}</a>
+          <li><a href="{% url 'vod-category-list' %}">{% trans "Categories" %}</a>
           {% if not user.is_authenticated %}
             <li>
               <div class="login_box">
@@ -160,20 +160,21 @@ h1 {
                       placeholder="username" maxlength="30">
                   <input id="id_password" type="password" name="password"
                       placeholder="password" maxlength="4096">
-                  <input type="submit" value="Log in">
+                  <input type="submit" value="{% trans "Log in" %}">
                   <input type="hidden" name="next" value="/">
                 </form>
-                ...or <a href="{% url 'register' %}">register</a>
+		{% url 'register' as register_url %}
+                {% blocktrans %}...or <a href="{{ register_url }}">register</a>{% endblocktrans %}
               </div>{# .login-box #}
             </li>
           {% else %}
-            <li><a href="{% url 'manage-schedule' %}">Plan</a>
-            <li><a href="{% url 'manage-video-list' %}">My videos</a>
+            <li><a href="{% url 'manage-schedule' %}">{% trans "Plan" %}</a>
+            <li><a href="{% url 'manage-video-list' %}">{% trans "My videos" %}</a>
             <li>
               <div class="login_box">
                 Logged in as
                 <a href="{% url 'profile' %}" title='User page for {{ user.first_name }} {{ user.last_name }}'>{{ user.username }}</a>
-                (<a href="{% url 'logout' %}">log out</a>)
+                (<a href="{% url 'logout' %}">{% trans "log out" %}</a>)
               </div>{# .login-box #}
             </li>
           {% endif %}
@@ -190,7 +191,7 @@ h1 {
 
   <div id="content">
     {% block content %}
-      <p>Content not defined in template</p>
+      <p>{% trans "Content not defined in template." %}</p>
     {% endblock content %}
   </div>
   <div style="clear:both;">&nbsp;</div>
@@ -199,8 +200,8 @@ h1 {
     <p>
       <a href="{% url 'api-root' %}">REST API</a> |
       <a href="{% url 'xmltv-home' %}">XMLTV</a> |
-      <a href="http://github.com/Frikanalen">Source code</a>
-      &copy; 2009-2018 Foreningen Frikanalen
-      (<a href="{% url 'member-org-list' %}">Member organizations</a>)
+      <a href="http://github.com/Frikanalen">{% trans "Source code" %}</a>
+      {% trans "&copy; 2009-2018 Foreningen Frikanalen" %}
+      (<a href="{% url 'member-org-list' %}">{% trans "Member organizations" %}</a>)
   </div>
 </div>{# #container #}

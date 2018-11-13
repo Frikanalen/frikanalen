@@ -55,7 +55,7 @@ class AbstractVideoList(TemplateView):
         if search_query:
             # This is a search!
             videos = search.search_videos(videos, request)
-            title = _('Searching %s for %s' % (videoset_name, search_query))
+            title = _('Searching %s for %s') % (videoset_name, search_query)
             url_query_postfix = "&q=%s" % urllib.quote(search_query.encode('utf8'))
         else:
             title = videoset_name
@@ -76,7 +76,7 @@ class AbstractVideoList(TemplateView):
 
 class VideoList(AbstractVideoList):
     def videoset_name(self):
-        return "All videos"
+        return _("All videos")
 
     def initial_queryset(self):
         videos = (Video.objects
@@ -88,7 +88,7 @@ class VideoList(AbstractVideoList):
 
 class OrganizationVideos(AbstractVideoList):
     def videoset_name(self, orgid):
-        return "Videos from %s" % self.org.name
+        return _("Videos from %s") % self.org.name
 
     def initial_queryset(self, orgid):
         try:
@@ -108,9 +108,9 @@ class RssVideos(AbstractVideoList):
 
     def videoset_name(self, orgid=None, *args, **kwargs):
         if self.org is not None:
-            return "Video RSS from %s" % self.org.name
+            return _("Video RSS from %s") % self.org.name
         else:
-            return "Video RSS"
+            return _("Video RSS")
 
     def initial_queryset(self, orgid=None, categoryname=None, *args, **kwargs):
         self.org = None

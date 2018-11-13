@@ -30,7 +30,7 @@
     &nbsp;
     <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <p><label>&nbsp;</label><button type="submit">Save video</button></p>
+    <p><label>&nbsp;</label><button type="submit">{% trans "Save video" %}</button></p>
     </form>
 </div>
 {% endblock content %}

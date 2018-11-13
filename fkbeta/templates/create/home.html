@@ -34,27 +34,27 @@ input[type=submit] {
 <h1>Create new video</h1>
 <ul id=filelist></ul>
 
-<button type=button id=upload disabled>Upload video file</button>
+<button type=button id=upload disabled>{% trans "Upload video file" %}</button>
 <pre id=console></pre>
 <template id=video-form-tmpl>
   <form class=video-form>
     <label>
-      <span>Title</span>
+      <span>{% trans "Title" %}</span>
       <input name=name type=text>
     </label>
     <label>
-      <span>Header</span>
+      <span>{% trans "Header" %}</span>
       <textarea name=header rows=4></textarea>
     </label>
-    <input type=submit value='Update metadata'>
+    <input type=submit value='{% trans "Update metadata" %}'>
   </form>
 </template>
 <div id=finished hidden>
-  <h1>Finished!</h1>
+  <h1>{% trans "Finished!" %}</h1>
   <ul>
-    <li><a href="{% url 'manage-schedule' %}">Plan your new video in the schedule</a></li>
-    <li><a class=edit-url>Edit more about your video</a></li>
-    <li><a class=video-url>Public video page</a></li>
+    <li><a href="{% url 'manage-schedule' %}">{% trans "Plan your new video in the schedule" %}</a></li>
+    <li><a class=edit-url>{% trans "Edit more about your video" %}</a></li>
+    <li><a class=video-url>{% trans "Public video page" %}</a></li>
   </ul>
 </div>
 
