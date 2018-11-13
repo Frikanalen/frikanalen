@@ -7,9 +7,9 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import durationfield.db.models.fields.duration
 import model_utils.fields
 
+from fk.models import LegacyDurationField
 
 class Migration(migrations.Migration):
 
@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
                 ('schedulereason', models.IntegerField(blank=True, choices=[(1, b'Legacy'), (2, b'Administrative'), (3, b'User'), (4, b'Automatic')])),
                 ('starttime', models.DateTimeField()),
                 ('duration', models.DurationField()),
-                ('duration_old', durationfield.db.models.fields.duration.DurationField(blank=True, null=True)),
+                ('duration_old', LegacyDurationField(blank=True, null=True)),
             ],
             options={
                 'ordering': ('-id',),
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                 ('framerate', models.IntegerField(default=25000, help_text=b'Framerate of master video in thousands / second')),
                 ('ref_url', models.CharField(blank=True, help_text=b'URL for reference', max_length=1024)),
                 ('duration', models.DurationField(blank=True, default=datetime.timedelta(0))),
-                ('duration_old', durationfield.db.models.fields.duration.DurationField(blank=True, null=True)),
+                ('duration_old', LegacyDurationField(blank=True, null=True)),
                 ('upload_token', models.CharField(blank=True, default=b'', help_text=b'Code for upload', max_length=32)),
                 ('categories', models.ManyToManyField(to='fk.Category')),
                 ('editor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
@@ -174,7 +174,7 @@ class Migration(migrations.Migration):
                 ('day', models.IntegerField(choices=[(0, 'Monday'), (1, 'Tuesday'), (2, 'Wednesday'), (3, 'Thursday'), (4, 'Friday'), (5, 'Saturday'), (6, 'Sunday')])),
                 ('start_time', models.TimeField()),
                 ('duration', models.DurationField()),
-                ('duration_old', durationfield.db.models.fields.duration.DurationField(blank=True, null=True)),
+                ('duration_old', LegacyDurationField(blank=True, null=True)),
                 ('purpose', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='fk.SchedulePurpose')),
             ],
             options={
