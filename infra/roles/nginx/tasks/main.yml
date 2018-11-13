@@ -1,8 +1,7 @@
 ---
 - name: Install packages
-  apt: name={{item}}
-  with_items:
-    - nginx
+  apt:
+    name: nginx
 
 - name: Ensure default nginx server is not present
   file:

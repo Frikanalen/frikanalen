@@ -13,8 +13,8 @@ upstream fkweb {
 
 server {
     {% if letsencrypt_cert.stat.exists %}
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 443 ssl{% if domain == 'frikanalen.no' %} http2{% endif %};
+        listen [::]:443 ssl{% if domain == 'frikanalen.no' %} http2{% endif %};
         ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
     {% else %}

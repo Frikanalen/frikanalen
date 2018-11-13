@@ -3,4 +3,5 @@
 file01.frikanalen.no nginx=true domain=upload.frikanalen.no
 
 [web]
-frikanalen-prod.nuug.no
+frikanalen-prod.nuug.no domain=frikanalen.no
+frikanalen-dev.nuug.no domain=dev.frikanalen.no
