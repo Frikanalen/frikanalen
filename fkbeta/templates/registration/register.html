@@ -9,18 +9,19 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Create an account</h1>
+  <h1>{% trans "Create an account" %}</h1>
 
-  <p class=becomemember>
+  <p class=becomemember>{% blocktrans %}
     To become a member of Frikanalen, visit our
     <a href="http://frikanalen.no/om/innmelding">registration form</a>.<br>
     Here you can create an account to send videos on Frikanalen.
+  {% endblocktrans %}</p>
 
   <form action="" method="post">
     {% csrf_token %}
     <table>
     {{ form.as_table }}
     </table>
-    <input type="submit" value="Create the account">
+    <input type="submit" value="{% trans "Create the account" %}">
   </form>
 {% endblock %}

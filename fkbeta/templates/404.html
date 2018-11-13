@@ -1,8 +1,8 @@
 {% extends "base_generic.html" %}
 
-{% block heading-title %}404, didn't find anything{% endblock heading-title %}
+{% block heading-title %}{% trans "404, didn't find anything" %}{% endblock heading-title %}
 
 {% block content %}
-<p>Page not found</p>
-<p>Maybe it was deleted/moved? If there should be something here, please contact us.</p>
+<p>{% trans "Page not found" %}</p>
+<p>{% trans "Maybe it was deleted/moved? If there should be something here, please contact us." %}</p>
 {% endblock content %}

@@ -63,25 +63,27 @@
     <div class="navigation">
         <div class="inner">
         {% if page.has_previous %}
-        <a href="?page={{ page.previous_page_number }}{{ url_query_postfix }}"> Previous</a>
+        <a href="?page={{ page.previous_page_number }}{{ url_query_postfix }}"> {% trans "Previous" %}</a>
         {% else %}
-        First
+        {% trans "First" %}
         {% endif %}
         </div>
     </div>
 
     <div class="navigation">
         <div class="inner">
-        {{ page.number }} of {{ page.paginator.num_pages }}
+          {% with number=page.number num_pages=page.paginator.num_pages %}
+            {% blocktrans %}{{ number }} of {{ num_pages }}{% endblocktrans %}
+	  {% endwith  %}
         </div>
     </div>
 
     <div class="navigation">
         <div class="inner">
         {% if page.has_next %}
-        <a href="?page={{ page.next_page_number }}{{ url_query_postfix }}"> Next</a>
+        <a href="?page={{ page.next_page_number }}{{ url_query_postfix }}">{% trans "Next" %}</a>
         {% else %}
-        Last
+        {% trans "Last" %}
         {% endif %}
         </div>
     </div>

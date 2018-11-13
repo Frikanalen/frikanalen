@@ -180,6 +180,10 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': [
+                'django.templatetags.i18n',
+                'django.contrib.staticfiles.templatetags.staticfiles',
+            ]
         },
     },
 ]
