@@ -111,9 +111,13 @@
             <span class="duration">({{ video.duration|truncate_duration }})</span>
         </li>
         <li class="editor">
+        {% if video.organization %}
             <a href="{% url 'vod-org-video-list' video.organization.id %}">
             <i>{{ video.organization }}</i>
             </a>
+	{% else %}
+            <i>n/a</i>
+	{% endif %}
         </li>
         <li class="description">
         {% if video.header %}
