@@ -74,6 +74,9 @@
       {% if video.has_tono_records %}
         <div><img src="{% static 'tono-logo.gif' %}" alt="TONO" style="margin:5px;"/></div>
       {% endif %}
+      {% if allowed_to_edit %}
+	<a href="{% url 'manage-video-edit' video.id %}">{% trans "Edit metadata" %}</a>
+      {% endif %}
     </div> {# .video-info #}
   </div> {# .video-container #}
   {% if video.header %}
