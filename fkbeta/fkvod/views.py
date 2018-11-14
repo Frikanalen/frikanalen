@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 
 from fk.models import Category, Video, Organization
+from agenda.views import allowed_to_edit
 from fkvod import search
 
 
@@ -23,6 +24,7 @@ class VideoDetail(TemplateView):
             video = None
             title = _('Video #%i not found' % int(video_id))
         context = {
+            'allowed_to_edit': allowed_to_edit(video, request.user),
             'video_id': video_id,
             'video': video,
             'title': title

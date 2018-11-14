@@ -181,15 +181,19 @@ class ManageVideoNew(AbstractVideoFormView):
       return redirect("manage-video-edit", video.id)
     return self.get(request, form=form)
 
+def allowed_to_edit(video, user):
+  return (user.is_authenticated()
+          and ((video.organization
+                and video.organization.members.filter(pk=user.id).exists())
+               or user.is_superuser))
+
 class ManageVideoEdit(AbstractVideoFormView):
   Form = VideoFormForUsers
   def get(self, request, id=None, form=None):
     if not request.user.is_authenticated():
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
-    if not ((video.organization and
-             video.organization.members.filter(pk=request.user.id).exists()) or
-            request.user.is_superuser):
+    if not allowed_to_edit(video, request.user):
       return HttpResponseForbidden(
           _('You are not a member of the organization that owns this videos.'))
     form = self.get_form(request, form=form, instance=video)
@@ -203,9 +207,7 @@ class ManageVideoEdit(AbstractVideoFormView):
     if not request.user.is_authenticated():
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
-    if not ((video.organization and
-             video.organization.members.filter(pk=request.user.id).exists()) or
-            request.user.is_superuser):
+    if not allowed_to_edit(video, request.user):
       return HttpResponseForbidden(
           _('You are not a member of the organization that owns this videos.'))
     form = self.get_form(request, data=request.POST, instance=video)
