@@ -1,0 +1,14 @@
+[Unit]
+Description=Frikanalen OBE encoder
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=fk-obe
+ExecStart=/usr/local/bin/fk-obe
+EnvironmentFile=/etc/fk-obe.conf
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+

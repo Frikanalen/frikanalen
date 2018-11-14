@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+
+import pexpect
+import time
+import re
+import sys
+
+class ObeExpecter():
+    PROMPT = r'obecli> '
+
+    def __init__(self):
+        self.obe = pexpect.spawn('/usr/bin/obecli', encoding='utf-8')
+        self.obe.setecho(False)
+        self.obe.waitnoecho()
+        self.obe.logfile = sys.stdout
+
+    def wait(self):
+        while True:
+            a = self.obe.read_nonblocking(timeout=None)
+
+    def start(self):
+        self.obe.expect(self.PROMPT)
+        self.obe.sendline('set input decklink')
+        time.sleep(1)
+        self.obe.sendline('probe input')
+        index = self.obe.expect(r'Probing.*\n')
+
+        index = self.obe.expect(r'(?P<probe_data>.*)obecli> ')
+        probe_data = self.obe.match.groups('probe_data')[0]
+
+        for discovery in re.findall( '    Input-stream-id: (?P<in_stream_id>\d*) - (?P<in_stream_type>\w*): (?P<in_stream_format>.+) \n', probe_data):
+            print(discovery)
+
+        for discovery in re.findall( '    Output-stream-id: (?P<out_stream_id>\d*) - Input-stream-id: (?P<in_stream_id>\d*) - (?P<out_stream_type>\w*): (?P<out_stream_format>.+) \n', probe_data):
+            print(discovery)
+
+        self.obe.sendline('set stream opts 0:vbv-maxrate=7600,vbv-bufsize=7600,bitrate=7600,keyint=24,threads=4,aspect-ratio=16:9,pid=564')
+        self.obe.expect(self.PROMPT)
+        self.obe.sendline('set stream opts 1:bitrate=192,format=aac,aac-profile=he-aac-v1,aac-encap=latm,lang=nor,pid=768')
+        self.obe.expect(self.PROMPT)
+        self.obe.sendline('set muxer opts ts-muxrate=8000000,ts-type=dvb,ts-id=311,program-num=311,pmt-pid=311,pcr-pid=564,cbr=1')
+        self.obe.expect(self.PROMPT)
+        self.obe.sendline('set outputs 1')
+        self.obe.expect(self.PROMPT)
+        self.obe.sendline('set output opts 0:type=udp,target=udp://192.168.3.1:5561')
+        self.obe.expect(self.PROMPT)
+        self.obe.sendline('start')
+        self.obe.expect('Encoding started')
+
+obe = ObeExpecter()
+obe.start()
+print("OBE started!")
+obe.wait()
