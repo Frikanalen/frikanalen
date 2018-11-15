@@ -350,11 +350,15 @@ class VideoFilterTest(APITestCase):
             ('?editor__username=dummy_user&name=', ['dummy video']),
         ]
         for lookup, expect in lookups:
-            r = self.client.get(reverse('api-video-list') + lookup)
+            url = reverse('api-video-list') + lookup
+            r = self.client.get(url)
+            self.assertEqual(status.HTTP_200_OK, r.status_code,
+                             "lookup '%s' did not return status 200" % url)
             videos = [v['name'] for v in r.data['results']]
-
-            self.assertEqual(status.HTTP_200_OK, r.status_code)
-            self.assertEqual(expect, videos)
+            self.assertEqual(expect, videos,
+                             "lookup '%s' expect %s got %s" % (
+                                 url, expect, videos)
+            )
 
 
 class ScheduleitemTest(APITestCase):
