@@ -187,8 +187,6 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class VideoFilter(djfilters.FilterSet):
-    name__icontains = djfilters.CharFilter(
-        name='name', lookup_expr='icontains')
     categories__name__icontains = djfilters.ModelMultipleChoiceFilter(
         field_name='categories__name',
         to_field_name='name',
@@ -201,15 +199,14 @@ class VideoFilter(djfilters.FilterSet):
 
     class Meta:
         model = Video
-        fields = (
-            'name',
-            'name__icontains',
-            'editor__username',
-            'organization__name',
-            'is_filler',
-            'has_tono_records',
-            'ref_url',
-        )
+        fields = {
+            'editor__username': ['exact'],
+            'has_tono_records': ['exact'],
+            'is_filler': ['exact'],
+            'name': ['exact', 'icontains'],
+            'organization__name': ['exact'],
+            'ref_url': ['exact', 'startswith', 'icontains'],
+        }
 
 class VideoList(generics.ListCreateAPIView):
     """
