@@ -201,10 +201,13 @@ class VideoFilter(djfilters.FilterSet):
         model = Video
         fields = {
             'editor__username': ['exact'],
+            'framerate': ['exact'],
             'has_tono_records': ['exact'],
             'is_filler': ['exact'],
             'name': ['exact', 'icontains'],
             'organization__name': ['exact'],
+            'played_count_web': ['exact', 'gt', 'gte', 'lt', 'lte'],
+            'publish_on_web': ['exact'],
             'ref_url': ['exact', 'startswith', 'icontains'],
         }
 
