@@ -64,6 +64,7 @@
     publish_on_web: true
     proper_import: true
     ref_url: b
+    framerate: 24000
 - model: fk.video
   pk: 3
   fields:
