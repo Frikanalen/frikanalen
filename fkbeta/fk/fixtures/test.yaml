@@ -53,6 +53,7 @@
     publish_on_web: true
     proper_import: true
     upload_token: deadbeef
+    ref_url: a
 - model: fk.video
   pk: 2
   fields:
@@ -62,6 +63,7 @@
     duration: "0:01:00"  # 1m
     publish_on_web: true
     proper_import: true
+    ref_url: b
 - model: fk.video
   pk: 3
   fields:
@@ -71,6 +73,7 @@
     duration: "0.0010"
     publish_on_web: false
     proper_import: true
+    ref_url: aa
 - model: fk.video
   pk: 4
   fields:
@@ -81,6 +84,7 @@
     publish_on_web: false
     proper_import: false
     has_tono_records: true
+    ref_url: ab
 
 - model: fk.fileformat
   pk: 1
