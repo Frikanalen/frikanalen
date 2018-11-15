@@ -3,7 +3,9 @@
 <meta charset="utf-8">
 <!-- No idea what this does, but makes IE9 behave when run on localhost -->
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-<title>{% blocktrans %}Frikanalen - {{ title|default:""}}{% endblocktrans %}</title>
+{% with title|default:"" as pagetitle %}
+<title>{% blocktrans %}Frikanalen - {{ pagetitle }}{% endblocktrans %}</title>
+{% endwith %}
 <link rel="stylesheet" href="{% static 'vod.css' %}">
 <!--
 <link rel="stylesheet" href="/static/normalize.css">
