@@ -73,6 +73,7 @@
     duration: "0.0010"
     publish_on_web: false
     proper_import: true
+    has_tono_records: true
     ref_url: aa
 - model: fk.video
   pk: 4
@@ -83,7 +84,6 @@
     duration: "1"
     publish_on_web: false
     proper_import: false
-    has_tono_records: true
     ref_url: ab
 
 - model: fk.fileformat

@@ -338,6 +338,8 @@ class VideoFilterTest(APITestCase):
 
     def test_can_filter(self):
         lookups = [
+            ('?has_tono_records=false', ['dummy video','tech video']),
+            ('?has_tono_records=true', ['unpublished video']),
             ('?name=dummy', []),
             ('?name=dummy+video', ['dummy video']),
             ('?name__icontains=Dum', ['dummy video']),
