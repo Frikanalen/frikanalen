@@ -208,6 +208,7 @@ class VideoFilter(djfilters.FilterSet):
             'organization__name',
             'is_filler',
             'has_tono_records',
+            'ref_url',
         )
 
 class VideoList(generics.ListCreateAPIView):

@@ -345,6 +345,8 @@ class VideoFilterTest(APITestCase):
                     'unpublished video',
                     'dummy video',
                 ]),
+            ('?ref_url=a', ['tech video']),
+            ('?ref_url=b', ['dummy video']),
             ('?editor__username=nuug', []),
             ('?editor__username=nuug_user', ['tech video']),
             ('?editor__username=dummy_user&name=', ['dummy video']),
