@@ -93,6 +93,12 @@ class VideoFile(models.Model):
     filename = models.CharField(max_length=256)
     old_filename = models.CharField(max_length=256, default='', blank=True)
     # source = video = models.ForeignKey("VideoFile")
+    integrated_lufs = models.FloatField(
+        'Integrated LUFS of file defined in ITU R.128',
+        blank=True, null=True)
+    truepeak_lufs = models.FloatField(
+        'True peak LUFS of file defined in ITU R.128',
+        blank=True, null=True)
     created_time = models.DateTimeField(
         auto_now_add=True, null=True,
         help_text='Time the video  file was created')
