@@ -27,6 +27,8 @@ class VideoFileSerializer(serializers.ModelSerializer):
             "filename",
             "old_filename",
             "created_time",
+            "integrated_lufs",
+            "truepeak_lufs",
             )
 
 
