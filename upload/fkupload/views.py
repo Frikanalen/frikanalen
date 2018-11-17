@@ -7,6 +7,8 @@ from flask import Flask
 from flask import jsonify
 from flask import render_template
 from flask import request
+from flask import redirect
+from flask import url_for
 from flask_cors import CORS
 
 from .utils import UploadError
@@ -32,9 +34,11 @@ def upload_err(func):
     return decorator
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 @upload_err
 def upload():
+    if request.method == 'GET':
+        return redirect(url_for('home'))
     try:
         video_id = int(request.values['video_id'])
     except:
