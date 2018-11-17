@@ -54,9 +54,11 @@ class ProcessGenerate(unittest.TestCase):
         for t in tests:
             in_fn, out_fns = t
             cmds = []
+
             mp.generate_videos(
                 0, in_fn, runner_run=lambda c, _: cmds.append(c),
                 register=nop)
+
             self.assertEqual(out_fns, [c[-1] for c in cmds])
 
     def test_generate_wrong_format(self):

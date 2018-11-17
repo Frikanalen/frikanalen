@@ -37,6 +37,10 @@ for k, v in list(VF_FORMATS.items()):
 logging.basicConfig(level=logging.DEBUG)
 
 
+class AppError(Exception):
+    pass
+
+
 class Converter(object):
     CONVERT = {
         'theora': {
@@ -214,6 +218,8 @@ def run(watch_dir, move_to_dir):
         handle_file(watch_dir, move_to_dir, fn)
 
 def handle_file(watch_dir, move_to_dir, str_id):
+    logging.info('Handling file id: %s - moving from %s to %s',
+                 str_id, watch_dir, move_to_dir)
     id = int(str_id)
     from_dir = os.path.join(watch_dir, str_id)
     fn = os.listdir(from_dir)[0]
@@ -233,9 +239,11 @@ def _handle_file(id, filepath, metadata):
     _update_video(id, { 'proper_import': True })
 
 def update_existing_file(str_id, to_dir):
+    logging.info('Trying to update existing file id: %s in folder %s',
+                 str_id, to_dir)
     id = int(str_id)
     if not os.path.isdir(os.path.join(to_dir, str_id)):
-        raise "No folder {} in {}".format(id, to_dir)
+        raise AppError("No folder {} in {}".format(id, to_dir))
     fn = None
     path = None
     for folder in ['original', 'broadcast']:
@@ -244,21 +252,26 @@ def update_existing_file(str_id, to_dir):
             fn = os.listdir(path)[0]
             break
     if not fn:
-        raise "Found no file in {}".format(to_dir, id)
+        raise AppError("Found no file in {}".format(to_dir, id))
     filepath = os.path.join(path, fn)
     metadata = get_metadata(filepath)
     _handle_file(id, filepath, metadata)
 
-if __name__ == '__main__':
-    dir = sys.argv[1] if len(sys.argv) > 1 else DIR
-    to_dir = sys.argv[2] if len(sys.argv) > 2 else TO_DIR
+def main(args):
+    dir = args[1] if len(args) > 1 else DIR
+    to_dir = args[2] if len(args) > 2 else TO_DIR
 
     try:
-        if len(sys.argv) > 3:
-            handle_file(dir, to_dir, sys.argv[3])
+        if len(args) >= 3:
+            video_id = args[3]
+            handle_file(dir, to_dir, video_id)
         elif dir.isdigit():
-            update_existing_file(dir, to_dir)
+            video_id = dir
+            update_existing_file(video_id, to_dir)
         else:
             run(dir, to_dir)
     except KeyboardInterrupt:
         pass
+
+if __name__ == '__main__':
+    main(sys.argv)
