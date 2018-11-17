@@ -152,7 +152,9 @@ class Video(models.Model):
     categories = models.ManyToManyField(Category)
     editor = models.ForeignKey(User)
     has_tono_records = models.BooleanField(default=False)
-    is_filler = models.BooleanField(default=False)  # Find a better name?
+    is_filler = models.BooleanField('Play automatically?',
+                                    help_text = 'You still have the editorial responsibility.  Only affect videos from members.',
+                                    default=False)  # Find a better name?
     publish_on_web = models.BooleanField(default=True)
 
     # disabled = models.BooleanField() # Not migrated
