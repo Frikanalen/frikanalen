@@ -214,20 +214,20 @@ def generate_videos(
 
 def _update_video(video_id, data):
     if args.no_api:
-        logging.debug("NO API - updating video %d -> %r" % (video_id, data))
+        logging.debug("NO API - updating video %s -> %r" % (video_id, data))
         return
-    response = rq('PATCH', '/videos/%d' % video_id, data=data)
+    response = rq('PATCH', '/videos/%s' % video_id, data=data)
 
 def get_videofiles(video_id):
     if args.no_api:
-        logging.debug("NO API - get videofiles %d -> []" % video_id)
+        logging.debug("NO API - get videofiles %s -> []" % video_id)
         return []
     response = rq('GET', '/videofiles/', params={'video_id': video_id})
     return response.json()['results']
 
 def create_videofile(video_id, data):
     if args.no_api:
-        logging.debug("NO API - creating videofile %d -> %r" % (video_id, data))
+        logging.debug("NO API - creating videofile %s -> %r" % (video_id, data))
         return
     data.update({'video': video_id})
     rq('POST', '/videofiles/', data=data)
@@ -245,7 +245,7 @@ def run_inotify(watch_dir, move_to_dir):
             logging.info('Skipped %s' % fn)
             continue
         logging.info('Found %s' % fn)
-        handle_file(watch_dir, move_to_dir, fn)
+        handle_file(watch_dir, move_to_dir, int(fn))
 
 def run(watch_dir, move_to_dir):
     for folder in os.listdir(watch_dir):
