@@ -93,10 +93,14 @@ class Converter(object):
 
 class Runner(object):
     @classmethod
-    def run(cls, cmd, filepath=None):
+    def run(cls, cmd, filepath=None, reprocess=False):
         logging.info('Running: %s', ' '.join(cmd))
         if filepath:
-            os.makedirs(os.path.dirname(filepath))
+            if reprocess and os.path.exists(filepath):
+                logging.info('Deleting file for reprocessing: %s', filepath)
+                os.remove(filepath)
+            else:
+                os.makedirs(os.path.dirname(filepath))
         output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         logging.debug(output.decode('utf-8'))
 
@@ -181,13 +185,14 @@ def register_videofiles(id, folder):
 
 def generate_videos(
         id, filepath, metadata=None, runner_run=Runner.run,
-        converter=Converter, register=register_videofiles):
+        converter=Converter, register=register_videofiles,
+        reprocess=False):
     logging.info('Processing: %s', filepath)
     base_path = os.path.dirname(os.path.dirname(filepath))
     formats = converter.get_formats(filepath)
     for t in formats:
         cmds, new_fn = converter.convert_cmds(filepath, t, metadata)
-        runner_run(cmds, new_fn)
+        runner_run(cmds, filepath=new_fn, reprocess=reprocess)
         register(id, base_path)
 
 
@@ -230,12 +235,12 @@ def handle_file(watch_dir, move_to_dir, str_id):
     _handle_file(id, new_filepath or str_id, metadata)
     os.rmdir(from_dir)
 
-def _handle_file(id, filepath, metadata):
+def _handle_file(id, filepath, metadata, reprocess=False):
     _update_video(id, {
         'duration': metadata['pretty_duration'],
         'uploaded_time': datetime.utcnow().isoformat(),
     })
-    generate_videos(id, filepath, metadata)
+    generate_videos(id, filepath, metadata, reprocess=reprocess)
     _update_video(id, { 'proper_import': True })
 
 def update_existing_file(str_id, to_dir):
@@ -255,7 +260,7 @@ def update_existing_file(str_id, to_dir):
         raise AppError("Found no file in {}".format(to_dir, id))
     filepath = os.path.join(path, fn)
     metadata = get_metadata(filepath)
-    _handle_file(id, filepath, metadata)
+    _handle_file(id, filepath, metadata, reprocess=True)
 
 def main(args):
     dir = args[1] if len(args) > 1 else DIR
