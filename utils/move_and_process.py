@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # encoding: utf-8
+import argparse
 import json
 import logging
 import os
@@ -20,6 +21,9 @@ DIR = '/tmp'
 TO_DIR = '/tank/media/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
+# Global argument object
+args = None
+
 # XXX very hacky
 VF_FORMATS = {
     'large_thumb': 1,
@@ -38,6 +42,9 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class AppError(Exception):
+    pass
+
+class SkippableError(Exception):
     pass
 
 
@@ -96,11 +103,14 @@ class Runner(object):
     def run(cls, cmd, filepath=None, reprocess=False):
         logging.info('Running: %s', ' '.join(cmd))
         if filepath:
-            if reprocess and os.path.exists(filepath):
-                logging.info('Deleting file for reprocessing: %s', filepath)
-                os.remove(filepath)
-            else:
-                os.makedirs(os.path.dirname(filepath))
+            os.makedirs(os.path.dirname(filepath), exist_ok=True)
+            if os.path.exists(filepath):
+                if reprocess:
+                    logging.info("Deleting file for reprocessing: %s", filepath)
+                    os.remove(filepath)
+                else:
+                    logging.info("SKIP already existing file: %s", filepath)
+                    return
         output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         logging.debug(output.decode('utf-8'))
 
@@ -144,13 +154,15 @@ def get_mlt_duration(filepath):
     return frames/fps
 
 def rq(method, path, **kwargs):
+    if args.no_api:
+        raise Exception("Should not call request in no-api. Fix code.")
     s = requests.Session()
     adapter = requests.adapters.HTTPAdapter(max_retries=3)
     s.mount('http://', adapter)
     s.mount('https://', adapter)
     response = s.request(method,
-        FK_API + path,
-        headers={'Authorization': 'Token %s' % FK_TOKEN},
+        args.api + path,
+        headers={'Authorization': 'Token %s' % args.token},
         **kwargs)
     response.raise_for_status()
     return response
@@ -163,52 +175,65 @@ def direct_playable(metadata):
             s.get('width') == 720)
     return any(is_pal(s) for s in metadata['streams'])
 
-def move_original(from_dir, to_dir, metadata, fn):
+def copy_original(from_dir, to_dir, metadata, fn):
     folder = 'broadcast' if direct_playable(metadata) else 'original'
-    os.makedirs(os.path.join(to_dir, folder))
+    os.makedirs(os.path.join(to_dir, folder), exist_ok=True)
     new_filepath = os.path.join(to_dir, folder, fn)
-    shutil.move(os.path.join(from_dir, fn), new_filepath)
+    shutil.copy2(os.path.join(from_dir, fn), new_filepath)
     return new_filepath
 
-def register_videofiles(id, folder):
+def register_videofiles(id, folder, videofiles=None):
     files = get_videofiles(id)
-    has_formats = {VF_FORMATS[f['format']] for f in files}
+    videofiles = (videofiles or set()).union({f['filename'].strip() for f in files})
     for file_folder in os.listdir(folder):
-        if file_folder in has_formats:
-            logging.debug('format %s already exists', file_folder)
-            continue
         for fn in os.listdir(os.path.join(folder, file_folder)):
+            filepath = os.path.join(str(id), file_folder, fn)
+            if filepath in videofiles:
+                continue
             create_videofile(id, {
-                'filename': os.path.join(str(id), file_folder, fn),
+                'filename': filepath,
                 'format': VF_FORMATS[file_folder],
             })
+            videofiles.add(filepath)
+    return videofiles
 
 def generate_videos(
         id, filepath, metadata=None, runner_run=Runner.run,
         converter=Converter, register=register_videofiles,
         reprocess=False):
-    logging.info('Processing: %s', filepath)
+    logging.info("Processing: %s", filepath)
     base_path = os.path.dirname(os.path.dirname(filepath))
     formats = converter.get_formats(filepath)
+    videofiles = set()
     for t in formats:
         cmds, new_fn = converter.convert_cmds(filepath, t, metadata)
         runner_run(cmds, filepath=new_fn, reprocess=reprocess)
-        register(id, base_path)
+        videofiles = register(
+            id, base_path, videofiles=videofiles)
 
 
 def _update_video(video_id, data):
+    if args.no_api:
+        logging.debug("NO API - updating video %d -> %r" % (video_id, data))
+        return
     response = rq('PATCH', '/videos/%d' % video_id, data=data)
 
 def get_videofiles(video_id):
+    if args.no_api:
+        logging.debug("NO API - get videofiles %d -> []" % video_id)
+        return []
     response = rq('GET', '/videofiles/', params={'video_id': video_id})
     return response.json()['results']
 
 def create_videofile(video_id, data):
+    if args.no_api:
+        logging.debug("NO API - creating videofile %d -> %r" % (video_id, data))
+        return
     data.update({'video': video_id})
     rq('POST', '/videofiles/', data=data)
 
-def run(watch_dir, move_to_dir):
-    logging.info('Starting move_and_process, watch: %s, move_to: %s',
+def run_inotify(watch_dir, move_to_dir):
+    logging.info("Starting move_and_process, watch: %s, move_to: %s",
                  watch_dir, move_to_dir)
     i = Inotify(block_duration_s=300)
     i.add_watch(watch_dir, constants.IN_MOVED_TO)
@@ -222,18 +247,33 @@ def run(watch_dir, move_to_dir):
         logging.info('Found %s' % fn)
         handle_file(watch_dir, move_to_dir, fn)
 
-def handle_file(watch_dir, move_to_dir, str_id):
-    logging.info('Handling file id: %s - moving from %s to %s',
-                 str_id, watch_dir, move_to_dir)
-    id = int(str_id)
+def run(watch_dir, move_to_dir):
+    for folder in os.listdir(watch_dir):
+        if (folder.startswith('.')
+                or not folder.isdigit()
+                or not os.path.isdir(os.path.join(watch_dir, folder))):
+            continue
+        try:
+            handle_file(watch_dir, move_to_dir, int(folder))
+        except SkippableError as e:
+            logging.debug(e)
+            logging.debug("Skipping %s" % folder)
+
+def handle_file(watch_dir, move_to_dir, id):
+    logging.info("Handling file id: %d - moving from %s to %s",
+                 id, watch_dir, move_to_dir)
+    str_id = str(id)
     from_dir = os.path.join(watch_dir, str_id)
-    fn = os.listdir(from_dir)[0]
+    try:
+        fn = os.listdir(from_dir)[0]
+    except IndexError:
+        raise SkippableError("Found no file in %s" % from_dir)
     metadata = get_metadata(os.path.join(from_dir, fn))
     to_dir = os.path.join(move_to_dir, str_id)
 
-    new_filepath = move_original(from_dir, to_dir, metadata, fn)
+    new_filepath = copy_original(from_dir, to_dir, metadata, fn)
     _handle_file(id, new_filepath or str_id, metadata)
-    os.rmdir(from_dir)
+    shutil.rmtree(from_dir)
 
 def _handle_file(id, filepath, metadata, reprocess=False):
     _update_video(id, {
@@ -243,12 +283,12 @@ def _handle_file(id, filepath, metadata, reprocess=False):
     generate_videos(id, filepath, metadata, reprocess=reprocess)
     _update_video(id, { 'proper_import': True })
 
-def update_existing_file(str_id, to_dir):
-    logging.info('Trying to update existing file id: %s in folder %s',
-                 str_id, to_dir)
-    id = int(str_id)
+def update_existing_file(id, to_dir, force):
+    logging.info("Trying to update existing file id: %d in folder %s",
+                 id, to_dir)
+    str_id = str(id)
     if not os.path.isdir(os.path.join(to_dir, str_id)):
-        raise AppError("No folder {} in {}".format(id, to_dir))
+        raise AppError("No folder %d/ in %s" % (id, to_dir))
     fn = None
     path = None
     for folder in ['original', 'broadcast']:
@@ -256,27 +296,69 @@ def update_existing_file(str_id, to_dir):
         if os.path.isdir(path):
             fn = os.listdir(path)[0]
             break
-    if not fn:
-        raise AppError("Found no file in {}".format(to_dir, id))
+    else:
+        raise AppError("Found no file for %d, last checked in %s" % (id, path))
     filepath = os.path.join(path, fn)
     metadata = get_metadata(filepath)
     _handle_file(id, filepath, metadata, reprocess=True)
 
-def main(args):
-    dir = args[1] if len(args) > 1 else DIR
-    to_dir = args[2] if len(args) > 2 else TO_DIR
+def main():
+    global args
+    top_parser = argparse.ArgumentParser(
+            description="Moving frikanalen videos and processing media files")
+    subparsers = top_parser.add_subparsers()
 
+    common_args = argparse.ArgumentParser(add_help=False)
+    common_args.add_argument('--indir',
+            help="""Folder where new `<id>/mediafile.mp4` are found
+            (default: %(default)s)""", default=DIR)
+    common_args.add_argument('--outdir',
+            help="""Folder where `<id>/<media_folders>/<file>` are processed
+            (default: %(default)s)""", default=TO_DIR)
+    common_args.add_argument('--no-api', action='store_true',
+            help="Do not call the API")
+    common_args.add_argument('--api',
+            help="Frikanalen API url (default: %(default)s, env: FK_API)", default=FK_API)
+    common_args.add_argument('--token',
+            help="Frikanalen API token to update database (env: FK_TOKEN)", default=FK_TOKEN)
+
+    process_p = subparsers.add_parser('process', parents=[common_args],
+            help="Reprocess media files (manual try-again mode)")
+    process_p.add_argument('video_id', type=int,
+            help="The ID of the video you want to update (ie. 626060)")
+    process_p.add_argument('-f', '--force', action='store_true',
+            help="Overwrite (rm) existing media files instead of skipping")
+    process_p.set_defaults(cmd=process_cmd)
+
+    run_p = subparsers.add_parser('run', parents=[common_args],
+            help="Check files in in-folder and process files to out-folder")
+    run_p.set_defaults(cmd=run_cmd)
+
+    daemon_p = subparsers.add_parser('daemon', parents=[common_args],
+            help="Listen for new folders in in-folder and process files to out-folder")
+    daemon_p.set_defaults(cmd=daemon_cmd)
+
+    args = top_parser.parse_args()
+    if 'cmd' not in args:
+        top_parser.print_help()
+        sys.exit(1)
     try:
-        if len(args) >= 3:
-            video_id = args[3]
-            handle_file(dir, to_dir, video_id)
-        elif dir.isdigit():
-            video_id = dir
-            update_existing_file(video_id, to_dir)
-        else:
-            run(dir, to_dir)
+        args.cmd(args)
     except KeyboardInterrupt:
         pass
+    except AppError as e:
+        print()
+        print(e)
+        sys.exit(1)
+
+def process_cmd(args):
+    update_existing_file(args.video_id, args.outdir, force=args.force)
+
+def daemon_cmd(args):
+    run_inotify(args.indir, args.outdir)
+
+def run_cmd(args):
+    run(args.indir, args.outdir)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
