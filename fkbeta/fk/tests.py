@@ -2,12 +2,40 @@
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import timezone
 
 from fk.models import Scheduleitem
 from fk.templatetags import vod
+
+User = get_user_model()
+
+class UserRegistrationTest(TestCase):
+    fixtures = ['test.yaml']
+
+
+    def setUp(self):
+        self.client.login(username='staff_user', password='test')
+
+
+    def test_user_profile_update(self):
+        r = self.client.get(reverse('profile'))
+        self.assertEqual(200, r.status_code)
+        r = self.client.post(
+            reverse('profile'), {
+                'first_name': 'Firstname',
+                'last_name':  'Lastname',
+                'email':      'test@example.com',
+                'country':    'Norway'
+            })
+        u = User.objects.get(username='staff_user')
+        self.assertEqual('Firstname', u.first_name)
+        self.assertEqual('Lastname', u.last_name)
+        self.assertEqual('test@example.com', u.email)
+        # Uncomment when https://github.com/Frikanalen/frikanalen/issues/77 is fixed
+        #self.assertEqual('Norway', u.userprofile.country)
 
 
 class WebPageTest(TestCase):
