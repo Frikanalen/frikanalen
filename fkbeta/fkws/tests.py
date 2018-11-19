@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.dateparse import parse_datetime
@@ -305,9 +306,9 @@ class PermissionsTest(APITestCase):
         self._user_auth('staff_user')
         thing_tests = [
             (VideoFile.objects.get(video__name='tech video'),
-             200, {'upload_token': 'deadbeef'}),
+             200, {'upload_token': 'deadbeef', 'upload_url': settings.FK_UPLOAD_URL}),
             (VideoFile.objects.get(video__name='dummy video'),
-             200, {'upload_token': ''}),
+             200, {'upload_token': '', 'upload_url': settings.FK_UPLOAD_URL}),
         ]
         self._get_upload_token_helper(thing_tests)
 
@@ -315,7 +316,7 @@ class PermissionsTest(APITestCase):
         self._user_auth('nuug_user')
         thing_tests = [
             (VideoFile.objects.get(video__name='tech video'),
-             200, {'upload_token': 'deadbeef'}),
+             200, {'upload_token': 'deadbeef', 'upload_url': settings.FK_UPLOAD_URL}),
             (VideoFile.objects.get(video__name='dummy video'),
              403, {'detail': 'You do not have permission '
                              'to perform this action.'}),

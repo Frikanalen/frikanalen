@@ -1,6 +1,7 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -83,9 +84,17 @@ class VideoSerializer(serializers.ModelSerializer):
 
 
 class VideoUploadTokenSerializer(serializers.ModelSerializer):
+    upload_url = serializers.SerializerMethodField()
+
+    def get_upload_url(self, video_upload_token):
+        return settings.FK_UPLOAD_URL
+
     class Meta:
         model = Video
-        fields = ('upload_token',)
+        fields = (
+            'upload_token',
+            'upload_url',
+        )
 
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
