@@ -13,7 +13,6 @@ router.register(r'api/asrun', views.AsRunViewSet)
 router.register(r'api/categories', views.CategoryViewSet)
 
 urlpatterns = [
-    url(r'^ws/(.*)', views.wschange_redirect_view),
     url(r'^api/$', views.api_root, name='api-root'),
     url(r'^api/jukebox_csv$', views.jukebox_csv, name='jukebox-csv'),
     url(r'^api/obtain-token$',
