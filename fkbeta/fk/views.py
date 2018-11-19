@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -17,7 +18,9 @@ def register(request):
 
 from fk.forms import UserProfileForm, UserForm
 
-def user_profile(request): 
+def user_profile(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
     if request.method == 'POST':
         profile_form = UserProfileForm(request.POST, instance=request.user)
         user_form = UserForm(request.POST, instance=request.user)
