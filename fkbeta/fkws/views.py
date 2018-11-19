@@ -6,7 +6,6 @@ import datetime
 
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
 from django.utils import timezone
 from django_filters import rest_framework as djfilters
 from rest_framework import filters
@@ -336,9 +335,3 @@ class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
-
-
-def wschange_redirect_view(request, path):
-    if request.META['QUERY_STRING']:
-        path += '?%s' % request.META['QUERY_STRING']
-    return redirect('/api/' + path, permanent=True)
