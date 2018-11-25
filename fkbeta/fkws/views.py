@@ -251,6 +251,8 @@ class VideoList(generics.ListCreateAPIView):
 
     `publish_on_web` - if this video is published ont the web (true/false)
 
+    `proper_import` - if the uploaded video was properly imported (true/false)
+
     `ref_url` - the exact reference url
 
     `ref_url__startswith` - the reference url start with this string
@@ -265,7 +267,14 @@ class VideoList(generics.ListCreateAPIView):
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
-        queryset = super(VideoList, self).get_queryset()
+        # Can filtering on proper_import be done using a different
+        # queryset and VideoFilter?
+        proper_import = self.request.query_params.get('proper_import')
+        if proper_import and 'false' == proper_import:
+            queryset = Video.objects.filter(proper_import=False)
+        else:
+            queryset = super(VideoList, self).get_queryset()
+
         search_query = self.request.query_params.get('q')
         if search_query:
             queryset = fkvod.search.search_videos(queryset,
