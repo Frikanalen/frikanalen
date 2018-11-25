@@ -339,6 +339,9 @@ class VideoFilterTest(APITestCase):
 
     def test_can_filter(self):
         lookups = [
+            ('?duration=01:00', ['dummy video']),
+            ('?duration__gte=01:00', ['dummy video']),
+            ('?duration__lt=01:00', ['unpublished video', 'tech video']),
             ('?has_tono_records=false', ['dummy video','tech video']),
             ('?has_tono_records=true', ['unpublished video']),
             ('?framerate=24000', ['dummy video']),
