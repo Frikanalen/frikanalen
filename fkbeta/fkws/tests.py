@@ -361,6 +361,8 @@ class VideoFilterTest(APITestCase):
             ('?editor__username=nuug', []),
             ('?editor__username=nuug_user', ['tech video']),
             ('?editor__username=dummy_user&name=', ['dummy video']),
+            ('?proper_import=false', ['broken video']),
+            ('?proper_import=true', ['unpublished video', 'dummy video', 'tech video']),
         ]
         for lookup, expect in lookups:
             url = reverse('api-video-list') + lookup
