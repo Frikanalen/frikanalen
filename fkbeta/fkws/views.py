@@ -199,6 +199,7 @@ class VideoFilter(djfilters.FilterSet):
     class Meta:
         model = Video
         fields = {
+            'duration': ['exact', 'gt', 'gte', 'lt', 'lte'],
             'editor__username': ['exact'],
             'framerate': ['exact'],
             'has_tono_records': ['exact'],
