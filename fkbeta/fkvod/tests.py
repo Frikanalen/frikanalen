@@ -18,3 +18,7 @@ class VodTests(TestCase):
     def test_category_list(self):
         response = self.client.get(reverse('vod-category-list'))
         self.assertContains(response, 'All Categories')
+
+    def test_org_list(self):
+        response = self.client.get(reverse('vod-org-video-list', args=[1]))
+        self.assertContains(response, 'Videos from')

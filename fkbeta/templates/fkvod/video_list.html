@@ -57,6 +57,17 @@
 {% endblock style %}
 
 {% block content %}
+{% if org %}
+  {% with name=org.name homepage=org.homepage %}
+  {% if org.description %}
+  <p>{{ org.description }}</p>
+  {% endif %}
+  {% if org.homepage %}
+  <p>{% blocktrans %}Visit <a href="{{ homepage }}">web pages for {{ name }}</a>{% endblocktrans %}</p>
+  {% endif %}
+
+  {% endwith %}
+{% endif %}
 
 {% if page.paginator.num_pages > 1 %}
 <div class="navigation_container">

@@ -73,6 +73,8 @@ class AbstractVideoList(TemplateView):
             "url_query_postfix": url_query_postfix,
             "search_query": search_query
         }
+        if getattr(self, 'org', None):
+            context['org'] = self.org
         return render(
             request, self.template, context, content_type=self.contenttype)
 
