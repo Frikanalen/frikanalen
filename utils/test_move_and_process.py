@@ -61,6 +61,13 @@ class ProcessGenerate(unittest.TestCase):
 
             self.assertEqual(out_fns, [c[-1] for c in cmds])
 
+    def test_get_loudness(self):
+        # sine.wav was generated using sox -b 16 -n sine.wav synth 3 sine 300-3300
+        # white.png was generated using convert xc:white white.png
+        self.assertEqual(mp.get_loudness('testdata/sine.wav'),
+                         {'integrated_lufs': -2.2, 'truepeak_lufs': 0.54})
+        self.assertEqual(mp.get_loudness('testdata/white.jpg'), None)
+
     def test_generate_wrong_format(self):
         self.assertRaises(
             AssertionError, lambda: mp.generate_videos(0, '/a/b/c.d'))

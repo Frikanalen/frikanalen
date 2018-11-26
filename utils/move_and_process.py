@@ -13,6 +13,7 @@ from datetime import datetime
 import requests
 from inotify import constants
 from inotify.adapters import Inotify
+from lxml import etree
 
 
 FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
@@ -153,6 +154,18 @@ def get_mlt_duration(filepath):
     fps = float(m.group(1))
     return frames/fps
 
+def get_loudness(filepath):
+    try:
+        cmd = ['bs1770gain', '--xml', '--truepeak', filepath]
+        output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
+        output = output.decode('utf-8')
+        root = etree.fromstring(output)
+        loudness = {}
+        loudness['integrated_lufs'] = float(root.xpath('//bs1770gain/album/track/integrated/@lufs')[0])
+        loudness['truepeak_lufs'] = float(root.xpath('//bs1770gain/album/track/true-peak/@tpfs')[0])
+        return loudness
+    except (IndexError, ValueError, FileNotFoundError) as e:
+        return None
 def rq(method, path, **kwargs):
     if args.no_api:
         raise Exception("Should not call request in no-api. Fix code.")
@@ -190,10 +203,15 @@ def register_videofiles(id, folder, videofiles=None):
             filepath = os.path.join(str(id), file_folder, fn)
             if filepath in videofiles:
                 continue
-            create_videofile(id, {
+            data = {
                 'filename': filepath,
                 'format': VF_FORMATS[file_folder],
-            })
+            }
+            loudness = get_loudness(filepath)
+            # Handle images, which do not have loudness
+            if loudness:
+                data.update(loundness)
+            create_videofile(id, data)
             videofiles.add(filepath)
     return videofiles
 
