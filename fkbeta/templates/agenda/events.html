@@ -59,10 +59,10 @@
 {% timezone TIME_ZONE %}
 <ul class=events>
 {% for event in events %}
-  {% ifchanged event.starttime.week %}
+  {% ifchanged %}
     <h2 class="week">Week {{ event.starttime|date:"W" }}</h2>
   {% endifchanged %}
-  {% ifchanged event.starttime.date %}
+  {% ifchanged %}
     <h3 class="date">{{ event.starttime|date:"l N jS o" }}</h3>
   {% endifchanged %}
   <li class="event" style="background-color:{% cycle '#f1f1f1' '#e7e7e7' %}">
