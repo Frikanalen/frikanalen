@@ -42,6 +42,8 @@ class Organization(models.Model):
     members = models.ManyToManyField(User)  # User ownership of an organization
     fkmember = models.BooleanField(default=False)
     orgnr = models.CharField(blank=True, max_length=255)
+    homepage = models.CharField('Link back to the organisation home page.',
+                                blank=True, null=True, max_length=255)
 
     # No such concept yet. Every member can add members.
     # owner = models.ForeignKey(User)
