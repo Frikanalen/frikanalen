@@ -14,3 +14,4 @@ python-dateutil == 2.7.5
 pytz == 2018.7
 requests == 2.20.0
 django-csp
+lxml
