@@ -16,12 +16,12 @@ cd $dir
 # activate virtualenv
 . "{{app_dir}}/env/bin/activate"
 
-# set env vars, a bit hacky, maybe use .env file?
-DJANGO_SETTINGS_MODULE=fkbeta.settings.production
-SECRET_KEY={{app_secret_key}}
-DATABASE_USER={{app_user}}
-DATABASE_PASS={{app_db_pass}}
-DATABASE_NAME={{app_db_name}}
+# pass env vars to manage.py, a bit hacky, maybe use .env file?
+export DJANGO_SETTINGS_MODULE=fkbeta.settings.production
+export SECRET_KEY={{app_secret_key}}
+export DATABASE_USER={{app_user}}
+export DATABASE_PASS={{app_db_pass}}
+export DATABASE_NAME={{app_db_name}}
 
 # should only do these when required
 pip install -qr "$dir/requirements.txt"
