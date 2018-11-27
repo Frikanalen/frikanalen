@@ -155,13 +155,16 @@ def get_mlt_duration(filepath):
     return frames/fps
 
 def get_loudness(filepath):
-    cmd = ['bs1770gain', '--xml', '-pt', filepath]
+    cmd = ['bs1770gain', '--xml', '--truepeak', filepath]
     output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
     output = output.decode('utf-8')
     root = etree.fromstring(output)
-    integrated_lufs = float(root.xpath('//bs1770gain/album/track/integrated/@lufs')[0])
-    truepeak_lufs = float(track.xpath('//bs1770gain/album/track/true-peak/@tpfs')[0])
-    return (integrated_lufs, truepeak_lufs)
+    if root.xpath('//bs1770gain/album'):
+        integrated_lufs = float(root.xpath('//bs1770gain/album/track/integrated/@lufs')[0])
+        truepeak_lufs = float(root.xpath('//bs1770gain/album/track/true-peak/@tpfs')[0])
+        return (integrated_lufs, truepeak_lufs)
+    else:
+        return (None, None)
 
 def rq(method, path, **kwargs):
     if args.no_api:
