@@ -7,3 +7,6 @@ PyYAML == 3.13
 #coverage == 3.6
 #django-discover-runner == 0.4
 #Sphinx == 1.2b1
+
+# Used by post processing after upload (move_and_process.py)
+lxml
