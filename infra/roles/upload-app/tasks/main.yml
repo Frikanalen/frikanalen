@@ -12,6 +12,7 @@
     - python-pip
     - ffmpeg
     - melt
+    - bs1770gain
 
 - name: git pull project
   git: repo={{repo_url}} dest={{app_dir}}/git version=master
@@ -42,6 +43,7 @@
   pip:
     name:
     - inotify # 0.2.9
+    - lxml
     - requests
     state: latest
     virtualenv: "{{app_dir}}/env/"

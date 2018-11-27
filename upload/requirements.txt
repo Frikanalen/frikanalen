@@ -2,4 +2,3 @@ Flask
 Flask-CORS
 gunicorn
 requests
-lxml
