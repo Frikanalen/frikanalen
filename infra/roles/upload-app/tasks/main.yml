@@ -12,6 +12,7 @@
     - python-pip
     - ffmpeg
     - melt
+    - bs1770gain
 
 - name: git pull project
   git: repo={{repo_url}} dest={{app_dir}}/git version=master
