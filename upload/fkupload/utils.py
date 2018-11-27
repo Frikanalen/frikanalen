@@ -37,7 +37,7 @@ def handle_upload(forms, files, dest):
     if 'name' in forms:
         filename = forms['name']
     else:
-        raise UploadError("Filename must be present")
+        raise UploadError("Filename must be present (as 'name')")
 
     if 'chunk' in forms and 'chunks' in forms:
         chunk = int(forms['chunk'])

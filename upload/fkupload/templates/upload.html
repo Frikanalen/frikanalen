@@ -1,6 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Last opp</h1>
+<p>
+  This is an upload endpoint for Frikanalen.  You probably want to
+  use the webui at <a href=https://frikanalen.no/>frikanalen.no</a>.
+
+<p>
+  If you want to upload, you have to POST to /upload.
+  Check the documentation in the git repository for more info.
+
 <ul id="filelist"></ul>
 <br />
 
@@ -18,7 +26,7 @@ var uploader = new plupload.Uploader({
         browse_button: 'browse', // this can be an id of a DOM element or the DOM element itself
         runtimes : 'html5,html4',
         url : "/upload",
-        multipart_params: {video_id: 625000, upload_token: 'test'},
+        multipart_params: {video_id: 625000, upload_token: 'secret'},
 
         // Maximum file size
         max_file_size : '2gb',

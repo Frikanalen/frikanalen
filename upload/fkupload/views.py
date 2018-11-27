@@ -32,9 +32,11 @@ def upload_err(func):
     return decorator
 
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 @upload_err
 def upload():
+    if request.method == 'GET':
+        raise UploadError('POST to this endpoint. Check Git repo.')
     try:
         video_id = int(request.values['video_id'])
     except:

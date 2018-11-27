@@ -25,8 +25,7 @@ an upload token associated with the video ID and the filename of the
 video file.
 
 The token is fetched from the Frikanalen API using the
-https://frikanalen.no/api/videos/&lt;video_id&gt;/upload_token end
-point
+`https://frikanalen.no/api/videos/<video_id>/upload_token` end point.
 
 Here is an example, a simple upload consisting of two chunks, sent as
 multipart/form-data in the POST:
@@ -50,3 +49,26 @@ multipart/form-data in the POST:
     }
 
 A good chunk size to use is 1 MiB.
+
+Testing
+-------
+
+You can test uploading locally. First start the server:
+
+    PYTHONPATH=. FLASK_APP=fkupload FLASK_DEBUG=1 FK_API=http://localhost:9999 flask run
+
+You need to find your own file for upload or add a `mytest.jpeg`.
+
+    echo -e "HTTP/1.0 200 OK\n\n{\"upload_token\": \"secret\"}" | nc -q1 -l 9999 &
+    curl localhost:5000/upload \
+        -X POST \
+        -F 'file=@mytest.jpeg' \
+        -F name='test.jpg' \
+        -F video_id=1000 \
+        -F upload_token=secret
+
+You should get a reply with "{ finished: true }", you will find the file in
+`upload_files/finished/1000/test.jpg` if everything went well.
+
+If you upload something, you should chunk it up using chunk and chunks as
+explained in "Protocol".
