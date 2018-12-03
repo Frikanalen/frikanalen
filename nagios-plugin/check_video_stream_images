@@ -4,28 +4,29 @@
 # Fetch two images from the Video stream and make sure they differ.
 # Report error if they stay the same.
 #
-# Remember: apt-get install findimagedupes mplayer
+# Remember: apt-get install findimagedupes ffmpeg
 
 set -e
 
 delay=35 # seconds
-tmpdir=/tmp
+tmpdir=$(mktemp --tmpdir -d nagios-video-check-streamXXXXX)
 
 getframe() {
     (
-	cd $tmpdir # Make sure temp file is stored in temp directory
-	url="$1"
-	filename="$2"
-	mplayer -ss 0:00 -frames 1 -vo jpeg -nosound $url > /dev/null 2>&1
-        if [ ! -f 00000001.jpg ] ; then
+        cd $tmpdir # Make sure temp file is stored in temp directory
+        url="$1"
+        filename="$2"
+        # For some reason, ffmpeg return an error code after saving the image
+        ffmpeg -i $url -f image2 -t 14400 -async 1 -r 1/5 -q 1.5 -vcodec mjpeg \
+               $filename > /dev/null 2>&1 || true
+        if [ ! -f $filename ] ; then
             echo "CRITICAL: Unable to fetch image from URL"
             exit 2
         fi
-	mv 00000001.jpg $filename
     )
 }
 
-for bin in mplayer findimagedupes ; do
+for bin in ffmpeg findimagedupes ; do
     if type $bin >/dev/null 2>&1 ; then
 	:
     else
@@ -45,19 +46,19 @@ else
 fi
 
 timestamp=$(date +%Y%m%dT%H:%M:%S)
-first="$tmpdir/first-$timestamp-$$.jpeg"
-second="$tmpdir/second-$timestamp-$$.jpeg"
+first="$tmpdir/first-$timestamp-$$.png"
+second="$tmpdir/second-$timestamp-$$.png"
 
 getframe "$url" "$first"
 sleep $delay
 getframe "$url" "$second"
 
 if findimagedupes "$first" "$second" | grep -q "$second" ; then
-    rm $first $second
+    rm -r $tmpdir
     echo "CRITICAL: Two images taken $delay seconds apart were (almost) identical"
     exit 2
 else
-    rm $first $second
+    rm -r $tmpdir
     echo "OK: Two images taken $delay seconds apart differ"
     exit 0
 fi
