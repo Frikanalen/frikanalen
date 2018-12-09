@@ -1,12 +1,16 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
+#               2018 Petter Reinholdtsen <pere@hungry.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
+
+import json
 import urllib
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.http import Http404
-from django.shortcuts import render
+from django.http import Http404, HttpResponse
+from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from fk.models import Category, Video, Organization
@@ -170,3 +174,28 @@ class CategoryVideos(AbstractVideoList):
                   .filter(categories=self.category)
                   .order_by('-id'))
         return videos
+
+
+@csrf_exempt
+def csp_report(request):
+    """Receive Content Security Policy reports from browsers detecting
+    pages with unaccepted content.  The reports are logged as error
+    events.
+
+    See also https://www.w3.org/TR/CSP/
+
+    """
+
+    # Ignore non-CSP reports, assume they are spam or bogus reports.
+    # At least Chromium and Firefox uses the application/csp-report MIME type.
+    if request.method == 'POST' and request.content_type == 'application/csp-report':
+        body = request.body.decode('utf8')
+        user_client = request.META['HTTP_USER_AGENT']
+        j = json.loads(body)
+        # FIXME figure out what to do with the reports.
+        if 'csp-report' in j:
+            csp_report = j['csp-report']
+        # FIXME is there some standard on what to return?
+        return HttpResponse("OK", content_type='text/plain')
+    else:
+        return redirect('frontpage')
