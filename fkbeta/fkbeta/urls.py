@@ -12,12 +12,14 @@ import fkvod.urls
 import fkws.urls
 from fk.views import register, user_profile
 from fkbeta.views import Frontpage
-
+from fkvod.views import csp_report
 
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^$', Frontpage.as_view(), name='frontpage'),
+    url(r'^csp-report$', csp_report, name='vod-csp-report'),
+
     url(r'^register/$', register, name='register'),
     url(r'^login/$', login, name='login'),
     url(r'^user/$', user_profile, name='profile'),
