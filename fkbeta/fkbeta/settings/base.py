@@ -89,12 +89,16 @@ DATABASES = {
 
 ########## GENERAL CONFIGURATION
 TIME_ZONE = 'Europe/Oslo'
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'nb-no'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
+LANGUAGES = [
+  ('nn', 'Nynorsk'),
+  ('nb', 'Bokmål'),
+  ('en', 'English'),
+]
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 ########## END GENERAL CONFIGURATION
 
