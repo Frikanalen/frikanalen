@@ -36,7 +36,7 @@ DEFAULT_FROM_EMAIL = 'Frikanalen <noreply@frikanalen-dev.nuug.no>'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_SUBJECT_PREFIX = '[%s] ' % SITE_NAME
-SERVER_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 ########## END EMAIL CONFIGURATION
 
 ########## DATABASE CONFIGURATION
