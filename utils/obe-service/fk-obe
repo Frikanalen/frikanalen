@@ -3,6 +3,7 @@
 import pexpect
 import time
 import re
+import os
 import sys
 
 class ObeExpecter():
@@ -34,11 +35,11 @@ class ObeExpecter():
         for discovery in re.findall( '    Output-stream-id: (?P<out_stream_id>\d*) - Input-stream-id: (?P<in_stream_id>\d*) - (?P<out_stream_type>\w*): (?P<out_stream_format>.+) \n', probe_data):
             print(discovery)
 
-        self.obe.sendline('set stream opts 0:vbv-maxrate=7600,vbv-bufsize=7600,bitrate=7600,keyint=24,threads=4,aspect-ratio=16:9,pid=564')
+        self.obe.sendline('set stream opts 0:' + self.video_opts)
         self.obe.expect(self.PROMPT)
-        self.obe.sendline('set stream opts 1:bitrate=192,format=aac,aac-profile=he-aac-v1,aac-encap=latm,lang=nor,pid=768')
+        self.obe.sendline('set stream opts 1:' + self.audio_opts)
         self.obe.expect(self.PROMPT)
-        self.obe.sendline('set muxer opts ts-muxrate=8000000,ts-type=dvb,ts-id=311,program-num=311,pmt-pid=311,pcr-pid=564,cbr=1')
+        self.obe.sendline('set muxer opts ' + self.mux_opts)
         self.obe.expect(self.PROMPT)
         self.obe.sendline('set outputs 1')
         self.obe.expect(self.PROMPT)
@@ -48,6 +49,16 @@ class ObeExpecter():
         self.obe.expect('Encoding started')
 
 obe = ObeExpecter()
+
+try:
+    obe.video_opts = os.environ['VIDEO_OPTS']
+    obe.audio_opts = os.environ['AUDIO_OPTS']
+    obe.mux_opts = os.environ['MUX_OPTS']
+except KeyError:
+    print('Fatal error: Encoding settings must be set in environment')
+    print('Usually this is done by setting values in /etc/fk-obe')
+    sys.exit(1)
+
 obe.start()
 print("OBE started!")
 obe.wait()
