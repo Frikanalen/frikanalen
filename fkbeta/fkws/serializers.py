@@ -177,3 +177,15 @@ class CategorySerializer(serializers.ModelSerializer):
             'desc',
             'videocount',
         )
+
+
+class OrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = (
+            'id',
+            'name',
+            'fkmember',
+            'orgnr',
+            'homepage',
+        )

@@ -21,6 +21,7 @@ class PermissionsTest(APITestCase):
             ('asrun', status.HTTP_200_OK),
             ('category', status.HTTP_200_OK),
             ('jukebox-csv', status.HTTP_200_OK),
+            ('organizations', status.HTTP_200_OK),
             ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
@@ -34,6 +35,7 @@ class PermissionsTest(APITestCase):
             ('category', status.HTTP_200_OK),
             ('jukebox-csv', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_200_OK),
+            ('organizations', status.HTTP_200_OK),
             ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
@@ -149,6 +151,7 @@ class PermissionsTest(APITestCase):
 
     def test_anonymous_cannot_add(self):
         list_pages = ('api-video-list', 'api-videofile-list',
+                      'api-organization-list',
                       'api-scheduleitem-list', 'asrun-list',
                       'category-list')
         results = []
@@ -330,6 +333,13 @@ class PermissionsTest(APITestCase):
             self.assertEqual(data, r.data)
             self.assertEqual(status, r.status_code)
 
+
+    def test_anonymous_can_list_organizations(self):
+        """
+        Will list all organizations
+        """
+        r = self.client.get(reverse('api-organization-list'))
+        self.assertEqual(status.HTTP_200_OK, r.status_code)
 
 class VideoFilterTest(APITestCase):
     fixtures = ['test.yaml']

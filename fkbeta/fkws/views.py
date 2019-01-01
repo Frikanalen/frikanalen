@@ -21,6 +21,7 @@ from rest_framework.reverse import reverse
 import fkvod.search
 from fk.models import AsRun
 from fk.models import Category
+from fk.models import Organization
 from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
@@ -29,6 +30,7 @@ from fkws.permissions import IsInOrganizationOrReadOnly
 from fkws.permissions import IsStaffOrReadOnly
 from fkws.serializers import AsRunSerializer
 from fkws.serializers import CategorySerializer
+from fkws.serializers import OrganizationSerializer
 from fkws.serializers import ScheduleitemSerializer
 from fkws.serializers import TokenSerializer
 from fkws.serializers import VideoFileSerializer
@@ -46,6 +48,7 @@ def api_root(request, format=None):
         'category': reverse('category-list', request=request),
         'jukebox-csv': reverse('jukebox-csv', request=request),
         'obtain-token': reverse('api-token-auth', request=request),
+        'organizations': reverse('api-organization-list', request=request),
         'scheduleitems': reverse('api-scheduleitem-list', request=request),
         'videofiles': reverse('api-videofile-list', request=request),
         'videos': reverse('api-video-list', request=request),
@@ -346,3 +349,40 @@ class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
+
+class OrganizationList(generics.ListAPIView):
+    """
+    List of organizations
+
+    Query parameters
+    ----------------
+
+    HTTP parameters:
+
+    `fkmember`  - Boolean (true/false) to filter on Frikanalen membership status
+
+    `orgnr`     - The organization number
+
+    `page_size` - How many items per page. If set to 0 it will list
+                  all items.  Default is 50 items.
+
+    `ordering` - Order results by specified field.  Prepend a minus for
+                 descending order.  I.e. `?ordering=-starttime`.
+    """
+    queryset = Organization.objects.all()
+    serializer_class = OrganizationSerializer
+    filter_backends = (filters.OrderingFilter,)
+    pagination_class = Pagination
+
+    def get_queryset(self):
+        queryset = super(OrganizationList, self).get_queryset()
+        fkmember = self.request.query_params.get('fkmember')
+        if fkmember:
+            if 'true' == fkmember:
+                queryset = queryset.filter(fkmember=True)
+            else:
+                queryset = queryset.filter(fkmember=False)
+        orgnr = self.request.query_params.get('orgnr')
+        if orgnr and orgnr.isdigit():
+            queryset = queryset.filter(orgnr=int(orgnr))
+        return queryset
