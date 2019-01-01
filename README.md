@@ -30,21 +30,21 @@ You should set `SECRET_KEY` to a random string.
 Initialize the database:
 
     (env)$ cd fkbeta
-    (env)$ python manage.py migrate
+    (env)$ ./manage.py migrate
         ...
 
 Load some default data (fixtures) into the database:
 
-    (env)$ python manage.py loaddata frikanalen
+    (env)$ ./manage.py loaddata frikanalen
         ...
 
 Create a new admin user:
 
-    (env)$ python manage.py createsuperuser
+    (env)$ ./manage.py createsuperuser
 
 Start the webserver:
 
-    (env)$ python manage.py runserver
+    (env)$ ./manage.py runserver
 
 Point your browser to http://127.0.0.1:8000/admin and log in.
 
