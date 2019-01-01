@@ -1,11 +1,6 @@
 ---
 - name: Install certbot
   apt: name=certbot
-  when: ansible_distribution_release != 'jessie'
-
-- name: Install certbot (jessie)
-  apt: name=certbot default_release='jessie-backports'
-  when: ansible_distribution_release == 'jessie'
 
 - name: Ensure certbot well-known path exists
   file:
