@@ -13,7 +13,7 @@ Let's start by installing some of the dependencies by running the
 
 Create virtual env:
 
-    $ virtualenv env
+    $ python3 -m venv env
 
 Activate your new python environment:
 
