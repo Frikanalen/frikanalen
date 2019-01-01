@@ -1,6 +1,6 @@
 # Run any pending tasks before returning
 
-from __future__ import unicode_literals
+
 
 import logging
 

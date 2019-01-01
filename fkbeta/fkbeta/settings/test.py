@@ -1,4 +1,4 @@
-from base import *
+from .base import *
 
 FK_MEDIA_ROOT='/tmp/media'
 ########## TEST SETTINGS

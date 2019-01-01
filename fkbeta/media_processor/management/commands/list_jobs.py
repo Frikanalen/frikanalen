@@ -8,4 +8,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for task in Task.objects.all():
-            print task
+            print(task)

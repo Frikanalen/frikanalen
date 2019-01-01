@@ -3,7 +3,7 @@
 
 from os.path import join, normpath
 
-from base import *
+from .base import *
 
 
 FK_UPLOAD_URL = 'http://127.0.0.1:5000/upload'

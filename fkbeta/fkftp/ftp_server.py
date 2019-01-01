@@ -5,7 +5,7 @@ from twisted.protocols import ftp
 from twisted.cred import portal
 from twisted.python import log
 from twisted.internet import defer, reactor
-import djangoauth
+from . import djangoauth
 
 class SaferDTP(ftp.DTP):
     "DTP with text encoding"
@@ -59,7 +59,7 @@ class UploadFTPProtocol(ftp.FTP):
         self.reply(ftp.ENTERING_PASV_MODE, (ftp.encodeHostPort(host, port)))
 
     def ftp_PORT(self, address):
-        addr = map(int, address.split(','))
+        addr = list(map(int, address.split(',')))
         ip = '%d.%d.%d.%d' % tuple(addr[:4])
         port = addr[4] << 8 | addr[5]
 
@@ -109,7 +109,7 @@ class UploadFTPFactory(ftp.FTPFactory):
     allowAnonymous = False
     welcomeMessage = """Welcome to Frikanalen FTP - Velkommen til Frikanalen FTP"""
     protocol = UploadFTPProtocol
-    passivePortRange = range(5024, 5024+10)
+    passivePortRange = list(range(5024, 5024+10))
     
 class UploadFTPShell(ftp.FTPShell):
     pos = 0
@@ -129,7 +129,7 @@ class UploadFTPShell(ftp.FTPShell):
             if self.pos != 0:
                 f.seek(self.pos, 0)
                 self.pos = 0
-        except (IOError, OSError), e:
+        except (IOError, OSError) as e:
             return ftp.errnoToFailure(e.errno, path)
         except:
             return defer.fail()
@@ -152,7 +152,7 @@ class UploadFTPShell(ftp.FTPShell):
                 self.append = False
             else:
                 fObj = p.open('wb')
-        except (IOError, OSError), e:
+        except (IOError, OSError) as e:
             return ftp.errnoToFailure(e.errno, path)
         except:
             return defer.fail()

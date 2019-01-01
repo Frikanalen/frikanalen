@@ -55,10 +55,10 @@ class Organization(models.Model):
     # categories = models.ManyToManyField(Category)
 
     class Meta:
-        db_table = u'Organization'
+        db_table = 'Organization'
         ordering = ('name', '-id')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -76,12 +76,12 @@ class FileFormat(models.Model):
     # metadata framerate, resolution, etc?
 
     class Meta:
-        db_table = u'ItemType'
-        verbose_name = u'video file format'
-        verbose_name_plural = u'video file formats'
+        db_table = 'ItemType'
+        verbose_name = 'video file format'
+        verbose_name_plural = 'video file formats'
         ordering = ('fsname', '-id')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.fsname
 
 
@@ -100,11 +100,11 @@ class VideoFile(models.Model):
     # edl for in/out?
 
     class Meta:
-        verbose_name = u'video file'
-        verbose_name_plural = u'video files'
+        verbose_name = 'video file'
+        verbose_name_plural = 'video files'
         ordering = ('-video_id', '-id',)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s version of %s" % (self.format.fsname, self.video.name)
 
     def location(self, relative=False):
@@ -124,12 +124,12 @@ class Category(models.Model):
     desc = models.CharField(max_length=255, blank=True)
 
     class Meta:
-        db_table = u'Category'
-        verbose_name = u'video category'
-        verbose_name_plural = u'video categories'
+        db_table = 'Category'
+        verbose_name = 'video category'
+        verbose_name_plural = 'video categories'
         ordering = ('name', '-id')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -190,11 +190,11 @@ class Video(models.Model):
     objects = VideoManager()
 
     class Meta:
-        db_table = u'Video'
+        db_table = 'Video'
         get_latest_by = 'uploaded_time'
         ordering = ('-id',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
@@ -342,18 +342,18 @@ class Scheduleitem(models.Model):
     """
 
     class Meta:
-        db_table = u'ScheduleItem'
-        verbose_name = u'TX schedule entry'
-        verbose_name_plural = u'TX schedule entries'
+        db_table = 'ScheduleItem'
+        verbose_name = 'TX schedule entry'
+        verbose_name_plural = 'TX schedule entries'
         ordering = ('-id',)
 
-    def __unicode__(self):
+    def __str__(self):
         t = self.starttime
         s = t.strftime("%Y-%m-%d %H:%M:%S")
         # format microsecond to hundreths
         s += ".%02i" % (t.microsecond / 10000)
         if self.video:
-            return str(s) + ": " + unicode(self.video)
+            return str(s) + ": " + str(self.video)
         else:
             return str(s) + ": " + self.default_name
 
@@ -412,7 +412,7 @@ class SchedulePurpose(models.Model):
         ordering = ('-id',)
 
     def videos_str(self):
-        return u", ".join([unicode(x) for x in self.videos_queryset()])
+        return ", ".join([str(x) for x in self.videos_queryset()])
     videos_str.short_description = "videos"
     videos_str.admin_order_field = "videos"
 
@@ -452,19 +452,19 @@ class SchedulePurpose(models.Model):
         else:
             raise Exception("Unhandled strategy %s" % self.strategy)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
 class WeeklySlot(models.Model):
     DAY_OF_THE_WEEK = (
-        (0, _(u'Monday')),
-        (1, _(u'Tuesday')),
-        (2, _(u'Wednesday')),
-        (3, _(u'Thursday')),
-        (4, _(u'Friday')),
-        (5, _(u'Saturday')),
-        (6, _(u'Sunday')),
+        (0, _('Monday')),
+        (1, _('Tuesday')),
+        (2, _('Wednesday')),
+        (3, _('Thursday')),
+        (4, _('Friday')),
+        (5, _('Saturday')),
+        (6, _('Sunday')),
     )
 
     purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True)
@@ -498,9 +498,9 @@ class WeeklySlot(models.Model):
         tz = pytz.timezone(settings.TIME_ZONE)
         return tz.localize(naive_dt)
 
-    def __unicode__(self):
-        return (u"{day} {s.start_time} ({s.purpose})"
-                u"".format(day=self.get_day_display(), s=self))
+    def __str__(self):
+        return ("{day} {s.start_time} ({s.purpose})"
+                "".format(day=self.get_day_display(), s=self))
 
 
 class AsRun(TimeStampedModel):
@@ -538,7 +538,7 @@ class AsRun(TimeStampedModel):
     in_ms = models.IntegerField(blank=True, default=0)
     out_ms = models.IntegerField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.video:
             return '{s.playout} video: {s.video}'.format(s=self)
         return '{s.playout}: {s.program_name}'.format(s=self)

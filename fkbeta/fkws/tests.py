@@ -65,7 +65,7 @@ class PermissionsTest(APITestCase):
         self._user_auth('nuug_user')
         r = self.client.get(reverse('api-token-auth'))
         self.assertEqual(status.HTTP_200_OK, r.status_code)
-        self.assertEqual(r.data.keys(), ['created', 'key', 'user'])
+        self.assertEqual(list(r.data.keys()), ['created', 'key', 'user'])
         self.assertEqual(len(r.data['key']), 40)
 
     def test_anonymous_can_list_videos(self):
@@ -249,7 +249,7 @@ class PermissionsTest(APITestCase):
                              "Expected status {} but got {} (for {})"
                              .format(exp_status, r.status_code, url))
             self.assertEqual(response_obj,
-                             {k: r.data[k] for k in response_obj.keys()})
+                             {k: r.data[k] for k in list(response_obj.keys())})
 
     def test_nuug_user_can_edit_own_things(self):
         self._user_auth('nuug_user')
@@ -438,7 +438,7 @@ class ScheduleitemTest(APITestCase):
                 reverse('api-scheduleitem-detail', args=[schedule_pk]),
                 changes)
             self.assertEqual(status.HTTP_200_OK, r.status_code)
-            for k, v in changes.items():
+            for k, v in list(changes.items()):
                 if k == 'starttime':
                     p = parse_datetime(v)
                     pk = parse_datetime(r.data[k])

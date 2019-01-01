@@ -27,7 +27,7 @@ LOGIN_URL = '/login/'
 CHANNEL_ID = "frikanalen.tv"
 
 # Human readable channel name, higher priority first
-CHANNEL_DISPLAY_NAMES = [u"Frikanalen"]
+CHANNEL_DISPLAY_NAMES = ["Frikanalen"]
 
 # URL to the website for references in feeds (No trailing slash)
 SITE_URL = 'https://frikanalen.no'
