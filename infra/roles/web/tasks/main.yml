@@ -39,6 +39,7 @@
     mode=u+x
     owner={{app_user}}
     group={{app_user}}
+  tags: githook
 - name: Install systemd unit file
   template:
     src=fkweb.service.j2
