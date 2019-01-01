@@ -1,6 +1,6 @@
 # Examine the video database and check for any new jobs that might need to be added
 
-from __future__ import unicode_literals
+
 
 import logging
 import sys

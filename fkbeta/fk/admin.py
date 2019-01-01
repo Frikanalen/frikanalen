@@ -41,7 +41,7 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 class ScheduleitemAdmin(admin.ModelAdmin):
     list_filter = ("starttime", )
-    list_display = ('__unicode__',
+    list_display = ('__str__',
                     'video',
                     'schedulereason',
                     'starttime',
@@ -54,14 +54,14 @@ class ScheduleitemAdmin(admin.ModelAdmin):
 
 class SchedulePurposeAdmin(admin.ModelAdmin):
     list_display = (
-        '__unicode__',
+        '__str__',
         'videos_str',
     )
     filter_horizontal = ('direct_videos',)
 
 class WeeklySlotAdmin(admin.ModelAdmin):
     list_display = (
-        '__unicode__',
+        '__str__',
         'day',
         'start_time',
         'duration',

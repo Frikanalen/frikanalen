@@ -25,7 +25,7 @@ def _get_video(video_id):
 def show_vod_widget(video_id):
     video_error_explanation = ''
     video, video_error = _get_video(video_id)
-    title = video_error if video_error else unicode(video.name)
+    title = video_error if video_error else str(video.name)
     if video:
         if not video.publish_on_web:
             video_error = _('Video is not published on web')

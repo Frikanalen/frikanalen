@@ -3,7 +3,7 @@
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 
 import json
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -23,7 +23,7 @@ class VideoDetail(TemplateView):
     def get(self, request, video_id):
         try:
             video = Video.objects.public().get(id=video_id)
-            title = unicode(video.name)
+            title = str(video.name)
         except ObjectDoesNotExist:
             video = None
             title = _('Video #%i not found' % int(video_id))
@@ -62,7 +62,7 @@ class AbstractVideoList(TemplateView):
             # This is a search!
             videos = search.search_videos(videos, request)
             title = _('Searching %s for %s') % (videoset_name, search_query)
-            url_query_postfix = "&q=%s" % urllib.quote(search_query.encode('utf8'))
+            url_query_postfix = "&q=%s" % urllib.parse.quote(search_query.encode('utf8'))
         else:
             title = videoset_name
             url_query_postfix = ""

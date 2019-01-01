@@ -52,7 +52,7 @@ class FFmpegProcess(protocol.ProcessProtocol):
                 ]
 
         input_file = self.task.source_file.location()
-        print str(input_file).encode('utf-8')
+        print((str(input_file).encode('utf-8')))
         output_file = os.path.splitext(os.path.basename(input_file))[0] + self.extension
         cmd_args += ['-i', str(input_file.decode('utf-8'))]
 
@@ -99,12 +99,12 @@ class FFmpegProcess(protocol.ProcessProtocol):
         pass
 
     def outReceived(self, data):
-        print data
+        print(data)
         #fixme, should log
         pass
 
     def errReceived(self, data):
-        print data
+        print(data)
         if data[:6] == 'frame=':
             # FIXME: probably stupidly parsed.
             self.frame = data.split('=')[1].strip().split(' ')[0]
