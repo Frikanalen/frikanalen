@@ -33,4 +33,22 @@
     <p><label>&nbsp;</label><button type="submit">{% trans "Save video" %}</button></p>
     </form>
 </div>
+
+{% if videofiles %}
+<table class="videofiles">
+  <tr>
+    <th>{% trans "Created" %}</th>
+    <th>{% trans "Format" %}</th>
+    <th>{% trans "Filename" %}</th>
+  </tr>
+  {% for videofile in videofiles %}
+  <tr>
+    <td>{{ videofile.created_time }}</td>
+    <td>{{ videofile.format }}</td>
+    <td>{{ videofile.filename }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
 {% endblock content %}

@@ -18,6 +18,7 @@ from django.views.generic import TemplateView
 from fk.models import Organization
 from fk.models import Scheduleitem
 from fk.models import Video
+from fk.models import VideoFile
 from fk.models import WeeklySlot
 
 
@@ -197,8 +198,10 @@ class ManageVideoEdit(AbstractVideoFormView):
       return HttpResponseForbidden(
           _('You are not a member of the organization that owns this videos.'))
     form = self.get_form(request, form=form, instance=video)
+    videofiles = VideoFile.objects.filter(video=video)
     context = {
                "form": form,
+               "videofiles": videofiles,
                "title": _("Edit video")
                }
     return render(request, 'agenda/manage_video_new.html', context)
