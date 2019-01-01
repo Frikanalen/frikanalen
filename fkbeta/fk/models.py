@@ -16,7 +16,6 @@ from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
-from durationfield.db.models.fields.duration import DurationField as LegacyDurationField
 
 """
 Models for the Frikanalen database.
@@ -184,7 +183,6 @@ class Video(models.Model):
     ref_url = models.CharField(
         blank=True, max_length=1024, help_text='URL for reference')
     duration = models.DurationField(blank=True, default=datetime.timedelta(0))
-    duration_old = LegacyDurationField(blank=True, null=True)
     upload_token = models.CharField(
         blank=True, default='', max_length=32,
         help_text='Code for upload')
@@ -334,7 +332,6 @@ class Scheduleitem(models.Model):
     schedulereason = models.IntegerField(blank=True, choices=SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = models.DurationField()
-    duration_old = LegacyDurationField(blank=True, null=True)
 
     objects = ScheduleitemManager()
 
@@ -476,7 +473,6 @@ class WeeklySlot(models.Model):
     )
     start_time = models.TimeField()
     duration = models.DurationField()
-    duration_old = LegacyDurationField(blank=True, null=True)
 
     class Meta:
         ordering = ('day', 'start_time', 'pk')

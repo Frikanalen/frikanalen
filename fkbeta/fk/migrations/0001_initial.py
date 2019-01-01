@@ -9,7 +9,7 @@ import django.db.models.deletion
 import django.utils.timezone
 import model_utils.fields
 
-from fk.models import LegacyDurationField
+from django.db.models import DurationField as LegacyDurationField
 
 class Migration(migrations.Migration):
 
