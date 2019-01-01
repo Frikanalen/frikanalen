@@ -2,10 +2,12 @@
 - name: Install upload app
   hosts: upload
   become: true
+  gather_facts: false
   roles:
     - upload-app
 - name: Set up web server
   hosts: web
   become: true
+  gather_facts: false
   roles:
     - web
