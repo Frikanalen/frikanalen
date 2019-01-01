@@ -40,12 +40,16 @@
     <th>{% trans "Created" %}</th>
     <th>{% trans "Format" %}</th>
     <th>{% trans "Filename" %}</th>
+    <th>{% trans "Integrated LUFS" %}</th>
+    <th>{% trans "True Peak LUFS" %}</th>
   </tr>
   {% for videofile in videofiles %}
   <tr>
     <td>{{ videofile.created_time }}</td>
     <td>{{ videofile.format }}</td>
     <td>{{ videofile.filename }}</td>
+    <td>{{ videofile.integrated_lufs|default:"Not set" }}</td>
+    <td>{{ videofile.truepeak_lufs|default:"Not set" }}</td>
   </tr>
   {% endfor %}
 </table>
