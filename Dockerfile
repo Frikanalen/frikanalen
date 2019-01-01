@@ -14,9 +14,9 @@ WORKDIR /srv/frikanalen
 RUN pip install -r requirements-dev.txt
 
 WORKDIR /srv/frikanalen/fkbeta
-RUN python manage.py migrate
-RUN python manage.py loaddata frikanalen
+RUN ./manage.py migrate
+RUN ./manage.py loaddata frikanalen
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["./manage.py", "runserver", "0.0.0.0:8000"]
 
 EXPOSE 8000

@@ -9,5 +9,5 @@ docker_run: docker
 docker_push:
 	docker push ${project}
 test:
-	python fkbeta/manage.py test fkbeta
+	fkbeta/manage.py test fkbeta
 	python utils/test_*.py
