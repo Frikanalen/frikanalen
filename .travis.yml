@@ -2,8 +2,15 @@ sudo: false
 language: python
 python:
   - "2.7"
-install: pip install -r requirements-dev.txt
-script: make test
+install:
+  - pip install coveralls
+  - pip install codecov
+  - pip install -r requirements-dev.txt
+script:
+  - make test
+after_success:
+  - coveralls
+  - codecov
 cache:
   directories:
     - $HOME/.cache/pip/wheels
