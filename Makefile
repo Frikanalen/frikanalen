@@ -9,5 +9,6 @@ docker_run: docker
 docker_push:
 	docker push ${project}
 test:
+	upload/test-fkupload
 	fkbeta/manage.py test fkbeta
 	python utils/test_*.py
