@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -e
+
+cleanup() {
+    echo "done testing"
+    for pid in pids; do
+	if kill -0 $pid ; then
+	    kill $pid
+	else
+	    echo "Process $pid already exited, not killed"
+	fi
+    done
+}
+trap cleanup EXIT
+
+echo "***************************************************************"
+echo "Testing upload"
+echo "***************************************************************"
+
+cd $(dirname $0)
+
+# Start upload receiver
+PYTHONPATH=. FLASK_APP=fkupload FLASK_DEBUG=1 FK_API=http://localhost:9999 flask run &
+pids="$pids $!"
+sleep 5
+
+# Start fake API endpoint
+printf "HTTP/1.0 200 OK\n\n{\"upload_token\": \"secret\"}" | nc -q1 -l 9999 &
+pids="$pids $!"
+sleep 1
+
+# Upload empty file
+touch mytest.jpeg
+curl localhost:5000/upload \
+        -X POST \
+        -F 'file=@mytest.jpeg' \
+        -F name='test.jpg' \
+        -F video_id=1000 \
+        -F upload_token=secret

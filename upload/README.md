@@ -59,7 +59,7 @@ You can test uploading locally. First start the server:
 
 You need to find your own file for upload or add a `mytest.jpeg`.
 
-    echo -e "HTTP/1.0 200 OK\n\n{\"upload_token\": \"secret\"}" | nc -q1 -l 9999 &
+    printf "HTTP/1.0 200 OK\n\n{\"upload_token\": \"secret\"}" | nc -q1 -l 9999 &
     curl localhost:5000/upload \
         -X POST \
         -F 'file=@mytest.jpeg' \
