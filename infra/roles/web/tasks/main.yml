@@ -10,10 +10,9 @@
 - name: Install packages
   apt:
     name:
-      - virtualenv
       - build-essential
-      - python-dev
-      - python-pip
+      - python3-dev
+      - python3-venv
 - name: Create .ssh dir
   file: dest={{app_dir}}/.ssh state=directory mode=700
         owner={{app_user}} group={{app_user}}
@@ -30,7 +29,10 @@
   command: git init --bare git chdir={{app_dir}} creates={{app_dir}}/git/HEAD
   become_user: "{{app_user}}"
 - name: Create virtualenv
-  pip: name=pip virtualenv={{app_dir}}/env/
+  pip:
+    name=pip
+    virtualenv={{app_dir}}/env/
+    virtualenv_command="/usr/bin/env python3.5 -m venv"
   become_user: "{{app_user}}"
 - name: Install deploy git hook
   template:
