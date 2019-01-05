@@ -2,6 +2,7 @@ import logging
 import os
 import tempfile
 import unittest
+import shutil
 
 import move_and_process as mp
 
@@ -62,6 +63,9 @@ class ProcessGenerate(unittest.TestCase):
             self.assertEqual(out_fns, [c[-1] for c in cmds])
 
     def test_get_loudness(self):
+        # bs1770gain not exising shouldn't fail tests
+        if not mp.can_get_loudness():
+            return self.skipTest('bs1770gain missing')
         # sine.wav was generated using sox -b 16 -n sine.wav synth 3 sine 300-3300
         # white.png was generated using convert xc:white white.png
         self.assertEqual(mp.get_loudness('testdata/sine.wav'),

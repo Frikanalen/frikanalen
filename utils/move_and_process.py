@@ -154,6 +154,9 @@ def get_mlt_duration(filepath):
     fps = float(m.group(1))
     return frames/fps
 
+def can_get_loudness():
+    return shutil.which('bs1770gain')
+
 def get_loudness(filepath):
     try:
         cmd = ['bs1770gain', '--xml', '--truepeak', filepath]
