@@ -101,7 +101,7 @@ class VideoFile(models.Model):
         blank=True, null=True)
     created_time = models.DateTimeField(
         auto_now_add=True, null=True,
-        help_text='Time the video  file was created')
+        help_text='Time the video file was created')
     # metadata frames, width, height, framerate? mlt profile name?
     # edl for in/out?
 

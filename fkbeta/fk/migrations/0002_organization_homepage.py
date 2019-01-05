@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='organization',
             name='homepage',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name=b'Link back to the organisation home page.'),
+            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Link back to the organisation home page.'),
         ),
     ]
