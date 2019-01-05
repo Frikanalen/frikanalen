@@ -21,7 +21,6 @@
 {"pk": 117, "model": "fk.category", "fields": {"name": "Samfunn", "desc": ""}},
 {"pk": 118, "model": "fk.category", "fields": {"name": "Solidaritet og bistand", "desc": ""}},
 {"pk": 119, "model": "fk.category", "fields": {"name": "Velferd", "desc": ""}},
-{"pk": 1, "model": "fkprofile.profile", "fields": {"organization": 2, "text": "Test"}},
 {"pk": 1, "model": "auth.user", "fields": {"username": "toresbe", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2013-12-08T01:53:08Z", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$kLvKUGWAmRTj$HDx9mTDEqgU7kLTFE2HeczcDtpu85RQVyivmash4Lfk=", "email": "toresbe@gmail.com", "date_joined": "2013-12-08T01:49:43Z"}},
 {"pk": 2, "model": "admin.logentry", "fields": {"action_flag": 2, "action_time": "2013-12-08T01:54:17.439Z", "object_repr": "toresbe", "object_id": "1", "change_message": "Changed password. Changed phone, mailing_address, post_code, city and country for user profile \"toresbe (profile)\".", "user": 1, "content_type": 3}},
 {"pk": 1, "model": "admin.logentry", "fields": {"action_flag": 1, "action_time": "2013-12-08T01:53:56.407Z", "object_repr": "Profile object", "object_id": "1", "change_message": "", "user": 1, "content_type": 10}},

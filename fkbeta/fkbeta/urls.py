@@ -25,7 +25,6 @@ urlpatterns = [
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
 
     url(r'^create/', include('create.urls')),
-    url(r'^member/', include('fkprofile.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('fk.urls')),
 ]
