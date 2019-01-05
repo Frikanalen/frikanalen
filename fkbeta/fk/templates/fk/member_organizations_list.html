@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+{% load fk_utils %}
+
+{% block content %}
+<div class="memberlist_container">
+{% for member in members %}
+<div class="member_container">
+    <ul>
+        <li class="header">
+          <a href="{% url 'vod-org-video-list' member.id %}"><span class="name">{{ member.name }}</span></a>
+        {% if member.orgnr %}
+	  (org.nr. <a href="https://w2.brreg.no/kunngjoring/hent_nr.jsp?orgnr={{ member.orgnr }}">{{ member.orgnr }}</a>)
+	{% endif %}
+        {% if member.description %}
+        <span class="description">
+        <i>{{ member.description }}</i>
+	</span>
+        {% endif %}
+        </li>
+    </ul>
+</div>
+{% endfor %}
+</div>
+{% endblock content %}

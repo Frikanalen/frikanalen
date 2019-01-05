@@ -10,7 +10,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 import agenda.urls
 import fkvod.urls
 import fkws.urls
-from fk.views import register, user_profile
+from fk.views import register
 from fkbeta.views import Frontpage
 from fkvod.views import csp_report
 
@@ -22,12 +22,12 @@ urlpatterns = [
 
     url(r'^register/$', register, name='register'),
     url(r'^login/$', login, name='login'),
-    url(r'^user/$', user_profile, name='profile'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
 
     url(r'^create/', include('create.urls')),
     url(r'^member/', include('fkprofile.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('fk.urls')),
 ]
 
 urlpatterns += agenda.urls.urlpatterns
