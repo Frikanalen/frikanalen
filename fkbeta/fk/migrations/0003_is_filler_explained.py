@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='video',
             name='is_filler',
-            field=models.BooleanField(default=False, verbose_name=b'Play automatically?'),
+            field=models.BooleanField(default=False, verbose_name='Play automatically?'),
         ),
     ]
