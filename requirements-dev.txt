@@ -1,6 +1,6 @@
 -r requirements.txt
+# Local development and testing dependencies go in this file
 
-# Local development and testing dependencies go here
 django-debug-toolbar == 1.11.0
 PyYAML == 3.13
 
