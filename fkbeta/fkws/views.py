@@ -121,7 +121,6 @@ class AsRunViewSet(viewsets.ModelViewSet):
 
     queryset = AsRun.objects.all()
     serializer_class = AsRunSerializer
-    filter_backends = (filters.OrderingFilter,)
     permission_classes = (IsStaffOrReadOnly,)
     pagination_class = Pagination
 
@@ -155,7 +154,6 @@ class ScheduleitemList(generics.ListCreateAPIView):
     """
     queryset = Scheduleitem.objects.all()
     serializer_class = ScheduleitemSerializer
-    filter_backends = (filters.OrderingFilter,)
     pagination_class = Pagination
     permission_classes = (IsInOrganizationOrReadOnly,)
 
@@ -266,6 +264,10 @@ class VideoList(generics.ListCreateAPIView):
     pagination_class = Pagination
     filter_class = VideoFilter
     permission_classes = (IsInOrganizationOrReadOnly,)
+    ordering_fields = [
+        f.column for f in Video._meta.fields
+        if f.column in VideoSerializer.Meta().fields
+    ]
 
     def get_queryset(self):
         # Can filtering on proper_import be done using a different
@@ -318,7 +320,6 @@ class VideoFileList(generics.ListCreateAPIView):
     """
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
-    filter_backends = (filters.OrderingFilter,)
     pagination_class = Pagination
     permission_classes = (IsInOrganizationOrReadOnly,)
 
