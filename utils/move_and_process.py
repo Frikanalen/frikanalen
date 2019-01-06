@@ -13,7 +13,6 @@ from datetime import datetime
 import requests
 from inotify import constants
 from inotify.adapters import Inotify
-from lxml import etree
 
 
 FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
@@ -162,13 +161,15 @@ def get_loudness(filepath):
         cmd = ['bs1770gain', '--xml', '--truepeak', filepath]
         output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
         output = output.decode('utf-8')
-        root = etree.fromstring(output)
-        loudness = {}
-        loudness['integrated_lufs'] = float(root.xpath('//bs1770gain/album/track/integrated/@lufs')[0])
-        loudness['truepeak_lufs'] = float(root.xpath('//bs1770gain/album/track/true-peak/@tpfs')[0])
-        return loudness
+        integrated_lufs = re.findall(r'<integrated lufs="([\d.-]+)"', output)[-1]
+        truepeak_lufs = re.findall(r'<true-peak tpfs="([\d.-]+)"', output)[-1]
+        return {
+            'integrated_lufs': float(integrated_lufs),
+            'truepeak_lufs': float(truepeak_lufs)
+        }
     except (IndexError, ValueError, FileNotFoundError) as e:
         return None
+
 def rq(method, path, **kwargs):
     if args.no_api:
         raise Exception("Should not call request in no-api. Fix code.")

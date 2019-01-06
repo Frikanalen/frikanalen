@@ -43,7 +43,6 @@
   pip:
     name:
     - inotify # 0.2.9
-    - lxml
     - requests
     state: latest
     virtualenv: "{{app_dir}}/env/"
