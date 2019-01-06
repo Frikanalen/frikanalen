@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='videofile',
             name='integrated_lufs',
-            field=models.FloatField(blank=True, null=True, verbose_name=b'Integrated LUFS of file defined in ITU R.128'),
+            field=models.FloatField(blank=True, null=True, verbose_name='Integrated LUFS of file defined in ITU R.128'),
         ),
         migrations.AddField(
             model_name='videofile',
             name='truepeak_lufs',
-            field=models.FloatField(blank=True, null=True, verbose_name=b'True peak LUFS of file defined in ITU R.128'),
+            field=models.FloatField(blank=True, null=True, verbose_name='True peak LUFS of file defined in ITU R.128'),
         ),
     ]
