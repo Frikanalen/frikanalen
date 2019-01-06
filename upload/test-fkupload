@@ -3,38 +3,53 @@
 set -e
 
 cleanup() {
-    echo "done testing"
-    for pid in pids; do
+    for pid in $pids; do
 	if kill -0 $pid ; then
 	    kill $pid
 	else
 	    echo "Process $pid already exited, not killed"
 	fi
     done
+    rm -rf $UPLOAD_DIR
 }
 trap cleanup EXIT
 
-echo "***************************************************************"
-echo "Testing upload"
-echo "***************************************************************"
-
 cd $(dirname $0)
 
+export UPLOAD_DIR=$(mktemp -d --tmpdir=/tmp fkupload-test-XXX)
+
 # Start upload receiver
-PYTHONPATH=. FLASK_APP=fkupload FLASK_DEBUG=1 FK_API=http://localhost:9999 flask run &
+PYTHONPATH=. FLASK_APP=fkupload FK_API=http://localhost:9999 flask run >/dev/null 2>/dev/null &
 pids="$pids $!"
-sleep 5
 
 # Start fake API endpoint
-printf "HTTP/1.0 200 OK\n\n{\"upload_token\": \"secret\"}" | nc -q1 -l 9999 &
+printf "HTTP/1.0 200 OK\n\n{\"upload_token\": \"secret\"}" | nc -q1 -l 9999 >/dev/null 2>/dev/null &
 pids="$pids $!"
-sleep 1
+sleep 2
 
-# Upload empty file
-touch mytest.jpeg
-curl localhost:5000/upload \
-        -X POST \
-        -F 'file=@mytest.jpeg' \
-        -F name='test.jpg' \
-        -F video_id=1000 \
-        -F upload_token=secret
+# Upload test file
+test_file="../testdata/sine.wav"
+upload_output=$(curl --silent localhost:5000/upload \
+    -X POST \
+    -F "file=@$test_file" \
+    -F name='test.wav' \
+    -F video_id=1000 \
+    -F upload_token=secret)
+uploaded_file=$UPLOAD_DIR/finished/1000/test.wav
+
+# Asserts
+if [ '{"finished":true}' != "$upload_output" ]; then
+    echo "FAIL: expected upload output finished:true, but was $upload_output"
+    exit 99
+fi
+if [ ! -f $uploaded_file ]; then
+    echo "FAIL: expected test.jpg to exist in uploaded folder, but it did not"
+    find $UPLOAD_DIR
+    exit 99
+fi
+if [ ! -z $(diff $test_file $uploaded_file) ]; then
+    echo "FAIL: $test_file and $uploaded_file differ"
+    ls -l $test_file
+    ls -l $uploaded_file
+    exit 99
+fi
