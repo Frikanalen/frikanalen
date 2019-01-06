@@ -25,7 +25,7 @@ export DATABASE_NAME={{app_db_name}}
 
 # should only do these when required
 pip install -qr "$dir/requirements.txt"
-fkbeta/manage.py collectstatic --noinput
+fkbeta/manage.py collectstatic --noinput | tail -3 # only last few lines useful
 fkbeta/manage.py migrate --noinput
 
 sudo systemctl restart fkweb
