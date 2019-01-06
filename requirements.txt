@@ -1,4 +1,4 @@
-Django == 1.11.16
+Django == 1.11.18
 Markdown == 3.0.1
 Twisted == 17.1.0
 django-durationfield == 0.5.5
@@ -9,8 +9,8 @@ django-registration-redux == 2.5
 djangorestframework == 3.9.0
 gunicorn == 19.9.0
 inotify == 0.2.10
-psycopg2-binary == 2.7.5
+psycopg2-binary == 2.7.6.1
 python-dateutil == 2.7.5
 pytz == 2018.7
-requests == 2.20.0
-django-csp
+requests == 2.21.0
+django-csp == 3.4
