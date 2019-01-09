@@ -335,7 +335,7 @@ REST_FRAMEWORK = {
 #
 CSP_REPORT_ONLY = False
 CSP_DEFAULT_SRC = "'self'"
-CSP_SCRIPT_SRC = "'self' 'unsafe-inline'"
+CSP_SCRIPT_SRC = "'self' 'unsafe-inline' 'unsafe-eval'"
 CSP_IMG_SRC = "'self' https://upload.frikanalen.no"
 CSP_OBJECT_SRC = None
 CSP_MEDIA_SRC = "'self' http://video.nuug.no https://video.nuug.no https://upload.frikanalen.no"
