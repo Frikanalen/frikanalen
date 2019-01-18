@@ -11,4 +11,5 @@ docker_push:
 test:
 	fkbeta/manage.py test fkbeta
 	python utils/test_*.py
+	utils/run-move_and_process
 	upload/test-fkupload
