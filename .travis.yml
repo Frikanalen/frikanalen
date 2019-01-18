@@ -12,3 +12,5 @@ addons:
   apt:
     packages:
       - bs1770gain
+      - ffmpeg
+      - melt
