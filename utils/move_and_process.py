@@ -211,10 +211,10 @@ def register_videofiles(id, folder, videofiles=None):
                 'filename': filepath,
                 'format': VF_FORMATS[file_folder],
             }
-            loudness = get_loudness(filepath)
+            loudness = get_loudness(os.path.join(folder, "..", filepath))
             # Handle images, which do not have loudness
             if loudness:
-                data.update(loundness)
+                data.update(loudness)
             create_videofile(id, data)
             videofiles.add(filepath)
     return videofiles
