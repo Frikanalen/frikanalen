@@ -61,7 +61,7 @@ class AbstractVideoList(TemplateView):
         if search_query:
             # This is a search!
             videos = search.search_videos(videos, request)
-            title = _('Searching %s for %s') % (videoset_name, search_query)
+            title = _('Searching %(name)s for %(query)s') % {'name': videoset_name, 'query':search_query}
             url_query_postfix = "&q=%s" % urllib.parse.quote(search_query.encode('utf8'))
         else:
             title = videoset_name
