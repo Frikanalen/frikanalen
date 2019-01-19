@@ -68,9 +68,9 @@ class ProcessGenerate(unittest.TestCase):
             return self.skipTest('bs1770gain missing')
         # sine.wav was generated using sox -b 16 -n sine.wav synth 3 sine 300-3300
         # white.png was generated using convert xc:white white.png
-        self.assertEqual(mp.get_loudness('testdata/sine.wav'),
+        self.assertEqual(mp.get_loudness('tests/data/sine.wav'),
                          {'integrated_lufs': -2.2, 'truepeak_lufs': 0.54})
-        self.assertEqual(mp.get_loudness('testdata/white.jpg'), None)
+        self.assertEqual(mp.get_loudness('tests/data/white.jpg'), None)
 
     def test_generate_wrong_format(self):
         self.assertRaises(
