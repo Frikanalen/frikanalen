@@ -20,14 +20,14 @@
 
 - name: create upload app symlink
   file:
-    src: "{{app_dir}}/git/upload"
+    src: "{{app_dir}}/git/packages/fkupload"
     dest: "{{upload_app_dir}}"
     state: link
   become_user: "{{app_user}}"
 
 - name: create utils script symlink
   file:
-    src: "{{app_dir}}/git/utils"
+    src: "{{app_dir}}/git/packages/utils"
     dest: "{{scripts_dir}}"
     state: link
   become_user: "{{app_user}}"

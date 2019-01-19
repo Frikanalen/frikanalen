@@ -1,11 +1,11 @@
 [Unit]
-AssertPathExists={{app_dir}}/app/fkbeta
+AssertPathExists={{app_dir}}/app/packages/fkweb/
 
 [Service]
 User={{app_user}}
 Group={{app_user}}
 PIDFile=/run/fkweb/gunicorn.pid
-WorkingDirectory={{app_dir}}/app/fkbeta/
+WorkingDirectory={{app_dir}}/app/packages/fkweb/
 Environment=SECRET_KEY={{app_secret_key}}
 Environment=DATABASE_USER={{app_user}}
 Environment=DATABASE_PASS={{app_db_pass}}

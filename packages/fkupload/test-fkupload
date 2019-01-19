@@ -28,7 +28,7 @@ pids="$pids $!"
 sleep 2
 
 # Upload test file
-test_file="../testdata/sine.wav"
+test_file="../../tests/data/sine.wav"
 upload_output=$(curl --silent localhost:5000/upload \
     -X POST \
     -F "file=@$test_file" \
