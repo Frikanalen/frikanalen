@@ -46,10 +46,12 @@ class ProcessGenerate(unittest.TestCase):
             ('/tmp/original/test.ogv', [
                 '/tmp/large_thumb/test.jpg',
                 '/tmp/broadcast/test.dv',
-                '/tmp/theora/test.ogv']),
+                '/tmp/theora/test.ogv',
+                '/tmp/av1/test.avi']),
             ('/tmp/broadcast/test.ogv', [
                 '/tmp/large_thumb/test.jpg',
-                '/tmp/theora/test.ogv']),
+                '/tmp/theora/test.ogv',
+                '/tmp/av1/test.avi']),
         )
         nop = lambda *_, **__: None
         for t in tests:

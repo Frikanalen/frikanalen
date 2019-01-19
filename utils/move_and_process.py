@@ -34,6 +34,7 @@ VF_FORMATS = {
     'original': 6,
     'theora': 7,
     'srt': 8,
+    'av1': 9,
 }
 for k, v in list(VF_FORMATS.items()):
     VF_FORMATS[v] = k
@@ -55,6 +56,10 @@ class Converter(object):
                 '-vcodec libtheora -acodec libvorbis '
                 '-qscale:v 7 -qscale:a 2 -vf scale=720:-1'),
             'ext': 'ogv',
+        },
+        'av1': {
+            'ffmpeg': '-c:v libaom-av1 -strict -2',
+            'ext': 'avi',
         },
         'broadcast': {
             'ffmpeg': '-target pal-dv',
@@ -95,6 +100,7 @@ class Converter(object):
         else:
             assert 'broadcast' in path
         formats.append('theora')
+        formats.append('av1')
         return formats
 
 
