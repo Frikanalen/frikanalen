@@ -117,7 +117,11 @@ class Runner(object):
                 else:
                     logging.info("SKIP already existing file: %s", filepath)
                     return
-        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        try:
+            output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as ex: # error code <> 0
+            logging.debug(ex.output.decode('utf-8'))
+            raise
         logging.debug(output.decode('utf-8'))
 
 
