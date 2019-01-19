@@ -4,14 +4,11 @@
    <div id="player-error-container" style="background-image: url('{{ video.large_thumbnail_url }}');">
        <div id="player-error-message"><h1>{{ video_error }}</h1>{{ video_error_explanation }}</div>
    </div>
-   {% elif video.ogv_url or video.mp4_url %}
+   {% elif video.vod_files %}
    <video class="player" poster="{{ video.large_thumbnail_url }}" controls>
-     {% if video.ogv_url %}
-       <source src="{{ video.ogv_url }}" type="video/ogg"/>
-     {% endif %}
-     {% if video.mp4_url %}
-        <source src="{{ video.mp4_url }}" type="video/mp4"/>
-     {% endif %}
+       {% for vod_file in video.vod_files %}
+         <source src="{{ vod_file.url }}" type="{{ vod_file.mime_type }}"/>
+       {% endfor %}
        {% if video.ogv_url %}
          <applet code="com.fluendo.player.Cortado.class" archive="http://theora.org/cortado.jar">
            <param name="url" value="{{ video.ogv_url }}">
