@@ -52,7 +52,7 @@
       "model": "fk.fileformat",
       "pk": 8,
       "fields": {
-         "fsname": "mp4"
+         "fsname": "srt"
       }
    },
    {
