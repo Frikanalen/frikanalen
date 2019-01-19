@@ -70,9 +70,12 @@ class FileFormat(models.Model):
     description = models.TextField(
         unique=True, max_length=255, null=True, blank=True)
     fsname = models.CharField(max_length=20)
+    vod_publish = models.BooleanField('Present video format to video on demand?',
+                                      default=False)
+    mime_type = models.CharField(max_length=256,
+                                 null=True, blank=True)
 
     # httpprefix = models.CharField(max_length=200)
-    # mime_type = models.CharField(max_length=256)
     # metadata framerate, resolution, etc?
 
     class Meta:
@@ -279,11 +282,24 @@ class Video(models.Model):
         except ObjectDoesNotExist:
             return
 
-    def mp4_url(self):
-        try:
-            return settings.FK_MEDIA_URLPREFIX + self.videofile_url("mp4")
-        except ObjectDoesNotExist:
-            return
+    def vod_files(self):
+        """Return a list of video files fit for the video on demand
+        presentation, with associated MIME type.
+
+        [
+          {
+            'url: 'https://../.../file.ogv',
+            'mime_type': 'video/ogg',
+          },
+        ]
+
+        """
+
+        vodfiles = []
+        for videofile in self.videofiles().filter(format__vod_publish=True):
+            url = settings.FK_MEDIA_URLPREFIX + videofile.location(relative=True)
+            vodfiles.append({'url': url, 'mime_type': videofile.format.mime_type})
+        return vodfiles
 
     def get_absolute_url(self):
         return reverse('vod-video-detail', kwargs={'video_id': self.id})
