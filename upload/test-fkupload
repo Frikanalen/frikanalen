@@ -4,7 +4,7 @@ set -e
 
 cleanup() {
     for pid in $pids; do
-	if kill -0 $pid ; then
+	if kill -0 $pid >/dev/null 2>&1; then
 	    kill $pid
 	else
 	    echo "Process $pid already exited, not killed"
@@ -53,3 +53,5 @@ if [ ! -z $(diff $test_file $uploaded_file) ]; then
     ls -l $uploaded_file
     exit 99
 fi
+
+exit 0

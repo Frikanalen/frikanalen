@@ -10,6 +10,6 @@ docker_push:
 	docker push ${project}
 test:
 	fkbeta/manage.py test fkbeta
-	python utils/test_*.py
+	python3 utils/test_*.py
 	utils/run-move_and_process
 	upload/test-fkupload
