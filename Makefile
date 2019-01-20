@@ -1,22 +1,13 @@
+pyreqs=packages/fkweb/requirements-dev.txt packages/fkupload/requirements.txt
+
 PYTHON=env/bin/python
 PIP=env/bin/pip
 
-project=frikanalen/frikanalen
-pyreqs=packages/fkweb/requirements-dev.txt packages/fkupload/requirements.txt
-
-docker:
-	docker build -t ${project} .
-docker_deploy: docker docker_push
-	echo "Pushed to docker"
-docker_run: docker
-	docker run -p 8000:8000 ${project}
-docker_push:
-	docker push ${project}
 env: $(pyreqs)
 	python3 -m venv env
 	for req in $(pyreqs); do \
-          $(PIP) install -r $$req; \
-        done
+	    $(PIP) install -r $$req; \
+	done
 
 .PHONY=install test
 install: env
