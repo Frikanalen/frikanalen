@@ -4,8 +4,7 @@ python:
   - "3.5"
   - "3.6"
 install:
-  - pip install -r requirements-dev.txt
-  - pip install -r upload/requirements.txt
+  - make install
 script: make test
 cache: pip
 addons:
