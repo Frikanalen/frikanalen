@@ -8,6 +8,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime
 
 import requests
@@ -200,7 +201,7 @@ def copy_original(from_dir, to_dir, metadata, fn):
     return new_filepath
 
 def register_videofiles(id, folder, videofiles=None):
-    files = get_videofiles(id)
+    files = get_videofiles({'video_id': id})
     videofiles = (videofiles or set()).union({f['filename'].strip() for f in files})
     for file_folder in os.listdir(folder):
         for fn in os.listdir(os.path.join(folder, file_folder)):
@@ -240,11 +241,11 @@ def _update_video(video_id, data):
         return
     response = rq('PATCH', '/videos/%s' % video_id, data=data)
 
-def get_videofiles(video_id):
+def get_videofiles(params):
     if args.no_api:
-        logging.debug("NO API - get videofiles %s -> []" % video_id)
+        logging.debug("NO API - get videofiles %s -> []" % params)
         return []
-    response = rq('GET', '/videofiles/', params={'video_id': video_id})
+    response = rq('GET', '/videofiles/', params=params)
     return response.json()['results']
 
 def create_videofile(video_id, data):
@@ -254,6 +255,49 @@ def create_videofile(video_id, data):
     data.update({'video': video_id})
     rq('POST', '/videofiles/', data=data)
 
+def update_videofile(data):
+    videofile_id = data['id']
+    if args.no_api:
+        logging.debug("NO API - updating videofile %s -> %r" % (videofile_id, data))
+        return
+    rq('PATCH', '/videofiles/%s' % videofile_id, data=data)
+
+def measure_loudness(watch_dir, move_to_dir):
+    """Measure loudness for all video files missing it, a few at the time.
+
+    Process latest videos first.
+    """
+
+    maxtime = 60 # stop processing after this amount of seconds
+    pagesize = 2 # Process this amount of video file per format at the time
+    start = time.time()
+    for fsname in ('original', 'broadcast', 'theora'):
+        params = {
+            'format__fsname': fsname,
+            'integrated_lufs__isnull': True,
+            'page_size': pagesize,
+            'order': '-video'
+        }
+
+        for data in get_videofiles(params):
+            newdata = data.copy()
+            filepath = data['filename']
+            loudness = get_loudness(os.path.join(move_to_dir, filepath))
+            if loudness:
+                newdata.update(loudness)
+            if data != newdata:
+                update_videofile(newdata)
+        if time.time() - start > maxtime: # Time to stop?
+            break
+    return
+
+def run_periodic(watch_dir, move_to_dir):
+    """Called periodially when there is nothing else to do for this process."""
+
+    logging.debug("processing backlog")
+    measure_loudness(watch_dir, move_to_dir)
+    return
+
 def run_inotify(watch_dir, move_to_dir):
     logging.info("Starting move_and_process, watch: %s, move_to: %s",
                  watch_dir, move_to_dir)
@@ -261,6 +305,8 @@ def run_inotify(watch_dir, move_to_dir):
     i.add_watch(watch_dir, constants.IN_MOVED_TO)
     for evt in i.event_gen():
         if evt is None:
+            # Call every block_duration_s seconds when there is nothing else to do
+            run_periodic(watch_dir, move_to_dir)
             continue
         (_header, type_names, _path, fn) = evt
         if 'IN_ISDIR' not in type_names or not fn.isdigit():
