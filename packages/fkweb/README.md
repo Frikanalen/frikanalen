@@ -1,9 +1,7 @@
-Frikanalen
-==========
+fkweb
+=====
 
-Tools and web for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
-
-[GitHub page](http://github.com/Frikanalen/) | [Project mailing list](http://lists.nuug.no/mailman/listinfo/frikanalen/)
+website and API for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
 
 Creating a local development environment
 ----------------------------------------
@@ -29,7 +27,6 @@ You should set `SECRET_KEY` to a random string.
 
 Initialize the database:
 
-    (env)$ cd fkbeta
     (env)$ ./manage.py migrate
         ...
 
@@ -70,8 +67,4 @@ Now you can easily push your changes:
 
     git push dev master:master
 
-For more advanced things you'd want to check [our infrastructure Ansible setup](infra/).
-
-License
--------
-All under the GNU LGPL license, see the file [COPYING](COPYING) for more details.
+For more advanced things you'd want to check [our infrastructure Ansible setup](../../infra/).

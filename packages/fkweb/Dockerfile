@@ -6,14 +6,11 @@ RUN apt-get install -y python postgresql python-pip libpq-dev python-dev
 
 # Copy over the files we need to start
 RUN mkdir -p /srv/frikanalen
-ADD requirements.txt /srv/frikanalen
-ADD requirements-dev.txt /srv/frikanalen
-ADD fkbeta /srv/frikanalen/fkbeta
+ADD . /srv/frikanalen/
 
 WORKDIR /srv/frikanalen
 RUN pip install -r requirements-dev.txt
 
-WORKDIR /srv/frikanalen/fkbeta
 RUN ./manage.py migrate
 RUN ./manage.py loaddata frikanalen
 
