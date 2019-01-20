@@ -28,7 +28,7 @@
 - name: create utils script symlink
   file:
     src: "{{app_dir}}/git/packages/utils"
-    dest: "{{scripts_dir}}"
+    dest: "{{process_app_dir}}"
     state: link
   become_user: "{{app_user}}"
 
