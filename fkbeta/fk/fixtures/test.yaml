@@ -95,6 +95,10 @@
   pk: 2
   fields:
     fsname: 'large_thumb'
+- model: fk.fileformat
+  pk: 3
+  fields:
+    fsname: 'broadcast'
 
 - model: fk.videofile
   pk: 1
@@ -108,18 +112,21 @@
     video: 2
     format: 1
     filename: dummy_video.mov
+    integrated_lufs: -22.0
 - model: fk.videofile
   pk: 4
   fields:
     video: 4
     format: 1
     filename: broken_video.mov
+    integrated_lufs: -23.0
 - model: fk.videofile
   pk: 3
   fields:
     video: 3
-    format: 1
+    format: 3
     filename: unpublished_video.dv
+    integrated_lufs: -24.0
 
 - model: fk.scheduleitem
   pk: 1

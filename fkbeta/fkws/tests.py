@@ -331,13 +331,25 @@ class PermissionsTest(APITestCase):
             self.assertEqual(status, r.status_code)
 
 
-class VideoFilterTest(APITestCase):
+class FilterTest(APITestCase):
     fixtures = ['test.yaml']
 
     def setUp(self):
         self.client.login(username='staff_user', password='test')
 
-    def test_can_filter(self):
+    def list_lookup(self, urlname, fieldname, lookups):
+        for lookup, expect in lookups:
+            url = reverse(urlname) + lookup
+            r = self.client.get(url)
+            self.assertEqual(status.HTTP_200_OK, r.status_code,
+                             "lookup '%s' did not return status 200" % url)
+            videos = [v[fieldname] for v in r.data['results']]
+            self.assertEqual(expect, videos,
+                             "%s lookup '%s' expect %s got %s" % (
+                                 urlname, url, expect, videos)
+            )
+
+    def test_can_filter_video(self):
         lookups = [
             ('?duration=01:00', ['dummy video']),
             ('?duration__gte=01:00', ['dummy video']),
@@ -367,16 +379,22 @@ class VideoFilterTest(APITestCase):
             ('?proper_import=false', ['broken video']),
             ('?proper_import=true', ['unpublished video', 'dummy video', 'tech video']),
         ]
-        for lookup, expect in lookups:
-            url = reverse('api-video-list') + lookup
-            r = self.client.get(url)
-            self.assertEqual(status.HTTP_200_OK, r.status_code,
-                             "lookup '%s' did not return status 200" % url)
-            videos = [v['name'] for v in r.data['results']]
-            self.assertEqual(expect, videos,
-                             "lookup '%s' expect %s got %s" % (
-                                 url, expect, videos)
-            )
+        self.list_lookup('api-video-list', 'name', lookups)
+
+
+    def test_can_filter_videofile(self):
+        lookups = [
+            ('?video_id=1', ['tech_video.mp4']),
+            ('?video_id=2', ['dummy_video.mov']),
+            ('?format__fsname=broadcast', ['unpublished_video.dv']),
+            ('?integrated_lufs=-23',      ['broken_video.mov']),
+            ('?integrated_lufs__lte=-23', ['broken_video.mov', 'unpublished_video.dv']),
+            ('?integrated_lufs__lt=-23',  ['unpublished_video.dv']),
+            ('?integrated_lufs__gt=-23',  ['dummy_video.mov']),
+            ('?integrated_lufs__gte=-23', ['broken_video.mov', 'dummy_video.mov']),
+            ('?integrated_lufs__isnull=True', ['tech_video.mp4']),
+        ]
+        self.list_lookup('api-videofile-list', 'filename', lookups)
 
 
 class ScheduleitemTest(APITestCase):

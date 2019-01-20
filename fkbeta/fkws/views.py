@@ -302,6 +302,17 @@ class VideoUploadTokenDetail(generics.RetrieveAPIView):
     permission_classes = (IsInOrganizationOrDisallow,)
 
 
+class VideoFileFilter(djfilters.FilterSet):
+    created_time = djfilters.DateTimeFromToRangeFilter()
+
+    class Meta:
+        model = VideoFile
+        fields = {
+            'format__fsname': ['exact'],
+            'integrated_lufs': ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull'],
+            'truepeak_lufs': ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull'],
+        }
+
 class VideoFileList(generics.ListCreateAPIView):
     """
     Video file list
@@ -310,7 +321,16 @@ class VideoFileList(generics.ListCreateAPIView):
     ----------------
 
     HTTP parameters:
+
     `video_id` - The (parent) video by ID
+
+    `created_time` - when this file entry was created.
+
+    `format__fsname` - the fileformat fsname for this file.
+
+    `integrated_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
+
+    `truepeak_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
 
     `page_size` - How many items per page. If set to 0 it will list
                   all items.  Default is 50 items.
@@ -321,6 +341,7 @@ class VideoFileList(generics.ListCreateAPIView):
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     pagination_class = Pagination
+    filter_class = VideoFileFilter
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):
