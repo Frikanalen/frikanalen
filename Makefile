@@ -10,8 +10,8 @@ endif
 env: $(pyreqs)
 	python3 -m venv env
 
-.PHONY=setup test
-install:
+.PHONY=requirements test
+requirements:
 	for req in $(pyreqs); do \
 	    $(VENV) pip install -r $$req; \
 	done
