@@ -112,8 +112,14 @@ class Runner(object):
                 else:
                     logging.info("SKIP already existing file: %s", filepath)
                     return
-        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-        logging.debug(output.decode('utf-8'))
+        output = ""
+        try:
+            output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            output = e.output
+            raise e
+        finally:
+            logging.debug(output.decode('utf-8'))
 
 
 def get_metadata(filepath):
