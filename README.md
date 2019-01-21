@@ -16,6 +16,21 @@ Of note is also [our infrastructure Ansible setup](infra/).
 
 Some folders have a basic README-file explaining what it is.
 
+Running all tests
+-----------------
+You might need to install `sqlite3`, `python3` and `ffmpeg`.
+
+Install the Python requirements:
+
+    make env # sets up the python virtual env
+    make requirements
+
+Run the tests:
+
+    make test
+
+A small peak at our [Travis config file](.travis.yml) might help you as well.
+
 License
 -------
 All under the GNU LGPL license, see the file [COPYING](COPYING) for more details.
