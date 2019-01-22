@@ -167,7 +167,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
             date = datetime.datetime.strptime(params['date'], '%Y%m%d')
         except (KeyError, ValueError):
             date = datetime.date.today()
-        # by_day should be on queryset but need to upgrade
+        # FIXME by_day should be on queryset but need to upgrade
         # django first
         queryset = Scheduleitem.objects.by_day(
             date=date, days=days, surrounding=bool(params.get('surrounding')))
