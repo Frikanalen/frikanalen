@@ -133,7 +133,10 @@ def get_metadata_(filepath):
         filepath,
     ]
     output = subprocess.check_output(cmd)
-    return json.loads(output.decode('utf-8'))
+    j = json.loads(output.decode('utf-8'))
+    # Convert duration from str to number
+    j['format']['duration'] = float(j['format']['duration'])
+    return j
 
 def pretty_duration(duration):
     min, sec = divmod(duration, 60)
@@ -230,9 +233,12 @@ def generate_videos(
     videofiles = set()
     for t in formats:
         cmds, new_fn = converter.convert_cmds(filepath, t, metadata)
-        runner_run(cmds, filepath=new_fn, reprocess=reprocess)
-        videofiles = register(
-            id, base_path, videofiles=videofiles)
+        try:
+            runner_run(cmds, filepath=new_fn, reprocess=reprocess)
+            videofiles = register(
+                id, base_path, videofiles=videofiles)
+        except subprocess.CalledProcessError as e:
+            logging.warning('Unable to convert video #%d to %s format' % (id, t))
 
 
 def _update_video(video_id, data):
