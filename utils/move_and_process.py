@@ -163,11 +163,13 @@ def get_loudness(filepath):
         output = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
         output = output.decode('utf-8')
         integrated_lufs = re.findall(r'<integrated lufs="([\d.-]+)"', output)[-1]
-        truepeak_lufs = re.findall(r'<true-peak tpfs="([\d.-]+)"', output)[-1]
-        return {
+        truepeak_lufs = re.findall(r'<true-peak tpfs="([\d.-]+|-inf)"', output)[-1]
+        data = {
             'integrated_lufs': float(integrated_lufs),
-            'truepeak_lufs': float(truepeak_lufs)
         }
+        if '-inf' != truepeak_lufs:
+           data['truepeak_lufs'] = float(truepeak_lufs)
+        return data
     except (IndexError, ValueError, FileNotFoundError) as e:
         return None
 
