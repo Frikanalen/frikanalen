@@ -3,8 +3,10 @@
 set -x
 
 mkdir -p tank/indir/1234 tank/outdir
+mkdir -p tank/indir/1235 tank/outdir
 
 cp testdata/white-sine.ogv tank/indir/1234
+cp testdata/sine.mp3 tank/indir/1235
 
 utils/move_and_process.py run \
 	--indir `pwd`/tank/indir \
