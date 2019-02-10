@@ -17,7 +17,7 @@ requirements:
 	done
 
 test:
-	$(VENV) packages/fkweb/manage.py test agenda create fk fkbeta fkutils fkvod fkws
+	$(VENV) packages/fkweb/manage.py test agenda create fk fkbeta fkvod fkws
 	$(VENV) python packages/fkprocess/test*.py
 	$(VENV) packages/fkprocess/test_move_and_process.sh
 	$(VENV) packages/fkupload/test-fkupload

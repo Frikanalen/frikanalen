@@ -357,12 +357,6 @@ class Scheduleitem(models.Model):
 
     objects = ScheduleitemManager()
 
-    """
-    def save(self, *args, **kwargs):
-        self.endtime = self.starttime + timeutils.duration
-        super(Scheduleitem, self).save(*args, **kwargs)
-    """
-
     class Meta:
         db_table = 'ScheduleItem'
         verbose_name = 'TX schedule entry'
