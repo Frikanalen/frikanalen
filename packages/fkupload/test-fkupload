@@ -3,6 +3,7 @@
 set -e
 
 cleanup() {
+    arg=$?
     for pid in $pids; do
 	if kill -0 $pid >/dev/null 2>&1; then
 	    kill $pid
@@ -11,6 +12,7 @@ cleanup() {
 	fi
     done
     rm -rf $UPLOAD_DIR
+    exit $arg
 }
 trap cleanup EXIT
 
