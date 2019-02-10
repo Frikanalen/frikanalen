@@ -10,8 +10,18 @@ if [ -z "$refname" ]; then echo params missing; exit 1; fi
 
 echo "> Deploying app"
 dir={{app_dir}}/app
+fkweb_dir=$dir/packages/fkweb
 git --work-tree="$dir" checkout -qf "$newrev"
 cd $dir
+
+rollback_msg() {
+    arg=$?
+    echo "> EXITED WITH ERROR"
+    echo "> PLEASE ROLL BACK THE DEPLOY:"
+    echo ">   git push -f <env> $oldrev:$refname"
+    exit $arg
+}
+trap rollback_msg ERR
 
 # activate virtualenv
 . "{{app_dir}}/env/bin/activate"
@@ -24,9 +34,9 @@ export DATABASE_PASS={{app_db_pass}}
 export DATABASE_NAME={{app_db_name}}
 
 # should only do these when required
-pip install -qr "$dir/requirements.txt"
-packages/fkweb/manage.py collectstatic --noinput | tail -3 # only last few lines useful
-packages/fkweb/manage.py migrate --noinput
+pip install -qr "$fkweb_dir/requirements.txt"
+$fkweb_dir/manage.py collectstatic --noinput | tail -3 # only last few lines useful
+$fkweb_dir/manage.py migrate --noinput
 
 sudo systemctl restart fkweb
 
