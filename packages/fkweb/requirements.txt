@@ -1,15 +1,14 @@
-Django == 1.11.18
+Django == 1.11.20
 Markdown == 3.0.1
 django-durationfield == 0.5.5
 # django-filter 2 is only py3
 django-filter == 1.1.0
 django-model-utils == 3.1.2
 django-registration-redux == 2.5
-djangorestframework == 3.9.0
+djangorestframework == 3.9.1
 gunicorn == 19.9.0
 inotify == 0.2.10
-psycopg2-binary == 2.7.6.1
-python-dateutil == 2.7.5
-pytz == 2018.7
+psycopg2-binary == 2.7.7
+python-dateutil == 2.8
 requests == 2.21.0
-django-csp == 3.4
+django-csp == 3.5
