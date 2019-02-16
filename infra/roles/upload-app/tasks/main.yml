@@ -18,16 +18,16 @@
   git: repo={{repo_url}} dest={{app_dir}}/git version=master
   become_user: "{{app_user}}"
 
-- name: create upload app symlink
+- name: create fkupload app symlink
   file:
     src: "{{app_dir}}/git/packages/fkupload"
     dest: "{{upload_app_dir}}"
     state: link
   become_user: "{{app_user}}"
 
-- name: create utils script symlink
+- name: create fkprocess app symlink
   file:
-    src: "{{app_dir}}/git/packages/utils"
+    src: "{{app_dir}}/git/packages/fkprocess"
     dest: "{{process_app_dir}}"
     state: link
   become_user: "{{app_user}}"

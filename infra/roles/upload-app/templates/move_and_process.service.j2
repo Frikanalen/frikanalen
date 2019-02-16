@@ -6,7 +6,7 @@ User={{app_user}}
 Group={{app_user}}
 WorkingDirectory={{process_app_dir}}
 Environment=FK_TOKEN={{fk_auth_token}}
-ExecStart={{app_dir}}/env/bin/python3 move_and_process.py daemon --indir "{{upload_finished_dir}}" --outdir /tank/media
+ExecStart={{app_dir}}/env/bin/python3 move_and_process.py daemon --indir "{{upload_finished_dir}}" --outdir "{{fk_media_dir}}"
 Restart=always
 PrivateTmp=true
 #NoNewPrivileges=true
