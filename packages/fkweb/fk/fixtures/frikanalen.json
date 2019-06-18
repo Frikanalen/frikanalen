@@ -45,7 +45,9 @@
       "model": "fk.fileformat",
       "pk": 7,
       "fields": {
-         "fsname": "theora"
+         "fsname": "theora",
+         "mime_types": "video/ogg",
+         "vod_pubish": true
       }
    },
    {
