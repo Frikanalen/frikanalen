@@ -240,7 +240,7 @@ def fill_next_weeks_agenda():
             continue
         item = Scheduleitem(
                   video=video,
-                  schedulereason=4,
+                  schedulereason=Scheduleitem.REASON_AUTO,
                   starttime=next_datetime,
                   duration=video.duration)
         item.save()

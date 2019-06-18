@@ -197,7 +197,7 @@ class PermissionsTest(APITestCase):
             (
                 reverse('api-scheduleitem-list') + '?date=20150101',
                 {'video_id': 'http://testserver/api/videos/1',
-                 'schedulereason': 2, 'starttime': '2015-01-01T11:00:00Z',
+                 'schedulereason': Scheduleitem.REASON_ADMIN, 'starttime': '2015-01-01T11:00:00Z',
                  'duration': '0:00:00.10'},
                 {'id': 3, 'video_id': 'http://testserver/api/videos/1',
                  'duration': '00:00:00.100000'},
@@ -227,7 +227,7 @@ class PermissionsTest(APITestCase):
             (
                 reverse('api-scheduleitem-list') + '?date=20150101',
                 {'video_id': 'http://testserver/api/videos/1',
-                 'schedulereason': 2, 'starttime': '2015-01-01T11:00:00Z',
+                 'schedulereason': Scheduleitem.REASON_ADMIN, 'starttime': '2015-01-01T11:00:00Z',
                  'duration': '0:00:13.10'},
                 {'id': 3, 'video_id': 'http://testserver/api/videos/1',
                  'duration': '00:00:13.100000'},
@@ -417,7 +417,7 @@ class ScheduleitemTest(APITestCase):
                 {'video_id': '/api/videos/2',
                  'starttime': given_time,
                  'duration': '58.312',
-                 'schedulereason': 1})
+                 'schedulereason': Scheduleitem.REASON_LEGACY})
             self.assertEqual(status.HTTP_201_CREATED, r.status_code)
             self.assertEqual(returned_time, r.data['starttime'])
             self.assertEqual('00:00:58.312000', r.data['duration'])
@@ -437,7 +437,7 @@ class ScheduleitemTest(APITestCase):
                 {'video_id': '/api/videos/2',
                  'starttime': starttime,
                  'duration': '00:00:58.312',
-                 'schedulereason': 1})
+                 'schedulereason': Scheduleitem.REASON_LEGACY})
             self.assertEqual("Conflict with '2015-01-01 %s'." % conflict,
                              r.data['duration'][0])
             self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
@@ -451,7 +451,7 @@ class ScheduleitemTest(APITestCase):
             (2, {'starttime': '2015-01-01T10:59:59.900000Z'}),
         ]
         for schedule_pk, changes in times:
-            changes.update({'schedulereason': 1})
+            changes.update({'schedulereason': Scheduleitem.REASON_LEGACY})
             r = self.client.patch(
                 reverse('api-scheduleitem-detail', args=[schedule_pk]),
                 changes)

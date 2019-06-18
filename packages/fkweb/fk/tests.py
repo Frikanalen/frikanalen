@@ -195,7 +195,7 @@ def create_scheduleitem(starttime=None):
         starttime = timezone.now()
     return Scheduleitem.objects.create(
         video_id=1, duration=datetime.timedelta(10),
-        schedulereason=1,
+        schedulereason=Scheduleitem.REASON_LEGACY,
         starttime=starttime)
 
 

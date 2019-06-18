@@ -341,11 +341,15 @@ class ScheduleitemManager(models.Manager):
 
 
 class Scheduleitem(models.Model):
+    REASON_LEGACY = 1
+    REASON_ADMIN = 2
+    REASON_USER = 3
+    REASON_AUTO = 4
     SCHEDULE_REASONS = (
-        (1, 'Legacy'),
-        (2, 'Administrative'),
-        (3, 'User'),
-        (4, 'Automatic'),
+        (REASON_LEGACY, 'Legacy'),
+        (REASON_ADMIN, 'Administrative'),
+        (REASON_USER, 'User'),
+        (REASON_AUTO, 'Automatic'),
     )
 
     id = models.AutoField(primary_key=True)
