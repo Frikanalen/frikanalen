@@ -7,4 +7,7 @@ class Command(BaseCommand):
     help = 'Automatically create schedule for the next week'
 
     def handle(self, *args, **options):
+        if 1 < int(options['verbosity']):
+            import logging
+            logging.basicConfig(level=logging.INFO)
         fill_next_weeks_agenda()
