@@ -345,11 +345,13 @@ class Scheduleitem(models.Model):
     REASON_ADMIN = 2
     REASON_USER = 3
     REASON_AUTO = 4
+    REASON_JUKEBOX = 5
     SCHEDULE_REASONS = (
         (REASON_LEGACY, 'Legacy'),
         (REASON_ADMIN, 'Administrative'),
         (REASON_USER, 'User'),
         (REASON_AUTO, 'Automatic'),
+        (REASON_JUKEBOX, 'Jukebox'),
     )
 
     id = models.AutoField(primary_key=True)
