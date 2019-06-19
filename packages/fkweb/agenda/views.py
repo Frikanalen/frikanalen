@@ -267,6 +267,7 @@ def _fill_agenda_with_jukebox(start, end, pre_scheduled, videos):
     left_sched = list(pre_scheduled)
     full_items = []
     nextstart = start
+    pool = None
     while True:
         try:
             sched = left_sched.pop(0)
@@ -275,28 +276,30 @@ def _fill_agenda_with_jukebox(start, end, pre_scheduled, videos):
         nextend = end
         if sched and sched.starttime < end:
             nextend = sched.starttime
-        items = _fill_time_with_jukebox(nextstart, nextend, videos)
+        (items, pool) = _fill_time_with_jukebox(nextstart, nextend, videos, current_pool=pool)
         full_items.extend(items)
-        if not items or not len(items):
-            break
         if nextend >= end:
             break
         nextstart = sched.endtime()
     return full_items
 
-def _fill_time_with_jukebox(start, end, videos):
-    print("\nFiling", start, end)
+def _fill_time_with_jukebox(start, end, videos, current_pool=None):
+    logger.debug("\nFiling %s %s" % (start, end))
     current_time = start
-    video_pool = list(videos)
+    video_pool = current_pool or list(videos)
     rejected_videos = []
     new_items = []
 
+    def plist(l):
+        return '[' + ' '.join(str(v.id) for v in l) + ']'
+
     def next_vid(first=False):
-        print("next vid", video_pool, rejected_videos)
-        if len(rejected_videos):
-            return rejected_videos.pop(0)
+        logger.debug("next vid %s rej %s pool %s" % (first, plist(rejected_videos),
+            plist(video_pool)))
         if len(video_pool) < len(videos) and first:
             video_pool.extend(list(videos))
+        if len(rejected_videos):
+            return rejected_videos.pop(0)
         if not len(video_pool):
             return None
         return video_pool.pop(0)
@@ -304,21 +307,23 @@ def _fill_time_with_jukebox(start, end, videos):
     while current_time < end:
         video = next_vid(True)
         new_rejects = []
-        print( "end would be", current_time + video.duration)
         while current_time + video.duration > end:
-            print ("that's not good")
-            new_rejects.append(video)
+            logger.debug("end overshoots time %s" % (current_time + video.duration))
+            if video not in rejected_videos and video not in new_rejects:
+                new_rejects.append(video)
             video = next_vid()
-            print ("next vid is", video, "rejected", rejected_videos, "new_rej", new_rejects)
+            logger.debug("next vid is %s rejected %s new_rej %s" % (video,
+                plist(rejected_videos), plist(new_rejects)))
             if not video:
-                return new_items
-            print( "end would be", current_time + video.duration)
+                return (new_items, rejected_videos + video_pool)
         rejected_videos.extend(new_rejects)
         new_items.append({ 'id': video.id, 'starttime': current_time, 'video': video })
-        print ("added video", video.id, " at curr time", current_time, "rejected", rejected_videos)
+        logger.debug ("Added video %s at curr time %s, rej %s, pool %s", video.id, current_time.strftime("%H:%M:%S"),
+                plist(rejected_videos),
+                plist(video_pool))
         current_time += video.duration
 
-    return new_items
+    return (new_items, rejected_videos + video_pool)
 
 
 def xmltv_home(request):
