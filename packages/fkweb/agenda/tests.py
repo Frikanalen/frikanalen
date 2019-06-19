@@ -29,9 +29,40 @@ class FillJukeboxIntegrationTests(TestCase):
         start_date = parse_to_datetime('2019-06-30 12:00')
         pre_count = Scheduleitem.objects.count()
 
-        k = agenda_views.fill_agenda_with_jukebox(start_date, days=1)
+        agenda_views.fill_agenda_with_jukebox(start_date, days=1)
 
         self.assertEquals(pre_count + 24, Scheduleitem.objects.count())
+
+    def test_fills_in_only_where_it_can(self):
+        Video.objects.create(
+            name="video",
+            editor_id=1, organization_id=1,
+            duration=datetime.timedelta(minutes=60),
+            proper_import=True, is_filler=True)
+        start_date = parse_to_datetime('2019-06-30 12:00')
+        Scheduleitem.objects.create(
+            video_id=1,
+            starttime=start_date - datetime.timedelta(minutes=10),
+            duration=datetime.timedelta(minutes=1),
+            schedulereason=Scheduleitem.REASON_AUTO,
+        )
+        Scheduleitem.objects.create(
+            video_id=2,
+            starttime=start_date + datetime.timedelta(hours=6, minutes=0),
+            duration=datetime.timedelta(minutes=60),
+            schedulereason=Scheduleitem.REASON_AUTO,
+        )
+        Scheduleitem.objects.create(
+            video_id=1,
+            starttime=start_date + datetime.timedelta(hours=24, minutes=10),
+            duration=datetime.timedelta(minutes=1),
+            schedulereason=Scheduleitem.REASON_AUTO,
+        )
+        pre_count = Scheduleitem.objects.count()
+
+        agenda_views.fill_agenda_with_jukebox(start_date, days=0.5)
+
+        self.assertEquals(pre_count + 11, Scheduleitem.objects.count())
 
 
 class FillJukeboxUnitTests(TestCase):
@@ -76,7 +107,7 @@ class FillJukeboxUnitTests(TestCase):
         ]
         pre_scheduled = [
             Scheduleitem(
-                video_id='x',
+                video_id='x', # unused
                 starttime=self.start_date + datetime.timedelta(minutes=2, seconds=27),
                 duration=datetime.timedelta(minutes=1),
             ),

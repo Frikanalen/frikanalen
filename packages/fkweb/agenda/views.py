@@ -248,9 +248,13 @@ def fill_next_weeks_agenda():
 
 def fill_agenda_with_jukebox(start=None, days=3):
     start = start or timezone.now()
-    pre_scheduled = Scheduleitem.objects.by_day(date=start, days=days)
-    videos = Video.objects.fillers()
+    videos = Video.objects.fillers().order_by('?')
     end = start + datetime.timedelta(days=days)
+    # get sched
+    startdt, enddt = Scheduleitem.objects.expand_to_surrounding(start, end)
+    pre_scheduled = Scheduleitem.objects.filter(starttime__gte=startdt,
+            starttime__lte=enddt).order_by('starttime')
+
     create_sched = _fill_agenda_with_jukebox(start, end, pre_scheduled, videos)
     for schedobj in create_sched:
         video = schedobj['video']
@@ -260,7 +264,8 @@ def fill_agenda_with_jukebox(start=None, days=3):
             starttime=schedobj['starttime'],
             duration=video.duration)
         item.save()
-    return len(create_sched)
+    return create_sched
+
 
 def ceil_minute(dt):
     return dt + datetime.timedelta(0, dt.second and (60 - dt.second), -dt.microsecond)
@@ -277,22 +282,30 @@ def _fill_agenda_with_jukebox(start, end, pre_scheduled, videos):
     while True:
         try:
             sched = left_sched.pop(0)
+            if sched.endtime() < nextstart:
+                continue
+            if sched.starttime > end:
+                sched = None
         except IndexError:
             sched = None
         nextend = end
         if sched and floor_minute(sched.starttime) < end:
             nextend = floor_minute(sched.starttime)
-        (items, pool) = _fill_time_with_jukebox(nextstart, nextend, videos, current_pool=pool)
-        full_items.extend(items)
+        sec = (nextend - nextstart).total_seconds()
+        if sec > 30:
+            (items, pool) = _fill_time_with_jukebox(nextstart, nextend, videos, current_pool=pool)
+            full_items.extend(items)
+        else:
+            logging.info("Available time too litle, only %d sec" % sec)
         if nextend >= end:
             break
         nextstart = ceil_minute(sched.endtime())
     return full_items
 
 def _fill_time_with_jukebox(start, end, videos, current_pool=None):
-    logger.debug("\nFiling %s %s" % (start, end))
     current_time = start
     video_pool = current_pool or list(videos)
+    logger.info("Filling jukebox from %s to %s - %d in pool" % (start, end, len(video_pool)))
     rejected_videos = []
     new_items = []
 
@@ -324,9 +337,8 @@ def _fill_time_with_jukebox(start, end, videos, current_pool=None):
                 return (new_items, rejected_videos + video_pool)
         rejected_videos.extend(new_rejects)
         new_items.append({ 'id': video.id, 'starttime': current_time, 'video': video })
-        logger.debug ("Added video %s at curr time %s, rej %s, pool %s", video.id, current_time.strftime("%H:%M:%S"),
-                plist(rejected_videos),
-                plist(video_pool))
+        logger.info ("Added video %s at curr time %s", video.id,
+                current_time.strftime("%H:%M:%S"))
         current_time = ceil_minute(current_time + video.duration)
 
     return (new_items, rejected_videos + video_pool)
