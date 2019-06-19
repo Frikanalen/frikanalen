@@ -40,7 +40,7 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 
 class ScheduleitemAdmin(admin.ModelAdmin):
-    list_filter = ("starttime", )
+    list_filter = ('starttime', 'schedulereason', 'video__organization')
     list_display = ('__str__',
                     'video',
                     'schedulereason',
