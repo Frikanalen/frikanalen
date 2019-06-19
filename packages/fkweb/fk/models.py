@@ -148,6 +148,12 @@ class VideoManager(models.Manager):
                 .get_queryset()
                 .filter(publish_on_web=True, proper_import=True))
 
+    def fillers(self):
+        return (super(VideoManager, self)
+                .get_queryset()
+                .filter(is_filler=True, has_tono_records=False,
+                    organization__fkmember=True, proper_import=True))
+
 
 class Video(models.Model):
     id = models.AutoField(primary_key=True)
