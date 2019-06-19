@@ -262,11 +262,17 @@ def fill_agenda_with_jukebox(start=None, days=3):
         item.save()
     return len(create_sched)
 
+def ceil_minute(dt):
+    return dt + datetime.timedelta(0, dt.second and (60 - dt.second), -dt.microsecond)
+
+def floor_minute(dt):
+    return dt - datetime.timedelta(0, dt.second, dt.microsecond)
 
 def _fill_agenda_with_jukebox(start, end, pre_scheduled, videos):
     left_sched = list(pre_scheduled)
     full_items = []
-    nextstart = start
+    nextstart = ceil_minute(start)
+    end = floor_minute(end)
     pool = None
     while True:
         try:
@@ -274,13 +280,13 @@ def _fill_agenda_with_jukebox(start, end, pre_scheduled, videos):
         except IndexError:
             sched = None
         nextend = end
-        if sched and sched.starttime < end:
-            nextend = sched.starttime
+        if sched and floor_minute(sched.starttime) < end:
+            nextend = floor_minute(sched.starttime)
         (items, pool) = _fill_time_with_jukebox(nextstart, nextend, videos, current_pool=pool)
         full_items.extend(items)
         if nextend >= end:
             break
-        nextstart = sched.endtime()
+        nextstart = ceil_minute(sched.endtime())
     return full_items
 
 def _fill_time_with_jukebox(start, end, videos, current_pool=None):
@@ -321,7 +327,7 @@ def _fill_time_with_jukebox(start, end, videos, current_pool=None):
         logger.debug ("Added video %s at curr time %s, rej %s, pool %s", video.id, current_time.strftime("%H:%M:%S"),
                 plist(rejected_videos),
                 plist(video_pool))
-        current_time += video.duration
+        current_time = ceil_minute(current_time + video.duration)
 
     return (new_items, rejected_videos + video_pool)
 

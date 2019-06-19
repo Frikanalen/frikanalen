@@ -38,21 +38,15 @@ class FillJukeboxUnitTests(TestCase):
     start_date = parse_to_datetime('2019-06-30 12:00')
 
     @classmethod
-    def _video(cls, vid=None, min=60):
+    def _video(cls, vid=None, min=60, **kwargs):
         vid = vid or random.randint(0, 1000)
+        if 'duration' not in kwargs:
+            kwargs['duration'] =datetime.timedelta(minutes=min)
         return Video(
                 id=vid, name="id:%d, min:%d" % (vid, min),
                 editor_id=1, organization_id=1,
-                duration=datetime.timedelta(minutes=min),
-                proper_import=True, is_filler=True)
-
-    @classmethod
-    def _sched(cls, start_min, video_id=1, dur_min=60):
-        return Scheduleitem(
-            video_id=video_id,
-            starttime=cls.start_date + datetime.timedelta(minutes=start_min),
-            duration=datetime.timedelta(minutes=dur_min),
-        )
+                proper_import=True, is_filler=True,
+                **kwargs)
 
     def test_two_videos_fills_time(self):
         videos = [
@@ -68,6 +62,37 @@ class FillJukeboxUnitTests(TestCase):
         self.assertEquals(
                 [1, 2, 1, 2],
                 [r['id'] for r in res])
+
+    def test_times_are_rounded(self):
+        """
+        This test starts at 12:00:13, and there is a scheduled entry at 12:02:27.
+        That means it'll try to fit something inside 12:01:00 to 12:02:00.
+        It should find video 3 which is under 1 min.
+        """
+        videos = [
+            self._video(vid=1, duration=datetime.timedelta(minutes=1, seconds=1)),
+            self._video(vid=2, duration=datetime.timedelta(hours=1)),
+            self._video(vid=3, duration=datetime.timedelta(minutes=0, seconds=50)),
+        ]
+        pre_scheduled = [
+            Scheduleitem(
+                video_id='x',
+                starttime=self.start_date + datetime.timedelta(minutes=2, seconds=27),
+                duration=datetime.timedelta(minutes=1),
+            ),
+        ]
+        start = self.start_date + datetime.timedelta(seconds=13)
+        end = self.start_date + datetime.timedelta(minutes=10, seconds=3)
+
+        res = agenda_views._fill_agenda_with_jukebox(
+                start, end, pre_scheduled, videos)
+
+        self.assertEquals(
+                [3, 1, 1, 3, 3],
+                [r['id'] for r in res])
+        self.assertEquals(
+                self.start_date + datetime.timedelta(minutes=1),
+                res[0]['starttime'])
 
     def test_cases(self):
         # video: fillers that exist and their order, <id>:<length_in_min>m
@@ -104,8 +129,11 @@ class FillJukeboxUnitTests(TestCase):
                 existing, dur = sched.group('existing'), sched.group('dur')
                 if existing:
                     dur = 1
-                    pre_scheduled.append(
-                        self._sched(sched_cur, dur_min=int(dur), video_id="x"))
+                    pre_scheduled.append(Scheduleitem(
+                        video_id='x',
+                        starttime=self.start_date + datetime.timedelta(minutes=sched_cur),
+                        duration=datetime.timedelta(minutes=int(dur)),
+                    ))
                 sched_cur += int(dur)
             end = self.start_date + datetime.timedelta(minutes=sched_cur)
 
