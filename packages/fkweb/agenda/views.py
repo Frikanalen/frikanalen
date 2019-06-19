@@ -246,6 +246,81 @@ def fill_next_weeks_agenda():
         item.save()
 
 
+def fill_agenda_with_jukebox(start=None, days=3):
+    start = start or timezone.now()
+    pre_scheduled = Scheduleitem.objects.by_day(date=start, days=days)
+    videos = Video.objects.fillers()
+    end = start + datetime.timedelta(days=days)
+    create_sched = _fill_agenda_with_jukebox(start, end, pre_scheduled, videos)
+    for schedobj in create_sched:
+        video = schedobj['video']
+        item = Scheduleitem(
+            video=video,
+            schedulereason=Scheduleitem.REASON_JUKEBOX,
+            starttime=schedobj['starttime'],
+            duration=video.duration)
+        item.save()
+    return len(create_sched)
+
+
+def _fill_agenda_with_jukebox(start, end, pre_scheduled, videos):
+    left_sched = list(pre_scheduled)
+    full_items = []
+    nextstart = start
+    while True:
+        try:
+            sched = left_sched.pop(0)
+        except IndexError:
+            sched = None
+        nextend = end
+        if sched and sched.starttime < end:
+            nextend = sched.starttime
+        items = _fill_time_with_jukebox(nextstart, nextend, videos)
+        full_items.extend(items)
+        if not items or not len(items):
+            break
+        if nextend >= end:
+            break
+        nextstart = sched.endtime()
+    return full_items
+
+def _fill_time_with_jukebox(start, end, videos):
+    print("\nFiling", start, end)
+    current_time = start
+    video_pool = list(videos)
+    rejected_videos = []
+    new_items = []
+
+    def next_vid(first=False):
+        print("next vid", video_pool, rejected_videos)
+        if len(rejected_videos):
+            return rejected_videos.pop(0)
+        if len(video_pool) < len(videos) and first:
+            video_pool.extend(list(videos))
+        if not len(video_pool):
+            return None
+        return video_pool.pop(0)
+
+    while current_time < end:
+        video = next_vid(True)
+        new_rejects = []
+        print( "end would be", current_time + video.duration)
+        while current_time + video.duration > end:
+            print ("that's not good")
+            new_rejects.append(video)
+            video = next_vid()
+            print ("next vid is", video, "rejected", rejected_videos, "new_rej", new_rejects)
+            if not video:
+                return new_items
+            print( "end would be", current_time + video.duration)
+        rejected_videos.extend(new_rejects)
+        new_items.append({ 'id': video.id, 'starttime': current_time, 'video': video })
+        print ("added video", video.id, " at curr time", current_time, "rejected", rejected_videos)
+        current_time += video.duration
+
+    return new_items
+
+
 def xmltv_home(request):
     """ Information about the XMLTV schedule presentation. """
     now = timezone.now()
