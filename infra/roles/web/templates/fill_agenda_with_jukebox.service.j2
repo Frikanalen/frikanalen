@@ -1,0 +1,14 @@
+[Unit]
+AssertPathExists={{app_dir}}/app/packages/fkweb/
+
+[Service]
+Type=oneshot
+User={{app_user}}
+Group={{app_user}}
+WorkingDirectory={{app_dir}}/app/packages/fkweb/
+Environment=SECRET_KEY={{app_secret_key}}
+Environment=DATABASE_USER={{app_user}}
+Environment=DATABASE_PASS={{app_db_pass}}
+Environment=DATABASE_NAME={{app_db_name}}
+Environment=DJANGO_SETTINGS_MODULE=fkbeta.settings.production
+ExecStart={{app_dir}}/env/bin/python manage.py fill_agenda_with_jukebox -v 2

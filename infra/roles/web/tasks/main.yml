@@ -42,13 +42,43 @@
     owner={{app_user}}
     group={{app_user}}
   tags: githook
-- name: Install systemd unit file
+
+- name: Install fkweb.service
   template:
     src=fkweb.service.j2
     dest=/etc/systemd/system/fkweb.service
-    mode=0640
-- name: Enable and start service
+  tags: systemd
+- name: Install fill_agenda_with_jukebox.service
+  template:
+    src=fill_agenda_with_jukebox.service.j2
+    dest=/etc/systemd/system/fill_agenda_with_jukebox.service
+  tags: systemd
+- name: Install fill_next_weeks_agenda.service
+  template:
+    src=fill_next_weeks_agenda.service.j2
+    dest=/etc/systemd/system/fill_next_weeks_agenda.service
+  tags: systemd
+- name: Install fill_agenda_with_jukebox.timer
+  template:
+    src=fill_agenda_with_jukebox.timer.j2
+    dest=/etc/systemd/system/fill_agenda_with_jukebox.timer
+  tags: systemd
+- name: Install fill_next_weeks_agenda.timer
+  template:
+    src=fill_next_weeks_agenda.timer.j2
+    dest=/etc/systemd/system/fill_next_weeks_agenda.timer
+  tags: systemd
+
+- name: Enable and start fkweb.service
   systemd: state=restarted name=fkweb daemon_reload=yes enabled=true
+  tags: systemd
+- name: Enable fill_next_weeks_agenda.timer
+  systemd: name=fill_next_weeks_agenda.timer enabled=true
+  tags: systemd
+- name: Enable fill_agenda_with_jukebox.timer
+  systemd: name=fill_agenda_with_jukebox.timer enabled=true
+  tags: systemd
+
 - name: Allow {{app_user}} restart service
   lineinfile:
     dest: /etc/sudoers
