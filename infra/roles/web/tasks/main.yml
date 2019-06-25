@@ -73,10 +73,10 @@
   systemd: state=restarted name=fkweb daemon_reload=yes enabled=true
   tags: systemd
 - name: Enable fill_next_weeks_agenda.timer
-  systemd: name=fill_next_weeks_agenda.timer enabled=true
+  systemd: name=fill_next_weeks_agenda.timer enabled=true state=started
   tags: systemd
 - name: Enable fill_agenda_with_jukebox.timer
-  systemd: name=fill_agenda_with_jukebox.timer enabled=true
+  systemd: name=fill_agenda_with_jukebox.timer enabled=true state=started
   tags: systemd
 
 - name: Allow {{app_user}} restart service
