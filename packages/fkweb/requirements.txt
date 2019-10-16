@@ -1,4 +1,4 @@
-Django == 1.11.20
+Django == 1.11.23
 Markdown == 3.0.1
 django-durationfield == 0.5.5
 # django-filter 2 is only py3
