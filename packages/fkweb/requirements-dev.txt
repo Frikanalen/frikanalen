@@ -2,7 +2,7 @@
 # Local development and testing dependencies go in this file
 
 django-debug-toolbar == 1.11.0
-PyYAML == 3.13
+PyYAML == 5.1
 
 #coverage == 3.6
 #django-discover-runner == 0.4
