@@ -193,6 +193,7 @@ TEMPLATES = [
 ########## MIDDLEWARE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#middleware-classes
 MIDDLEWARE = (
+    'corsheaders.middleware.CorsMiddleware',
     # Default Django middleware.
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -232,6 +233,7 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
+    'corsheaders',
     'django_filters',
     'registration',
     'rest_framework',
@@ -352,3 +354,8 @@ CSP_SANDBOX = None
 # reverse in settings.py causes an import dependency loop in django.
 # Hardcoding relative URL instead.
 CSP_REPORT_URI = "/csp-report"
+
+# Everything with the API should be okay, since we don't share
+# the login cookie it's all safe.
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/api/.*$' # anyway, only enable CORS for the API
