@@ -6,19 +6,10 @@ from django.contrib.auth.admin import UserAdmin
 
 from fk.models import FileFormat
 from fk.models import Organization
-from fk.models import UserProfile
 from fk.models import Video, Category, Scheduleitem
 from fk.models import VideoFile
 from fk.models import SchedulePurpose, WeeklySlot
 
-# In order to display the userprofile on
-admin.site.unregister(get_user_model())
-
-class UserProfileInline(admin.StackedInline):
-    model = UserProfile
-
-class UserProfileAdmin(UserAdmin):
-    inlines = [ UserProfileInline, ]
 
 class VideoFileInline(admin.StackedInline):
     fields = ('format', 'filename', 'old_filename')
@@ -73,7 +64,6 @@ admin.site.register(FileFormat)
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(SchedulePurpose, SchedulePurposeAdmin)
 admin.site.register(Scheduleitem, ScheduleitemAdmin)
-admin.site.register(get_user_model(), UserProfileAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(VideoFile)
 admin.site.register(WeeklySlot, WeeklySlotAdmin)
