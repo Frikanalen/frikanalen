@@ -392,7 +392,7 @@ class Scheduleitem(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(
         blank=True, max_length=255, default='', null=True)
     mailing_address = models.CharField(

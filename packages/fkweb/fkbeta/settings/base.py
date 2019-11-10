@@ -32,9 +32,6 @@ CHANNEL_DISPLAY_NAMES = ["Frikanalen"]
 # URL to the website for references in feeds (No trailing slash)
 SITE_URL = 'https://frikanalen.no'
 
-# For django-registration
-ACCOUNT_ACTIVATION_DAYS = 7
-
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
@@ -235,7 +232,6 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     'corsheaders',
     'django_filters',
-    'registration',
     'rest_framework',
     'rest_framework.authtoken',
 )
