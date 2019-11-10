@@ -6,7 +6,6 @@ import uuid
 
 import pytz
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -38,7 +37,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, max_length=255)
 
-    members = models.ManyToManyField(User)  # User ownership of an organization
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL)  # User ownership of an organization
     fkmember = models.BooleanField(default=False)
     orgnr = models.CharField(blank=True, max_length=255)
     homepage = models.CharField('Link back to the organisation home page.',
@@ -164,7 +163,7 @@ class Video(models.Model):
     # Code for editors' internal use
     # production_code = models.CharField(null=True,max_length=255)
     categories = models.ManyToManyField(Category)
-    editor = models.ForeignKey(User)
+    editor = models.ForeignKey(settings.AUTH_USER_MODEL)
     has_tono_records = models.BooleanField(default=False)
     is_filler = models.BooleanField('Play automatically?',
                                     help_text = 'You still have the editorial responsibility.  Only affect videos from members.',
@@ -172,7 +171,7 @@ class Video(models.Model):
     publish_on_web = models.BooleanField(default=True)
 
     # disabled = models.BooleanField() # Not migrated
-    # uploader = models.ForeignKey(User)
+    # uploader = models.ForeignKey(settings.AUTH_USER_MODEL)
     # Planned duration in milliseconds, probably not going to be used
     # planned_duration = models.IntegerField()
     # Time when it is to be published on web
@@ -392,7 +391,7 @@ class Scheduleitem(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone = models.CharField(
         blank=True, max_length=255, default='', null=True)
     mailing_address = models.CharField(
@@ -415,7 +414,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         profile, created = UserProfile.objects.get_or_create(user=instance)
 
 # Create a hook so the profile model is created when a User is.
-post_save.connect(create_user_profile, sender=User)
+post_save.connect(create_user_profile, sender=settings.AUTH_USER_MODEL)
 
 
 class SchedulePurpose(models.Model):
