@@ -390,33 +390,6 @@ class Scheduleitem(models.Model):
         return self.starttime + self.duration
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phone = models.CharField(
-        blank=True, max_length=255, default='', null=True)
-    mailing_address = models.CharField(
-        blank=True, max_length=512, default='', null=True)
-    post_code = models.CharField(
-        blank=True, max_length=255, default='', null=True)
-    city = models.CharField(
-        blank=True, max_length=255, default='', null=True)
-    country = models.CharField(
-        blank=True, max_length=255, default='', null=True)
-    legacy_username = models.CharField(
-        blank=True, max_length=255, default='')
-
-    def __str__(self):
-        return "%s (profile)" % self.user
-
-
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        profile, created = UserProfile.objects.get_or_create(user=instance)
-
-# Create a hook so the profile model is created when a User is.
-post_save.connect(create_user_profile, sender=settings.AUTH_USER_MODEL)
-
-
 class SchedulePurpose(models.Model):
     """
     A block of video files having a similar purpose.
