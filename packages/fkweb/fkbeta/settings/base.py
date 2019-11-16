@@ -20,7 +20,7 @@ FK_MEDIA_ROOT = '/tank/new_media/media'
 
 FK_UPLOAD_URL = 'https://upload.frikanalen.no/upload'
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'fk.User'
 LOGIN_URL = '/login/'
 
 # Channel ID per RFC 2838 (Uniform Resource Identifier for Television Broadcasts)

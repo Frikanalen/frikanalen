@@ -10,8 +10,6 @@ from django.utils import timezone
 from fk.models import Scheduleitem
 from fk.templatetags import vod
 
-User = get_user_model()
-
 class UserRegistrationTest(TestCase):
     fixtures = ['test.yaml']
 
@@ -30,7 +28,7 @@ class UserRegistrationTest(TestCase):
                 'email':      'test@example.com',
                 'country':    'Norway'
             })
-        u = User.objects.get(username='staff_user')
+        u = get_user_model().objects.get(username='staff_user')
         self.assertEqual('Firstname', u.first_name)
         self.assertEqual('Lastname', u.last_name)
         self.assertEqual('test@example.com', u.email)

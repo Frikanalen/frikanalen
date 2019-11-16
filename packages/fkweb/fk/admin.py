@@ -1,14 +1,14 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from fk.models import FileFormat
 from fk.models import Organization
+from fk.models import SchedulePurpose, WeeklySlot
+from fk.models import User
 from fk.models import Video, Category, Scheduleitem
 from fk.models import VideoFile
-from fk.models import SchedulePurpose, WeeklySlot
 
 
 class VideoFileInline(admin.StackedInline):
@@ -64,6 +64,7 @@ admin.site.register(FileFormat)
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(SchedulePurpose, SchedulePurposeAdmin)
 admin.site.register(Scheduleitem, ScheduleitemAdmin)
+admin.site.register(User, UserAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(VideoFile)
 admin.site.register(WeeklySlot, WeeklySlotAdmin)

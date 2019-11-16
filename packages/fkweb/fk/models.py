@@ -6,6 +6,7 @@ import uuid
 
 import pytz
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -30,6 +31,11 @@ some content before it can be properly used.
 Fields that are commented out are suggestions for future fields. If they
 turn out to be silly they should obviously be removed.
 """
+
+
+class User(AbstractUser):
+    class Meta:
+        db_table = 'auth_user'
 
 
 class Organization(models.Model):

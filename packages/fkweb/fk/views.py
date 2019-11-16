@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 
-from fk.forms import UserForm
+from fk.forms import UserCreationForm, UserForm
 from fk.models import Organization
 
 
