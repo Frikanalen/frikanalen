@@ -277,7 +277,7 @@ def measure_loudness(watch_dir, move_to_dir):
     """
 
     maxtime = 60 # stop processing after this amount of seconds
-    pagesize = 2 # Process this amount of video file per format at the time
+    pagesize = 5 # Process this amount of video file per format at the time
     start = time.time()
     for fsname in ('original', 'broadcast', 'theora'):
         params = {
