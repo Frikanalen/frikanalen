@@ -11,6 +11,11 @@ if [ -z "$refname" ]; then echo params missing; exit 1; fi
 echo "> Deploying app"
 dir={{app_dir}}/app
 fkweb_dir=$dir/packages/fkweb
+
+# make sure old migrations are truly gone
+find $fkweb_dir -path "**/migrations/*.py" -not -name "__init__.py" -delete
+find $fkweb_dir -path "**/migrations/*.pyc" -not -name "__init__.py" -delete
+
 git --work-tree="$dir" checkout -qf "$newrev"
 cd $dir
 
@@ -32,6 +37,16 @@ export SECRET_KEY={{app_secret_key}}
 export DATABASE_USER={{app_user}}
 export DATABASE_PASS={{app_db_pass}}
 export DATABASE_NAME={{app_db_name}}
+
+# TEMPORARY CODE TO MIGRATE TO CUSTOM USER
+echo "CREATE TABLE django_migrations_201911 AS (SELECT * FROM django_migrations);" | $fkweb_dir/manage.py dbshell
+echo "DELETE FROM django_migrations;" | $fkweb_dir/manage.py dbshell
+echo "UPDATE django_content_type SET app_label='fk' WHERE app_label='auth' AND model='user';" | $fkweb_dir/manage.py dbshell
+$fkweb_dir/manage.py migrate --fake
+sudo systemctl restart fkweb
+
+echo "DONE THE MIGRATION"
+exit 0
 
 # should only do these when required
 pip install -qr "$fkweb_dir/requirements.txt"

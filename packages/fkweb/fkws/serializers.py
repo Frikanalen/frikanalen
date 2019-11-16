@@ -14,9 +14,6 @@ from fk.models import Video
 from fk.models import VideoFile
 
 
-User = get_user_model()
-
-
 class VideoFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoFile
@@ -34,7 +31,7 @@ class VideoFileSerializer(serializers.ModelSerializer):
 
 class VideoSerializer(serializers.ModelSerializer):
     editor = serializers.SlugRelatedField(
-        slug_field='username', queryset=User.objects.all(),
+        slug_field='username', queryset=get_user_model().objects.all(),
         default=serializers.CurrentUserDefault())
     organization = serializers.SlugRelatedField(
         slug_field='name', queryset=Organization.objects.all(),
