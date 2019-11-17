@@ -34,8 +34,7 @@ turn out to be silly they should obviously be removed.
 
 
 class User(AbstractUser):
-    class Meta:
-        db_table = 'auth_user'
+    pass
 
 
 class Organization(models.Model):
@@ -60,7 +59,6 @@ class Organization(models.Model):
     # categories = models.ManyToManyField(Category)
 
     class Meta:
-        db_table = 'Organization'
         ordering = ('name', '-id')
 
     def __str__(self):
@@ -84,7 +82,6 @@ class FileFormat(models.Model):
     # metadata framerate, resolution, etc?
 
     class Meta:
-        db_table = 'ItemType'
         verbose_name = 'video file format'
         verbose_name_plural = 'video file formats'
         ordering = ('fsname', '-id')
@@ -138,7 +135,6 @@ class Category(models.Model):
     desc = models.CharField(max_length=255, blank=True)
 
     class Meta:
-        db_table = 'Category'
         verbose_name = 'video category'
         verbose_name_plural = 'video categories'
         ordering = ('name', '-id')
@@ -210,7 +206,6 @@ class Video(models.Model):
     objects = VideoManager()
 
     class Meta:
-        db_table = 'Video'
         get_latest_by = 'uploaded_time'
         ordering = ('-id',)
 
@@ -375,7 +370,6 @@ class Scheduleitem(models.Model):
     objects = ScheduleitemManager()
 
     class Meta:
-        db_table = 'ScheduleItem'
         verbose_name = 'TX schedule entry'
         verbose_name_plural = 'TX schedule entries'
         ordering = ('-id',)
