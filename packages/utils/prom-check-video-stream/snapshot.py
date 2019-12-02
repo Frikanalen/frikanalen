@@ -6,7 +6,7 @@ class Snapshot:
 
     async def update(self):
         async with aiohttp.ClientSession() as session:
-            async with session.get('http://192.168.3.1:9094/frikanalen.ts') as resp:
+            async with session.get('http://simula.gunkies.org:9094/frikanalen.ts') as resp:
                 with open(self.filename, 'wb') as fd:
                     while fd.tell() <= 10000000:
                         chunk = await resp.content.read(1024)

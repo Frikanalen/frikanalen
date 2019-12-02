@@ -1,6 +1,10 @@
 Transport stream analyzer for prometheus
 
-## install
+So far, all this does is sleep, grab a chunk of TS data from the cubemap on simula, and 
+log mean audio level.
+
+Requires tsanalyze and ffmpeg.
+## Install
 
 ```
 apt-get install virtualenv
