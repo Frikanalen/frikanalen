@@ -24,6 +24,12 @@ async def main():
         dBFS = scan()
         VU_METER.set(dBFS)
         an = analysis()
+        misc_bitrate = 0
+        for pid, data in an['pids'].items():
+            if pid in [564, 768]:
+                continue
+            misc_bitrate += data['bitrate']
+        MISC_BITRATE.set(misc_bitrate)
         VIDEO_BITRATE.set(an['pids'][564]['bitrate'])
         AUDIO_BITRATE.set(an['pids'][768]['bitrate'])
         await asyncio.sleep(5)
