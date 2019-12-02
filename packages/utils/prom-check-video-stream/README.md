@@ -4,6 +4,7 @@ So far, all this does is sleep, grab a chunk of TS data from the cubemap on simu
 log mean audio level.
 
 Requires tsanalyze and ffmpeg.
+
 ## Install
 
 ```
@@ -13,9 +14,10 @@ virtualenv -p python3 env
 pip install -r requirements.txt
 ```
 
-##TODO
+## TODO
 
-
-* Better deployment
+* Better deployment (setup.py?)
+* Configurability
+* systemd service
 * Video motion analysis (still image detection)
-* Transport stream statistics (tsanalyze?)
+* ~~Transport stream statistics (tsanalyze?)~~
