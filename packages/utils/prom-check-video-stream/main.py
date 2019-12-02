@@ -7,19 +7,26 @@ from prometheus_async.aio import time, web
 
 from snapshot import Snapshot
 from audio_analysis import scan
+from ts_analysis import analysis
 
-L_VU_METER = Gauge('audio_vu', 'VU average over sample size in dBFS')
+VU_METER = Gauge('audio_vu', 'VU average over sample size in dBFS')
+VIDEO_BITRATE = Gauge('video_bitrate', 'bits per second in sample')
+AUDIO_BITRATE = Gauge('audio_bitrate', 'bits per second in sample')
+MISC_BITRATE = Gauge('misc_bitrate', 'bits per second in sample')
 
 async def main():
     snapshot = Snapshot()
 
     web.start_http_server_in_thread(port=8000)
     while True:
-        await asyncio.sleep(5)
         print('Getting snapshot...')
         await snapshot.update()
         dBFS = scan()
-        L_VU_METER.set(dBFS)
+        VU_METER.set(dBFS)
+        an = analysis()
+        VIDEO_BITRATE.set(an['pids'][564]['bitrate'])
+        AUDIO_BITRATE.set(an['pids'][768]['bitrate'])
+        await asyncio.sleep(5)
 
 if __name__ == '__main__':
     asyncio.run(main())
