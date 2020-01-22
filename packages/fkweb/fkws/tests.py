@@ -11,8 +11,8 @@ from fk.models import VideoFile, Scheduleitem
 class PermissionsTest(APITestCase):
     fixtures = ['test.yaml']
 
-    def _user_auth(self, username):
-        user = get_user_model().objects.get(username=username)
+    def _user_auth(self, email):
+        user = get_user_model().objects.get(email=email)
         self.client.credentials(
             HTTP_AUTHORIZATION='Token ' + user.auth_token.key)
 
@@ -335,7 +335,7 @@ class FilterTest(APITestCase):
     fixtures = ['test.yaml']
 
     def setUp(self):
-        self.client.login(username='staff_user', password='test')
+        self.client.login(email='staff_user', password='test')
 
     def list_lookup(self, urlname, fieldname, lookups):
         for lookup, expect in lookups:
@@ -373,9 +373,9 @@ class FilterTest(APITestCase):
             ('?ref_url=b', ['dummy video']),
             ('?ref_url__startswith=b', ['dummy video']),
             ('?ref_url__startswith=a', ['unpublished video', 'tech video']),
-            ('?editor__username=nuug', []),
-            ('?editor__username=nuug_user', ['tech video']),
-            ('?editor__username=dummy_user&name=', ['dummy video']),
+            ('?editor__email=nuug', []),
+            ('?editor__email=nuug_user', ['tech video']),
+            ('?editor__email=dummy_user&name=', ['dummy video']),
             ('?proper_import=false', ['broken video']),
             ('?proper_import=true', ['unpublished video', 'dummy video', 'tech video']),
         ]
@@ -401,7 +401,7 @@ class ScheduleitemTest(APITestCase):
     fixtures = ['test.yaml']
 
     def setUp(self):
-        self.client.login(username='staff_user', password='test')
+        self.client.login(email='staff_user', password='test')
 
     def test_creating_new_scheduleitem(self):
         # Rest Framework now always sends back dates using configured TZ
