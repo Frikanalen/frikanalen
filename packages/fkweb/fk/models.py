@@ -6,7 +6,7 @@ import uuid
 
 import pytz
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -33,9 +33,72 @@ turn out to be silly they should obviously be removed.
 """
 
 
-class User(AbstractUser):
-    pass
+class UserManager(BaseUserManager):
+    def create_user(self, email, date_of_birth, password=None):
+        """
+        Creates and saves a User with the given email, date of
+        birth and password.
+        """
+        if not email:
+            raise ValueError('Users must have an email address')
 
+        user = self.model(
+            email=self.normalize_email(email),
+            date_of_birth=date_of_birth,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, date_of_birth, password):
+        """
+        Creates and saves a superuser with the given email, date of
+        birth and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+            date_of_birth=date_of_birth,
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+
+class User(AbstractBaseUser):
+    email = models.EmailField(verbose_name='email address', max_length=254, unique=True)
+    first_name = models.CharField(blank=True, max_length=30, verbose_name='first name')
+    last_name = models.CharField(blank=True, max_length=30, verbose_name='last name')
+    is_active = models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')
+    is_superuser = models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')
+
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_of_birth = models.DateField(blank=True, null=True)
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['date_of_birth']
+
+    def __str__(self):
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
 
 class Organization(models.Model):
     id = models.AutoField(primary_key=True)
@@ -52,7 +115,7 @@ class Organization(models.Model):
     # owner = models.ForeignKey(User)
     # Videos to feature on their frontpage, incl other members
     # featured_videos = models.ManyToManyField("Video")
-    # twitter_username = models.CharField(null=True,max_length=255)
+    # twitter_email = models.CharField(null=True,max_length=255)
     # twitter_tags = models.CharField(null=True,max_length=255)
     # To be copied into every video they create
     # homepage = models.CharField(blank=True, max_length=255)
