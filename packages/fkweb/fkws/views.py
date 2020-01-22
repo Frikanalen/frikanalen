@@ -198,7 +198,7 @@ class VideoFilter(djfilters.FilterSet):
         model = Video
         fields = {
             'duration': ['exact', 'gt', 'gte', 'lt', 'lte'],
-            'editor__username': ['exact'],
+            'editor__email': ['exact'],
             'framerate': ['exact'],
             'has_tono_records': ['exact'],
             'is_filler': ['exact'],
@@ -224,7 +224,7 @@ class VideoList(generics.ListCreateAPIView):
     `ordering` - Order results by specified field.  Prepend a minus for
                  descending order.  I.e. `?ordering=-id`.
 
-    `editor__username` - the username of the editor
+    `editor__email` - the email of the editor
 
     `framerate` - the framerate in hz * 1000
 

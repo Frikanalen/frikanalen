@@ -161,7 +161,7 @@ h1 {
                 <form action="{% url 'login' %}" method="POST">
                   {% csrf_token %}
                   <input id="id_username" type="text" name="username"
-                      placeholder="username" maxlength="30">
+                      placeholder="email" maxlength="30">
                   <input id="id_password" type="password" name="password"
                       placeholder="password" maxlength="4096">
                   <input type="submit" value="{% trans "Log in" %}">
@@ -177,7 +177,7 @@ h1 {
             <li>
               <div class="login_box">
                 Logged in as
-                <a href="{% url 'profile' %}" title='User page for {{ user.first_name }} {{ user.last_name }}'>{{ user.username }}</a>
+                <a href="{% url 'profile' %}" title='User page for {{ user.first_name }} {{ user.last_name }}'>{{ user.email }}</a>
                 (<a href="{% url 'logout' %}">{% trans "log out" %}</a>)
               </div>{# .login-box #}
             </li>
