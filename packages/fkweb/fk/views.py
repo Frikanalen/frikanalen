@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -16,6 +17,10 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
+            new_user.refresh_from_db()
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(email=new_user.email, password=raw_password)
+            login(request, user)
             return HttpResponseRedirect("/")
     else:
         form = UserCreationForm()

@@ -15,7 +15,7 @@ class UserRegistrationTest(TestCase):
 
 
     def setUp(self):
-        self.client.login(username='staff_user', password='test')
+        self.client.login(email='staff_user', password='test')
 
 
     def test_user_profile_update(self):
@@ -25,13 +25,12 @@ class UserRegistrationTest(TestCase):
             reverse('profile'), {
                 'first_name': 'Firstname',
                 'last_name':  'Lastname',
-                'email':      'test@example.com',
                 'country':    'Norway'
             })
-        u = get_user_model().objects.get(username='staff_user')
+        u = get_user_model().objects.get(email='staff_user')
         self.assertEqual('Firstname', u.first_name)
         self.assertEqual('Lastname', u.last_name)
-        self.assertEqual('test@example.com', u.email)
+        self.assertEqual('staff_user', u.email)
         # Uncomment when https://github.com/Frikanalen/frikanalen/issues/77 is fixed
         #self.assertEqual('Norway', u.userprofile.country)
 
