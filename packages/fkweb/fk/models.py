@@ -34,6 +34,8 @@ turn out to be silly they should obviously be removed.
 
 
 class UserManager(BaseUserManager):
+    use_in_migrations = True
+
     def create_user(self, email, date_of_birth, password=None):
         """
         Creates and saves a User with the given email, date of
@@ -61,7 +63,7 @@ class UserManager(BaseUserManager):
             password=password,
             date_of_birth=date_of_birth,
         )
-        user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -71,7 +73,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(blank=True, max_length=30, verbose_name='first name')
     last_name = models.CharField(blank=True, max_length=30, verbose_name='last name')
     is_active = models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')
-    is_superuser = models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')
+    is_superuser = models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='admin status')
 
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     date_of_birth = models.DateField(blank=True, null=True)
@@ -87,18 +89,18 @@ class User(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
-        return True
+        return self.is_superuser
 
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
-        return True
+        return self.is_superuser
 
     @property
     def is_staff(self):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
-        return self.is_admin
+        return self.is_superuser
 
 class Organization(models.Model):
     id = models.AutoField(primary_key=True)
