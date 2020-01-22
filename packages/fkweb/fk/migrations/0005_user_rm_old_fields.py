@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import fk.models
 
 
 class Migration(migrations.Migration):
@@ -37,5 +38,11 @@ class Migration(migrations.Migration):
             model_name='user',
             name='is_superuser',
             field=models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='admin status'),
+        ),
+        migrations.AlterModelManagers(
+            name='user',
+            managers=[
+                ('objects', fk.models.UserManager()),
+            ],
         ),
     ]
