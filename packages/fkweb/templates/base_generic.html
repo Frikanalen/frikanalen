@@ -160,7 +160,7 @@ h1 {
               <div class="login_box">
                 <form action="{% url 'login' %}" method="POST">
                   {% csrf_token %}
-                  <input id="id_email" type="text" name="email"
+                  <input id="id_username" type="text" name="username"
                       placeholder="email" maxlength="30">
                   <input id="id_password" type="password" name="password"
                       placeholder="password" maxlength="4096">

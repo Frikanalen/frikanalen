@@ -33,4 +33,9 @@ class Migration(migrations.Migration):
             name='email',
             field=models.EmailField(max_length=254, unique=True, verbose_name='email address'),
         ),
+        migrations.AlterField(
+            model_name='user',
+            name='is_superuser',
+            field=models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='admin status'),
+        ),
     ]
