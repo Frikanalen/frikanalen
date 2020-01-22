@@ -28,7 +28,7 @@ async def main():
         for pid, data in an['pids'].items():
             if pid in [564, 768]:
                 continue
-            misc_bitrate += data['bitrate']
+            misc_bitrate += int(data['bitrate'])
         MISC_BITRATE.set(misc_bitrate)
         VIDEO_BITRATE.set(an['pids'][564]['bitrate'])
         AUDIO_BITRATE.set(an['pids'][768]['bitrate'])
