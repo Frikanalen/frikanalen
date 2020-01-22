@@ -1,0 +1,18 @@
+---
+- include_vars: users.yml
+- name: "Create user accounts"
+  user:
+    name: "{{ item.username }}"
+    groups: "sudo,www-data"
+  with_items: "{{ users }}"
+- name: "Add authorized keys"
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ item.ssh_keys }}"
+  with_items: "{{ users }}"
+- name: "Allow admin users to sudo without a password"
+  lineinfile:
+    dest: "/etc/sudoers" # path: in version 2.3
+    state: "present"
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
