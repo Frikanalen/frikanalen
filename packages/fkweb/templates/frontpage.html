@@ -22,11 +22,40 @@
     margin: 20px auto;
     max-width: 520px;
   }
+
+  .ontv {
+    margin: 10px auto;
+    max-width: 600px;
+    padding: 10px;
+    line-height: 1.4;
+  }
+  .ontv-head {
+    font-size: 130%;
+  }
+  .ontv-video {
+    font-size: 150%;
+  }
+  #current {
+    background-color: #eda;
+  }
+  #previous {
+    background-color: #f4e5e5;
+    font-size: 75%;
+    opacity: 0.75;
+  }
+  #next {
+    background-color: #e8f4e3;
+    font-size: 75%;
+  }
   </style>
 {% endblock style %}
 
 {% block content %}
 <div id="mainbox">
+  {% include "scheditem_ontv.html" with scheditem=prev_scheditem type="previous" %}
+  {% include "scheditem_ontv.html" with scheditem=curr_scheditem type="current" %}
+  {% include "scheditem_ontv.html" with scheditem=next_scheditem type="next" %}
+
   <div id=live>
     <h1>{% trans "Frikanalen broadcast" %}</h1>
     <video width=1024 height=576 controls src="http://icecast.frikanalen.no/frikanalen.webm"></video>

@@ -22,6 +22,14 @@ def _get_video(video_id):
 
 
 @register.inclusion_tag('fkvod/vod_widget.html')
+def show_sched(scheditem, type):
+    return {
+        'video': video,
+        'video_error': video_error,
+        'video_error_explanation': video_error_explanation,
+        'title': title,
+    }
+@register.inclusion_tag('fkvod/vod_widget.html')
 def show_vod_widget(video_id):
     video_error_explanation = ''
     video, video_error = _get_video(video_id)
