@@ -1,3 +1,11 @@
+[encoder]
+obe-hd.frikanalen.no
+
+[tx]
+tx1.frikanalen.no
+tx2.frikanalen.no
+tx3.frikanalen.no
+
 [upload]
 #simula.gunkies.org # deprecated
 file01.frikanalen.no nginx=true domain=upload.frikanalen.no

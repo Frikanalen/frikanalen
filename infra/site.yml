@@ -1,4 +1,11 @@
 ---
+- name: Add volunteers to user database
+  hosts: all
+  become: true
+  gather_facts: false
+  roles:
+    - common
+  tags: common
 - name: Install upload app
   hosts: upload
   become: true
