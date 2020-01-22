@@ -1,0 +1,10 @@
+---
+users:
+    - username: "toresbe"
+      realname: "Tore Sinding Bekkedal"
+      ssh_keys: |
+          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKS8PkeV+Itq1ysleZJ1p/mnukyErXuIPJRuvByCiGot toreb@DESKTOP-7IK2A92
+    - username: "estephaz"
+      realname: "Estephan Zouain"
+      ssh_keys: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4Re1qbqRbHgJFaSHDYLC0QiFXKHGcMfZ/c38U8WVCMT9zp+CSOODITNQEhdnsBGc/fekDrtTuP7MxEOyB4FVHcN69bXkYDtNUyUCEA9TZP2rJdRs/RUpSZ/3BsWXcqKOaC2pohx19+/9zgt+nZtKzdvsBhJyeFBI47Cs7Ah2LRLgLYo/VrlGzg0rSWFG87nAWp5k+O039vsHqeTMZBQTrKb3+b8vgqYDP38oZ5Bt0++tgh7jlJRDQKBVGhnMByMlx6APomnuc8Oa1MJzX4fBos/IuPdXcj/jQ0lmHLaYcFM2Z3IVf6/pNUqroNLurKmZEuP8kW3yjYO9XzNMLtMVp estephan
