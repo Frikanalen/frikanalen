@@ -21,7 +21,7 @@
   fields:
     email: staff_user
     is_active: true
-    is_staff: true
+    is_superuser: true
     password: "pbkdf2_sha256$10000$HHCakMLbFW70$+otoYf+1VFEcfoYKbhQOA6/JZrgq+4aTpohtzT+/pf8="  # password = test
 
 - model: fk.organization
