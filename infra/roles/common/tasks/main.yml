@@ -1,9 +1,13 @@
 ---
 - include_vars: users.yml
+- name: "Create FK web developer account"
+  group:
+      name: "fkweb"
+      state: present
 - name: "Create user accounts"
   user:
     name: "{{ item.username }}"
-    groups: "sudo,www-data"
+    groups: "sudo,www-data,fkweb"
   with_items: "{{ users }}"
 - name: "Add authorized keys"
   authorized_key:
