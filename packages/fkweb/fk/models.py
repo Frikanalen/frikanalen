@@ -96,6 +96,9 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return self.is_superuser
 
+    def get_short_name(self):
+        return self.email
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"
