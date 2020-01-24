@@ -46,8 +46,8 @@
       "pk": 7,
       "fields": {
          "fsname": "theora",
-         "mime_types": "video/ogg",
-         "vod_pubish": true
+         "mime_type": "video/ogg",
+         "vod_publish": true
       }
    },
    {
