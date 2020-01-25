@@ -4,7 +4,7 @@ import LiveNow from '../components/LiveNow';
 export default function index() {
   return (
     <Layout>
-      <LiveNow />
+      <p>LiveNow </p>
     </Layout>
   );
 }

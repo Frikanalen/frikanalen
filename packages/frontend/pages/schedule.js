@@ -1,4 +1,5 @@
 import Layout from '../components/Layout';
+import * as env from '../components/constants';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 
@@ -27,7 +28,7 @@ const Schedule = props => (
     </Layout>
 )
 Schedule.getInitialProps = async function() {
-  const res = await fetch('https://frikanalen.no/api/scheduleitems/');
+  const res = await fetch(env.API_BASE_URL + 'scheduleitems/');
   const data = await res.json();
 
   return {
