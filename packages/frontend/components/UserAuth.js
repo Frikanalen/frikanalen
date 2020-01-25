@@ -18,7 +18,21 @@ class UserAuth extends Component {
 
     logged_in_nav = () => {
         return (
-            <p onClick={this.handle_logout}>Logged in!</p>
+            <div>
+            <button onClick={this.handle_logout}>logg ut</button>
+            <style jsx>{`
+            button {
+                margin: 1px;
+                margin-left: 30px;
+                color: white;
+                background: #333;
+                border: 1px solid white;
+                text-color: white;
+                font-family: 'Roboto', sans-serif;
+                font-size: 14pt;
+            }
+            `}</style>
+            </div>
         );
     };
 
@@ -26,13 +40,23 @@ class UserAuth extends Component {
         return (
             <div>
             <form onSubmit={this.handle_login_form} >
-            <input id="email" type="text" name="username" ref={this.email}
-                placeholder="email" maxLength="30" />
-            <input id="password" type="password" name="password" ref={this.password} 
-                placeholder="password" maxLength="4096" />
-            <input type="submit" value="Log in" />
+            <input id="email" type="text" ref={this.email}
+                placeholder="epost" maxLength="30" />
+            <input id="password" type="password" ref={this.password} 
+                placeholder="passord" maxLength="4096" />
+            <input type="submit" value="Logg inn" />
             </form> eller <a href="/register/">registrer ny bruker</a>
             <style jsx>{`
+                input[type=submit] {
+                    margin: 1px;
+                    margin-left: 30px;
+                    color: white;
+                    background: #333;
+                    border: 1px solid white;
+                    text-color: white;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 14pt;
+                }
                 form { display: inline-block }
                 input[type=text], input[type=password] {
                     width: 80px;
@@ -53,14 +77,26 @@ class UserAuth extends Component {
     };
 
     render = props => {
+        let form = null;
         if(this.state.token !== null) {
-            return this.logged_in_nav();
+            form = this.logged_in_nav;
         } else {
-            return this.logged_out_nav();
+            form = this.logged_out_nav;
         }
+        return (
+            <div className="userBar"> 
+            {form()}
+            <style jsx>{`
+            .userBar {
+            background: black;
+            }
+            `}</style>
+            </div>
+        );
     };
 
     handle_logout = () => {
+        cookies.remove('token', { path: '/' })
         this.setState({
             token: null,
             user_id: null

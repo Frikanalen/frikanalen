@@ -12,8 +12,10 @@ const Header = () => (
       <nav>
         <ul>
             <li><Link href="/schedule" as="/schedule"><a>Sendeplan</a></Link></li>
-            <li><UserAuth /></li>
+            <li><Link href="/videos" as="/videos"><a>Arkiv</a></Link></li>
+            <li><Link href="/members" as="/members"><a>Medlemmer</a></Link></li>
         </ul>
+        <UserAuth />
       </nav>
 
     <style jsx>{`
@@ -21,13 +23,14 @@ const Header = () => (
             padding: 30px 0;
         }
 
-        nav {
-            display: block;
-        }
-
         nav ul {
+            padding: 0;
+            display: block;
+            background: #535151;
+            text-color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 20pt;
             margin: 0;
-            margin-bottom: 20px;
         }
 
         nav li {
@@ -37,6 +40,19 @@ const Header = () => (
 
         nav a {
             text-decoration: none;
+            text-transform: lowercase;
+        }
+        nav a:link {
+            color: #ddd;
+        }
+        nav a:visited {
+            color: white;
+        }
+        nav a:hover {
+            color: white;
+        }
+        nav a:active {
+            color: white;
         }
         `}</style>
     </header>

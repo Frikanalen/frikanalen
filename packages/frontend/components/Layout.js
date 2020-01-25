@@ -10,11 +10,13 @@ const Layout = props => (
     <style jsx>{`
     `}</style>
     <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css?family=Roboto:900&display=swap');
         body > div:first-child,
           div#__next,
           div#__next > div,
           div#__next > div > div {
             height: 100%;
+            box-sizing: border-box;
           }
         .page {
             min-height: 100%;
@@ -31,6 +33,7 @@ const Layout = props => (
         }
         header {
             grid-template-area: header;
+            margin-bottom: 20px;
         }
         footer {
             grid-template-area: footer;
