@@ -164,7 +164,8 @@ TEMPLATES = [
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-                'django.template.loaders.eggs.Loader',
+                # deprecated in Django 2
+                # 'django.template.loaders.eggs.Loader',
             ],
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
             'context_processors': [

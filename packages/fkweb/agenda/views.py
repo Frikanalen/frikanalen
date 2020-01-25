@@ -5,7 +5,7 @@ import logging
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms import ModelForm
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
@@ -69,7 +69,7 @@ class ProgramplannerView(TemplateView):
 
 class ManageVideoList(TemplateView):
   def get(self, request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
       return redirect('/login/?next=%s' % request.path)
     context = {}
     context["title"] = _('My videos')
@@ -155,7 +155,7 @@ class AbstractVideoFormView(TemplateView):
 
 class ManageVideoNew(AbstractVideoFormView):
   def get(self, request, form=None):
-    if not request.user.is_authenticated() or not request.user.is_superuser:
+    if not request.user.is_authenticated or not request.user.is_superuser:
       return redirect('/login/?next=%s' % request.path)
     initial = {}
     form = self.get_form(request, initial=initial, form=form)
@@ -166,7 +166,7 @@ class ManageVideoNew(AbstractVideoFormView):
     return render(request, 'agenda/manage_video_new.html', context)
 
   def post(self, request):
-    if not request.user.is_authenticated() or not request.user.is_superuser:
+    if not request.user.is_authenticated or not request.user.is_superuser:
       return redirect('/login/?next=%s' % request.path)
     if request.user.is_superuser:
       video = Video()
@@ -183,7 +183,7 @@ class ManageVideoNew(AbstractVideoFormView):
     return self.get(request, form=form)
 
 def allowed_to_edit(video, user):
-  return (user.is_authenticated()
+  return (user.is_authenticated
           and ((video.organization
                 and video.organization.members.filter(pk=user.id).exists())
                or user.is_superuser))
@@ -191,7 +191,7 @@ def allowed_to_edit(video, user):
 class ManageVideoEdit(AbstractVideoFormView):
   Form = VideoFormForUsers
   def get(self, request, id=None, form=None):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
     if not allowed_to_edit(video, request.user):
@@ -207,7 +207,7 @@ class ManageVideoEdit(AbstractVideoFormView):
     return render(request, 'agenda/manage_video_new.html', context)
 
   def post(self, request, id):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
       return redirect('/login/?next=%s' % request.path)
     video = Video.objects.get(id=id)
     if not allowed_to_edit(video, request.user):

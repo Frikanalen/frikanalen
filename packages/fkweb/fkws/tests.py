@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APITestCase

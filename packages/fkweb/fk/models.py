@@ -7,8 +7,9 @@ import uuid
 import pytz
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils import timezone
@@ -161,8 +162,9 @@ class FileFormat(models.Model):
 class VideoFile(models.Model):
     id = models.AutoField(primary_key=True)
     # uploader = models.ForeignKey(User) # Not migrated
-    video = models.ForeignKey("Video")
-    format = models.ForeignKey("FileFormat")
+    # Until we have some way of handling file deletion, I'm erring on the side of caution
+    video = models.ForeignKey("Video", on_delete=models.PROTECT)
+    format = models.ForeignKey("FileFormat", on_delete=models.PROTECT)
     filename = models.CharField(max_length=256)
     old_filename = models.CharField(max_length=256, default='', blank=True)
     # source = video = models.ForeignKey("VideoFile")
@@ -233,7 +235,7 @@ class Video(models.Model):
     # Code for editors' internal use
     # production_code = models.CharField(null=True,max_length=255)
     categories = models.ManyToManyField(Category)
-    editor = models.ForeignKey(settings.AUTH_USER_MODEL)
+    editor = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
     has_tono_records = models.BooleanField(default=False)
     is_filler = models.BooleanField('Play automatically?',
                                     help_text = 'You still have the editorial responsibility.  Only affect videos from members.',
@@ -263,7 +265,8 @@ class Video(models.Model):
         default=25000,
         help_text='Framerate of master video in thousands / second')
     organization = models.ForeignKey(
-        Organization, null=True, help_text='Organization for video')
+        Organization, null=True, help_text='Organization for video',
+        on_delete=models.PROTECT)
     ref_url = models.CharField(
         blank=True, max_length=1024, help_text='URL for reference')
     duration = models.DurationField(blank=True, default=datetime.timedelta(0))
@@ -430,7 +433,7 @@ class Scheduleitem(models.Model):
 
     id = models.AutoField(primary_key=True)
     default_name = models.CharField(max_length=255, blank=True)
-    video = models.ForeignKey(Video, null=True, blank=True)
+    video = models.ForeignKey(Video, null=True, blank=True, on_delete=models.PROTECT)
     schedulereason = models.IntegerField(blank=True, choices=SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = models.DurationField()
@@ -473,7 +476,7 @@ class SchedulePurpose(models.Model):
     strategy = models.CharField(max_length=32, choices=STRATEGY)
 
     # You probably need one of these depending on type and strategy
-    organization = models.ForeignKey(Organization, blank=True, null=True)
+    organization = models.ForeignKey(Organization, blank=True, null=True, on_delete=models.PROTECT)
     direct_videos = models.ManyToManyField(Video, blank=True)
 
     class Meta:
@@ -535,7 +538,7 @@ class WeeklySlot(models.Model):
         (6, _('Sunday')),
     )
 
-    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True)
+    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True, on_delete=models.PROTECT)
     day = models.IntegerField(
         choices=DAY_OF_THE_WEEK,
     )
@@ -598,7 +601,7 @@ class AsRun(TimeStampedModel):
                how long we live streamed a particular URL.
                Can be null (None) if this is 'currently happening'.
     """
-    video = models.ForeignKey(Video, blank=True, null=True)
+    video = models.ForeignKey(Video, blank=True, null=True, on_delete=models.PROTECT)
     program_name = models.CharField(max_length=160, blank=True, default='')
     playout = models.CharField(max_length=255, blank=True, default='main')
     played_at = models.DateTimeField(blank=True, default=timezone.now)
