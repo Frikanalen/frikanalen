@@ -12,6 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterModelTable(
+            name='user',
+            table=None,
+        ),
         migrations.AlterModelOptions(
             name='user',
             options={'verbose_name': 'user', 'verbose_name_plural': 'users'},
@@ -34,10 +38,6 @@ class Migration(migrations.Migration):
         migrations.RenameModel('OrganizationNew', 'Organization'),
         migrations.AlterModelTable(
             name='scheduleitem',
-            table=None,
-        ),
-        migrations.AlterModelTable(
-            name='user',
             table=None,
         ),
         migrations.RenameModel('Video', 'VideoNew'),
