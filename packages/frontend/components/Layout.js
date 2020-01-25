@@ -3,31 +3,10 @@ import Header from './Header';
 
 const Layout = props => (
   <div className="page">
-    <div className="header">
-        <Header className="foo"/>
-    </div>
-    <div className="content">
-        {props.children}
-    </div>
-    <div className="footer">
-        <Footer />
-    </div>
+    <Header className="foo"/>
+    <main>{props.children}</main>
+    <Footer />
     <style jsx>{`
-        .page {
-            min-height: 100%;
-            display: grid; 
-            grid-template-layout: "header"
-                                    "content"
-                                    "footer";
-            grid-template-rows: auto 1fr auto;
-            grid-template-columns: 100%;
-        }
-        .content {
-            grid-template-area: content;
-        }
-        .footer {
-            grid-template-area: footer;
-        }
     `}</style>
     <style jsx global>{`
         body > div:first-child,
@@ -36,9 +15,24 @@ const Layout = props => (
           div#__next > div > div {
             height: 100%;
           }
-
+        .page {
+            min-height: 100%;
+            display: grid; 
+            grid-template-layout: "header header header"
+                                    ". content ."
+                                    "footer footer footer";
+            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 100%;
+        }
+        main {
+            margin: 0 4%;
+            grid-template-area: content;
+        }
         header {
             grid-template-area: header;
+        }
+        footer {
+            grid-template-area: footer;
         }
         html, body {
             width: 100%;
@@ -77,26 +71,21 @@ const Layout = props => (
 );
 
 const Footer = props => (
-    <div id="footer">
+    <footer>
         <p>
-        <a href="https://frikanalen.no/api/"> REST API</a> |
-        <a href="https://frikanalen.no/xmltv/">XMLTV</a> |
+        <a href="https://frikanalen.no/api/">REST API</a>&nbsp;|&nbsp;
+        <a href="https://frikanalen.no/xmltv/">XMLTV</a>&nbsp;|&nbsp;
         <a href="http://github.com/Frikanalen">Source code</a>
-        &copy; 2009-2018 Foreningen Frikanalen
-        (
-            <Link href="/organization/">
-                <a>Member organizations</a>
-            </Link>
-        )
+        &nbsp;&copy; 2009-2020 Foreningen Frikanalen
         </p>
     <style jsx>{`
-        #footer {
+        footer {
             font-size: 75%;
             font-style: italic;
             text-align: center;
         }
 
-        #footer p {
+        footer p {
             width: 100%;
             margin: 0;
             padding: 0;
@@ -107,7 +96,7 @@ const Footer = props => (
             border-radius: 16px 16px 0 0;
         }
         `}</style>
-    </div>
+    </footer>
 
 )
 
