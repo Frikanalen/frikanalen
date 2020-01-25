@@ -1,0 +1,94 @@
+Using existing test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+Operations to perform:
+  Synchronize unmigrated apps: agenda, corsheaders, create, django_filters, fkbeta, fkws, messages, rest_framework, staticfiles
+  Apply all migrations: admin, auth, authtoken, contenttypes, fk, sessions
+Running pre-migrate handlers for application auth
+Running pre-migrate handlers for application contenttypes
+Running pre-migrate handlers for application sessions
+Running pre-migrate handlers for application admin
+Running pre-migrate handlers for application django_filters
+Running pre-migrate handlers for application authtoken
+Running pre-migrate handlers for application create
+Running pre-migrate handlers for application fk
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK (0.002s)
+  Applying contenttypes.0002_remove_content_type_name... OK (0.004s)
+  Applying auth.0001_initial... OK (0.006s)
+  Applying auth.0002_alter_permission_name_max_length... OK (0.003s)
+  Applying auth.0003_alter_user_email_max_length... OK (0.003s)
+  Applying auth.0004_alter_user_username_opts... OK (0.003s)
+  Applying auth.0005_alter_user_last_login_null... OK (0.003s)
+  Applying auth.0006_require_contenttypes_0002... OK (0.000s)
+  Applying auth.0007_alter_validators_add_error_messages... OK (0.002s)
+  Applying auth.0008_alter_user_username_max_length... OK (0.002s)
+  Applying fk.0001_initial... OK (0.059s)
+  Applying admin.0001_initial... OK (0.009s)
+  Applying admin.0002_logentry_remove_auto_add... OK (0.007s)
+  Applying authtoken.0001_initial... OK (0.006s)
+  Applying authtoken.0002_auto_20160226_1747... OK (0.026s)
+  Applying fk.0002_rename_all_custom_tables_to_default... OK (0.179s)
+  Applying fk.0003_user_add_new_fields... OK (0.024s)
+  Applying fk.0004_user_populate_email... OK (0.010s)
+  Applying fk.0005_user_rm_old_fields... OK (0.030s)
+  Applying sessions.0001_initial... OK (0.001s)
+Running post-migrate handlers for application auth
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Running post-migrate handlers for application contenttypes
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Running post-migrate handlers for application sessions
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Running post-migrate handlers for application admin
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Running post-migrate handlers for application django_filters
+Running post-migrate handlers for application authtoken
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Running post-migrate handlers for application create
+Running post-migrate handlers for application fk
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+Adding permission 'Permission object'
+System check identified no issues (0 silenced).
+Preserving test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
