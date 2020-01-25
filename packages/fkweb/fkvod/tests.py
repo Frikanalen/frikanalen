@@ -2,7 +2,7 @@
 # This file is covered by the LGPLv3 or later, read COPYING for details.
 
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 class VodTests(TestCase):
     fixtures = ['test.yaml']
