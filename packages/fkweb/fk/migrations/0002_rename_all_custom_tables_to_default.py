@@ -12,10 +12,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RenameModel('User', 'UserNew'),
         migrations.AlterModelTable(
-            name='user',
+            name='UserNew',
             table=None,
         ),
+        migrations.RenameModel('UserNew', 'User'),
         migrations.AlterModelOptions(
             name='user',
             options={'verbose_name': 'user', 'verbose_name_plural': 'users'},
