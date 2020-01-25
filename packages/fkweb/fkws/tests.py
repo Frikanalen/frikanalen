@@ -38,7 +38,7 @@ class PermissionsTest(APITestCase):
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
         ]
-        self._user_auth('nuug_user')
+        self._user_auth('nuug_user@fake.com')
         self._helper_test_reading_all_pages_from_root(pages)
 
     def _helper_test_reading_all_pages_from_root(self, pages):
@@ -62,7 +62,7 @@ class PermissionsTest(APITestCase):
         self.assertEqual(error_msg, r.data)
 
     def test_nuug_user_do_have_token(self):
-        self._user_auth('nuug_user')
+        self._user_auth('nuug_user@fake.com')
         r = self.client.get(reverse('api-token-auth'))
         self.assertEqual(status.HTTP_200_OK, r.status_code)
         self.assertEqual(list(r.data.keys()), ['created', 'key', 'user'])
@@ -175,7 +175,7 @@ class PermissionsTest(APITestCase):
             results)
 
     def test_nuug_user_can_add_things(self):
-        self._user_auth('nuug_user')
+        self._user_auth('nuug_user@fake.com')
         # [(url, object_to_post, object_to_test_against, status)]
         tests = [
             (
@@ -191,7 +191,7 @@ class PermissionsTest(APITestCase):
                  'organization': 'Dummy org'}, # this should actually fail
                 {'id': 5, 'name': 'created test video',
                     'duration': '00:01:02.300000', 'categories': [],
-                    'organization': 'Dummy org', 'editor': 'nuug_user'},
+                    'organization': 'Dummy org', 'editor': 'nuug_user@fake.com'},
                 status.HTTP_201_CREATED,
             ),
             (
@@ -214,7 +214,7 @@ class PermissionsTest(APITestCase):
         self._helper_test_add_things(tests)
 
     def test_staff_user_can_add_things(self):
-        self._user_auth('staff_user')
+        self._user_auth('staff_user@fake.com')
         # [(url, object_to_post, object_to_test_against, status)]
         tests = [
             (
@@ -252,7 +252,7 @@ class PermissionsTest(APITestCase):
                              {k: r.data[k] for k in list(response_obj.keys())})
 
     def test_nuug_user_can_edit_own_things(self):
-        self._user_auth('nuug_user')
+        self._user_auth('nuug_user@fake.com')
         thing_tests = [
             ('api-videofile-detail',
              VideoFile.objects.get(video__name='tech video'),
@@ -268,7 +268,7 @@ class PermissionsTest(APITestCase):
             self.assertEqual(status.HTTP_200_OK, r.status_code)
 
     def test_staff_user_can_edit_nonowned_things(self):
-        self._user_auth('staff_user')
+        self._user_auth('staff_user@fake.com')
         thing_tests = [
             ('api-videofile-detail',
              VideoFile.objects.get(video__name='tech video'),
@@ -284,7 +284,7 @@ class PermissionsTest(APITestCase):
             self.assertEqual(status.HTTP_200_OK, r.status_code)
 
     def test_nuug_user_cannot_edit_nonowned_things(self):
-        self._user_auth('nuug_user')
+        self._user_auth('nuug_user@fake.com')
         thing_tests = [
             ('api-videofile-detail',
              VideoFile.objects.get(video__name='dummy video'),
@@ -303,7 +303,7 @@ class PermissionsTest(APITestCase):
             self.assertEqual(status.HTTP_403_FORBIDDEN, r.status_code)
 
     def test_staff_user_can_see_all_upload_tokens(self):
-        self._user_auth('staff_user')
+        self._user_auth('staff_user@fake.com')
         thing_tests = [
             (VideoFile.objects.get(video__name='tech video'),
              200, {'upload_token': 'deadbeef', 'upload_url': settings.FK_UPLOAD_URL}),
@@ -313,7 +313,7 @@ class PermissionsTest(APITestCase):
         self._get_upload_token_helper(thing_tests)
 
     def test_nuug_user_can_only_see_own_upload_tokens(self):
-        self._user_auth('nuug_user')
+        self._user_auth('nuug_user@fake.com')
         thing_tests = [
             (VideoFile.objects.get(video__name='tech video'),
              200, {'upload_token': 'deadbeef', 'upload_url': settings.FK_UPLOAD_URL}),
@@ -335,7 +335,7 @@ class FilterTest(APITestCase):
     fixtures = ['test.yaml']
 
     def setUp(self):
-        self.client.login(email='staff_user', password='test')
+        self.client.login(email='staff_user@fake.com', password='test')
 
     def list_lookup(self, urlname, fieldname, lookups):
         for lookup, expect in lookups:
@@ -374,8 +374,8 @@ class FilterTest(APITestCase):
             ('?ref_url__startswith=b', ['dummy video']),
             ('?ref_url__startswith=a', ['unpublished video', 'tech video']),
             ('?editor__email=nuug', []),
-            ('?editor__email=nuug_user', ['tech video']),
-            ('?editor__email=dummy_user&name=', ['dummy video']),
+            ('?editor__email=nuug_user@fake.com', ['tech video']),
+            ('?editor__email=dummy_user@fake.com&name=', ['dummy video']),
             ('?proper_import=false', ['broken video']),
             ('?proper_import=true', ['unpublished video', 'dummy video', 'tech video']),
         ]
@@ -401,7 +401,7 @@ class ScheduleitemTest(APITestCase):
     fixtures = ['test.yaml']
 
     def setUp(self):
-        self.client.login(email='staff_user', password='test')
+        self.client.login(email='staff_user@fake.com', password='test')
 
     def test_creating_new_scheduleitem(self):
         # Rest Framework now always sends back dates using configured TZ
