@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Header from './Header';
+import UserAuth from './UserAuth';
 
 const Layout = props => (
   <div className="page">
