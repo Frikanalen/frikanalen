@@ -47,29 +47,22 @@ class UserAuth extends Component {
             <input type="submit" value="Logg inn" />
             </form> eller <a href="/register/">registrer ny bruker</a>
             <style jsx>{`
+                input {
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 12pt;
+                }
                 input[type=submit] {
                     margin: 1px;
-                    margin-left: 30px;
                     color: white;
                     background: #333;
                     border: 1px solid white;
                     text-color: white;
-                    font-family: 'Roboto', sans-serif;
-                    font-size: 14pt;
                 }
                 form { display: inline-block }
                 input[type=text], input[type=password] {
-                    width: 80px;
+                    border: 1px solid black;
+                    width: 160px;
                     padding: 1px 4px;
-                }
-
-                .login_box ul {
-                    margin: 0;
-                }
-
-                .login_box li {
-                    display: inline-block;
-                    margin-right: 20px;
                 }
             `}</style>
             </div>
@@ -88,7 +81,8 @@ class UserAuth extends Component {
             {form()}
             <style jsx>{`
             .userBar {
-            background: black;
+                padding: 0 40px;
+                background: black;
             }
             `}</style>
             </div>

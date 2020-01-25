@@ -4,6 +4,8 @@ import UserAuth from './UserAuth';
 
 const Layout = props => (
   <div className="page">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"/>
     <Header className="foo"/>
     <main>{props.children}</main>
     <Footer />
@@ -11,6 +13,7 @@ const Layout = props => (
     `}</style>
     <style jsx global>{`
         @import url('https://fonts.googleapis.com/css?family=Roboto:900&display=swap');
+
         body > div:first-child,
           div#__next,
           div#__next > div,
@@ -28,7 +31,8 @@ const Layout = props => (
             grid-template-columns: 100%;
         }
         main {
-            margin: 0 4%;
+            width: 1024px;
+            margin: 0 auto;
             grid-template-area: content;
         }
         header {
