@@ -6,19 +6,12 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    atomic = False
 
     dependencies = [
         ('fk', '0001_initial'),
     ]
 
     operations = [
-        migrations.RenameModel('User', 'UserNew'),
-        migrations.AlterModelTable(
-            name='UserNew',
-            table=None,
-        ),
-        migrations.RenameModel('UserNew', 'User'),
         migrations.AlterModelOptions(
             name='user',
             options={'verbose_name': 'user', 'verbose_name_plural': 'users'},
@@ -31,22 +24,20 @@ class Migration(migrations.Migration):
             name='fileformat',
             table=None,
         ),
-        # By calling RenameModel, for some reason Django no longer
-        # fails to update the ForeignKey references in the schema.
-        migrations.RenameModel('Organization', 'OrganizationNew'),
         migrations.AlterModelTable(
-            name='organizationnew',
+            name='organization',
             table=None,
         ),
-        migrations.RenameModel('OrganizationNew', 'Organization'),
         migrations.AlterModelTable(
             name='scheduleitem',
             table=None,
         ),
-        migrations.RenameModel('Video', 'VideoNew'),
         migrations.AlterModelTable(
-            name='videonew',
+            name='user',
             table=None,
         ),
-        migrations.RenameModel('VideoNew', 'Video'),
+        migrations.AlterModelTable(
+            name='video',
+            table=None,
+        ),
     ]
