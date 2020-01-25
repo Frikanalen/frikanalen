@@ -433,7 +433,7 @@ class Scheduleitem(models.Model):
 
     id = models.AutoField(primary_key=True)
     default_name = models.CharField(max_length=255, blank=True)
-    video = models.ForeignKey(Video, null=True, blank=True, on_delete=models.PROTECT)
+    video = models.ForeignKey(Video, null=True, blank=True, on_delete=models.SET_NULL)
     schedulereason = models.IntegerField(blank=True, choices=SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = models.DurationField()
@@ -476,7 +476,7 @@ class SchedulePurpose(models.Model):
     strategy = models.CharField(max_length=32, choices=STRATEGY)
 
     # You probably need one of these depending on type and strategy
-    organization = models.ForeignKey(Organization, blank=True, null=True, on_delete=models.PROTECT)
+    organization = models.ForeignKey(Organization, blank=True, null=True, on_delete=models.SET_NULL)
     direct_videos = models.ManyToManyField(Video, blank=True)
 
     class Meta:
@@ -538,7 +538,7 @@ class WeeklySlot(models.Model):
         (6, _('Sunday')),
     )
 
-    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True, on_delete=models.PROTECT)
+    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True, on_delete=models.SET_NULL)
     day = models.IntegerField(
         choices=DAY_OF_THE_WEEK,
     )
@@ -601,7 +601,7 @@ class AsRun(TimeStampedModel):
                how long we live streamed a particular URL.
                Can be null (None) if this is 'currently happening'.
     """
-    video = models.ForeignKey(Video, blank=True, null=True, on_delete=models.PROTECT)
+    video = models.ForeignKey(Video, blank=True, null=True, on_delete=models.SET_NULL)
     program_name = models.CharField(max_length=160, blank=True, default='')
     playout = models.CharField(max_length=255, blank=True, default='main')
     played_at = models.DateTimeField(blank=True, default=timezone.now)
