@@ -1,9 +1,65 @@
-const LiveNow = () => (
-  <div id="live">
-    <h1>Frikanalen broadcast</h1>
-    <video width="1024" height="576" controls src="http://icecast.frikanalen.no/frikanalen.webm"></video>
-  </div>
-)
+import React, { Component } from 'react';
+import 'material-design-icons';
+
+class LiveVideoPlayer extends Component {
+    pause_video = () => {
+        this.video.current.pause();
+        this.setState({playing: false});
+    }
+    play_video = () => {
+        this.video.current.play();
+        this.setState({playing: true});
+    }
+    constructor(props) {
+        super(props);
+        this.play_video = this.play_video.bind(this);
+        this.pause_video = this.pause_video.bind(this);
+        this.video = React.createRef();
+        this.button = React.createRef();
+        this.state = {
+            playing: false,
+        }
+    }
+    render() {
+        let button;
+        if(!this.state.playing) {
+            button = (<><button ref={this.button} onClick={this.play_video} 
+                className="material-icons">play_circle_outline</button>
+                <style jsx>{`            button:hover {
+                color: white;
+            }
+            button {
+                width: 100%;
+                height: 100%;
+                color: #eee;
+                position:absolute;
+                background: rgba(0,0,0,0);
+                font-size: 200px;
+                border: none;
+            }
+`}</style></>);
+        }
+        return (
+          <div id="live">
+            <video ref={this.video} onClick={this.pause_video}
+                src="http://icecast.frikanalen.no/frikanalen.webm"></video>
+            {button}
+            <style jsx>{`
+            #live {
+                position:relative;
+                width: 1024px;
+                height: 576px;
+            }
+            video {
+                position:absolute;
+                width: 100%;
+                height: 100%;
+            }
+            `}</style>
+          </div>
+        );
+    }
+}
 
 const ScheduleInfo = () => (
         <div id="next" className="ontv">
@@ -34,5 +90,15 @@ const ScheduleInfo = () => (
         </div>
         )
         
+
+class LiveNow extends Component {
+    render = () => {
+        return (
+        <div id="live_now">
+            <LiveVideoPlayer />
+        </div>
+        );
+    }
+}
 
 export default LiveNow;

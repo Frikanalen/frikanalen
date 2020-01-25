@@ -1,4 +1,4 @@
-pyreqs=packages/fkweb/requirements-dev.txt packages/fkupload/requirements.txt
+pyreqs=packages/fkweb/requirements-dev.txt packages/fkupload/requirements.txt packages/fkprocess/requirements.txt
 
 env = env/bin/activate
 ifneq ("$(wildcard $(env))","")

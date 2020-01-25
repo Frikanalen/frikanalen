@@ -3,7 +3,7 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 from django.utils import timezone
 
@@ -15,7 +15,7 @@ class UserRegistrationTest(TestCase):
 
 
     def setUp(self):
-        self.client.login(email='staff_user', password='test')
+        self.client.login(email='staff_user@fake.com', password='test')
 
 
     def test_user_profile_update(self):
@@ -25,12 +25,13 @@ class UserRegistrationTest(TestCase):
             reverse('profile'), {
                 'first_name': 'Firstname',
                 'last_name':  'Lastname',
+        #        'email':  'tjohei@hoppsan.com',
                 'country':    'Norway'
             })
-        u = get_user_model().objects.get(email='staff_user')
+        u = get_user_model().objects.get(email='staff_user@fake.com')
         self.assertEqual('Firstname', u.first_name)
         self.assertEqual('Lastname', u.last_name)
-        self.assertEqual('staff_user', u.email)
+        self.assertEqual('staff_user@fake.com', u.email)
         # Uncomment when https://github.com/Frikanalen/frikanalen/issues/77 is fixed
         #self.assertEqual('Norway', u.userprofile.country)
 
@@ -245,7 +246,7 @@ class APITest(TestCase):
             ['00:00:10.010000', '00:01:00'],
             [v['video']['duration'] for v in r.data['results']])
         self.assertEqual(
-            ['nuug_user', 'dummy_user'],
+            ['nuug_user@fake.com', 'dummy_user@fake.com'],
             [v['video']['editor'] for v in r.data['results']])
 
 
