@@ -15,17 +15,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='asrun',
             name='video',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='fk.Video'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='fk.Video'),
         ),
         migrations.AlterField(
             model_name='scheduleitem',
             name='video',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='fk.Video'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='fk.Video'),
         ),
         migrations.AlterField(
             model_name='schedulepurpose',
             name='organization',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='fk.Organization'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='fk.Organization'),
         ),
         migrations.AlterField(
             model_name='video',
@@ -50,6 +50,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='weeklyslot',
             name='purpose',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='fk.SchedulePurpose'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='fk.SchedulePurpose'),
         ),
     ]
