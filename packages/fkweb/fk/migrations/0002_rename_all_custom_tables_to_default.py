@@ -24,10 +24,14 @@ class Migration(migrations.Migration):
             name='fileformat',
             table=None,
         ),
+        # By calling RenameModel, for some reason Django no longer
+        # fails to update the ForeignKey references in the schema.
+        migrations.RenameModel('Organization', 'OrganizationNew'),
         migrations.AlterModelTable(
-            name='organization',
+            name='organizationnew',
             table=None,
         ),
+        migrations.RenameModel('OrganizationNew', 'Organization'),
         migrations.AlterModelTable(
             name='scheduleitem',
             table=None,
@@ -36,8 +40,10 @@ class Migration(migrations.Migration):
             name='user',
             table=None,
         ),
+        migrations.RenameModel('Video', 'VideoNew'),
         migrations.AlterModelTable(
-            name='video',
+            name='videonew',
             table=None,
         ),
+        migrations.RenameModel('VideoNew', 'Video'),
     ]
