@@ -20,9 +20,6 @@ class UserRegistrationTest(TestCase):
 
     def test_user_profile_update(self):
         r = self.client.get(reverse('profile'))
-        print(r)
-        print(r.content)
-        print(reverse('profile'))
         self.assertEqual(200, r.status_code)
         r = self.client.post(
             reverse('profile'), {
@@ -31,7 +28,6 @@ class UserRegistrationTest(TestCase):
         #        'email':  'tjohei@hoppsan.com',
                 'country':    'Norway'
             })
-        print(r.content)
         u = get_user_model().objects.get(email='staff_user@fake.com')
         self.assertEqual('Firstname', u.first_name)
         self.assertEqual('Lastname', u.last_name)
