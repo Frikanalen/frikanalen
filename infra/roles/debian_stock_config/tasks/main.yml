@@ -1,6 +1,6 @@
 ---
-- include_vars: base_packages.yml
+- include_vars: packages.yml
 - name: "Install common Debian base packages"
   apt:
-      packages: "{{ base_packages }}"
+      name: "{{ base_packages }}"
       state: present
