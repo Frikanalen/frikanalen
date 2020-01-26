@@ -1,4 +1,9 @@
 ---
+- name: Apply common Debian config
+  hosts: all
+  roles:
+     - role: debian_stock_config
+       when: ansible_facts['os_family'] == 'Debian'
 - name: Add volunteers to user database
   hosts: all
   become: true
