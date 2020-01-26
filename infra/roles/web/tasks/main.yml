@@ -7,6 +7,8 @@
     group={{app_user}}
     home={{app_dir}}
     shell=/usr/bin/git-shell
+- name: Make app home directory world-readable
+  file: dest={{app_dir}} state=directory mode=755
 - name: Install packages
   apt:
     name:
