@@ -1,9 +1,9 @@
-Django == 2.2
+Django == 2.2.9
 Markdown == 3.1.1
 django-durationfield == 0.5.5
 # django-filter 2 is only py3
 django-filter == 2.2.0
-django-model-utils == 3.2.0
+django-model-utils == 4.0.0
 djangorestframework == 3.10.3
 gunicorn == 20.0.0
 psycopg2-binary == 2.8.4
