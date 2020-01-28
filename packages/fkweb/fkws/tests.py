@@ -5,8 +5,9 @@ from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from fk.models import VideoFile, Scheduleitem
+import datetime
 
+from fk.models import VideoFile, Scheduleitem
 
 class PermissionsTest(APITestCase):
     fixtures = ['test.yaml']
@@ -25,6 +26,7 @@ class PermissionsTest(APITestCase):
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_401_UNAUTHORIZED),
+            ('user', status.HTTP_401_UNAUTHORIZED),
         ]
         self._helper_test_reading_all_pages_from_root(pages)
 
@@ -34,6 +36,7 @@ class PermissionsTest(APITestCase):
             ('category', status.HTTP_200_OK),
             ('jukebox-csv', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_200_OK),
+            ('user', status.HTTP_200_OK),
             ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
@@ -173,6 +176,29 @@ class PermissionsTest(APITestCase):
             [(p, status.HTTP_401_UNAUTHORIZED, error_msg)
              for p in detail_pages],
             results)
+
+    def test_nuug_user_can_edit_profile(self):
+        date_of_birth = datetime.date(year = 1984, month = 6, day = 7)
+        self._user_auth('nuug_user@fake.com')
+        r = self.client.get(reverse('api-user-detail'))
+        self.assertEqual(200, r.status_code)
+        r = self.client.patch(
+            reverse('api-user-detail'), {
+                'first_name': 'Firstname',
+                'last_name':  'Lastname',
+                'date_of_birth': date_of_birth,
+                'email': 'this_should_be_immutable@fake.com',
+            })
+        self.assertEqual(200, r.status_code)
+        # This will fail if email wasn't immutable, it should probably
+        # return something else than 200 if I try to patch read-only
+        # values but there you go
+        u = get_user_model().objects.get(email='nuug_user@fake.com')
+        self.assertEqual('Firstname', u.first_name)
+        self.assertEqual('Lastname', u.last_name)
+        self.assertEqual(date_of_birth, u.date_of_birth)
+        # Uncomment when https://github.com/Frikanalen/frikanalen/issues/77 is fixed
+        #self.assertEqual('Norway', u.userprofile.country)
 
     def test_nuug_user_can_add_things(self):
         self._user_auth('nuug_user@fake.com')
