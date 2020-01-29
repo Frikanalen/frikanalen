@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import 'material-design-icons';
 
 class LiveVideoPlayer extends Component {
     pause_video = () => {
