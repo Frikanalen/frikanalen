@@ -38,11 +38,13 @@ const Layout = props => (
         header {
             grid-template-area: header;
             margin-bottom: 20px;
+            background: #fff;
         }
         footer {
             grid-template-area: footer;
         }
         html, body {
+            background: #f0f0f0;
             width: 100%;
             height: 100%;
             margin: 0;
