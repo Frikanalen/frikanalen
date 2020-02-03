@@ -6,52 +6,64 @@ import React, { Component } from 'react';
 
 class Schedule extends Component {
     ScheduleItem(item) {
-        console.log('hello', item);
         let start_date = new Date(item.starttime); 
         // This cannot possibly be the right way to do this
         let start_time_str = (("0" + start_date.getHours()).slice(-2) + 
             ":" + ("0" + start_date.getMinutes()).slice(-2));
+        let end_date = new Date(item.endtime); 
+        let end_time_str = (("0" + end_date.getHours()).slice(-2) + 
+            ":" + ("0" + end_date.getMinutes()).slice(-2));
         return (
-        <div className="schedule_item">
+        <div className="schedule_item" key={item.scheduleitemId}>
+            <div className="material-icons" style={{display:'none'}}>expand_more</div>
           <div className="start_time">{start_time_str}</div>
-          <div className="category">Samfunn</div>
+          <div className="end_time">{end_time_str}</div>
             <div className="publisher">
-            <a href="//github.com/Frikanalen/frikanalen/issues/175">{item.video.organization}</a> 
+            <Link href={"/organizations/" + item.organizationId}>
+            <a>{item.organization_name}</a> 
+            </Link>
             </div>
           <div className="title">
-            <Link href="/videos/{props.item.video.id}">
-                <a>{item.video.name}</a>
+            <Link href={"/videos/" + item.videoId}>
+                <a>{item.videoName}</a>
             </Link>
           </div>
-            <div className="material-icons">expand_more</div>
             <style jsx>{`
             .schedule_item {
-                display: grid;
-                grid-template-areas: "time category organization expand"
-                                    ". title title title";
-                grid-template-columns: 100px 200px auto;
+                margin: 3px 0px;
+                display: flex;
+                align-content: middle;
+                width: 100%;
+                color: white;
+                font-family: inherit;
+                font-weight: bold;
             }
             .schedule_item>div {
-                display: inline;
+                flex-shrink: 0;
+            }
+            .schedule_item>.end_time { 
+                color: #888;
             }
             .schedule_item>.start_time { 
-                margin-right: 5px;
-                grid-area: time;
+                color: white;
             }
-            .schedule_item>.expand {
-                grid-area: expand;
+            .schedule_item>.title>a, .schedule_item>.title>a:link {
+                text-decoration: none;
+                color: white;
             }
             .schedule_item>.title {
-                display: block;
-                display: none;
-                grid-area: title;
+                flex-grow: 1;
+                margin-left: 10px;
             }
             .schedule_item>.category {
                 text-transform: lowercase;
-                margin-right: 5px;
+                margin: 0 5px 0 5px;
                 grid-area: category;
-                border: 1px solid black;
+                background: black;
                 text-align: center;
+            }
+            .schedule_item>.end_time::before {
+                content: "–";
             }
             `}</style>
         </div>
@@ -59,32 +71,73 @@ class Schedule extends Component {
     }
 
     static async getInitialProps(ctx) {
-      const res = await fetch(env.API_BASE_URL + 'scheduleitems/');
-      const data = await res.json();
+        const query = `
+          query {
+          fkGetScheduleForDate(fromDate: "` +new Date().toISOString()+ `") {
+            edges {
+              node {
+                scheduleitemId
+                videoId
+                organizationId
+                starttime
+                endtime
+                videoName
+                organizationName
+              }
+            }
+          }
+          }
+        `;
+        const url = "https://dev.frikanalen.no/graphql";
+        const opts = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query })
+        };
+        const res = await fetch(url, opts)
+        const json = await res.json();
+        const data = json.data.fkGetScheduleForDate
 
-      return {
-        shows: data.results.map(entry => entry)
-      };
+        return {
+            shows: data.edges.map(entry => entry.node)
+        }
     };
 
     render() {
+        const date_options = {dateStyle: 'full'}
         return (
         <Layout>
-            <div>
-                <ul>
-                  {
-                      this.props.shows.map((schedule_item) => {
-                            return (
-                                <li key={schedule_item.id.toString()}>
-                                { this.ScheduleItem(schedule_item) }
-                                </li>
-                            )
-                        })
-                  }
-                </ul>
-                <style jsx>{`
+            <div className="schedule">
+            <div className="schedule_date">
+                { new Date().toLocaleDateString('nb-NO', date_options) }
+            </div>
+            <div className="programmes">
+                { this.props.shows.map((schedule_item) => this.ScheduleItem(schedule_item)) }
+            </div>
+            <style jsx>{`
                 li {
                     list-style: none;
+                }
+
+                .programmes {
+                    width: 80%;
+                    padding: 10px;
+                }
+
+                .schedule {
+                    padding: 0px 50px;
+                    font-family: 'Roboto', sans-serif;
+                    background: #535151;
+                    max-width: 1024px;
+                    width: 1024px;
+                }
+
+                .schedule_date {
+                    color: white;
+                    text-align: center;
+                    font-size: 20pt;
+                    font-weight: bold;
+                    padding: 20px;
                 }
                 `}</style>
             </div>

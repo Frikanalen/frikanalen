@@ -4,18 +4,19 @@ import UserAuth from './UserAuth';
 
 class Header extends Component {
     constructor(props) {
-        super(props);
-        this.showLogin = this.showLogin.bind(this);
-        this.state = {
-            show_login: false,
-        }
+        super(props)
+        this.userbar = React.createRef();
+        this.loginButton = React.createRef();
+        this.showLogin = this.showLogin.bind(this)
     }
 
-    showLogin () {
-        this.setState({show_login: true});
+    showLogin() {
+        if(this.userbar.current)
+            this.userbar.current.showLogin();
     }
 
     render () {
+        const userauth = < UserAuth ref={this.userbar} />
         return (
             <header>
               <div id="header-logo">
@@ -30,10 +31,11 @@ class Header extends Component {
                     <Link href="/videos" as="/videos"><a>Arkiv</a></Link>
                     <Link href="/members" as="/members"><a>Medlemmer</a></Link>
                     <Link href="/about" as="/about"><a>Om oss</a></Link>
-                    <a onClick={this.showLogin}>Logg inn</a>
+                    <a onClick={this.showLogin} >Logg inn</a>
                 </div>
-                {this.state.show_login? <UserAuth /> : <></>}
+                { userauth }
               </nav>
+
 
             <style jsx>{`
                 #header-logo>a>img {
@@ -65,7 +67,8 @@ class Header extends Component {
                 }
 
                 .headerLinks>a {
-                    margin: 0 10px;
+                    margin: 0;
+                    margin-right: 17px;
                     text-decoration: none;
                     text-transform: lowercase;
                     color: #ddd;

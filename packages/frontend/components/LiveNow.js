@@ -2,49 +2,15 @@ import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch'
 
 class LiveVideoPlayer extends Component {
-    pause_video = () => {
-        this.video.current.pause();
-        this.setState({playing: false});
-    }
-    play_video = () => {
-        this.video.current.play();
-        this.setState({playing: true});
-    }
     constructor(props) {
         super(props);
-        this.play_video = this.play_video.bind(this);
-        this.pause_video = this.pause_video.bind(this);
         this.video = React.createRef();
-        this.button = React.createRef();
-        this.state = {
-            playing: false,
-        }
     }
     render() {
-        let button;
-        if(!this.state.playing) {
-            button = (<><button ref={this.button} onClick={this.play_video} 
-                className="material-icons">play_circle_outline</button>
-                <style jsx>{`            button:hover {
-                color: white;
-            }
-            button {
-                width: inherit;
-                height: 100%;
-                top: 0;
-                color: #eee;
-                position:absolute;
-                background: rgba(0,0,0,0);
-                font-size: 200px;
-                border: none;
-            }
-`}</style></>);
-        }
         return (
           <div id="live">
-            <video ref={this.video} onClick={this.pause_video}
+            <video ref={this.video} controls onClick={this.pause_video}
                 src="http://icecast.frikanalen.no/frikanalen.webm"></video>
-            {button}
             <style jsx>{`
 
             #live {
@@ -108,9 +74,9 @@ class ScheduleInfo extends Component {
         const res = await fetch(url, opts)
         const json = await res.json()
         const sched = json.data.fkOnRightNows.edges
-        console.log(sched[2].node)
+        //console.log(sched[2].node)
         this.setState({
-                before:  sched[2].node,
+                previous:  sched[2].node,
                 current: sched[1].node,
                 next:   sched[0].node,
                 ready: true,
@@ -127,57 +93,56 @@ class ScheduleInfo extends Component {
             ":" + ("0" + d.getMinutes()).slice(-2));
     }
     render() {
-        if(this.state.ready) 
+        const programme_row = (programme, DOMclass) => {
+            return(
+                    <div className={"programme " + DOMclass}>
+                        <div className="startTime">{ this.as_HH_mm(programme.starttime)}</div>
+                        <div className="endTime">{ this.as_HH_mm(programme.endtime)}</div>
+                        <div className="organization">{programme.orgname}</div>
+                        <div className="name">{ programme.name }</div>
+                        <style jsx>{`
+                            .programme.current {
+                                background: rgba(0, 0, 0, 0.2);
+                            }
+                            .programme {
+                                padding: 10px;
+                                display: flex;
+                                padding-bottom: 5px;
+                            }
+                            .programme>.startTime::after {
+                                content: "–";
+                            }
+                            .programme>.organization {
+                                margin: 0 10px;
+                            }
+                            .programme>.organization::after {
+                                content: ":";
+                            }
+                            .programme>.endTime {
+                                margin-right: 20px;
+                            }
+                            `}</style>
+                    </div>
+            )
+        }
+
+        if(!this.state.ready) return null;
+
+        else {
             return ( 
                 <div className="onRightNow">
-                    <div className="programme previous">
-                        <div className="startTime">{ this.as_HH_mm(this.state.before.starttime)}</div>
-                        <div className="endTime">{ this.as_HH_mm(this.state.before.endtime)}</div>
-                        <div className="organization">{this.state.before.orgname}</div>
-                        <div className="name">{ this.state.before.name }</div>
-                    </div>
-                    <div className="programme current">
-                        <div className="startTime">{ this.as_HH_mm(this.state.current.starttime)}</div>
-                        <div className="endTime">{ this.as_HH_mm(this.state.current.endtime)}</div>
-                        <div className="organization">{this.state.current.orgname}</div>
-                        <div className="name">{ this.state.current.name }</div>
-                    </div>
-                    <div className="programme next">
-                        <div className="startTime">{ this.as_HH_mm(this.state.next.starttime)}</div>
-                        <div className="endTime">{ this.as_HH_mm(this.state.next.endtime)}</div>
-                        <div className="organization">{this.state.next.orgname}</div>
-                        <div className="name">{ this.state.next.name }</div>
-                    </div>
+                { programme_row (this.state.previous, "previous") }
+                { programme_row (this.state.current, "current") }
+                { programme_row (this.state.next, "next") }
                 <style jsx>{`
                 .onRightNow {
                     color: white;
                     background: #555;
                 }
-                .onRightNow>.programme.current {
-                    background: #777;
-                }
-                .onRightNow>.programme {
-                    padding: 10px;
-                    display: flex;
-                    padding-bottom: 5px;
-                }
-                .onRightNow>.programme>.startTime::after {
-                    content: "–";
-                }
-                .onRightNow>.programme>.organization {
-                    margin: 0 10px;
-                }
-                .onRightNow>.programme>.organization::after {
-                    content: ":";
-                }
-                .onRightNow>.programme>.endTime {
-                    margin-right: 20px;
-                }
                 `}</style>
                 </div>
             )
-        else
-            return null;
+        }
     }
     
 }
@@ -186,8 +151,8 @@ class LiveNow extends Component {
     render = () => {
         return (
         <div id="live_now">
-            <div className="header">direkte nå</div>
             <LiveVideoPlayer />
+            <div className="header">direkte nå</div>
             <ScheduleInfo />
             <style jsx>{`
                 #live_now {
