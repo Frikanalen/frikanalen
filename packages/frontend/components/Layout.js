@@ -1,9 +1,14 @@
 import Link from 'next/link';
 import Header from './Header';
 import UserAuth from './UserAuth';
+import MetaTags from 'react-meta-tags';
 
 const Layout = props => (
   <div className="page">
+    <MetaTags>
+        <title>Frikanalen</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </MetaTags>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"/>
     <Header className="foo"/>
@@ -12,7 +17,7 @@ const Layout = props => (
     <style jsx>{`
     `}</style>
     <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css?family=Roboto:900&display=swap');
+        @import url('https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap');
 
         body > div:first-child,
           div#__next,
@@ -31,8 +36,9 @@ const Layout = props => (
             grid-template-columns: 100%;
         }
         main {
-            width: 1024px;
+            max-width: 1024px;
             margin: 0 auto;
+            padding-top: 70px;
             grid-template-area: content;
         }
         header {
@@ -101,9 +107,7 @@ const Footer = props => (
             padding: 0;
             padding-top: 0.5em;
             height: 1.5em;
-            background-color: rgb(204, 204, 204);
             background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 16px 16px 0 0;
         }
         `}</style>
     </footer>

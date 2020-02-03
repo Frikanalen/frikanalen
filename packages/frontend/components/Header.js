@@ -20,7 +20,7 @@ class Header extends Component {
             <header>
               <div id="header-logo">
                 <Link href="/" as="/">
-                    <a><img src="/static/frikanalen.png" alt="Frikanalen" /></a>
+                    <a><img className="logo" src="/static/frikanalen.png" alt="Frikanalen" /></a>
                 </Link>
               </div>
 
@@ -36,16 +36,32 @@ class Header extends Component {
               </nav>
 
             <style jsx>{`
-                #header-logo {
+                #header-logo>a>img {
                     padding: 30px 0;
+                    padding-left: 50px;
                 }
 
                 .headerLinks {
                     padding: 0 30px;
+                    padding-left: 50px;
                     background: #535151;
                     display: flex;
                     font-family: 'Roboto', sans-serif;
+                    font-weight: 700;
                     font-size: 20pt;
+                    flex-wrap: wrap;
+                }
+
+                @media screen and (max-width: 500px) {
+                  .headerLinks>a {
+                      max-width: 40%;
+                  }
+                }
+
+                @media screen and (max-width: 800px) {
+                  img.logo {
+                      margin: 0 auto;
+                  }
                 }
 
                 .headerLinks>a {
