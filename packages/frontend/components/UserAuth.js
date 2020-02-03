@@ -68,6 +68,7 @@ class UserAuth extends Component {
             <style jsx>{`
                 input {
                     font-family: 'Roboto', sans-serif;
+                    font-weight: bold;
                     font-size: 12pt;
                 }
                 input[type=submit] {
@@ -103,10 +104,12 @@ class UserAuth extends Component {
             {form()}
             <style jsx>{`
             .userBar {
-                padding: 0 40px;
+                padding: 0;
+                padding-left: 50px;
                 background: black;
                 color: white;
                 font-family: 'Roboto', sans-serif;
+                font-weight: bold;
             }
             `}</style>
             </div>
