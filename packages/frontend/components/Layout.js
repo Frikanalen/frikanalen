@@ -19,6 +19,9 @@ const Layout = props => (
     <style jsx global>{`
         @import url('https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap');
 
+        * {
+          box-sizing: border-box;
+}
         body > div:first-child,
           div#__next,
           div#__next > div,
@@ -44,13 +47,17 @@ const Layout = props => (
         header {
             grid-template-area: header;
             margin-bottom: 20px;
+            max-width: 1024px;
+            width: 100%;
+            margin: 0 auto;
+            margin-top: 100px;
             background: #fff;
         }
         footer {
             grid-template-area: footer;
         }
         html, body {
-            background: #f0f0f0;
+            background: #e0e0e0;
             width: 100%;
             height: 100%;
             margin: 0;

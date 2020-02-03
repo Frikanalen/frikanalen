@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import * as env from './constants';
 import React, { Component } from 'react';
 import { Cookies } from 'react-cookie';
@@ -12,7 +13,15 @@ class UserAuth extends Component {
         this.password = React.createRef();
         this.state = {
             token: cookies.get('token') || null,
+//            showLogin: false,
+            showLogin: true,
         };
+    }
+
+    showLogin() {
+        this.setState ({
+            showLogin: true,
+        })
     }
 
     componentDidMount() {
@@ -24,68 +33,89 @@ class UserAuth extends Component {
     logged_in_nav = () => {
         return (
             <div className="user_nav">
-            <div><span className="material-icons">account_box</span>{this.state.email}</div>
-            <button onClick={this.handle_logout}>logg ut</button>
+                <div className="user_id_box">
+                    <div className="material-icons">account_box</div>
+                    <div className="username">{this.state.email}</div>
+                </div>
+                <div onClick={this.handle_logout}>logg ut</div>
             <style jsx>{`
             .user_nav {
+                font-family: 'Roboto', sans-serif;
+                font-weight: 700;
                 display: flex;
                 flex-wrap: no-wrap;
-                font-size: 12pt;
+                align-items: center;
             }
-            button {
+            .user_nav>div {
+                margin-right: 10px
+            }
+            .user_id_box {
+                display: flex;
+                align-items: center;
+                background-color: #444;
+                padding: 1px 4px;
+                margin: 0 20px 0 0;
+            }
+            .username {
                 font-size: calc(inherit - 2pt);
-                color: inherit;
-                font-family: inherit;
-
-                margin: 1px;
-                margin-left: 30px;
-                background: #333;
-                border: 1px solid white;
-            }
-            div {
-                vertical-align: middle !important;
+                margin: 0 0 1px 2px;
             }
             .material-icons {
-                font-size: 14pt;
                 vertical-align: middle;
-                padding-bottom: 3px;
+                padding-bottom: 1px;
+                line-height: inherit;
             }
             `}</style>
             </div>
         );
     };
 
-    logged_out_nav = () => {
+    loginOrRegisterPrompt = () => {
         return (
-            <div>
+            <div className="login_prompt">
             <form onSubmit={this.handle_login_form} >
-            <input id="email" type="text" ref={this.email}
-            placeholder="epost" maxLength="30" />
-            <input id="password" type="password" ref={this.password} 
-            placeholder="passord" maxLength="4096" />
-            <input type="submit" value="Logg inn" />
-            </form> eller <a href="/register/">registrer ny bruker</a>
+                <input id="email" type="text" ref={this.email} placeholder="epost" maxLength="30" />
+                <input id="password" type="password" ref={this.password} placeholder="passord" maxLength="4096" />
+                <input type="submit" value="logg inn" />
+            </form>
+            <div className="eller">…eller</div>
+            <Link href="/register/"><button>registrer ny bruker</button>
+            </Link>
             <style jsx>{`
-                input {
+                .login_prompt {
+                    display: flex;
+                    align-items: baseline;
+                }
+
+                .eller {
+                    margin: 0 3px 0 8px;
+                }
+
+                input, button {
                     font-family: 'Roboto', sans-serif;
                     font-weight: bold;
                     font-size: 12pt;
                 }
-                input[type=submit] {
+
+                input[type=submit], button{
                     margin: 1px;
-                    color: white;
-                    background: #333;
-                    border: 1px solid white;
-                    text-color: white;
+                    color: black;
+                    background: white;
+                    border: none;
                 }
-                form { display: inline-block }
+
                 input[type=text], input[type=password] {
                     border: 1px solid black;
                     width: 160px;
                     padding: 1px 4px;
                 }
                 a, a:link{
-                    color: inherit;
+                    display: inline-block;
+                    text-decoration: none;
+                    margin: 1px;
+                    color: black;
+                    background: white;
+                    border: none;
                 }
             `}</style>
             </div>
@@ -93,21 +123,21 @@ class UserAuth extends Component {
     };
 
     render = props => {
-        let form = null;
+        let user_bar = null;
         if(this.state.token !== null) {
-            form = this.logged_in_nav;
+            user_bar = this.logged_in_nav();
         } else {
-            form = this.logged_out_nav;
+            if(this.state.showLogin) 
+                user_bar = this.loginOrRegisterPrompt();
         }
         return (
             <div className="userBar"> 
-            {form()}
+            {user_bar}
             <style jsx>{`
             .userBar {
-                padding: 0;
-                padding-left: 50px;
+                padding: 0 0 0 50px;
                 background: black;
-                color: white;
+                color: #ddd;
                 font-family: 'Roboto', sans-serif;
                 font-weight: bold;
             }
