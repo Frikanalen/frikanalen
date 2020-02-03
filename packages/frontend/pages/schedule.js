@@ -30,30 +30,27 @@ class Schedule extends Component {
           </div>
             <style jsx>{`
             .schedule_item {
-                margin: 3px 0px;
-                display: flex;
-                align-content: middle;
-                width: 100%;
+                margin: 0px 0px 10px 0px;
                 color: white;
                 font-family: inherit;
                 font-weight: bold;
-            }
-            .schedule_item>div {
-                flex-shrink: 0;
+                break-inside: avoid-column;
             }
             .schedule_item>.end_time { 
+                display: inline-block;
                 color: #888;
             }
             .schedule_item>.start_time { 
+                display: inline-block;
                 color: white;
             }
             .schedule_item>.title>a, .schedule_item>.title>a:link {
                 text-decoration: none;
                 color: white;
+                break-after: column;
             }
             .schedule_item>.title {
-                flex-grow: 1;
-                margin-left: 10px;
+                white-space: pre-line;
             }
             .schedule_item>.category {
                 text-transform: lowercase;
@@ -120,8 +117,8 @@ class Schedule extends Component {
                 }
 
                 .programmes {
-                    width: 80%;
                     padding: 10px;
+                    column-count: 2;
                 }
 
                 .schedule {
