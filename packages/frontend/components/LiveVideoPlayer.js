@@ -112,6 +112,11 @@ export class ScheduleInfo extends Component {
                             .programme>.startTime::after {
                                 content: "–";
                             }
+                            @media screen and (max-width: 1024px) {
+                                .programme {
+                                    flex-wrap: wrap;
+                                }
+                            }
                             .programme>.organization {
                                 margin: 0 10px;
                                 font-weight: bold;

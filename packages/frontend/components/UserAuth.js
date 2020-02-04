@@ -18,7 +18,8 @@ class UserAuth extends Component {
         this.get_token = this.get_token.bind(this);
         this.state = {
             token: cookies(props).token || null,
-            showLogin: true,
+            showLogin: false
+//            showLogin: true,
         };
         this.load_profile_data();
     }
@@ -151,15 +152,17 @@ class UserAuth extends Component {
     render = props => {
         let user_bar = null;
         if(this.state.token !== null) {
-            user_bar = this.logged_in_nav;
+            user_bar = this.logged_in_nav();
         } else {
             if(this.state.showLogin) 
-            user_bar= this.loginOrRegisterPrompt;
+                user_bar= this.loginOrRegisterPrompt();
+            else
+                return null;
         }
         if(typeof window !== 'undefined') {
         return (
             <div className="userBar">
-            {user_bar()}
+            {user_bar}
             <style jsx>{`
             .userBar {
                 min-height: 32px;
@@ -249,9 +252,12 @@ class UserAuth extends Component {
                 this.setState({
                     token: json.key,
                 });
+                this.load_profile_data();
+                this.setState({
+                    token: json.key,
+                });
             })
             .catch(e => console.log(e));
-            this.load_profile_data();
     }
 }
 
