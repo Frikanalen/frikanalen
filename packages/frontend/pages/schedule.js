@@ -129,11 +129,12 @@ class Schedule extends Component {
                     column-count: 2;
                 }
 
+
                 .schedule {
                     padding: 0px 50px;
                     font-family: 'Roboto', sans-serif;
                     background: #535151;
-                    max-width: 1024px;
+                    max-width: 100%;
                     width: 1024px;
                 }
 
@@ -143,6 +144,14 @@ class Schedule extends Component {
                     font-size: 20pt;
                     font-weight: bold;
                     padding: 20px;
+                }
+                @media screen and (max-width: 1024px) {
+                    .programmes {
+                        column-count: 1;
+                    }
+                    .schedule {
+                        padding: 0px 0px;
+                    }
                 }
                 `}</style>
             </div>
