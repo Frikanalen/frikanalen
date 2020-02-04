@@ -1,0 +1,16 @@
+version: "2"
+services:
+  node:
+    image: "node:10"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+      - PORT=8082
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - "8082"
+    ports:
+      - "8082:8082"
+    command: "bash -c \"yarn install; yarn start\""
