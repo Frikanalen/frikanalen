@@ -42,8 +42,6 @@ class Header extends Component {
                     padding: 30px 0;
                     padding-left: 50px;
                 }
-                @media screen and (max-width: 1024px) {
-                }
 
                 .headerLinks {
                     padding: 0 30px;
@@ -51,7 +49,7 @@ class Header extends Component {
                     background: #535151;
                     display: flex;
                     font-family: 'Roboto', sans-serif;
-                    font-weight: 700;
+                    font-weight: bold;
                     font-size: 20pt;
                     flex-wrap: wrap;
                 }
@@ -83,9 +81,10 @@ class Header extends Component {
                 }
                 @media screen and (max-width: 1024px) {
                     #header-logo>a>img {
-                        padding-left: 5px;
+                        padding: 0 0 0 5px;
                     }
                     .headerLinks {
+                        font-size: 14pt;
                         padding-left: 5px;
                     }
                 }

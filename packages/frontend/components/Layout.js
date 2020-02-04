@@ -42,12 +42,11 @@ const Layout = props => (
             max-width: 100%;
             width: 1024px;
             margin: 0 auto;
-            padding-top: 70px;
+            padding-top: 60px;
             grid-template-area: content;
         }
         header {
             grid-template-area: header;
-            margin-bottom: 20px;
             max-width: 1024px;
             width: 100%;
             margin: 0 auto;
@@ -58,42 +57,19 @@ const Layout = props => (
             grid-template-area: footer;
         }
         html, body {
-            background: #e0e0e0;
+            background: #e7e7e7;
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
         }
-        a img {
-            border: none;
-        }
-        a:link {
-            color: rgb(70, 43, 3);
-        }
-        a:visited {
-            color: rgb(42, 26, 2);
-            color: rgba(70, 73, 3, 0.6);
-        }
-        a:hover {
-            color: rgb(42, 26, 2);
-            color: rgba(70, 43, 3, 0.6);
-        }
-        a:active {
-            color: rgb(70, 43, 3);
-        }
-
-        body {
-            font-family: Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
-        }
-        h1 {
-            color: #555;
-            font-size: 24px;
-            margin: 0 0 6px;
-        }
 
         @media screen and (max-width: 1024px) {
             header {
                 margin-top: 0px;
+            }
+            main {
+                padding-top: 5px;
             }
         }
 `}</style>
