@@ -14,8 +14,7 @@ export class LiveVideoPlayer extends Component {
             <style jsx>{`
 
             #live {
-                width: 1024px;
-                height: 576px;
+                width:100%;
                 }
 
             #live>.header {
@@ -28,12 +27,10 @@ export class LiveVideoPlayer extends Component {
             }
 
             #live>video {
-                position: absolute;
                 width: inherit;
             }
             @media screen and (max-width: 1024px) {
                 #live {
-                width:100%;
                 }
             }
             `}</style>

@@ -39,7 +39,8 @@ const Layout = props => (
             grid-template-columns: 100%;
         }
         main {
-            max-width: 1024px;
+            max-width: 100%;
+            width: 1024px;
             margin: 0 auto;
             padding-top: 70px;
             grid-template-area: content;
@@ -88,6 +89,12 @@ const Layout = props => (
             color: #555;
             font-size: 24px;
             margin: 0 0 6px;
+        }
+
+        @media screen and (max-width: 1024px) {
+            header {
+                margin-top: 0px;
+            }
         }
 `}</style>
   </div>

@@ -74,23 +74,46 @@ class UserAuth extends Component {
     loginOrRegisterPrompt = () => {
         return (
             <div className="login_prompt">
-            <form onSubmit={this.handle_login_form} >
-                <input id="email" type="text" ref={this.email} placeholder="epost" maxLength="30" />
-                <input id="password" type="password" ref={this.password} placeholder="passord" maxLength="4096" />
-                <input type="submit" value="logg inn" />
-            </form>
-            <div className="eller"> …eller</div>
+            <form id="login" onSubmit={this.handle_login_form} />
+            <input form="login" id="email" type="text" 
+                ref={this.email} placeholder="epost" maxLength="30" />
+            <input form="login" id="password" type="password" 
+                ref={this.password} placeholder="passord" maxLength="4096" />
+            <div id="breaker"></div>
+            <input id="login_button" form="login" type="submit" value="logg inn" />
+            <div className="eller">…eller</div>
             <Link href="/register/"><button>registrer ny bruker</button>
             </Link>
             <style jsx>{`
-                .login_prompt {        
+            .login_prompt {        
+                    min-height: 32px;
                     display: flex;
-                    height: 32px;
-                    align-items: center;
-                    align-content: baseline;
+                    flex-wrap: wrap;
+                    align-items: baseline;
+                    align-content: center;
+                }
+                @media screen and (max-width: 630px) {
+                    .login_prompt {        
+                        flex-basis: 100%;
+                        justify-content: flex-start;
                     }
+                    input, button {
+                    }
+                    #breaker {
+                      flex-basis: 100%;
+                      height: 0;
+                    }
+                    .login_prompt>input, .login_prompt>button, {
+                        flex-grow: 1;
+                    }
+                }
+
+                form {
+                    display: none;
+                }
                 .eller {
                     margin: 0 3px 0 8px;
+                    flex-grow: 0;
                 }
 
                 input, button {
@@ -111,6 +134,7 @@ class UserAuth extends Component {
                     width: 160px;
                     padding: 1px 4px;
                 }
+
                 a, a:link{
                     display: inline-block;
                     text-decoration: none;
@@ -144,6 +168,11 @@ class UserAuth extends Component {
                 color: #ddd;
                 font-family: 'Roboto', sans-serif;
                 font-weight: bold;
+            }
+            @media screen and (max-width: 1024px) {
+            .userBar {
+                padding: 0 0 0 5px;
+                }
             }
             `}</style>
             </div>
@@ -217,12 +246,12 @@ class UserAuth extends Component {
             })
             .then(json => {
                 document.cookie = `token=${json.key}; path=/`;
-                console.log(json.key)
                 this.setState({
                     token: json.key,
                 });
             })
             .catch(e => console.log(e));
+            this.load_profile_data();
     }
 }
 
