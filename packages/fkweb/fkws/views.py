@@ -5,6 +5,7 @@ import csv
 import datetime
 
 from django.http import HttpResponse
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters import rest_framework as djfilters
@@ -19,11 +20,14 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 import fkvod.search
+
 from fk.models import AsRun
 from fk.models import Category
 from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
+from fk.models import User
+
 from fkws.permissions import IsInOrganizationOrDisallow
 from fkws.permissions import IsInOrganizationOrReadOnly
 from fkws.permissions import IsStaffOrReadOnly
@@ -34,6 +38,7 @@ from fkws.serializers import TokenSerializer
 from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
 from fkws.serializers import VideoUploadTokenSerializer
+from fkws.serializers import UserSerializer
 
 
 @api_view(['GET'])
@@ -49,6 +54,7 @@ def api_root(request, format=None):
         'scheduleitems': reverse('api-scheduleitem-list', request=request),
         'videofiles': reverse('api-videofile-list', request=request),
         'videos': reverse('api-video-list', request=request),
+        'user': reverse('api-user-detail', request=request),
     })
 
 
@@ -367,3 +373,14 @@ class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
+
+class UserDetail(generics.RetrieveUpdateAPIView):
+    """
+    User details - used to manage your own user
+    """
+
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, queryset=None):
+        return self.request.user

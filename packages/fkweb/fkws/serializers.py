@@ -11,6 +11,7 @@ from fk.models import Category
 from fk.models import Organization
 from fk.models import Scheduleitem
 from fk.models import Video
+from fk.models import User
 from fk.models import VideoFile
 
 
@@ -158,6 +159,23 @@ class TokenSerializer(serializers.ModelSerializer):
             'user',
         )
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+                'email',
+                'first_name',
+                'last_name',
+                'date_joined',
+                'is_staff',
+                'date_of_birth'
+                )
+
+        read_only_fields = (
+                'email',
+                'is_staff',
+                'date_joined',
+                )
 
 class CategorySerializer(serializers.ModelSerializer):
     videocount = serializers.SerializerMethodField('count_videos')

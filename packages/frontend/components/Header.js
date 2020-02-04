@@ -1,56 +1,88 @@
 import Link from 'next/link';
+import React, { Component } from 'react';
 import UserAuth from './UserAuth';
 
-const Header = () => (
-    <header>
-      <div id="header-logo">
-        <Link href="/" as="/">
-            <a><img src="/static/frikanalen.png" alt="Frikanalen" /></a>
-        </Link>
-      </div>
+class Header extends Component {
+    constructor(props) {
+        super(props)
+        this.userbar = React.createRef();
+        this.loginButton = React.createRef();
+        this.showLogin = this.showLogin.bind(this)
+    }
 
-      <nav>
-        <div className="headerLinks">
-            <Link href="/schedule" as="/schedule"><a>Sendeplan</a></Link>
-            <Link href="/videos" as="/videos"><a>Arkiv</a></Link>
-            <Link href="/members" as="/members"><a>Medlemmer</a></Link>
-            <Link href="/about" as="/about"><a>Om oss</a></Link>
-        </div>
-        <UserAuth />
-      </nav>
+    showLogin() {
+        if(this.userbar.current)
+            this.userbar.current.showLogin();
+    }
 
-    <style jsx>{`
-        #header-logo {
-            padding: 30px 0;
-        }
+    render () {
+        const userauth = < UserAuth ref={this.userbar} />
+        return (
+            <header>
+              <div id="header-logo">
+                <Link href="/" as="/">
+                    <a><img className="logo" src="/static/frikanalen.png" alt="Frikanalen" /></a>
+                </Link>
+              </div>
 
-        .headerLinks {
-            padding: 0 30px;
-            background: #535151;
-            display: flex;
-            font-family: 'Roboto', sans-serif;
-            font-size: 20pt;
-        }
+              <nav>
+                <div className="headerLinks">
+                    <Link href="/schedule" as="/schedule"><a>Sendeplan</a></Link>
+                    <Link href="/videos" as="/videos"><a>Arkiv</a></Link>
+                    <Link href="/members" as="/members"><a>Medlemmer</a></Link>
+                    <Link href="/about" as="/about"><a>Om oss</a></Link>
+                    <a onClick={this.showLogin} >Logg inn</a>
+                </div>
+                { userauth }
+              </nav>
 
-        .headerLinks>a {
-            margin: 0 10px;
-            text-decoration: none;
-            text-transform: lowercase;
-        }
-        .headerLinks>a:link {
-            color: #ddd;
-        }
-        .headerLinks>a:visited {
-            color: #ddd;
-        }
-        .headerLinks>a:hover {
-            color: white;
-        }
-        .headerLinks>a:active {
-            color: white;
-        }
-        `}</style>
-    </header>
-    );
+
+            <style jsx>{`
+                #header-logo>a>img {
+                    padding: 30px 0;
+                    padding-left: 50px;
+                }
+
+                .headerLinks {
+                    padding: 0 30px;
+                    padding-left: 50px;
+                    background: #535151;
+                    display: flex;
+                    font-family: 'Roboto', sans-serif;
+                    font-weight: 700;
+                    font-size: 20pt;
+                    flex-wrap: wrap;
+                }
+
+                @media screen and (max-width: 500px) {
+                  .headerLinks>a {
+                      max-width: 40%;
+                  }
+                }
+
+                @media screen and (max-width: 800px) {
+                  img.logo {
+                      margin: 0 auto;
+                  }
+                }
+
+                .headerLinks>a {
+                    margin: 0;
+                    margin-right: 17px;
+                    text-decoration: none;
+                    text-transform: lowercase;
+                    color: #ddd;
+                }
+                .headerLinks>a:hover {
+                    color: white;
+                }
+                .headerLinks>a:active {
+                    color: white;
+                }
+                `}</style>
+            </header>
+        );
+    }
+}
 
 export default Header;

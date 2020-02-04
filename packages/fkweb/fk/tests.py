@@ -13,10 +13,8 @@ from fk.templatetags import vod
 class UserRegistrationTest(TestCase):
     fixtures = ['test.yaml']
 
-
     def setUp(self):
         self.client.login(email='staff_user@fake.com', password='test')
-
 
     def test_user_profile_update(self):
         r = self.client.get(reverse('profile'))
@@ -25,7 +23,6 @@ class UserRegistrationTest(TestCase):
             reverse('profile'), {
                 'first_name': 'Firstname',
                 'last_name':  'Lastname',
-        #        'email':  'tjohei@hoppsan.com',
                 'country':    'Norway'
             })
         u = get_user_model().objects.get(email='staff_user@fake.com')
@@ -34,7 +31,6 @@ class UserRegistrationTest(TestCase):
         self.assertEqual('staff_user@fake.com', u.email)
         # Uncomment when https://github.com/Frikanalen/frikanalen/issues/77 is fixed
         #self.assertEqual('Norway', u.userprofile.country)
-
 
 class WebPageTest(TestCase):
     fixtures = ['test.yaml']
@@ -210,7 +206,7 @@ class APITest(TestCase):
 
         self.assertEqual(
             set(['scheduleitems', 'asrun', 'category', 'videofiles',
-                 'videos', 'obtain-token', 'jukebox-csv']),
+                 'videos', 'obtain-token', 'jukebox-csv', 'user']),
             set(r.data.keys()))
 
     def test_api_video_list(self):
