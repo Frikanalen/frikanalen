@@ -83,12 +83,6 @@ class UserAuth extends Component {
             <Link href="/register/"><button>registrer ny bruker</button>
             </Link>
             <style jsx>{`
-                .login_prompt {
-                    display: flex;
-                    align-items: center;
-                    height: 32px;
-                }
-
                 .eller {
                     margin: 0 3px 0 8px;
                 }
@@ -132,12 +126,13 @@ class UserAuth extends Component {
             if(this.state.showLogin) 
             user_bar= this.loginOrRegisterPrompt;
         }
+        if(typeof window !== 'undefined') {
         return (
-            <div>
-            <div className="userBar">{user_bar()}</div>
+            <div className="userBar">
+            {user_bar()}
             <style jsx>{`
             .userBar {
-            min-height: 32px;
+                min-height: 32px;
                 padding: 0 0 0 50px;
                 background: black;
                 color: #ddd;
@@ -147,6 +142,9 @@ class UserAuth extends Component {
             `}</style>
             </div>
         );
+        } else { 
+            return null;
+        }
     };
 
     handle_logout = () => {
