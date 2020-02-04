@@ -60,8 +60,9 @@ class Header extends Component {
                   }
                 }
 
-                @media screen and (max-width: 800px) {
+                @media screen and (max-width: 600px) {
                   img.logo {
+                      display: block;
                       margin: 0 auto;
                   }
                 }

@@ -27,7 +27,7 @@ const Layout = props => (
           div#__next > div,
           div#__next > div > div {
             height: 100%;
-            box-sizing: border-box;
+            padding: 0;
           }
         .page {
             min-height: 100%;
@@ -62,6 +62,10 @@ const Layout = props => (
             height: 100%;
             margin: 0;
             padding: 0;
+        }
+        a, a:link {
+            text-decoration: none;
+            color:inherit;
         }
 
         @media screen and (max-width: 1024px) {

@@ -24,6 +24,7 @@ class UserAuth extends Component {
         this.load_profile_data();
     }
 
+
     showLogin() {
         this.setState ({
             showLogin: true,
@@ -31,12 +32,33 @@ class UserAuth extends Component {
     }
 
     logged_in_nav = () => {
+        var staff_button;
+        if (this.state.is_staff) {
+            staff_button = (
+                <div>
+                <Link href="playout" as="playout">
+                <a>playout</a>
+                </Link>
+                <style>{`
+                    div {
+                    padding: 0 5px;
+                    }
+                    a {
+                    color: #F25252;
+                    }
+                `}</style>
+                </div>
+            )
+        } else {
+            staff_button = <></>
+        }
         return (
             <div className="user_nav">
                 <div className="user_id_box">
                     <div className="material-icons">account_box</div>
                     <div className="username">{this.state.email}</div>
                 </div>
+                { staff_button }
                 <div onClick={this.handle_logout}>logg ut</div>
             <style jsx>{`
             .user_nav {
@@ -54,18 +76,28 @@ class UserAuth extends Component {
             .user_id_box {
                 display: flex;
                 align-items: center;
-                background-color: #454;
-                padding: 1px 4px;
+                background-color: #8AC979;
+                color: black;
+                padding: 0px 3px;
                 margin: 0 20px 0 0;
             }
             .username {
                 font-size: calc(inherit - 2pt);
-                margin: 0 0 1px 2px;
+                margin: 0 0 0px 2px;
             }
             .material-icons {
                 vertical-align: middle;
                 padding-bottom: 1px;
                 line-height: inherit;
+            }
+            @media screen and (max-width: 630px) {
+                .user_id_box {
+                    padding: 0px 1px;
+                    margin: 1px;
+                }
+                .user_nav {
+                    font-size: 11pt;
+                }
             }
             `}</style>
             </div>
@@ -122,6 +154,12 @@ class UserAuth extends Component {
                     font-weight: bold;
                     font-size: 12pt;
                 }
+                @media screen and (max-width: 1024px) {
+                    input, button {
+                        font-size: 8pt;
+                    }
+                }
+
 
                 input[type=submit], button{
                     margin: 1px;
@@ -173,8 +211,8 @@ class UserAuth extends Component {
                 font-weight: bold;
             }
             @media screen and (max-width: 1024px) {
-            .userBar {
-                padding: 0 0 0 5px;
+                .userBar {
+                    padding: 0 0 0 5px;
                 }
             }
             `}</style>
@@ -221,6 +259,7 @@ class UserAuth extends Component {
                     email: json.email,
                     first_name: json.first_name,
                     last_name: json.last_name,
+                    is_staff: json.is_staff,
                 })
             })
             .catch(e => {
