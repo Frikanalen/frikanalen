@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { instanceOf } from 'prop-types';
 import * as env from './constants';
 import React, { Component } from 'react';
-import { Cookies } from 'react-cookie';
-const cookies = new Cookies();
+import cookies from 'next-cookies';
+
+class PlayoutAdmin extends Component {
+}
 
 class UserAuth extends Component {
     constructor(props) {
@@ -11,23 +14,19 @@ class UserAuth extends Component {
         this.handle_logout = this.handle_logout.bind(this);
         this.email = React.createRef();
         this.password = React.createRef();
+        this.handle_logout = this.handle_logout.bind(this);
+        this.get_token = this.get_token.bind(this);
         this.state = {
-            token: cookies.get('token') || null,
-//            showLogin: false,
+            token: cookies(props).token || null,
             showLogin: true,
         };
+        this.load_profile_data();
     }
 
     showLogin() {
         this.setState ({
             showLogin: true,
         })
-    }
-
-    componentDidMount() {
-        if(this.state.token) {
-            this.load_profile_data();
-        }
     }
 
     logged_in_nav = () => {
@@ -45,6 +44,8 @@ class UserAuth extends Component {
                 display: flex;
                 flex-wrap: no-wrap;
                 align-items: center;
+                align-content: stretch;
+                height:32px;
             }
             .user_nav>div {
                 margin-right: 10px
@@ -52,7 +53,7 @@ class UserAuth extends Component {
             .user_id_box {
                 display: flex;
                 align-items: center;
-                background-color: #444;
+                background-color: #454;
                 padding: 1px 4px;
                 margin: 0 20px 0 0;
             }
@@ -78,13 +79,14 @@ class UserAuth extends Component {
                 <input id="password" type="password" ref={this.password} placeholder="passord" maxLength="4096" />
                 <input type="submit" value="logg inn" />
             </form>
-            <div className="eller">…eller</div>
+            <div className="eller"> …eller</div>
             <Link href="/register/"><button>registrer ny bruker</button>
             </Link>
             <style jsx>{`
                 .login_prompt {
                     display: flex;
-                    align-items: baseline;
+                    align-items: center;
+                    height: 32px;
                 }
 
                 .eller {
@@ -125,16 +127,17 @@ class UserAuth extends Component {
     render = props => {
         let user_bar = null;
         if(this.state.token !== null) {
-            user_bar = this.logged_in_nav();
+            user_bar = this.logged_in_nav;
         } else {
             if(this.state.showLogin) 
-                user_bar = this.loginOrRegisterPrompt();
+            user_bar= this.loginOrRegisterPrompt;
         }
         return (
-            <div className="userBar"> 
-            {user_bar}
+            <div>
+            <div className="userBar">{user_bar()}</div>
             <style jsx>{`
             .userBar {
+            min-height: 32px;
                 padding: 0 0 0 50px;
                 background: black;
                 color: #ddd;
@@ -147,7 +150,8 @@ class UserAuth extends Component {
     };
 
     handle_logout = () => {
-        cookies.remove('token', { path: '/' })
+        document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+
         this.setState({
             token: null,
             user_id: null
@@ -208,11 +212,11 @@ class UserAuth extends Component {
                 }
             })
             .then(json => {
-                cookies.set('token', json.key);
+                document.cookie = `token=${json.key}; path=/`;
+                console.log(json.key)
                 this.setState({
                     token: json.key,
                 });
-                this.load_profile_data();
             })
             .catch(e => console.log(e));
     }
