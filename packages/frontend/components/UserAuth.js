@@ -83,6 +83,12 @@ class UserAuth extends Component {
             <Link href="/register/"><button>registrer ny bruker</button>
             </Link>
             <style jsx>{`
+                .login_prompt {        
+                    display: flex;
+                    height: 32px;
+                    align-items: center;
+                    align-content: baseline;
+                    }
                 .eller {
                     margin: 0 3px 0 8px;
                 }
