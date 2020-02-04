@@ -22,6 +22,7 @@ FK_UPLOAD_URL = 'https://upload.frikanalen.no/upload'
 
 AUTH_USER_MODEL = 'fk.User'
 LOGIN_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Channel ID per RFC 2838 (Uniform Resource Identifier for Television Broadcasts)
 CHANNEL_ID = "frikanalen.tv"

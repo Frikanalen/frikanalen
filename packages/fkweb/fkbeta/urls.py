@@ -4,7 +4,7 @@
 
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth import login, logout
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 import agenda.urls
@@ -21,8 +21,8 @@ urlpatterns = [
     url(r'^csp-report$', csp_report, name='vod-csp-report'),
 
     url(r'^register/$', register, name='register'),
-    url(r'^login/$', login, name='login'),
-    url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
 
     url(r'^create/', include('create.urls')),
     url(r'^admin/', admin.site.urls),
