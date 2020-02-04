@@ -42,6 +42,8 @@ class Header extends Component {
                     padding: 30px 0;
                     padding-left: 50px;
                 }
+                @media screen and (max-width: 1024px) {
+                }
 
                 .headerLinks {
                     padding: 0 30px;
@@ -78,6 +80,14 @@ class Header extends Component {
                 }
                 .headerLinks>a:active {
                     color: white;
+                }
+                @media screen and (max-width: 1024px) {
+                    #header-logo>a>img {
+                        padding-left: 5px;
+                    }
+                    .headerLinks {
+                        padding-left: 5px;
+                    }
                 }
                 `}</style>
             </header>
