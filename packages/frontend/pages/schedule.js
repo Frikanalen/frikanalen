@@ -20,7 +20,7 @@ class Schedule extends Component {
           <div className="end_time">{end_time_str}</div>
             <div className="publisher">
             <Link href={"/organizations/" + item.organizationId}>
-            <a>{item.organization_name}</a> 
+            <a>{item.organizationName}</a> 
             </Link>
             </div>
           <div className="title">
@@ -36,21 +36,29 @@ class Schedule extends Component {
                 font-weight: bold;
                 break-inside: avoid-column;
             }
+            .schedule_item>.publisher { 
+                display: inline-block;
+                font-size: 14pt;
+                margin-left: 10px;
+            }
             .schedule_item>.end_time { 
                 display: inline-block;
+                font-size: 14pt;
                 color: #888;
             }
             .schedule_item>.start_time { 
                 display: inline-block;
+                font-size: 14pt;
                 color: white;
             }
-            .schedule_item>.title>a, .schedule_item>.title>a:link {
+            a, a:link {
                 text-decoration: none;
                 color: white;
                 break-after: column;
             }
             .schedule_item>.title {
                 white-space: pre-line;
+                font-weight: normal;
             }
             .schedule_item>.category {
                 text-transform: lowercase;
