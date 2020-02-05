@@ -7,16 +7,18 @@ import React, { Component } from 'react';
 class Playout extends Component {
     constructor (props) {
         super(props)
-        this.ATEM = this.ATEM.bind(this)
-        this.render = this.render.bind(this)
+        this.txbutton = this.txbutton.bind(this)
         fetch(
             'https://beta.frikanalen.no/playout/atem/program'
         ).then(
             res=>res.json()
         ).then(json => {
-            return { 
+            this.state = {
                 program: json.inputIndex
             }
+        })
+        .catch(e => {
+            console.log(e)
         })
     }
 
@@ -37,16 +39,38 @@ class Playout extends Component {
             return { 
                 program: json.inputIndex
             }
+        }).
+        catch(e => {
+            console.log(e)
         })
     }
 
+    txbutton = (inputIndex, inputName) => {
+        console.log(inputIndex)
+        console.log(this.state)
+        return(
+            <span>
+            <button className={this.props.program == inputIndex ? "active": null} onClick={() => this.set_input(inputIndex)}>{inputName}</button>
+            <style jsx>{`
+            button {
+                margin: 3px;
+                background: #F25252;
+                color: white;
+                font-size: 18pt;
+                font-weight: bold;
+                border: 2px solid black;
+            }
+            `}</style>
+            </span>
+            )
+    }
     ATEM = () => {
         return (
             <div>
-                <button onClick={() => this.set_input(2)}>tx1</button>
-                <button onClick={() => this.set_input(3)}>tx2</button>
-                <button onClick={() => this.set_input(1)}>tx3</button>
-                <button onClick={() => this.set_input(1000)}>color</button>
+            { this.txbutton(2, "tx1") }
+            { this.txbutton(3, "tx2") }
+            { this.txbutton(1, "tx3") }
+            { this.txbutton(1000, "color bars") }
             </div>
         );
     }
