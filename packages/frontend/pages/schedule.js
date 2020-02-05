@@ -30,7 +30,7 @@ class Schedule extends Component {
           </div>
             <style jsx>{`
             .schedule_item {
-                margin: 0px 0px 10px 0px;
+                margin: 0px 0px 5px 0px;
                 color: white;
                 font-family: inherit;
                 font-weight: bold;
@@ -54,6 +54,7 @@ class Schedule extends Component {
                 break-after: column;
             }
             .schedule_item>.title {
+                padding-top: 5px;
                 white-space: pre-line;
                 font-weight: normal;
             }
