@@ -15,14 +15,40 @@ class Playout extends Component {
             res=>res.json()
         ).then(json => {
             return { 
-                        program: json.inputIndex
-                }
+                program: json.inputIndex
+            }
         })
     }
 
-    ATEM = (ctx) => {
-        console.log(ctx)
-        return <pre>{this.state.ATEMState}</pre>
+    set_input = (input_index) => {
+        fetch(
+            'https://beta.frikanalen.no/playout/atem/program', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({inputIndex: input_index})
+            }
+        ).then(
+            res=>res.json()
+        ).then(json => {
+            console.log(json)
+            return { 
+                program: json.inputIndex
+            }
+        })
+    }
+
+    ATEM = () => {
+        return (
+            <div>
+                <button onClick={() => this.set_input(2)}>tx1</button>
+                <button onClick={() => this.set_input(3)}>tx2</button>
+                <button onClick={() => this.set_input(1)}>tx3</button>
+                <button onClick={() => this.set_input(1000)}>color</button>
+            </div>
+        );
     }
 
     render = () => {
@@ -32,7 +58,7 @@ class Playout extends Component {
                 <div className="header">playout-styring</div>
                 <video ref={this.video} controls onClick={this.pause_video}
                     src="http://icecast.frikanalen.no/frikanalen.webm"></video>
-                <this.ATEM s={this.state}/>
+                <this.ATEM />
             </div>
             <style jsx>{`
                 .playoutControl > .header {
