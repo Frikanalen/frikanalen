@@ -8,10 +8,11 @@ newrev="$3"
 if [ -z "$GIT_DIR" ]; then echo GIT_DIR missing; exit 1; fi
 if [ -z "$refname" ]; then echo params missing; exit 1; fi
 
+echo "> Deploying app"
+mkdir tmp
 dir={{app_dir}}/app
-echo "> Deploying app to $dir"
-fkweb_dir=$dir/packages/playout
-git --work-tree="$dir" checkout -qf "$newrev"
+git --work-tree="tmp/" checkout -qf "$newrev" 
+mv tmp/packages/playout* $dir
 cd $dir
 
 rollback_msg() {
@@ -27,7 +28,7 @@ trap rollback_msg ERR
 . "{{app_dir}}/env/bin/activate"
 
 # should only do these when required
-pip install -qr "$fkweb_dir/requirements.txt"
+pip install -qr "{{app_dir}}/requirements.txt"
 
 sudo systemctl restart fk-playout
 
