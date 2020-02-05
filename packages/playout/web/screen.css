@@ -1,0 +1,152 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: arial;
+	font-size: 9pt;
+}
+
+#scheduleStatusBox {
+	position:absolute;
+	float:left;
+	width:50%;
+	height:75%;
+	overflow: auto;
+}
+
+#rightMenu {
+	float:left;
+	position: absolute;
+	margin-left: 1em;	
+	margin-right: 0;
+	left: 50%; 
+	right: 0.5em;
+	top: 3em; 
+	height: 3em;
+	border-style: solid;
+	border-color: gray;
+	border-width: 1px 1px 1px 1px;
+
+	background: #eee;
+	color: #222;
+}
+
+#rightMenu a {
+	padding: 0.5em;
+	font-size: 150%;
+	width: 8em;
+	float: left;
+	text-decoration: none;
+}
+
+#rightMenu a:hover {
+	color: #000;
+}
+
+.rightBox {
+	float:left;
+	position: absolute;
+	margin-left: 1em;	
+	margin-right: 0;
+	left: 50%; 
+	right: 0.5em;
+	top: 6em; 
+	bottom: 2.5em;
+	border-style: solid;
+	border-color: gray;
+	border-width: 1px 1px 0px 1px;
+	overflow:auto;
+	background: #fff;
+}
+
+.green_dim {
+	color: #475;
+}
+
+.dim {
+	color: #aaa;
+	font-size: 75%;
+}
+
+.viewCommands {
+	position:absolute;
+	margin-left: 1em;	
+	margin-right: 0;
+	left: 50%; 
+	right: 0.5em;
+	bottom: 0.5em;
+	height: 2em;
+	border-top: 1px solid gray;
+	background: #111;
+	color: #7e7;
+}
+
+.viewCommands a { text-decoration:none; }
+.viewCommands a:hover { text-decoration:underline; }
+.viewCommands a:link { color: #afa; }
+.viewCommands a:visited { color: #afa; }
+
+#playbackBox {
+	position:absolute;
+	margin-left: 0.5em;	
+	margin-right: -0.25em;
+	background-color: #ada;
+	left: 0em; 
+	right: 50%;
+	bottom: 0em;
+	border-style: solid;
+	border-color: gray;
+	border-width: 1px 1px 0px 1px;
+	color: #000;
+}
+
+.transporttext {
+	font-weight: bold;
+	font-size: 150%;
+}
+
+#loading {
+	position: fixed;
+	top:0;
+	left: 50%;
+	width: 6em;
+	margin-left: -3em;	
+	text-align:center;
+	padding: 0.5em;
+	background-color: #eef;
+	border-style: solid;
+	border-color: gray;
+	border-width: 0 1px 1px 1px;
+}
+
+.container {
+	padding: 0.5em;
+}
+
+row :hover  {
+	background-color: #eee;
+}
+
+row { 
+	display: block;
+	width: 100%;
+	clear: both;
+}
+mono {
+	display:inline;
+	font-family: monospace;
+}
+
+.errorbox {
+	position:block;
+	background-color: #ada;
+	padding: 0em;
+	margin: 0em;
+	border-bottom: 1px solid gray;
+	height: 3em;
+	width: 100%;
+}
+.errorbox .container {
+	padding: 0.0em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}

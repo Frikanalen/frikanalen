@@ -1,0 +1,149 @@
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" media="screen" href="push.css" />
+<script type="text/javascript" src="jquery.js"></script>          
+<script type="text/javascript">                                         
+$(function() {
+    $.ajax({
+          url: '/jobs/list',
+          type: 'GET',
+          dataType: 'json',
+          cache: false,
+          success: function(data, status) {
+	        $.each(data, function(n, v) {
+
+    	    	group = $("<lu>");
+    	    	//$("<legend/>", {text: "Name"}).appendTo(row);
+    	    	row = $("<li>");
+    	    	row.appendTo(group);
+    	    	arg = $("<li>");
+		        $.each(v["args"], function(argname, argvalue) {
+	    	    	$("<label/>", {text: argname}).appendTo(arg);
+	    	    	$("<input/>", {value: argvalue}).appendTo(arg);
+	    	    	$("<span/>", {id: argname+"-"+n+"-help"}).appendTo(arg);
+		        });
+    	    	arg.appendTo(group);
+    	    	row = $("<li>");
+    	    	if (v["validation_errors"]) {
+			        $.each(v["validation_errors"], function(m, inputAndError) {
+		    	    	arg.find("#"+inputAndError[0]+"-"+n+"-help").text(inputAndError[1]);
+
+			        });
+    	    	};
+    	    	row.appendTo(group);
+    	    	row = $("<li>");
+    	    	$("<label/>", {text: "Tags"}).appendTo(row);
+    	    	$("<i/>", {text: v["tags"].join(", ")}).appendTo(row);
+    	    	row.appendTo(group);
+    	    	if (v["error"]) {
+	    	    	row = $("<li>");
+	    	    	$("<label/>", {text: "Error message"}).appendTo(row);
+    		    	$("<span/>", {text: v["error"]}).appendTo(row);
+    	    	};
+    	    	row.appendTo(group);
+    	    	block = $("<fieldset/>")
+    	    	$("<legend/>", {text: v["name"]}).appendTo(block);
+    	    	group.appendTo(block);
+    	    	$("#jobs").append(block);
+          	});
+	      }
+	  });
+	});
+</script>
+</head>
+<body>
+<script>
+$(function(){
+	$('#new_job').live('submit',function(event) {
+	    $.ajax({
+	        url: '/jobs/new',
+	        type: 'POST',
+	        dataType: 'json',
+	        data: $('#new_job').serialize(),
+	        success: function( data ) {
+	            for(var id in data) {
+	                $('#' + id).html(data[id]);
+	            }
+	        }
+	    });
+	    return false;
+	});
+
+    $.ajax({
+        url: '/configuration',
+        dataType: 'json',
+        success: function( data ) {
+        	s = "";
+            for(var id in data) {
+                s += data[id][0]+": "+data[id][1]+"<br/>";
+            }
+            $("#configuration").html(s);
+        }
+	    });
+});
+</script>
+<fieldset>
+	<legend>New job</legend>
+	<form id="new_job">
+		<label>Job
+		<select name="job_type">
+			<option>Delay</option>
+		</select>
+		</label>
+		<div>
+		<label>Seconds<input name="seconds" type="number" min="0" value="5" placeholder="Seconds" required="required" step="0.04"></label>
+		</div>
+		<label>Description
+		<textarea name="descripton" placeholder="Notes"></textarea>
+		</label>
+		<br/>
+	    <input type="submit" value="Submit" />
+	    <b id="new_job_result"></b>
+    </form>
+</fieldset>
+
+
+<fieldset>
+	<legend>Jobs</legend>
+	<fieldset>
+		<legend>PushVideosBySCP</legend>
+		<summary>
+			Status: <i>complete</i><br/>
+			Progress: <meter max="1.0" value="1.0"/><br/>
+		</summary>
+		<details>
+			<li><label>Host<input class="name"/></label> <label>Response <input class="name"/></label></li>
+			<li><label>Error</label> <span class="error"></span></li>
+		</details>
+	</fieldset>
+	<div id="jobs"></id>
+</fieldset>
+
+
+
+<fieldset>
+	<legend>Local configuration</legend>
+	<ul>
+	<li>Got big library at /mnt/media/ (Cached filelist at DATE)</li>
+	<!-- TODO: Configuration resource -->
+	<li>Schedule updated at XYZZ
+	<lu>
+</fieldset>
+
+<fieldset>
+	<legend>Incoming Queue:</legend>
+	<ul>
+	<li>Schedules uploaded 2011.09.08. [Use this schedule]</li>
+	<li>5 Videos uploaded 2011.09.08 [Move to local video library]</li>
+	<lu>
+</fieldset>
+
+<fieldset>
+	<legend>Configuration</legend>
+	<div id="configuration">
+	</div>
+</fieldset>
+
+</body>
+</html>

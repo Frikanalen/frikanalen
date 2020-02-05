@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<head>
+<script type="text/javascript" src="jquery.js"></script>          
+<style>
+* {
+        font-family: monospace;
+}
+.endpoint {
+        white-space: pre;
+}
+.inactive {
+        color: black;
+        cursor: hand;
+        border: 1px solid black;
+        padding: 2px;
+}
+.active {
+        background-color: #111;
+        color: #fff;
+        padding: 2px;
+        cursor: hand;
+        border: 1px solid black;
+}
+p {
+        /*margin: 0;
+        padding: 0;*/
+}
+.box {
+	margin-top: 7px;
+	float: left;
+	clear: both;
+}
+</style>
+<script type="text/javascript" src="router.js"></script>
+<script type="text/javascript">
+
+matrixref = null;
+matrixSize = null;
+
+function makematrix(N) {
+	s = "";
+	matrixSize = N;
+	matrixref = new Array(N);
+	for (n=0; n<N; n++) {
+		s += '<div class="box">' + n + ": ";
+		for (m=0; m<N; m++) {
+			s += '<a class="inactive" href="#" data-from="'+n+'" data-to="'+m+'">'+ m +'</a>\n';
+		};
+		s += "</div>";
+		matrixref[n] = new Array(N);
+	};
+	$("#routermatrix").html(s);
+	$("#routermatrix a").map(function() {
+		matrixref[$(this).attr("data-from")][$(this).attr("data-to")] = $(this);
+	});
+	$("#routermatrix a").click(function(e) {
+		//e.preventDefault();
+		from = $(this).attr("data-from");
+		to = $(this).attr("data-to");
+		$("#status").html("sent change "+from+"-"+to);
+		for (n=0;n<matrixSize;n++) {
+			if (n == to) continue;
+			matrixref[from][n].removeClass().addClass("inactive");
+		}
+		$(this).removeClass().addClass("active");
+		$.post("ajax", 
+			{output: from, 
+			 input: to},
+			 function(xml) {
+			 	$("#response").html(xml);
+			 });
+	})
+};
+
+$(function() {
+	makematrix(5);
+});
+</script>
+</head>
+<body>
+<h1>Router</h1>
+
+<small><div id="status">started</div></small><br/>
+<small><div id="response">no response yet</div></small><br/>
+<div id="routermatrix">
+init...
+</div>
+</body>

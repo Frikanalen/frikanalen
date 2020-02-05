@@ -1,0 +1,17 @@
+body {
+	font-family: arial;	
+	font-size: 9pt;
+}
+legend {
+	font-weight: bold;
+}
+label {
+	font-weight: bold;
+	display: inline-block;
+	width: 10em;
+}
+
+li {
+	float: left;
+	clear: both;
+}
