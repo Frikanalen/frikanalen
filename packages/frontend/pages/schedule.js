@@ -16,13 +16,13 @@ class Schedule extends Component {
         return (
         <div className="schedule_item" key={item.scheduleitemId}>
             <div className="material-icons" style={{display:'none'}}>expand_more</div>
-          <div className="start_time">{start_time_str}</div>
-          <div className="end_time">{end_time_str}</div>
-            <div className="publisher">
+          <span className="start_time">{start_time_str}</span>
+          <span className="end_time">{end_time_str}</span>
+            <span className="publisher">
             <Link href={"/organizations/" + item.organizationId}>
             <a>{item.organizationName}</a> 
             </Link>
-            </div>
+            </span>
           <div className="title">
             <Link href={"/videos/" + item.videoId}>
                 <a>{item.videoName}</a>
@@ -37,17 +37,14 @@ class Schedule extends Component {
                 break-inside: avoid-column;
             }
             .schedule_item>.publisher { 
-                display: inline-block;
                 font-size: 14pt;
                 margin-left: 10px;
             }
             .schedule_item>.end_time { 
-                display: inline-block;
                 font-size: 14pt;
                 color: #888;
             }
             .schedule_item>.start_time { 
-                display: inline-block;
                 font-size: 14pt;
                 color: white;
             }

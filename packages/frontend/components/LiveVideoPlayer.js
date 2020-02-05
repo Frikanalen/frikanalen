@@ -15,6 +15,7 @@ export class LiveVideoPlayer extends Component {
 
             #live {
                 width:100%;
+                padding: 0;
                 }
 
             #live>.header {
@@ -93,23 +94,31 @@ export class ScheduleInfo extends Component {
         const programme_row = (programme, DOMclass) => {
             return(
                     <div className={"programme " + DOMclass}>
-                        <div className="startTime">{ this.as_HH_mm(programme.starttime)}</div>
-                        <div className="endTime">{ this.as_HH_mm(programme.endtime)}</div>
-                        <div className="organization">{programme.orgname}</div>
-                        <div className="name">{ programme.name }</div>
+                        <span className="startTime">{ this.as_HH_mm(programme.starttime)}</span>
+                        <span className="endTime">{ this.as_HH_mm(programme.endtime)}</span>
+                        <span className="organization">{programme.orgname}</span>
+                        <span className="lineBreak"></span>
+                        <span className="name">{ programme.name }</span>
                         <style jsx>{`
                             .programme {
                                 font-family: 'Roboto', sans-serif;
-                                }
-                            .programme.current {
-                                background: rgba(0, 0, 0, 0.2);
-                            }
-                            .programme {
+                                margin: 0;
                                 padding: 10px;
                                 display: flex;
                                 padding-bottom: 5px;
+                                align-content: flex-start;
+                                }
+                            @media screen and (max-width: 800px) {
+                                .programme>.lineBreak {
+                                    flex-basis: 100%;
+                                    height: 0;
+                                }
                             }
-                            .programme>.startTime::after {
+                            
+                            .programme.current {
+                                background: rgba(0, 0, 0, 0.2);
+                            }
+                            .programme>.endTime::before {
                                 content: "–";
                             }
                             @media screen and (max-width: 1024px) {
@@ -125,7 +134,8 @@ export class ScheduleInfo extends Component {
                                 content: ":";
                             }
                             .programme>.endTime {
-                                margin-right: 20px;
+                                margin-right: 5px;
+                                color: #888;
                             }
                             `}</style>
                     </div>
@@ -136,7 +146,7 @@ export class ScheduleInfo extends Component {
 
         else {
             return ( 
-                <div className="onRightNow">
+                <span className="onRightNow">
                 { programme_row (this.state.previous, "previous") }
                 { programme_row (this.state.current, "current") }
                 { programme_row (this.state.next, "next") }
@@ -146,7 +156,7 @@ export class ScheduleInfo extends Component {
                     background: #555;
                 }
                 `}</style>
-                </div>
+                </span>
             )
         }
     }
