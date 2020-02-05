@@ -64,7 +64,7 @@ if __name__ == '__main__':
         print("This script gets the Frikanalen schedule from API")
         print("and pickles each day (starting from today) to a folder.")
         sys.exit(1)
-    folder = sys.argv[2] if len(sys.argv) == 3 else '.'
+    folder = sys.argv[2] if len(sys.argv) == 3 else 'cache/dailyplan'
     from_day = date.today()
     schedule_by_day = get_schedule(from_day, days)
     for day, items in list(schedule_by_day.items()):
