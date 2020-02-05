@@ -64,6 +64,9 @@
 - name: Enable fk-get-schedule-from-backend.timer
   systemd: name=fk-get-schedule-from-backend.timer enabled=true state=started
   tags: systemd
+- name: Force invocation of fk-get-schedule-from-backend.timer
+  systemd: name=fk-get-schedule-from-backend.service state=restarted
+  tags: systemd
 - name: Enable and start fk-playout.service
   systemd: state=restarted name=fk-playout daemon_reload=yes enabled=true
   tags: systemd
