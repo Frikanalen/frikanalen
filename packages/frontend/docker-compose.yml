@@ -1,6 +1,9 @@
 version: "2"
 services:
-  node:
+  fk-frontend:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     image: "node:10-alpine"
     user: "node"
     working_dir: /home/node/app
@@ -10,5 +13,7 @@ services:
     volumes:
       - ./:/home/node/app
     expose:
-      - "8081"
-    command: "sh -c \"npm install && npm dev\""
+      - "3002"
+    ports:
+      - "3002:3002"
+    command: "npm run dev -- -p 3002"
