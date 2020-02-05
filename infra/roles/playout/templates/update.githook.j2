@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+
+refname="$1"
+oldrev="$2"
+newrev="$3"
+
+if [ -z "$GIT_DIR" ]; then echo GIT_DIR missing; exit 1; fi
+if [ -z "$refname" ]; then echo params missing; exit 1; fi
+
+echo "> Deploying app"
+dir={{app_dir}}/app
+fkweb_dir=$dir/packages/playout
+git --work-tree="$dir" checkout -qf "$newrev"
+cd $dir
+
+rollback_msg() {
+    arg=$?
+    echo "> EXITED WITH ERROR"
+    echo "> PLEASE ROLL BACK THE DEPLOY:"
+    echo ">   git push -f <env> $oldrev:$refname"
+    exit $arg
+}
+trap rollback_msg ERR
+
+# activate virtualenv
+. "{{app_dir}}/env/bin/activate"
+
+# should only do these when required
+pip install -qr "$fkweb_dir/requirements.txt"
+
+sudo systemctl restart fk-playout
+
+exit 0

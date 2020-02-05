@@ -1,0 +1,63 @@
+---
+- name: install setfacl support
+  become: yes
+  apt: pkg=acl
+- name: Add group
+  group: name={{app_user}}
+- name: Add user
+  user:
+    name={{app_user}}
+    group={{app_user}}
+    home={{app_dir}}
+    shell=/usr/bin/git-shell
+- name: Make app home directory world-readable
+  file: dest={{app_dir}} state=directory mode=755 owner={{app_user}}
+- name: Install packages
+  apt:
+    name:
+      - build-essential
+      - python3-dev
+      - python3-venv
+- name: Create .ssh dir
+  file: dest={{app_dir}}/.ssh state=directory mode=700
+        owner={{app_user}} group={{app_user}}
+- name: Create normal dirs
+  file: dest={{app_dir}}/{{item}} state=directory owner={{app_user}}
+        group={{app_user}}
+  with_items:
+    - app
+    - logs
+- name: Set up authorized keys
+  copy: content={{vault_authorized_keys}} owner={{app_user}} group={{app_user}}
+        dest={{app_dir}}/.ssh/authorized_keys mode=0600
+- name: Create git project
+  command: git init --bare git chdir={{app_dir}} creates={{app_dir}}/git/HEAD
+  become_user: "{{app_user}}"
+- name: Create virtualenv
+  pip:
+    name=pip
+    virtualenv={{app_dir}}/env/
+    virtualenv_command="/usr/bin/env python3.7 -m venv"
+  become_user: "{{app_user}}"
+- name: Install deploy git hook
+  template:
+    src=update.githook.j2
+    dest={{app_dir}}/git/hooks/update
+    mode=u+x
+    owner={{app_user}}
+    group={{app_user}}
+  tags: githook
+
+- name: Install fk-playout.service
+  template:
+    src=fk-playout.service.j2
+    dest=/etc/systemd/system/fk-playout.service
+  tags: systemd
+- name: Enable and start fk-playout.service
+  systemd: state=restarted name=fk-playout daemon_reload=yes enabled=true
+  tags: systemd
+- name: Allow {{app_user}} restart service
+  lineinfile:
+    dest: /etc/sudoers
+    line: "%{{app_user}} ALL=(ALL) NOPASSWD: /bin/systemctl restart fk-playout"
+    validate: visudo -cf %s

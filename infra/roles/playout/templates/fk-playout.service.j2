@@ -1,0 +1,17 @@
+[Unit]
+AssertPathExists={{app_dir}}/app
+
+[Unit]
+Description=Frikanalen Playout
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User={{app_user}}
+Group={{app_user}}
+WorkingDirectory={{app_dir}}/app
+ExecStart={{app_dir}}/env/bin/python bin/integrated.py
+Restart=always
+
+[Install]
+WantedBy=default.target
