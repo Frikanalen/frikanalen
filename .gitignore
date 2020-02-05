@@ -1,3 +1,4 @@
 *.py[cod]
 packages/fkweb/fkbeta/default.db
 env
+*.swp
