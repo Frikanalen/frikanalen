@@ -32,7 +32,7 @@ trap rollback_msg ERR
 . "{{app_dir}}/env/bin/activate"
 
 # should only do these when required
-pip install -qr "{{app_dir}}/requirements.txt"
+pip install -qr "{{app_dir}}/app/requirements.txt"
 
 sudo systemctl restart fk-playout
 

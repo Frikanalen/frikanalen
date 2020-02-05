@@ -53,6 +53,17 @@
     src=fk-playout.service.j2
     dest=/etc/systemd/system/fk-playout.service
   tags: systemd
+- name: Install fk-get-schedule-from-backend.service
+  template:
+    src=fk-get-schedule-from-backend.service.j2
+    dest=/etc/systemd/system/fk-get-schedule-from-backend.service
+- name: Install fk-get-schedule-from-backend.timer
+  template:
+    src=fk-get-schedule-from-backend.timer.j2
+    dest=/etc/systemd/system/fk-get-schedule-from-backend.timer
+- name: Enable fk-get-schedule-from-backend.timer
+  systemd: name=fk-get-schedule-from-backend.timer enabled=true state=started
+  tags: systemd
 - name: Enable and start fk-playout.service
   systemd: state=restarted name=fk-playout daemon_reload=yes enabled=true
   tags: systemd
