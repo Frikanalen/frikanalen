@@ -1,9 +1,0 @@
-[Unit]
-AssertPathExists={{app_dir}}/app/packages/playout
-
-[Service]
-Type=oneshot
-User={{app_user}}
-Group={{app_user}}
-WorkingDirectory={{app_dir}}/app/packages/playout
-ExecStart={{app_dir}}/env/bin/python manage.py fk-get-schedule-from-backend 2
