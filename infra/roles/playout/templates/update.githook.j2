@@ -12,10 +12,11 @@ if [ -z "$refname" ]; then echo params missing; exit 1; fi
 
 echo "> Deploying app"
 dir={{app_dir}}/app
-TMPDIR=$(mktemp -d -p {{app_dir}} deploy)
+TMPDIR=$(mktemp -d -p {{app_dir}} deploy_XXXX)
 git --work-tree="$TMPDIR" checkout -qf "$newrev" -- packages/playout
 rm -r {{app_dir}}/app/*
 cp -ra $TMPDIR/packages/playout/* $dir
+rm -r $TMPDIR
 cd $dir
 
 rollback_msg() {
