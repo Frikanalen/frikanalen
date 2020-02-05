@@ -1,0 +1,9 @@
+[Unit]
+Description=Update the jukebox CSV file
+
+[Service]
+Type=oneshot
+User=fk-playout
+Group=fk-developer
+WorkingDirectory=/opt/fk-playout
+ExecStart=/opt/fk-playout/bin/fk-update-jukebox
