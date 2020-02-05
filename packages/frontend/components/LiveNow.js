@@ -13,6 +13,7 @@ class LiveNow extends Component {
                 #live_now {
                     color: white;
                     background: #535151;
+                    padding: 0;
                 }
 
                 #live_now > .header {
