@@ -5,6 +5,8 @@ refname="$1"
 oldrev="$2"
 newrev="$3"
 
+echo $1 $2 $3
+
 if [ -z "$GIT_DIR" ]; then echo GIT_DIR missing; exit 1; fi
 if [ -z "$refname" ]; then echo params missing; exit 1; fi
 
@@ -12,7 +14,8 @@ echo "> Deploying app"
 mkdir tmp
 dir={{app_dir}}/app
 git --work-tree="tmp/" checkout -qf "$newrev" 
-mv tmp/packages/playout* $dir
+rm -rv {{app_dir}}/app/*
+cp -r tmp/packages/playout/* $dir
 cd $dir
 
 rollback_msg() {
