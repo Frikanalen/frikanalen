@@ -69,6 +69,7 @@ class UserAuth extends Component {
                 align-items: center;
                 align-content: stretch;
                 height:32px;
+                padding: 0;
             }
             .user_nav>div {
                 margin-right: 10px
@@ -83,17 +84,16 @@ class UserAuth extends Component {
             }
             .username {
                 font-size: calc(inherit - 2pt);
-                margin: 0 0 0px 2px;
+                padding: 0 1px;
             }
             .material-icons {
                 vertical-align: middle;
-                padding-bottom: 1px;
                 line-height: inherit;
+                padding: 0;
             }
             @media screen and (max-width: 630px) {
                 .user_id_box {
                     padding: 0px 1px;
-                    margin: 1px;
                 }
                 .user_nav {
                     font-size: 11pt;
