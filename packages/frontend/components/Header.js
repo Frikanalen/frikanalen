@@ -60,13 +60,6 @@ class Header extends Component {
                   }
                 }
 
-                @media screen and (max-width: 600px) {
-                  img.logo {
-                      display: block;
-                      margin: 0 auto;
-                  }
-                }
-
                 .headerLinks>a {
                     margin: 0;
                     margin-right: 17px;
@@ -82,13 +75,21 @@ class Header extends Component {
                 }
                 @media screen and (max-width: 1024px) {
                     #header-logo>a>img {
-                        padding: 0 0 0 5px;
+                        padding: 5px 0;
                     }
                     .headerLinks {
                         font-size: 14pt;
                         padding-left: 5px;
                     }
                 }
+                @media screen and (max-width: 800px) {
+                  img.logo {
+                      display: block;
+                      margin: 0 auto;
+                      padding: 10px 0;
+                  }
+                }
+
                 `}</style>
             </header>
         );
