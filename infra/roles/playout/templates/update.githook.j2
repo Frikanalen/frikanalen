@@ -8,8 +8,8 @@ newrev="$3"
 if [ -z "$GIT_DIR" ]; then echo GIT_DIR missing; exit 1; fi
 if [ -z "$refname" ]; then echo params missing; exit 1; fi
 
-echo "> Deploying app"
 dir={{app_dir}}/app
+echo "> Deploying app to $dir"
 fkweb_dir=$dir/packages/playout
 git --work-tree="$dir" checkout -qf "$newrev"
 cd $dir
