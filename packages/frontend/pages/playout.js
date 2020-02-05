@@ -7,15 +7,16 @@ import React, { Component } from 'react';
 class Playout extends Component {
     constructor (props) {
         super(props)
-        this.txbutton = this.txbutton.bind(this)
         fetch(
             'https://beta.frikanalen.no/playout/atem/program'
         ).then(
             res=>res.json()
         ).then(json => {
-            this.state = {
+            this.setState({
                 program: json.inputIndex
-            }
+            })
+            console.log('program: ' + this.state.program)
+            this.txbutton = this.txbutton.bind(this)
         })
         .catch(e => {
             console.log(e)
@@ -35,7 +36,6 @@ class Playout extends Component {
         ).then(
             res=>res.json()
         ).then(json => {
-            console.log(json)
             return { 
                 program: json.inputIndex
             }
@@ -81,7 +81,7 @@ class Playout extends Component {
             <div className="playoutControl">
                 <div className="header">playout-styring</div>
                 <video ref={this.video} controls onClick={this.pause_video}
-                    src="http://icecast.frikanalen.no/frikanalen.webm"></video>
+                    src="https://beta.frikanalen.no/frikanalen.webm"></video>
                 <this.ATEM />
             </div>
             <style jsx>{`

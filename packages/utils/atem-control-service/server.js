@@ -2,6 +2,7 @@ const { Atem } = require('atem-connection')
 const express = require('express');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch')
+const cookieParser = require("cookie-parser");
 
 class AtemControl {
     constructor() {
@@ -29,23 +30,34 @@ class AtemControl {
         })
 
         this.myAtem.on('stateChanged', (state, pathToChange) => {
-        //  console.log(state); // catch the ATEM state.
+          //console.log(state); // catch the ATEM state.
         });
+        this.app.get('/program', (req, res) => {
+            const programInput =this.myAtem.state.video.ME["0"]["programInput"];
+            res.send({inputIndex: programInput});
+        });
+
+        this.app.use(cookieParser());
         this.app.post('/program', (req, res) => {
-            let token = req.headers['x-access-token'] || req.headers['authorization']; 
+            let token = req.headers['x-access-token'] || req.headers['authorization'] || req.cookies.token
+            if(typeof token === 'undefined')
+                res.status(401).send('eek').end()
+
             // Express headers are auto converted to lowercase
             if (token.startsWith('Token ')) {
                 // Remove token from string
                 token = token.slice(6, token.length);
             }
 
-            var input_index = parseInt(req.body.input_index);
+            var input_index = parseInt(req.body.inputIndex);
+            console.log(req.body);
             this.check_if_staff(token).then((staff) => {
                 if(!staff) {
                     res.status(403).send('eek').end()
                 } else {
                     this.myAtem.changeProgramInput(input_index).then(success => {
-                        res.send({input_index: input_index})
+                        const programInput =this.myAtem.state.video.ME["0"]["programInput"];
+                        res.send({inputIndex: programInput});
                     })
                 }
             }
