@@ -25,3 +25,10 @@
   gather_facts: false
   roles:
     - web
+- name: Set up playout server
+  hosts: playout
+  become: true
+  gather_facts: false
+  tags: playout
+  roles:
+    - playout

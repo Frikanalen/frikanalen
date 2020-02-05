@@ -21,7 +21,7 @@ BUG_LAYER = 100
 
 class CasparCGPlayer(BasePlayer):
     def __init__(self, loop_filename):
-        self.caspar = CasparCG('localhost')
+        self.caspar = CasparCG('tx2')
         self.channel = self.caspar.channel(1)
         self.media_layer = self.channel.layer(MEDIA_LAYER)
         self.channel.clear()

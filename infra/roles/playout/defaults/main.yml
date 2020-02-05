@@ -1,0 +1,4 @@
+---
+app_user: fk-playout
+app_dir: /srv/fk-playout
+domain: frikanalen.no

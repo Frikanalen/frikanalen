@@ -1,0 +1,9 @@
+[Unit]
+Description=Update list of videos that can be ad-hoc scheduled
+
+[Timer]
+OnCalendar=*-*-* 23:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
