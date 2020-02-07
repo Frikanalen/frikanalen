@@ -9,11 +9,9 @@ services:
     working_dir: /home/node/app
     environment:
       - NODE_ENV=production
-      - PORT=3002
+      - PORT # from .env
     volumes:
       - ./:/home/node/app
-    expose:
-      - "3002"
     ports:
-      - "3002:3002"
-    command: "npm run dev -- -p 3002"
+      - "${PORT}:${PORT}"
+    command: "npm run dev -- -p ${PORT}"
