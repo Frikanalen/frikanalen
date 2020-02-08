@@ -12,8 +12,10 @@
   "author": "Tore Sinding Bekkedal",
   "license": "GPL",
   "dependencies": {
+    "dashjs": "^3.0.2",
     "graphql-react": "^9.1.0",
     "isomorphic-unfetch": "^3.0.0",
+    "less": "^3.10.3",
     "material-design-icons": "^3.0.1",
     "next": "^9.2.1",
     "next-cookies": "^2.0.3",
@@ -24,6 +26,9 @@
     "react-markdown": "^4.3.1",
     "react-meta-tags": "^0.7.4",
     "sass": "^1.25.0",
-    "sass-loader": "^8.0.2"
+    "sass-loader": "^8.0.2",
+    "shaka-player": "^2.5.9",
+    "shaka-player-react": "^1.0.1",
+    "video.js": "^7.6.6"
   }
 }
