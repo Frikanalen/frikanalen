@@ -40,8 +40,8 @@ class UserAuth extends Component {
                 <a>playout</a>
                 </Link>
                 <style>{`
-                    div {
-                    padding: 0 5px;
+                    .user_nav>div {
+                        padding: 0 5px;
                     }
                     a {
                     color: #F25252;
