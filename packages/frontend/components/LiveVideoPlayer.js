@@ -10,7 +10,7 @@ export class LiveVideoPlayer extends Component {
         return (
           <div id="live">
             <video ref={this.video} controls onClick={this.pause_video}
-                src="http://icecast.frikanalen.no/frikanalen.webm"></video>
+            src="https://beta.frikanalen.no/frikanalen.webm"></video>
             <style jsx>{`
 
             #live {
@@ -81,7 +81,8 @@ export class ScheduleInfo extends Component {
             })
         // FIXME: This code should somehow run on the timecode coming from the live video,
         // for now, we're just hacking things
-        const ms_until_next = new Date(sched[1].node.endtime) - Date.now()
+        var ms_until_next = new Date(sched[1].node.endtime) - Date.now()
+        if(ms_until_next < 10000) ms_until_next = 10000
         setTimeout(function(){ this.componentDidMount() }.bind(this), ms_until_next);
     }
 

@@ -9,8 +9,11 @@ const Layout = props => (
         <title>Frikanalen</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </MetaTags>
+    <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"/>
+      <link href="https://vjs.zencdn.net/7.6.6/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="static/controls.css" />
     <Header className="foo"/>
     <main>{props.children}</main>
     <Footer />
@@ -37,6 +40,9 @@ const Layout = props => (
                                     "footer footer footer";
             grid-template-rows: auto 1fr auto;
             grid-template-columns: 100%;
+        }
+        video {
+        width: 100%;
         }
         main {
             max-width: 100%;
