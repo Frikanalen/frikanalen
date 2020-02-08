@@ -3,26 +3,22 @@ import * as env from '../components/constants';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 import React, { Component } from 'react';
+import Moment from 'react-moment';
+import 'moment/locale/nb';
+
 
 class Schedule extends Component {
     ScheduleItem(item) {
-        let start_date = new Date(item.starttime); 
-        // This cannot possibly be the right way to do this
-        let start_time_str = (("0" + start_date.getHours()).slice(-2) + 
-            ":" + ("0" + start_date.getMinutes()).slice(-2));
-        let end_date = new Date(item.endtime); 
-        let end_time_str = (("0" + end_date.getHours()).slice(-2) + 
-            ":" + ("0" + end_date.getMinutes()).slice(-2));
         return (
         <div className="schedule_item" key={item.scheduleitemId}>
-            <div className="material-icons" style={{display:'none'}}>expand_more</div>
-          <span className="start_time">{start_time_str}</span>
-          <span className="end_time">{end_time_str}</span>
-            <span className="publisher">
+          <div className="material-icons" style={{display:'none'}}>expand_more</div>
+          <span className="start_time"><Moment format="HH:mm">{item.starttime}</Moment></span>
+          <span className="end_time"><Moment format="HH:mm">{item.endtime}</Moment></span>
+          <span className="publisher">
             <Link href={"/organizations/" + item.organizationId}>
             <a>{item.organizationName}</a> 
             </Link>
-            </span>
+          </span>
           <div className="title">
             <Link href={"/videos/" + item.videoId}>
                 <a>{item.videoName}</a>
@@ -33,37 +29,25 @@ class Schedule extends Component {
                 margin: 0px 0px 5px 0px;
                 color: white;
                 font-family: inherit;
-                font-weight: bold;
                 break-inside: avoid-column;
             }
-            .schedule_item>.publisher { 
+
+            .schedule_item>.publisher,
+            .schedule_item>.end_time,
+            .schedule_item>.start_time {
                 font-size: 14pt;
+                font-weight: bold;
+            }
+            .schedule_item>.publisher {
                 margin-left: 10px;
             }
             .schedule_item>.end_time { 
-                font-size: 14pt;
                 color: #888;
             }
-            .schedule_item>.start_time { 
-                font-size: 14pt;
-                color: white;
-            }
-            a, a:link {
-                text-decoration: none;
-                color: white;
-                break-after: column;
-            }
             .schedule_item>.title {
-                padding-top: 5px;
+                padding: 5px;
                 white-space: pre-line;
                 font-weight: normal;
-            }
-            .schedule_item>.category {
-                text-transform: lowercase;
-                margin: 0 5px 0 5px;
-                grid-area: category;
-                background: black;
-                text-align: center;
             }
             .schedule_item>.end_time::before {
                 content: "–";
@@ -73,10 +57,10 @@ class Schedule extends Component {
     );
     }
 
-    static async getInitialProps(ctx) {
+    schedule_for_date = async (date) => {
         const query = `
           query {
-          fkGetScheduleForDate(fromDate: "` +new Date().toISOString()+ `") {
+          fkGetScheduleForDate(fromDate: "` +schedule_day.toISOString()+ `") {
             edges {
               node {
                 scheduleitemId
@@ -91,7 +75,7 @@ class Schedule extends Component {
           }
           }
         `;
-        const url = "https://dev.frikanalen.no/graphql";
+        const url = process.env.GRAPHQL_URL;
         const opts = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -100,8 +84,15 @@ class Schedule extends Component {
         const res = await fetch(url, opts)
         const json = await res.json();
         const data = json.data.fkGetScheduleForDate
+        return data;
+    }
+
+    static async getInitialProps(ctx) {
+        schedule_day = new Date()
+        schedule_for_date = schedule_for_date(schedule_day);
 
         return {
+            date: schedule_day,
             shows: data.edges.map(entry => entry.node)
         }
     };
@@ -112,21 +103,16 @@ class Schedule extends Component {
         <Layout>
             <div className="schedule">
             <div className="schedule_date">
-                { new Date().toLocaleDateString('nb-NO', date_options) }
+                <Moment locale="nb" format="dddd Do MMMM">{ this.props.date }</Moment>
             </div>
             <div className="programmes">
                 { this.props.shows.map((schedule_item) => this.ScheduleItem(schedule_item)) }
             </div>
             <style jsx>{`
-                li {
-                    list-style: none;
-                }
-
                 .programmes {
                     padding: 10px;
                     column-count: 2;
                 }
-
 
                 .schedule {
                     padding: 0px 50px;
@@ -143,6 +129,7 @@ class Schedule extends Component {
                     font-weight: bold;
                     padding: 20px;
                 }
+
                 @media screen and (max-width: 1024px) {
                     .programmes {
                         column-count: 1;
