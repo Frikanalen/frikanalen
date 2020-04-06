@@ -17,5 +17,7 @@ class Frontpage(TemplateView):
             context['next_scheditem'] = Scheduleitem.objects.filter(starttime__gte=timezone.now()).order_by("starttime")[0]
         except ValueError:
             pass
+        except IndexError:
+            pass
 
         return context
