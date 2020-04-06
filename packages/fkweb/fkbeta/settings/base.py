@@ -64,7 +64,10 @@ ADMINS = (
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
-MANAGERS = ADMINS
+MANAGERS = ADMINS + (
+    ('Frikanalen styret', 'styret@frikanalen.no'),
+    ('Olav Hardang', 'olav.hardang@p7.no'),
+)
 ########## END MANAGER CONFIGURATION
 
 
