@@ -5,9 +5,11 @@ export default function About() {
   return (
     <Layout>
       <main>
-      <h2>Frikanalen er sivilsamfunnets videoplatform.</h2>
+      <h2>Beklager!</h2>
+      <p>Funksjon for brukerregistrering er ikke på plass enda.</p>
+      <p>Vennligst send en epost til leder for Frikanalen, <a href="mailto:post@frikanalen.no">Ola Tellesbø</a>.</p>
       </main>
-            <style jsx>{`
+      <style jsx>{`
             main {
                 padding: 20px 50px;
                 font-family: 'Roboto', sans-serif;
@@ -24,6 +26,7 @@ export default function About() {
                 color: #ddd;
             }
             `}</style>
-    </Layout>
+      </Layout>
   );
 }
+

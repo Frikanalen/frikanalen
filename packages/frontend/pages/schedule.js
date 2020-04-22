@@ -1,11 +1,11 @@
 import Layout from '../components/Layout';
 import * as env from '../components/constants';
 import Link from 'next/link';
-import fetch from 'isomorphic-unfetch';
 import React, { Component } from 'react';
+
+import fetch from 'isomorphic-unfetch';
 import Moment from 'react-moment';
 import 'moment/locale/nb';
-
 
 class Schedule extends Component {
     ScheduleItem(item) {
@@ -57,7 +57,7 @@ class Schedule extends Component {
     );
     }
 
-    schedule_for_date = async (date) => {
+    static async schedule_for_date(schedule_day) {
         const query = `
           query {
           fkGetScheduleForDate(fromDate: "` +schedule_day.toISOString()+ `") {
@@ -75,21 +75,25 @@ class Schedule extends Component {
           }
           }
         `;
-        const url = process.env.GRAPHQL_URL;
+        const url = env.GRAPHQL_URL;
         const opts = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
         };
+        console.log(url, opts)
         const res = await fetch(url, opts)
         const json = await res.json();
+        console.log('results:', json);
         const data = json.data.fkGetScheduleForDate
+        console.log('data:', data);
         return data;
     }
 
     static async getInitialProps(ctx) {
-        schedule_day = new Date()
-        schedule_for_date = schedule_for_date(schedule_day);
+        const schedule_day = new Date()
+        const data = await this.schedule_for_date(schedule_day);
+        console.log('all good');
 
         return {
             date: schedule_day,
