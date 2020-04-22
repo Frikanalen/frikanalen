@@ -1,6 +1,6 @@
 #
 # ---- Base Node ----
-FROM alpine:3.5 AS base
+FROM node:10-alpine AS base
 # install node
 RUN apk add --no-cache nodejs-current tini
 # set working directory
@@ -41,4 +41,5 @@ COPY package.json .
 RUN npm install --quiet
 
 COPY . .
-CMD npm run start
+
+CMD npm run dev
