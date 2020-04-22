@@ -3,6 +3,7 @@ import { instanceOf } from 'prop-types';
 import * as env from './constants';
 import React, { Component } from 'react';
 import cookies from 'next-cookies';
+import fetch from 'isomorphic-unfetch';
 
 class PlayoutAdmin extends Component {
 }
@@ -19,7 +20,6 @@ class UserAuth extends Component {
         this.state = {
             token: cookies(props).token || null,
             showLogin: false
-//            showLogin: true,
         };
         this.load_profile_data();
     }
@@ -36,7 +36,7 @@ class UserAuth extends Component {
         if (this.state.is_staff) {
             staff_button = (
                 <div>
-                <Link href="playout" as="playout">
+                <Link href="/playout" as="/playout">
                 <a>playout</a>
                 </Link>
                 <style>{`
@@ -44,7 +44,7 @@ class UserAuth extends Component {
                         padding: 0 5px;
                     }
                     a {
-                    color: #F25252;
+                    color: #860F0F; //#be0e0e;
                     }
                 `}</style>
                 </div>
@@ -54,12 +54,12 @@ class UserAuth extends Component {
         }
         return (
             <div className="user_nav">
-                <div className="user_id_box">
-                    <div className="material-icons">account_box</div>
-                    <div className="username">{this.state.email}</div>
-                </div>
-                { staff_button }
-                <div onClick={this.handle_logout}>logg ut</div>
+            <div className="user_id_box">
+            <div className="material-icons">account_box</div>
+            <div className="username">{this.state.email}</div>
+            { staff_button }
+            <div onClick={this.handle_logout}>logg ut</div>
+            </div>
             <style jsx>{`
             .user_nav {
                 font-family: 'Roboto', sans-serif;
@@ -69,27 +69,29 @@ class UserAuth extends Component {
                 align-items: center;
                 align-content: stretch;
                 height:32px;
-                padding: 0;
             }
             .user_nav>div {
                 margin-right: 10px
             }
+            div {
+                padding: 2px 10px;
+            }
             .user_id_box {
                 display: flex;
                 align-items: center;
-                background-color: #8AC979;
+                background-color: #78CE60; //#8AC979;
                 color: black;
-                padding: 0px 3px;
                 margin: 0 20px 0 0;
             }
             .username {
                 font-size: calc(inherit - 2pt);
-                padding: 0 1px;
+                padding-left: 1px;
             }
             .material-icons {
                 vertical-align: middle;
                 line-height: inherit;
                 padding: 0;
+                padding-left: 5px;
             }
             @media screen and (max-width: 630px) {
                 .user_id_box {
@@ -109,9 +111,9 @@ class UserAuth extends Component {
             <div className="login_prompt">
             <form id="login" onSubmit={this.handle_login_form} />
             <input form="login" id="email" type="text" 
-                ref={this.email} placeholder="epost" maxLength="30" />
+            ref={this.email} placeholder="epost" maxLength="30" />
             <input form="login" id="password" type="password" 
-                ref={this.password} placeholder="passord" maxLength="4096" />
+            ref={this.password} placeholder="passord" maxLength="4096" />
             <div id="breaker"></div>
             <input id="login_button" form="login" type="submit" value="logg inn" />
             <div className="eller">…eller</div>
@@ -198,15 +200,16 @@ class UserAuth extends Component {
                 return null;
         }
         if(typeof window !== 'undefined') {
-        return (
-            <div className="userBar">
-            {user_bar}
-            <style jsx>{`
+            return (
+                <div className="userBar">
+                {user_bar}
+                <style jsx>{`
             .userBar {
                 min-height: 32px;
                 padding: 0 0 0 50px;
                 background: black;
                 color: #ddd;
+                background-color: #78CE60;
                 font-family: 'Roboto', sans-serif;
                 font-weight: bold;
             }
@@ -216,8 +219,8 @@ class UserAuth extends Component {
                 }
             }
             `}</style>
-            </div>
-        );
+                </div>
+            );
         } else { 
             return null;
         }

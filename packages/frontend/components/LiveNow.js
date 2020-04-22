@@ -27,7 +27,7 @@ class LiveNow extends Component {
         return (
         <div id="live_now">
             <div className="header">direkte nå</div>
-            <DASHPlayer manifestUri='https://beta.frikanalen.no/stream/dash/pgm/pgm_hi/index.mpd' />
+            <DASHPlayer manifestUri='https://beta.frikanalen.no/stream/index.mpd' />
             <ScheduleInfo />
             <style jsx>{`
                 #live_now {

@@ -28,8 +28,6 @@ class Header extends Component {
               <nav>
                 <div className="headerLinks">
                     <Link href="/schedule" as="/schedule"><a>Sendeplan</a></Link>
-                    <Link href="/videos" as="/videos"><a>Arkiv</a></Link>
-                    <Link href="/members" as="/members"><a>Medlemmer</a></Link>
                     <Link href="/about" as="/about"><a>Om oss</a></Link>
                     <a onClick={this.showLogin} >Logg inn</a>
                 </div>
