@@ -63,7 +63,7 @@ const Layout = props => (
             grid-template-area: footer;
         }
         html, body {
-            background: #8b8b8b;
+            background: #a6a6a6;
             width: 100%;
             height: 100%;
             margin: 0;

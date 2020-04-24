@@ -39,7 +39,7 @@ class LiveNow extends Component {
                         font-family: 'Roboto', sans-serif;
                         text-align: center;
                         font-weight: bold;
-                        color: #ddd;
+                        color: #eee;
                         font-size: 20pt;
                     }
                     @media screen and (max-width: 1024px) {
