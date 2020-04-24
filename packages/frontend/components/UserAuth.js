@@ -44,7 +44,7 @@ class UserAuth extends Component {
                 <Link href="/playout" as="/playout">
                 <a>playout</a>
                 </Link>
-                <style>{`
+                <style jsx>{`
                     a {
                         color: #460d0d; //#be0e0e;
                     }
