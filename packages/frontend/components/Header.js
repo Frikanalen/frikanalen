@@ -43,6 +43,7 @@ class Header extends Component {
 
                 .headerLinks {
                     padding: 0 30px;
+                    padding-bottom: 2px;
                     padding-left: 50px;
                     background: black;
                     display: flex;
