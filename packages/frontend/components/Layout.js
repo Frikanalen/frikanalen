@@ -104,9 +104,8 @@ const Footer = props => (
         footer p {
             width: 100%;
             margin: 0;
-            padding: 0;
             padding-top: 0.5em;
-            height: 1.5em;
+            padding-bottom: 0.5em;
             background-color: rgba(255, 255, 255, 0.8);
         }
         `}</style>
