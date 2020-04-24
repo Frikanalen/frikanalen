@@ -24,6 +24,7 @@
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
     "shaka-player": "^2.5.9",
-    "video.js": "^7.6.6"
+    "video.js": "^7.6.6",
+    "webrtc-adapter": "^7.5.0"
   }
 }
