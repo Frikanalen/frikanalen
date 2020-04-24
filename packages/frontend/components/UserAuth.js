@@ -215,7 +215,7 @@ class UserAuth extends Component {
                 min-height: 32px;
                 padding: 0 0 0 50px;
                 color: #ddd;
-                background-color: #3f913f;
+                background-color: #468b4a;
                 font-family: 'Roboto', sans-serif;
                 font-weight: bold;
             }
