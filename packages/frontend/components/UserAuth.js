@@ -40,11 +40,8 @@ class UserAuth extends Component {
                 <a>playout</a>
                 </Link>
                 <style>{`
-                    .user_nav>div {
-                        padding: 0 5px;
-                    }
                     a {
-                    color: #860F0F; //#be0e0e;
+                        color: #460d0d; //#be0e0e;
                     }
                 `}</style>
                 </div>
@@ -57,9 +54,9 @@ class UserAuth extends Component {
             <div className="user_id_box">
             <div className="material-icons">account_box</div>
             <div className="username">{this.state.email}</div>
+            </div>
             { staff_button }
             <div onClick={this.handle_logout}>logg ut</div>
-            </div>
             <style jsx>{`
             .user_nav {
                 font-family: 'Roboto', sans-serif;
@@ -69,29 +66,33 @@ class UserAuth extends Component {
                 align-items: center;
                 align-content: stretch;
                 height:32px;
+                padding-left: 0px;
             }
             .user_nav>div {
                 margin-right: 10px
             }
             div {
                 padding: 2px 10px;
+                color: black;
             }
             .user_id_box {
                 display: flex;
                 align-items: center;
-                background-color: #78CE60; //#8AC979;
+                background-color: white;
+                opacity: 0.7;
                 color: black;
+                padding: 0;
                 margin: 0 20px 0 0;
             }
             .username {
-                font-size: calc(inherit - 2pt);
-                padding-left: 1px;
+                font-size: 16px;
+                padding: 2px;
             }
             .material-icons {
                 vertical-align: middle;
                 line-height: inherit;
                 padding: 0;
-                padding-left: 5px;
+                padding-left: 1px;
             }
             @media screen and (max-width: 630px) {
                 .user_id_box {
@@ -207,9 +208,8 @@ class UserAuth extends Component {
             .userBar {
                 min-height: 32px;
                 padding: 0 0 0 50px;
-                background: black;
                 color: #ddd;
-                background-color: #78CE60;
+                background-color: #3f913f;
                 font-family: 'Roboto', sans-serif;
                 font-weight: bold;
             }
