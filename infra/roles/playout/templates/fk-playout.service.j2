@@ -3,7 +3,7 @@ AssertPathExists={{app_dir}}/app
 
 [Unit]
 Description=Frikanalen Playout
-After=syslog.target network.target
+After=syslog.target network.target mnt-media.mount
 
 [Service]
 Type=simple
