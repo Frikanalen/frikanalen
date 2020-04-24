@@ -19,17 +19,16 @@ class UserAuth extends Component {
         super(props);
         this.handle_login_form = this.handle_login_form.bind(this);
         this.handle_logout = this.handle_logout.bind(this);
-        this.email = React.createRef();
-        this.password = React.createRef();
         this.handle_logout = this.handle_logout.bind(this);
         this.get_token = this.get_token.bind(this);
         this.state = {
             token: cookies(props).token || null,
+            field_email:'',
+            field_password:'',
             showLogin: false
         };
         this.load_profile_data()
     }
-
 
     showLogin() {
         this.setState ({
@@ -117,10 +116,12 @@ class UserAuth extends Component {
         return (
             <div className="login_prompt">
             <form id="login" onSubmit={this.handle_login_form} />
-            <input form="login" id="email" type="text" 
-            ref={this.email} placeholder="epost" maxLength="30" />
-            <input form="login" id="password" type="password" 
-            ref={this.password} placeholder="passord" maxLength="4096" />
+            <input form="login" id="email" type="text" autoComplete="username"
+            placeholder="epost" maxLength="30" 
+            onChange = {(event) => {this.setState({field_email:event.target.value})}}/>
+            <input form="login" id="password" type="password" autoComplete="current-password"
+            placeholder="passord" maxLength="4096" 
+            onChange = {(event) => {this.setState({field_password:event.target.value})}}/>
             <div id="breaker"></div>
             <input id="login_button" form="login" type="submit" value="logg inn" />
             <div className="eller">…eller</div>
@@ -202,15 +203,14 @@ class UserAuth extends Component {
             user_bar = this.logged_in_nav();
         } else {
             if(this.state.showLogin) 
-                user_bar= this.loginOrRegisterPrompt();
+                user_bar = this.loginOrRegisterPrompt();
             else
                 return null;
         }
-        if(typeof window !== 'undefined') {
-            return (
-                <div className="userBar">
-                {user_bar}
-                <style jsx>{`
+        return (
+            <div className="userBar">
+            {user_bar}
+            <style jsx>{`
             .userBar {
                 min-height: 32px;
                 padding: 0 0 0 50px;
@@ -225,11 +225,8 @@ class UserAuth extends Component {
                 }
             }
             `}</style>
-                </div>
-            );
-        } else { 
-            return null;
-        }
+            </div>
+        );
     };
 
     handle_logout = () => {
@@ -246,7 +243,7 @@ class UserAuth extends Component {
 
     handle_login_form = (e, data) => {
         e.preventDefault();
-        this.get_token(this.email.current.value, this.password.current.value);
+        this.get_token(this.state.field_email, this.state.field_password);
     };
 
 
@@ -289,27 +286,24 @@ class UserAuth extends Component {
                 'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + btoa(email + ":" + password),
             },
-        })
-            .then(res => {
+        }).then(res => {
                 if (res.status == 401) {
                     throw new NotLoggedInException();
                 } else {
                     return res.json();
                 }
-            })
-            .then(json => {
-                if (typeof document !== 'undefined') {
-                    document.cookie = `token=${json.key}; path=/`;
-                }
-                this.setState({
-                    token: json.key,
-                });
-                this.load_profile_data();
-                this.setState({
-                    token: json.key,
-                });
-            })
-            .catch(e => console.log(e));
+        }).then(json => {
+            if (typeof document !== 'undefined') {
+                document.cookie = `token=${json.key}; path=/`;
+            }
+            this.setState({
+                token: json.key,
+            });
+            this.load_profile_data();
+            this.setState({
+                token: json.key,
+            });
+        }).catch(e => console.log("Error in get_token", e));
     }
 }
 
