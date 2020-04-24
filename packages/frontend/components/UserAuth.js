@@ -7,6 +7,12 @@ import fetch from 'isomorphic-unfetch';
 
 class PlayoutAdmin extends Component {
 }
+class NotLoggedInException extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
+}
 
 class UserAuth extends Component {
     constructor(props) {
@@ -21,7 +27,7 @@ class UserAuth extends Component {
             token: cookies(props).token || null,
             showLogin: false
         };
-        this.load_profile_data();
+        this.load_profile_data()
     }
 
 
@@ -227,7 +233,10 @@ class UserAuth extends Component {
     };
 
     handle_logout = () => {
-        document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        //fixme: This is not right
+        if (typeof document !== 'undefined') {
+            document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        }
 
         this.setState({
             token: null,
@@ -240,7 +249,6 @@ class UserAuth extends Component {
         this.get_token(this.email.current.value, this.password.current.value);
     };
 
-    NotLoggedInException() {};
 
     load_profile_data = () => {
         fetch(env.API_BASE_URL + 'user',  {
@@ -252,7 +260,7 @@ class UserAuth extends Component {
         })
             .then(res => {
                 if (res.status == 401) {
-                    throw new this.NotLoggedInException();
+                    throw new NotLoggedInException;
                 } else {
                     return res.json();
                 }
@@ -266,7 +274,7 @@ class UserAuth extends Component {
                 })
             })
             .catch(e => {
-                if (e instanceof this.NotLoggedInException) {
+                if (e instanceof NotLoggedInException) {
                     this.handle_logout();
                 } else {
                     throw(e);
@@ -284,13 +292,15 @@ class UserAuth extends Component {
         })
             .then(res => {
                 if (res.status == 401) {
-                    throw new this.NotLoggedInException();
+                    throw new NotLoggedInException();
                 } else {
                     return res.json();
                 }
             })
             .then(json => {
-                document.cookie = `token=${json.key}; path=/`;
+                if (typeof document !== 'undefined') {
+                    document.cookie = `token=${json.key}; path=/`;
+                }
                 this.setState({
                     token: json.key,
                 });
