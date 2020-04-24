@@ -81,19 +81,15 @@ class Schedule extends Component {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
         };
-        console.log(url, opts)
         const res = await fetch(url, opts)
         const json = await res.json();
-        console.log('results:', json);
         const data = json.data.fkGetScheduleForDate
-        console.log('data:', data);
         return data;
     }
 
     static async getInitialProps(ctx) {
         const schedule_day = new Date()
         const data = await this.schedule_for_date(schedule_day);
-        console.log('all good');
 
         return {
             date: schedule_day,
