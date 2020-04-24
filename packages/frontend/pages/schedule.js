@@ -15,14 +15,10 @@ class Schedule extends Component {
           <span className="start_time"><Moment format="HH:mm">{item.starttime}</Moment></span>
           <span className="end_time"><Moment format="HH:mm">{item.endtime}</Moment></span>
           <span className="publisher">
-            <Link href={"/organizations/" + item.organizationId}>
-            <a>{item.organizationName}</a> 
-            </Link>
+            {item.organizationName}
           </span>
           <div className="title">
-            <Link href={"/videos/" + item.videoId}>
-                <a>{item.videoName}</a>
-            </Link>
+            {item.videoName}
           </div>
             <style jsx>{`
             .schedule_item {
