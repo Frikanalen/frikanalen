@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch'
 
@@ -151,10 +152,22 @@ export class ScheduleInfo extends Component {
                 { programme_row (this.state.previous, "previous") }
                 { programme_row (this.state.current, "current") }
                 { programme_row (this.state.next, "next") }
+                <p className="fullScheduleLink"><Link href="/schedule" as="/schedule"><a>vis mer...</a></Link></p>
                 <style jsx>{`
                 .onRightNow {
                     color: white;
                     background: #555;
+                }
+                .fullScheduleLink {
+                    text-align: center;
+                    font-family: 'Roboto', sans-serif;
+                    background-color: #666;
+                    margin: 0;
+                    padding: 5px;
+                }
+                .fullScheduleLink a {
+                    background-color: #555;
+                    padding: 5px 10px;
                 }
                 `}</style>
                 </span>

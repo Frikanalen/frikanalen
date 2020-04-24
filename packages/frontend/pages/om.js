@@ -87,9 +87,10 @@ export default function About() {
       frivillighet, uten forhåndssensur.</p>
       <p>Vi tilbyr alle våre medlemmer adgang til en riksdekkende TV-kanal med
       formidlingsplikt - som vil si at alle kabelleverandører er på samme måte
-      som NRK, forpliktet til å bære vår kanal. Vi er allerede båret av RiksTV,
-      og er i forhandlinger med Telia og Telenor om å få vår kanal båret av
-      dem.</p>
+      som NRK, forpliktet til å bære vår kanal.</p>
+      <p>Etter et omfattende frivillig arbeide vurderer vi vår kanal stabil nok
+      til å ta kontakt med tilbydere. Vi er allerede båret av RiksTV, og er i
+      forhandlinger med Telia og Telenor om å få vår kanal båret av dem.</p>
       <p>Det pågår også et arbeide med å tilrettelegge for brukerstyrte
       direktesendinger rett ut til vår TV-kanal. I tillegg til dette er vi i
       full gang med å utvikle en god løsning for spredning av video på
