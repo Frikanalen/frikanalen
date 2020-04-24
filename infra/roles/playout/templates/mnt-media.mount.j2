@@ -1,0 +1,12 @@
+[Unit]
+  Description=Frikanalen media mount
+  After=networking.service remote-fs.target network-online.target
+
+[Mount]
+  What=//192.168.3.59/media
+  Where=/mnt/media
+  Options=_netdev,credentials=/etc/smb_creds,ro,ip=192.168.3.59
+  Type=cifs
+
+[Install]
+  WantedBy=multi-user.target
