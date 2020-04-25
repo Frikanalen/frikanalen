@@ -13,3 +13,7 @@ users:
       realname: "Estephan Zouain"
       ssh_keys: |
           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4Re1qbqRbHgJFaSHDYLC0QiFXKHGcMfZ/c38U8WVCMT9zp+CSOODITNQEhdnsBGc/fekDrtTuP7MxEOyB4FVHcN69bXkYDtNUyUCEA9TZP2rJdRs/RUpSZ/3BsWXcqKOaC2pohx19+/9zgt+nZtKzdvsBhJyeFBI47Cs7Ah2LRLgLYo/VrlGzg0rSWFG87nAWp5k+O039vsHqeTMZBQTrKb3+b8vgqYDP38oZ5Bt0++tgh7jlJRDQKBVGhnMByMlx6APomnuc8Oa1MJzX4fBos/IuPdXcj/jQ0lmHLaYcFM2Z3IVf6/pNUqroNLurKmZEuP8kW3yjYO9XzNMLtMVp estephan
+    - username: olav
+      realname: "Olav Hardang"
+      ssh_keys: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWKyZP6VxjrZFy7+RVT7IMl0NIvVxwYPQSpwYC6nb/LmY0k5HseuK9ZUDk7aAZIUQdsxLuRDet9gnIDehVgKLm0BmoMDRQv1bAKfHYo7KJs6o7DFg7lssRTWyX6c7Z52p2maJf/bu6BryB/KDMiU8SBQykGphq/kVOccksOCLHcibMQ2j754sNPV059qNHl0TSrlvmuFjP8FC5/uplVwQYhTJ/JXuuRToZNomZx3IWaRxbWD+jD0UO+SxcIagkViyeLO0LGY6bR7h3TMymf/Ht9SZdDgrOQiJKLKsKXKFvrpmBJEULfm5R/GJvGuiJOM7HGp1A6jRVizCZ21Ra26bJ olav@olav-workstation
