@@ -20,7 +20,7 @@ export default function index() {
               <p>Etter mye hardt arbeide bak scenene kan vi endelig presentere
               første versjon av nye frikanalen.no.</p>
               <p> Det er i første omgang nødvendig å bruke <a
-                href="http://frikanalen.no/">de gamle nettsidene</a> for å laste opp
+                href="https://forrige.frikanalen.no/">de gamle nettsidene</a> for å laste opp
                 innhold, eller se i videoarkivet.</p>
               <p>De eksisterende funksjonene vil bli implementert fortløpende
               på den nye siden!</p>

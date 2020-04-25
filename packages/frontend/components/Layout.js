@@ -48,7 +48,7 @@ const Layout = props => (
             max-width: 100%;
             width: 1024px;
             margin: 0 auto;
-            padding-top: 60px;
+            padding-top: 20px;
             grid-template-area: content;
         }
         header {
@@ -60,6 +60,7 @@ const Layout = props => (
             background: #fff;
         }
         footer {
+            margin-top: 30px;
             grid-template-area: footer;
         }
         html, body {
