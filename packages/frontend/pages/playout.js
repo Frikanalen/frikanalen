@@ -14,7 +14,7 @@ class Playout extends Component {
             program: 0
         }
         fetch(
-            'https://beta.frikanalen.no/playout/atem/program'
+            'https://frikanalen.no/playout/atem/program'
         ).then(
             res=>res.json()
         ).then(json => {
@@ -29,7 +29,7 @@ class Playout extends Component {
 
     set_input = (input_index) => {
         fetch(
-            'https://beta.frikanalen.no/playout/atem/program', {
+            'https://frikanalen.no/playout/atem/program', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

@@ -18,7 +18,7 @@ class LiveNow extends Component {
               controls: true,
                 fluid: true,
               sources: [{
-                  src: '//beta.frikanalen.no/stream/frikanalen/frikanalen.mpd',
+                  src: '//frikanalen.no/stream/frikanalen/frikanalen.mpd',
                   type: 'application/dash+xml',
               }]
             }
@@ -26,7 +26,7 @@ class LiveNow extends Component {
             return (
             <div id="live_now">
                 <div className="header">direkte nå</div>
-                <DASHPlayer manifestUri='https://beta.frikanalen.no/stream/index.mpd' />
+                <DASHPlayer manifestUri='https://frikanalen.no/stream/index.mpd' />
                 <ScheduleInfo />
                 <style jsx>{`
                     #live_now {
