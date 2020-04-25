@@ -8,6 +8,7 @@
   user:
     name: "{{ item.username }}"
     groups: "sudo,www-data,fkweb"
+    shell: "/bin/bash"
   with_items: "{{ users }}"
 - name: "Add authorized keys"
   authorized_key:
