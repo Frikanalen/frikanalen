@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React, { Component } from 'react';
+import * as env from './constants';
 import fetch from 'isomorphic-unfetch'
 
 export class LiveVideoPlayer extends Component {
@@ -64,13 +65,13 @@ export class ScheduleInfo extends Component {
           }
         }
         `;
-        const url = "https://dev.frikanalen.no/graphql";
         const opts = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
         };
-        const res = await fetch(url, opts)
+        const res = await fetch(env.GRAPHQL_URL, opts)
+        console.log(env.GRAPHQL_URL)
         const json = await res.json()
         const sched = json.data.fkOnRightNows.edges
         //console.log(sched[2].node)
