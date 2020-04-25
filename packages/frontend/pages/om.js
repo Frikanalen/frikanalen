@@ -10,7 +10,6 @@ export var about_render = (data) => {
       <nav>
       <Link href="/om" as="/om"><p><a>om oss</a></p></Link>
       <Link href="/om/vedtekter" as="/om/vedtekter"><p><a>vedtekter</a></p></Link>
-      <Link href="/om/blimed" as="/om/blimed"><p><a>bli med</a></p></Link>
       <Link href="/om/kontakt" as="/om/kontakt"><p><a>kontakt</a></p></Link>
       </nav>
       </div>
@@ -40,8 +39,8 @@ export var about_render = (data) => {
             #mainContent {
                 grid-area: "mainContent"; 
                 background: #333131;
-                min-width: 600px;
-                margin-left: 20px;
+                width: 800px;
+                margin-left: 0px;
                 align-self:stretch;
                 padding-left: 15px;
                 padding-right: 15px;
@@ -49,12 +48,13 @@ export var about_render = (data) => {
             }
 
             #leftbar {
+            width: 160px;
                 grid-area: "leftBar"; 
                 padding-left: 15px;
                 padding-right: 40px;
                 background: #434141;
                 align-self:start;
-                justify-self:start;
+                justify-self:center;
                 font-size: 26px;
                 font-weight: bold;
             }
