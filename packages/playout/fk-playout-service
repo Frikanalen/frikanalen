@@ -8,7 +8,6 @@ from scheduler import Schedule
 from vision import playout
 from vision.configuration import configuration
 
-
 def logging_excepthook(type, value, tb):
     "Exception handler that logs"
     logging.debug("Unhandled exception", exc_info=(type, value, tb))
@@ -18,14 +17,21 @@ def logging_excepthook(type, value, tb):
 def setup_logging():
     fmt = ("%(asctime)s %(levelname)s:%(name)s "
                "%(filename)s:%(lineno)d %(message)s")
-    logging.basicConfig(level=logging.DEBUG, format=fmt)
+    logging.basicConfig(level=logging.ERROR, format=fmt)
+    if configuration.logFormat == 'json':
+        from pythonjsonlogger import jsonlogger
+        formatter = jsonlogger.JsonFormatter(fmt)
+    else:
+        formatter = logging.Formatter(fmt)
+        logging.basicConfig(level=logging.WARNING, format=fmt)
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
+    logger.handlers.clear()
 
     handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(formatter)
 
-    handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
     sys.excepthook = logging_excepthook
 
@@ -37,8 +43,7 @@ if __name__ == "__main__":
     # Create today's schedule
     schedule = Schedule()
     # Start the player
-    playout_service = playout.PlayoutService()
-    playout = playout.Playout(service=playout_service)
+    playout = playout.Playout()
 
     # Setting the schedule starts playback
     playout.attach_schedule(schedule)

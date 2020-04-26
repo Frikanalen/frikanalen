@@ -17,3 +17,5 @@ pathlib
 pycodestyle
 git+https://github.com/toresbe/pycaspar.git
 pyyaml
+
+python-json-logger

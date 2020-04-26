@@ -26,13 +26,11 @@ LOOP_FILENAME = 'filler/FrikanalenLoop.avi'
 @zope.interface.implementer(ISchedule)
 class Playout(object):
 
-    def __init__(self, service, player_class=None):
+    def __init__(self, player_class=None):
         if player_class is None:
             player_class = configuration.playerClass
         self.player = _get_class(player_class)(LOOP_FILENAME)
         self.random_provider = jukebox.RandomProvider()
-        self.service = service
-        self.service.playout = self
 
         self.schedule = None
         self.next_program = None
@@ -40,8 +38,6 @@ class Playout(object):
         # A reference to the timed callback which aborts programs
         self.duration_call = None
         self.delayed_start_call = None
-        # Still filename, if being displayed
-        self.still = None
         # Temporary stack for sequence of videos before going to on_idle
         self.on_end_call_stack=[]
 
@@ -52,7 +48,7 @@ class Playout(object):
         print("done")
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
-        self.service.on_schedule_attach(schedule)
+#        self.service.on_schedule_attach(schedule)
         if not self.playing_program:
             self.resume_playback()
 
@@ -109,12 +105,10 @@ class Playout(object):
         # Start playback
         print(program, program.filename)
         self.player.play_program(program, resume_offset=resume_offset)
-        self.service.on_playback_started(program)
         self.playing_program = program
 
     def set_next_program(self, program):
         self.next_program = program
-        self.service.on_set_next_program(program)
         if program:
             logging.info("Next scheduled video_id=%i @ %s" % (
                 program.media_id, program.program_start))
@@ -135,6 +129,7 @@ class Playout(object):
         return program.seconds_until_playback()
 
     def stop_schedule(self):
+        logging.info("Stopping schedule")
         try:
             if self.scheduler_task.running:
                 self.scheduler_task.stop()
@@ -143,30 +138,19 @@ class Playout(object):
         #self.set_next_program(None)
 
     def start_schedule(self):
+        logging.info("Starting schedule")
         self.stop_schedule()
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
 
     def refresh_schedule(self):
+        """Refresh the schedule from the backend, reload the jukebox 
+        provider, and re-start the schedule."""
         logging.info("Refreshing schedule...")
         self.schedule.fetch_from_backend(days=2)
         self.random_provider.reload()
         self.start_schedule()
         self.duration_call = reactor.callLater(datetime.timedelta(days=1).seconds, self.refresh_schedule)
-
-    def show_still(self, filename="stills/tekniskeprover.png"):
-        self._cancel_pending_calls()
-        self.stop_schedule()
-        self.player.show_still(filename)
-        self.service.on_still(filename)
-        logging.info("Show still: %s", filename)
-
-    def cancel_still(self):
-        logging.info("Cancel still")
-        self.service.on_still("")
-        self.start_schedule()
-        # TODO: resume_current_program?
-        self.resume_playback()
 
     def on_program_ended(self):
         """
@@ -254,46 +238,12 @@ class Playout(object):
             #self.cue_program(program) # TODO: Doesn't handle looping
             self.player.pause_screen()
             self.playing_program = program
-            self.service.on_playback_started(program)
-
-
-class PlayoutService(object):
-    def __init__(self):
-        self.observers = weakref.WeakKeyDictionary()
-
-    def add_observer(self, observer):
-        self.observers[observer] = True
-        observer.on_playback_started(self.playout.playing_program)
-        observer.on_set_next_program(self.playout.next_program)
-        if self.playout.still:
-            observer.on_still(self.playout.still)
-
-    def remove_observer(self, observer):
-        del self.observers[observer]
-
-    def on_playback_started(self, program):
-        for each in list(self.observers.keys()):
-            each.on_playback_started(program)
-
-    def on_still(self, name):
-        for each in list(self.observers.keys()):
-            each.on_still(name)
-
-    def on_schedule_attach(self, program):
-        for each in list(self.observers.keys()):
-            each.on_schedule_attach(program)
-
-    def on_set_next_program(self, program):
-        for each in list(self.observers.keys()):
-            each.on_set_next_program(program)
-
 
 def start_test_player():
     log_fmt = (
         "%(asctime)s %(levelname)s:%(name)s %(filename)s:%(lineno)d "
         "%(message)s")
     logging.basicConfig(level=logging.DEBUG, format=log_fmt)
-    service = PlayoutService()
 
     schedule = Schedule()
     v = Program(media_id=1758, start_time=clock.now() - datetime.timedelta(0, 5), title="First",
@@ -305,13 +255,10 @@ def start_test_player():
                       playback_offset=30+60*n, playback_duration=9.0)
         print(("Added %i @ %s" % (n, v.program_start)))
         schedule.add(v)
-    player = Playout(service)
     player.attach_schedule(schedule)
     # import playoutweb
     # playoutweb.start_web(None, playout_service=service, playout=player,
     #                      schedule=schedule, port=8888)
-    reactor.callLater(4.0, player.show_still)
-    reactor.callLater(7.0, player.cancel_still)
     return player
 
 
