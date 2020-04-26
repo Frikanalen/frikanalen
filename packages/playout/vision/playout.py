@@ -20,16 +20,8 @@ from vision.configuration import configuration
 # hardcoded in playout.py
 # TODO: This part of the code should _only_ concern itself with relative paths.
 IDENT_LENGTH = 27.0
-#IDENT_FILENAME = os.path.join(configuration.ident_media_root,
-#                              'FrikanalenVignett.avi')
-#LOOP_FILENAME = os.path.join(configuration.ident_media_root,
-#                             'FrikanalenLoop.avi')
-#IDENT_FILENAME = 'filler/FrikanalenVignett.avi'
 IDENT_FILENAME = 'filler/FrikanalenLoop.avi' # less noise while developing :)
 LOOP_FILENAME = 'filler/FrikanalenLoop.avi'
-# make sure we have the basic required files
-#os.stat(IDENT_FILENAME)
-#os.stat(LOOP_FILENAME)
 
 @zope.interface.implementer(ISchedule)
 class Playout(object):
@@ -53,12 +45,12 @@ class Playout(object):
         # Temporary stack for sequence of videos before going to on_idle
         self.on_end_call_stack=[]
 
-    def set_schedule(self, schedule):
+    def attach_schedule(self, schedule):
         "Set schedule and start playing"
         self.schedule = schedule
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
-        self.service.on_set_schedule(schedule)
+        self.service.on_schedule_attach(schedule)
         if not self.playing_program:
             self.resume_playback()
 
@@ -278,9 +270,9 @@ class PlayoutService(object):
         for each in list(self.observers.keys()):
             each.on_still(name)
 
-    def on_set_schedule(self, program):
+    def on_schedule_attach(self, program):
         for each in list(self.observers.keys()):
-            each.on_set_schedule(program)
+            each.on_schedule_attach(program)
 
     def on_set_next_program(self, program):
         for each in list(self.observers.keys()):
@@ -307,7 +299,7 @@ def start_test_player():
         print(("Added %i @ %s" % (n, v.program_start)))
         schedule.add(v)
     player = Playout(service)
-    player.set_schedule(schedule)
+    player.attach_schedule(schedule)
     # import playoutweb
     # playoutweb.start_web(None, playout_service=service, playout=player,
     #                      schedule=schedule, port=8888)
