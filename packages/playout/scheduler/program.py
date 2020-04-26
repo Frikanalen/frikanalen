@@ -18,14 +18,15 @@ class Program(object):
 
     TODO: perhaps specify a "pase" media_id or somethign?
     """
-    def __init__(self):
-        self.media_id = None
-        self.program_start = None
-        self.playback_offset = None
-        self.playback_duration = None
-        self.title="N/A"
-        self.data = {}
-        self.loop = False
+    def __init__(self, media_id=None, program_start=None, playback_offset=None, title=None, playback_duration=None, data={}, filename=None, loop=False):
+        self.program_start = program_start
+        self.media_id = media_id
+        self.playback_offset = playback_offset
+        self.playback_duration = playback_duration
+        self.title = title
+        self.data = data
+        self.filename = filename
+        self.loop = loop
 
     def set_program(self, media_id, program_start=None, playback_offset=None, playback_duration=None, title="N/A", data={}, filename=None, loop=False):
         self.program_start = program_start

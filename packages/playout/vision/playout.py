@@ -48,6 +48,8 @@ class Playout(object):
     def attach_schedule(self, schedule):
         "Set schedule and start playing"
         self.schedule = schedule
+        self.refresh_schedule()
+        print("done")
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
         self.service.on_schedule_attach(schedule)
@@ -133,14 +135,24 @@ class Playout(object):
         return program.seconds_until_playback()
 
     def stop_schedule(self):
-        if self.scheduler_task and self.scheduler_task.running:
-            self.scheduler_task.stop()
+        try:
+            if self.scheduler_task.running:
+                self.scheduler_task.stop()
+        except AttributeError:
+            pass
         #self.set_next_program(None)
 
     def start_schedule(self):
         self.stop_schedule()
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
+
+    def refresh_schedule(self):
+        logging.info("Refreshing schedule...")
+        self.schedule.fetch_from_backend(days=2)
+        self.random_provider.reload()
+        self.start_schedule()
+        self.duration_call = reactor.callLater(datetime.timedelta(days=1).seconds, self.refresh_schedule)
 
     def show_still(self, filename="stills/tekniskeprover.png"):
         self._cancel_pending_calls()
@@ -176,12 +188,11 @@ class Playout(object):
 
     def play_jukebox(self):
         logging.info("Jukebox playback start")
-        program = Program()
         limit = 90*60 # 90 minutes long programs max
         if self.next_program:
             limit = min(limit, self.next_program.seconds_until_playback())
         video = self.random_provider.get_random_video(limit)
-        program.set_program(
+        program = Program(
             media_id=video["media_id"],
             program_start=clock.now(),
             playback_duration=video["duration"],
@@ -190,8 +201,7 @@ class Playout(object):
 
     def play_ident(self):
         logging.info("Ident playback start [skipped]")
-        program = Program()
-        program.set_program(
+        program = Program(
             media_id=-1,
             program_start=clock.now(),
             playback_duration=2, #IDENT_LENGTH,
@@ -204,7 +214,7 @@ class Playout(object):
         if self.next_program:
             time_until_next = self.next_program.seconds_until_playback()
         # The rules.
-        use_jukebox = configuration.jukebox
+        use_jukebox = configuration.useJukebox
         use_jukebox &= time_until_next > (120+IDENT_LENGTH)
         use_jukebox &= self.random_provider.enough_room(time_until_next)
         if use_jukebox:
@@ -212,8 +222,8 @@ class Playout(object):
             #PAUSE_LENGTH = IDENT_LENGTH+loop_length
             PAUSE_LENGTH = 2#loop_length
             logging.info("Pause before jukebox: %.1fs" % PAUSE_LENGTH)
-            program = Program()
-            program.set_program(-1,
+            program = Program(
+                media_id=-1,
                 program_start=clock.now(),
                 playback_duration=1,#loop_length,
                 title="Jukebox pause screen",
@@ -225,23 +235,22 @@ class Playout(object):
         elif time_until_next >= 12+IDENT_LENGTH:
             logging.info("Pause idle: %.1fs" % time_until_next)
             PAUSE_LENGTH = time_until_next
-            program = Program()
-            program.set_program(-1,
-                program_start=clock.now(),
-                playback_duration=time_until_next-IDENT_LENGTH,
-                title="Pause screen",
-                filename=LOOP_FILENAME,
-                loop=True)
+            program = Program(
+                    media_id=-1,
+                    program_start=clock.now(),
+                    playback_duration=time_until_next-IDENT_LENGTH,
+                    title="Pause screen",
+                    filename=LOOP_FILENAME,
+                    loop=True)
             self.cue_program(program)
             self.on_end_call_stack.append(self.play_ident)
         else:
             logging.info("Short idle: %.1fs" % time_until_next)
             # Show pausescreen
-            program = Program()
             t = None
             if self.next_program:
                 t = self.next_program.seconds_until_playback()
-            program.set_program(-1, program_start=clock.now(), playback_duration=t, title="Pause screen", filename=LOOP_FILENAME, loop=True)
+            program = Program(media_id=-1, program_start=clock.now(), playback_duration=t, title="Pause screen", filename=LOOP_FILENAME, loop=True)
             #self.cue_program(program) # TODO: Doesn't handle looping
             self.player.pause_screen()
             self.playing_program = program
@@ -287,14 +296,12 @@ def start_test_player():
     service = PlayoutService()
 
     schedule = Schedule()
-    v = Program()
-    v.set_program(1758, clock.now() - datetime.timedelta(0, 5), title="First",
+    v = Program(media_id=1758, start_time=clock.now() - datetime.timedelta(0, 5), title="First",
                   playback_offset=10, playback_duration=10.0)
     schedule.add(v)
     for n in range(1):
         delta = datetime.timedelta(0, 6+(n)*10.0)
-        v = Program()
-        v.set_program(1758, clock.now() + delta, title="No %i" % n,
+        v = Program(media_id= 1758, start_time=clock.now() + delta, title="No %i" % n,
                       playback_offset=30+60*n, playback_duration=9.0)
         print(("Added %i @ %s" % (n, v.program_start)))
         schedule.add(v)

@@ -53,7 +53,7 @@ class Schedule(object):
                     l.append(program)
         return l
 
-    def update_from_pg_cache(self, date=None, days=7):
+    def fetch_from_backend(self, date=None, days=7):
         "Testing in schedulestore"
         if not date:
             date = clock.now().date()
@@ -67,8 +67,7 @@ class Schedule(object):
                 continue
             day_loaded.append((this_date, True))
             for d in l:
-                program = Program()
-                program.set_program(
+                programs.append(Program(
                     media_id=d["broadcast_location"],
                     program_start=d["starttime"],
                     playback_offset=0.0,
@@ -77,8 +76,7 @@ class Schedule(object):
                     # unused:
                     # endtime, video_id, header, schedule_reagion....
                     data=d
-                    )
-                programs.append(program)
+                ))
         # Just print continously what days weren't loaded
         start = None
         last = None
@@ -112,16 +110,17 @@ class Schedule(object):
 
 
 if __name__=="__main__":
-    s = Schedule()
+    pass
+    #s = Schedule()
 
-    v = Program()
-    delta = datetime.timedelta(0, 10) # 10 seconds
-    v.set_program(15, datetime.datetime.now() + delta)
-    assert(v.seconds_until_playback() > 9)
-    s.add(v)
-    print((s.get_next_program().media_id))
-    delta = datetime.timedelta(0, 5) # 5 seconds
-    v = Program()
-    v.set_program(16, datetime.datetime.now() + delta)
-    s.add(v)
-    print((s.get_next_program().media_id))
+    #v = Program()
+    #delta = datetime.timedelta(0, 10) # 10 seconds
+    #v.set_program(15, datetime.datetime.now() + delta)
+    #assert(v.seconds_until_playback() > 9)
+    #s.add(v)
+    #print((s.get_next_program().media_id))
+    #delta = datetime.timedelta(0, 5) # 5 seconds
+    #v = Program()
+    #v.set_program(16, datetime.datetime.now() + delta)
+    #s.add(v)
+    #print((s.get_next_program().media_id))

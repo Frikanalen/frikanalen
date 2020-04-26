@@ -8,6 +8,7 @@ from scheduler import Schedule
 from vision import playout
 from vision.configuration import configuration
 
+
 def logging_excepthook(type, value, tb):
     "Exception handler that logs"
     logging.debug("Unhandled exception", exc_info=(type, value, tb))
@@ -15,14 +16,16 @@ def logging_excepthook(type, value, tb):
     sys.__excepthook__(type, value, tb)
 
 def setup_logging():
-    log_fmt = ("%(asctime)s %(levelname)s:%(name)s "
+    fmt = ("%(asctime)s %(levelname)s:%(name)s "
                "%(filename)s:%(lineno)d %(message)s")
-    logging.basicConfig(level=logging.DEBUG, format=log_fmt)
+    logging.basicConfig(level=logging.DEBUG, format=fmt)
     logger = logging.getLogger()
-    handler = handlers.TimedRotatingFileHandler(
-        "logs/integrated_playout.log", when="D")
+    logger.setLevel(logging.DEBUG)
+
+    handler = logging.StreamHandler()
     handler.setLevel(logging.DEBUG)
-    handler.setFormatter(logging.Formatter(log_fmt))
+
+    handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
     sys.excepthook = logging_excepthook
 
@@ -33,7 +36,6 @@ if __name__ == "__main__":
 
     # Create today's schedule
     schedule = Schedule()
-    schedule.update_from_pg_cache(days=1)
     # Start the player
     playout_service = playout.PlayoutService()
     playout = playout.Playout(service=playout_service)
