@@ -1,7 +1,6 @@
-Frikanalen TV playout
-=====================
+# Frikanalen TV playout
 
-##Trying it out
+## Trying it out
 
 The frikanalen playout requires an instance of CasparCG running and accessible on port 5250.
 
@@ -10,6 +9,7 @@ It also requires a few static files to be present.
     # Navigate to your CasparCG's media directory (yours might be somewhere else!)
     cd casparserver/media
     mkdir filler stills
+    
     # At the time of writing you will have to add --no-check-certificate
     wget -P filler/ https://file01.frikanalen.no/media/filler/FrikanalenLoop.avi \
                     https://file01.frikanalen.no/media/filler/FrikanalenVignett.avi
@@ -24,7 +24,7 @@ It also requires a few static files to be present.
     # Install the requirements
     pip install -r requirements.txt
 
-    # And try the software (this will give you a white window if everything worked)
+    # And try the software
     ./fk-playout-service
 
 Or you can install it from Docker:
