@@ -36,7 +36,7 @@ class Playout(object):
 
     def __init__(self, service, player_class=None):
         if player_class is None:
-            player_class = configuration.player_class
+            player_class = configuration.playerClass
         self.player = _get_class(player_class)(LOOP_FILENAME)
         self.random_provider = jukebox.RandomProvider()
         self.service = service

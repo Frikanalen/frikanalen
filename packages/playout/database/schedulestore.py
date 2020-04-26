@@ -34,15 +34,15 @@ def get_schedule_by_date(date):
             }
           }
           }''' % (date.isoformat(),)
-    request = requests.post(configuration.graphql_endpoint, json={'query':query})
+    request = requests.post(configuration.graphqlEndpoint, json={'query':query})
     result = request.json()
     returned_entries = result['data']['fkGetScheduleForDate']['edges']
 
     massaged_schedule = []
     for entrynode in returned_entries:
         entry = entrynode['node']
-        startTime = isoparse(entry['starttime']).replace(tzinfo = None)
-        endTime = isoparse(entry['endtime']).replace(tzinfo = None)
+        startTime = isoparse(entry['starttime']).astimezone(tz=None).replace(tzinfo=None)
+        endTime = isoparse(entry['endtime']).astimezone(tz=None).replace(tzinfo=None)
         duration = _millisecond_duration_from_endpoints(startTime, endTime)
         video = {
                 'broadcast_location': entry['videoId'],

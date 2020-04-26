@@ -42,12 +42,13 @@ class Program(object):
         if self.filename is not None:
             return self.filename
 
-        video = Video(self.media_id).files['broadcast']
-        if video is None:
-            video = Video(self.media_id).files['original']
-
-        if configuration.caspar_media_access_method == 'https':
-            video = configuration.caspar_media_https_location + video
+        if configuration.mediaAssets.scheme == 'https':
+            video = Video(self.media_id).files['theora']
+            video = configuration.mediaAssets.baseURL + video
+        else:
+            video = Video(self.media_id).files['broadcast']
+            if video is None:
+                video = Video(self.media_id).files['original']
 
         print("File is {}".format(video))
         return video

@@ -4,9 +4,6 @@ import os
 import sys
 from logging import handlers
 
-sys.path.append(os.path.dirname(__file__) + 'src/')
-sys.path.append(os.path.dirname(__file__) + 'lib/')
-
 from scheduler import Schedule
 from vision import playout
 from vision.configuration import configuration
@@ -32,11 +29,11 @@ def setup_logging():
 if __name__ == "__main__":
     setup_logging()
     logging.info("FK Integrated Playout started")
-    logging.info("Configuration details:\n%s" % configuration.config_strings())
+    logging.info("Configuration details:\n%s" % configuration.__repr__())
 
     # Create today's schedule
     schedule = Schedule()
-    schedule.update_from_pg_cache(days=14)
+    schedule.update_from_pg_cache(days=1)
     # Start the player
     playout_service = playout.PlayoutService()
     playout = playout.Playout(service=playout_service)

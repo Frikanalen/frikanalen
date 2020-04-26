@@ -21,9 +21,11 @@ BUG_LAYER = 100
 
 class CasparCGPlayer(BasePlayer):
     def __init__(self, loop_filename):
-        if os.getenv('CASPAR_HOST') is None:
-            raise Exception('CASPAR_HOST environment not set!')
-        self.caspar = CasparCG(os.getenv('CASPAR_HOST'))
+        try:
+            host = configuration.casparHost
+        except KeyError:
+            raise KeyError("casparHost must be set in configuration file!")
+        self.caspar = CasparCG(host)
         self.channel = self.caspar.channel(1)
         self.media_layer = self.channel.layer(MEDIA_LAYER)
         self.channel.clear()
