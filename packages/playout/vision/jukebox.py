@@ -4,7 +4,6 @@ import os
 import csv
 import random
 import logging
-from . import lookup
 from .configuration import configuration
 def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
     # csv.py doesn't do Unicode; encode temporarily as UTF-8:
@@ -61,9 +60,6 @@ class RandomProvider(object):
                     name = "media_id"
                     field = int(field)
                 d[name] = field
-            if configuration.video_cache_only:
-                if not os.path.exists(lookup.locate_media_by_id(d["media_id"])):
-                    continue
             if d["duration"] < self.minimum_duration:
                 continue
             if not shortest_duration or d["duration"] < shortest_duration:

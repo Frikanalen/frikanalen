@@ -5,13 +5,14 @@ import os
 import weakref
 
 import zope.interface
-from twisted.internet import reactor
 from twistedschedule.interfaces import ISchedule
+
+from twisted.internet import reactor
 from twistedschedule.task import ScheduledCall
 
-from vision import clock
+from scheduler import clock
 from vision import jukebox
-from vision import playlist
+from scheduler import Schedule, Program
 from vision.configuration import configuration
 
 
@@ -23,12 +24,12 @@ IDENT_LENGTH = 27.0
 #                              'FrikanalenVignett.avi')
 #LOOP_FILENAME = os.path.join(configuration.ident_media_root,
 #                             'FrikanalenLoop.avi')
-IDENT_FILENAME = 'filler/FrikanalenVignett.avi'
+#IDENT_FILENAME = 'filler/FrikanalenVignett.avi'
+IDENT_FILENAME = 'filler/FrikanalenLoop.avi' # less noise while developing :)
 LOOP_FILENAME = 'filler/FrikanalenLoop.avi'
 # make sure we have the basic required files
 #os.stat(IDENT_FILENAME)
 #os.stat(LOOP_FILENAME)
-
 
 @zope.interface.implementer(ISchedule)
 class Playout(object):
@@ -112,6 +113,7 @@ class Playout(object):
             program.media_id,
             str(program.playback_offset), str(resume_offset), program.title, duration_text))
         # Start playback
+        print(program, program.filename)
         self.player.play_program(program, resume_offset=resume_offset)
         self.service.on_playback_started(program)
         self.playing_program = program
@@ -182,7 +184,7 @@ class Playout(object):
 
     def play_jukebox(self):
         logging.info("Jukebox playback start")
-        program = self.schedule.new_program()
+        program = Program()
         limit = 90*60 # 90 minutes long programs max
         if self.next_program:
             limit = min(limit, self.next_program.seconds_until_playback())
@@ -195,12 +197,12 @@ class Playout(object):
         self.cue_program(program)
 
     def play_ident(self):
-        logging.info("Ident playback start")
-        program = self.schedule.new_program()
+        logging.info("Ident playback start [skipped]")
+        program = Program()
         program.set_program(
             media_id=-1,
             program_start=clock.now(),
-            playback_duration=IDENT_LENGTH,
+            playback_duration=2, #IDENT_LENGTH,
             title="Frikanalen Vignett",
             filename=IDENT_FILENAME)
         self.cue_program(program)
@@ -215,12 +217,13 @@ class Playout(object):
         use_jukebox &= self.random_provider.enough_room(time_until_next)
         if use_jukebox:
             loop_length = 12.0
-            PAUSE_LENGTH = IDENT_LENGTH+loop_length
+            #PAUSE_LENGTH = IDENT_LENGTH+loop_length
+            PAUSE_LENGTH = 2#loop_length
             logging.info("Pause before jukebox: %.1fs" % PAUSE_LENGTH)
-            program = self.schedule.new_program()
+            program = Program()
             program.set_program(-1,
                 program_start=clock.now(),
-                playback_duration=loop_length,
+                playback_duration=1,#loop_length,
                 title="Jukebox pause screen",
                 filename=LOOP_FILENAME,
                 loop=True)
@@ -230,7 +233,7 @@ class Playout(object):
         elif time_until_next >= 12+IDENT_LENGTH:
             logging.info("Pause idle: %.1fs" % time_until_next)
             PAUSE_LENGTH = time_until_next
-            program = self.schedule.new_program()
+            program = Program()
             program.set_program(-1,
                 program_start=clock.now(),
                 playback_duration=time_until_next-IDENT_LENGTH,
@@ -242,7 +245,7 @@ class Playout(object):
         else:
             logging.info("Short idle: %.1fs" % time_until_next)
             # Show pausescreen
-            program = self.schedule.new_program()
+            program = Program()
             t = None
             if self.next_program:
                 t = self.next_program.seconds_until_playback()
@@ -291,14 +294,14 @@ def start_test_player():
     logging.basicConfig(level=logging.DEBUG, format=log_fmt)
     service = PlayoutService()
 
-    schedule = playlist.Schedule()
-    v = schedule.new_program()
+    schedule = Schedule()
+    v = Program()
     v.set_program(1758, clock.now() - datetime.timedelta(0, 5), title="First",
                   playback_offset=10, playback_duration=10.0)
     schedule.add(v)
     for n in range(1):
         delta = datetime.timedelta(0, 6+(n)*10.0)
-        v = schedule.new_program()
+        v = Program()
         v.set_program(1758, clock.now() + delta, title="No %i" % n,
                       playback_offset=30+60*n, playback_duration=9.0)
         print(("Added %i @ %s" % (n, v.program_start)))

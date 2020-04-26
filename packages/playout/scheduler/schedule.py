@@ -2,101 +2,9 @@ import logging
 import datetime
 from . import clock
 import json
-from . import lookup
-from . import pgsched
+from database import schedulestore, video
+from .program import Program
 
-# TODO: Need a Program that represents a generic program on disk w/o being scheduled
-# TODO: Program that represents the following: jukebox, dead air, pause, program guide, ident
-
-class Program(object):
-    """
-    program_start
-        datetime
-    media_id
-        integer
-    playback_offset
-        None or float in seconds
-    playback_duration
-        None or float in seconds
-
-    TODO: perhaps specify a "pase" media_id or somethign?
-    """
-    def __init__(self):
-        self.media_id = None
-        self.program_start = None
-        self.playback_offset = None
-        self.playback_duration = None
-        self.title="N/A"
-        self.data = {}
-        self.loop = False
-
-    def set_program(self, media_id, program_start=None, playback_offset=None, playback_duration=None, title="N/A", data={}, filename=None, loop=False):
-        self.program_start = program_start
-        self.media_id = media_id
-        self.playback_offset = playback_offset
-        self.playback_duration = playback_duration
-        self.title = title
-        self.data=data
-        self.filename = filename
-        self.loop = loop
-
-    def get_filename(self):
-        if self.filename:
-            return self.filename
-        else:
-            return lookup.locate_media_by_id(self.media_id)
-
-    def seconds_since_playback(self):
-        dt = (clock.now() - self.program_start)
-        return dt.seconds + dt.microseconds / 1e6
-
-    def seconds_until_playback(self):
-        dt = (self.program_start - clock.now())
-        return dt.seconds + dt.microseconds / 1e6
-
-    def seconds_until_end(self):
-        duration = self.playback_duration
-        if not duration:
-            duration = self.get(duration)
-        if not duration:
-            raise Exception("No duration given for video %i" % self.media_id)
-        dt = (self.program_start - clock.now())
-        return dt.seconds + dt.microseconds / 1e6 + duration
-
-    def __repr__(self):
-        return "<Program #%i %r>" % (self.media_id, self.title)
-
-    # Idiotic marshalling...
-    def from_dict(self, d):
-        # Tue Jul 19 12:30:00 2011
-        fmt = "%a %b %d %H:%M:%S %Y"
-        self.program_start = strptime(d["program_start"], fmt)
-        self.media_id = d["media_id"]
-        self.playback_offset = d["playback_offset"]
-        self.playback_duration = d["playback_duration"]
-        self.title = d["title"]
-
-    def to_dict(self):
-        end = None
-        duration = self.playback_duration
-        if duration == float("inf"):
-            end = "inf"
-            duration = "inf"
-        elif duration:
-            end = (self.program_start+datetime.timedelta(seconds=self.playback_duration)).isoformat()
-        d = {
-          "media_id": self.media_id,
-          "program_start": self.program_start and self.program_start.isoformat(),
-          "program_end": end,
-          "playback_offset": self.playback_offset,
-          "playback_duration": duration,
-          "title": self.title
-          }
-        return d
-
-    def json(self):
-        d = self.to_dict()
-        return json.dumps(d).encode('utf-8')
 
 class Schedule(object):
     def __init__(self):
@@ -107,9 +15,6 @@ class Schedule(object):
 
     def remove(self, program):
         self.programs.remove(program)
-
-    def new_program(self):
-        return Program()
 
     def get_current_program(self):
         now = clock.now()
@@ -149,20 +54,20 @@ class Schedule(object):
         return l
 
     def update_from_pg_cache(self, date=None, days=7):
-        "Testing in pgsched"
+        "Testing in schedulestore"
         if not date:
             date = clock.now().date()
         programs = []
         day_loaded = []
         for day in range(days):
-            l = pgsched.get_schedule_by_date(date+datetime.timedelta(days=day))
+            l = schedulestore.get_schedule_by_date(date+datetime.timedelta(days=day))
             this_date = date+datetime.timedelta(days=day)
             if not l:
                 day_loaded.append((this_date, False))
                 continue
             day_loaded.append((this_date, True))
             for d in l:
-                program = self.new_program()
+                program = Program()
                 program.set_program(
                     media_id=d["broadcast_location"],
                     program_start=d["starttime"],
@@ -209,14 +114,14 @@ class Schedule(object):
 if __name__=="__main__":
     s = Schedule()
 
-    v = s.new_program()
+    v = Program()
     delta = datetime.timedelta(0, 10) # 10 seconds
     v.set_program(15, datetime.datetime.now() + delta)
     assert(v.seconds_until_playback() > 9)
     s.add(v)
     print((s.get_next_program().media_id))
     delta = datetime.timedelta(0, 5) # 5 seconds
-    v = s.new_program()
+    v = Program()
     v.set_program(16, datetime.datetime.now() + delta)
     s.add(v)
     print((s.get_next_program().media_id))

@@ -21,7 +21,9 @@ BUG_LAYER = 100
 
 class CasparCGPlayer(BasePlayer):
     def __init__(self, loop_filename):
-        self.caspar = CasparCG('tx2')
+        if os.getenv('CASPAR_HOST') is None:
+            raise Exception('CASPAR_HOST environment not set!')
+        self.caspar = CasparCG(os.getenv('CASPAR_HOST'))
         self.channel = self.caspar.channel(1)
         self.media_layer = self.channel.layer(MEDIA_LAYER)
         self.channel.clear()
@@ -35,31 +37,27 @@ class CasparCGPlayer(BasePlayer):
         if filename is not None:
             logging.debug('CasparCG is being asked to play filename %s', filename)
 
-            if '/mnt/media' in filename:
-                filename = '%s' % (Path(filename).relative_to(configuration.media_root),)
-
             if resume_offset != 0:
                 seek = int(resume_offset * self.channel.framerate)
             else:
                 seek = 0
 
-            if True: # os.path.exists(filename):
-                assetname = os.path.splitext(filename)[0]
-                try:
-                    # FIXME filename should be escaped, ie using \" \\, etc.
-                    layer.play(
-                            filename = assetname,
-                            transition = 'MIX 50 1 LINEAR RIGHT',
-                            loop = loop,
-                            seek = seek)
-                except:
-                    layer.clear()
-                    logging.error("Failed to play file: %s" % filename)
-                    raise
+            if (filename[:8] == 'https://') or (filename[:7] == 'http://'):
+                assetname = filename
             else:
+                assetname = os.path.splitext(filename)[0]
+
+            try:
+                # FIXME filename should be escaped, ie using \" \\, etc.
+                layer.play(
+                        filename = assetname,
+                        transition = 'MIX 50 1 LINEAR RIGHT',
+                        loop = loop,
+                        seek = seek)
+            except:
                 layer.clear()
-                logging.error(
-                    "Didn't find file. Playback never started: %s" % filename)
+                logging.error("Failed to play file: %s" % filename)
+                raise
         else:
             layer.clear()
 

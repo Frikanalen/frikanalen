@@ -6,7 +6,8 @@ class Configuration(object):
         'name',
         'cache_root', 'video_cache_root', 'schedule_cache_root', 'queue_root',
         'jobs_root', 'depot_root',
-        'render_type', 'jukebox', 'video_cache_only', 'ident_media_root']
+        'render_type', 'jukebox', 'video_cache_only', 'ident_media_root',
+         'caspar_media_access_method', 'caspar_media_https_location']
     name = property(lambda self: self.__class__.__name__)
     base_path = os.path.normpath(os.path.join(
         os.path.abspath(__file__), '..', '..'))
@@ -17,6 +18,10 @@ class Configuration(object):
     queue_root = os.path.join(cache_root, 'queue')
     jobs_root = os.path.join(cache_root, 'jobs')
     ident_media_root = os.path.join(base_path, 'video')
+
+    caspar_media_access_method = 'https' # alternative: file
+    caspar_media_https_location = 'https://file01.frikanalen.no/media/'
+    graphql_endpoint = 'https://forrige.frikanalen.no/graphql'
 
     player_class = 'vision.players.casparcg_player:CasparCGPlayer'
 
