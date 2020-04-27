@@ -10,7 +10,7 @@ class VideoFiles():
     # file_type is the old "fsname"; eg "broadcast" or "original"
     def __getitem__(self, file_type):
         params = {'video_id': self.videoID, 'format__fsname': file_type}
-        res = requests.get(LEGACY_API + 'videofiles', params=params)
+        res = requests.get(LEGACY_API + 'videofiles/', params=params)
         if res.status_code != requests.codes.ok:
             raise Exception("Could not get video files from API, HTTP %d".format(res.status_code))
         try:
