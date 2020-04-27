@@ -1,14 +1,15 @@
 import datetime
 import pickle
 import os
+import requests
+import logging
 from dateutil.parser import isoparse
 
-from twisted.python import log
 from twisted.enterprise import adbapi
 
-import requests
 
 from vision.configuration import configuration
+from .video import Video
 
 # For compatibility reasons, just grafting on the data format
 # the scheduler expects to find in the code according to the 
@@ -18,7 +19,7 @@ def _millisecond_duration_from_endpoints(starttime, endtime):
             ((endtime - starttime).microseconds / 1000))
     return duration
               
-def get_schedule_by_date(date):
+def _fetch(date):
     query = '''query {
           fkGetScheduleForDate(fromDate: "%s") {
             edges {
@@ -35,32 +36,60 @@ def get_schedule_by_date(date):
           }
           }''' % (date.isoformat(),)
     request = requests.post(configuration.graphqlEndpoint, json={'query':query})
-    result = request.json()
-    returned_entries = result['data']['fkGetScheduleForDate']['edges']
+    return request.json()
 
-    massaged_schedule = []
-    for entrynode in returned_entries:
-        entry = entrynode['node']
+class ScheduledVideo():
+    def __init__(self, video, startTime, endTime):
+        self.video = video
+        self.startTime = startTime
+        self.endTime = endTime
+
+    def asWeirdLegacyDict(self):
+        """ The schedule uses this dict format so just as an intermediate
+        step in cleaning up this code, this returns a dict with that format."""
+        duration = _millisecond_duration_from_endpoints(self.startTime, self.endTime)
+        video = {
+                'broadcast_location': self.video.id,
+                'duration': duration,
+                'name': self.video.name,
+                'starttime': self.startTime,
+                }
+        return video
+
+    @classmethod
+    def fromGraphNode(cls, node):
+        entry = node['node']
         startTime = isoparse(entry['starttime']).astimezone(tz=None).replace(tzinfo=None)
         endTime = isoparse(entry['endtime']).astimezone(tz=None).replace(tzinfo=None)
-        duration = _millisecond_duration_from_endpoints(startTime, endTime)
-        video = {
-                'broadcast_location': entry['videoId'],
-                'duration': duration,
-                'name': entry['videoName'],
-                'starttime': startTime,
-                }
-        massaged_schedule.append(video)
+        video = Video(entry['videoId'])
+        video.name = entry['videoName']
+        return cls(video, startTime, endTime)
+
+def load(schedule_day):
+    logging.info("Getting schedule for date {}".format(schedule_day.isoformat()))
+
+    scheduleJSON = _fetch(schedule_day)
+
+    returned_entries = scheduleJSON['data']['fkGetScheduleForDate']['edges']
+    logging.info("Got {} entries.".format(len(returned_entries)))
+
+    massaged_schedule = []
+
+    for entrynode in returned_entries:
+        scheduledVideo = ScheduledVideo.fromGraphNode(entrynode)
+        massaged_schedule.append(scheduledVideo.asWeirdLegacyDict())
 
     return massaged_schedule
 
 if __name__=="__main__":
-    from twisted.internet import reactor
-    import pprint
-    date = datetime.date.today()
-    #date = datetime.date(year=2011, month=1, day=1)
-    cache_schedule(date, 14)\
-            .addCallback(lambda x: pprint.pprint(get_schedule_by_date(date)[0]))\
-            .addCallback(lambda x: reactor.stop())
-    reactor.run()
+    pass
+    #print(load(datetime.datetime.now()))
+    #from twisted.internet import reactor
+    #import pprint
+    #date = datetime.date.today()
+    ##date = datetime.date(year=2011, month=1, day=1)
+    #cache_schedule(date, 14)\
+    #        .addCallback(lambda x: pprint.pprint(load(date)[0]))\
+    #        .addCallback(lambda x: reactor.stop())
+    #reactor.run()
     #print date_to_cache_filename(datetime.date.today())
