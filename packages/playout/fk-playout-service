@@ -20,7 +20,7 @@ def setup_logging():
     logging.basicConfig(level=logging.ERROR, format=fmt)
     if configuration.logFormat == 'json':
         from pythonjsonlogger import jsonlogger
-        formatter = jsonlogger.JsonFormatter(fmt)
+        formatter = jsonlogger.JsonFormatter(fmt, json_ensure_ascii=False)
     else:
         formatter = logging.Formatter(fmt)
         logging.basicConfig(level=logging.WARNING, format=fmt)
