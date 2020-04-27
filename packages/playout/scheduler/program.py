@@ -65,36 +65,8 @@ class Program(object):
         return self.program_start + datetime.timedelta(seconds=self.playback_duration)
 
     def __repr__(self):
-        return "<Program <Scheduled for [%s]-[%s]> <Video #%i: \"%s\">>" % \
+        return "<Program <Scheduled for [%s]-[%s]> <Video #%i: [%s]>>" % \
             (self.program_start, self.endTime(), self.media_id, self.title)
-
-    # Idiotic marshalling...
-    def from_dict(self, d):
-        # Tue Jul 19 12:30:00 2011
-        fmt = "%a %b %d %H:%M:%S %Y"
-        self.program_start = strptime(d["program_start"], fmt)
-        self.media_id = d["media_id"]
-        self.playback_offset = d["playback_offset"]
-        self.playback_duration = d["playback_duration"]
-        self.title = d["title"]
-
-    def to_dict(self):
-        end = None
-        duration = self.playback_duration
-        if duration == float("inf"):
-            end = "inf"
-            duration = "inf"
-        elif duration:
-            end = self.endTime().isoformat()
-        d = {
-          "media_id": self.media_id,
-          "program_start": self.program_start and self.program_start.isoformat(),
-          "program_end": end,
-          "playback_offset": self.playback_offset,
-          "playback_duration": duration,
-          "title": self.title
-          }
-        return d
 
     @classmethod
     def fromWeirdLegacyDict(cls, weirdDict, playbackOffset = 0.0, additionalData = None):
@@ -110,8 +82,3 @@ class Program(object):
                     # endtime, video_id, header, schedule_reagion....
                     data=additionalData
                     )
-
-
-    def json(self):
-        d = self.to_dict()
-        return json.dumps(d).encode('utf-8')

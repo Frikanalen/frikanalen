@@ -25,97 +25,10 @@ LOOP_FILENAME = 'filler/FrikanalenLoop.avi'
 
 @zope.interface.implementer(ISchedule)
 class Playout(object):
-
-    def __init__(self, player_class=None):
-        if player_class is None:
-            player_class = configuration.playerClass
-        self.player = _get_class(player_class)(LOOP_FILENAME)
-        self.random_provider = jukebox.RandomProvider()
-
-        self.schedule = None
-        self.next_program = None
-        self.playing_program = None
-        # A reference to the timed callback which aborts programs
-        self.duration_call = None
-        self.delayed_start_call = None
-        # Temporary stack for sequence of videos before going to on_idle
-        self.on_end_call_stack=[]
-
-    def attach_schedule(self, schedule):
-        "Set schedule and start playing"
-        self.schedule = schedule
-        self.refresh_schedule()
-        print("done")
-        self.scheduler_task = ScheduledCall(self.cue_next_program)
-        self.scheduler_task.start(self)
-#        self.service.on_schedule_attach(schedule)
-        if not self.playing_program:
-            self.resume_playback()
-
-    def resume_current_program(self):
-        current_program = self.playing_program
-        if current_program:
-            self.cue_program(current_program, current_program.seconds_since_scheduled_start())
-
-    def resume_playback(self):
-        # TODO: Rename to resume_schedule
-        current_program = self.schedule.get_current_program()
-        if current_program:
-            self.cue_program(current_program, current_program.seconds_since_scheduled_start())
-        else:
-            self.on_idle()
-
-    def cue_next_program(self):
-        """Starts the next program
-
-        Set the next program with Playout.set_next_program"""
-        if self.next_program:
-            self.cue_program(self.next_program)
-            self.next_program = None
-
-    def _cancel_pending_calls(self):
-        """Stops any pending calls from starting in the future (and disrupt playback)
-
-        This is used whenever a program is started and new calls will be registered
-        """
-        if self.duration_call and not self.duration_call.called:
-            self.duration_call.cancel()
-            self.duration_call = None
-        if self.delayed_start_call and not self.delayed_start_call.called:
-            self.delayed_start_call.cancel()
-            self.delayed_start_call = None
-
-    def cue_program(self, program, resume_offset=0):
-        """Starts the given program"""
-        self._cancel_pending_calls()
-        duration_text = "Unknown"
-        if program.playback_duration == float("inf"):
-            duration_text = "Infinite"
-        elif program.playback_duration:
-            duration_text = "%i:%02i" % (program.playback_duration / 60, program.playback_duration % 60)
-            # Schedule next call
-            delta = program.playback_duration-resume_offset
-            if delta <= 0.0:
-                self.player.pause_screen()
-            else:
-                self.duration_call = reactor.callLater(delta, self.on_program_ended)
-        logging.info("Playback video_id=%i, offset=%s+%ss name='%s' duration=%s" % (
-            program.media_id,
-            str(program.playback_offset), str(resume_offset), program.title, duration_text))
-        # Start playback
-        print(program, program.filename)
-        self.player.play_program(program, resume_offset=resume_offset)
-        self.playing_program = program
-
-    def set_next_program(self, program):
-        self.next_program = program
-        if program:
-            logging.info("Next scheduled video_id=%i @ %s" % (
-                program.media_id, program.program_start))
-        else:
-            logging.warning("Scheduled nothing")
-
     # ISchedule.getDelayForNext
+    # This is called by ScheduledCall to determine the number
+    # of seconds until the next time self.cue_next_program is
+    # invoked
     def getDelayForNext(self):
         # Queue next
         program = self.schedule.get_next_program()
@@ -128,6 +41,108 @@ class Playout(object):
         self.set_next_program(program)
         return program.seconds_until_playback()
 
+    def __init__(self, player_class=None):
+        if player_class is None:
+            player_class = configuration.playerClass
+        self.player = _get_class(player_class)(LOOP_FILENAME)
+        self.random_provider = jukebox.RandomProvider()
+
+        self.schedule = None
+        self.next_program = None
+        self.playing_program = None
+
+        # The video_end_timeout is invoked at a video's end time because
+        # the current architecture does not receive media end messages
+        # from CasparCG
+        self.video_end_timeout = None
+        self.delayed_start_call = None
+
+        # Temporary stack for sequence of videos before going to on_idle
+        self.programEndCallbackStack=[]
+
+    def attach_schedule(self, schedule):
+        "Set schedule and start playing"
+        logging.debug("Attaching schedule")
+        self.schedule = schedule
+        self.refresh_schedule()
+
+        self.scheduler_task = ScheduledCall(self.cue_next_program)
+        self.scheduler_task.start(self)
+
+        if not self.playing_program:
+            self.resume_schedule()
+
+    def resume_current_program(self):
+        current_program = self.schedule.get_current_program()
+        if current_program:
+            self.cue_program(current_program, current_program.seconds_since_scheduled_start())
+
+    def resume_schedule(self):
+        """Resumes the currently scheduled program if there is one,
+        otherwise it goes into idle mode"""
+
+        if self.schedule.get_current_program():
+            self.resume_current_program()
+        else:
+            self.on_idle()
+
+    def cue_next_program(self):
+        """Starts the next program
+
+        Set the next program with Playout.set_next_program"""
+        if self.next_program:
+            self.cue_program(self.next_program)
+            self.next_program = None
+
+    def _clear_timeouts(self):
+        """Clears any previously set timeouts"""
+        if self.video_end_timeout and not self.video_end_timeout.called:
+            self.video_end_timeout.cancel()
+            self.video_end_timeout = None
+        if self.delayed_start_call and not self.delayed_start_call.called:
+            self.delayed_start_call.cancel()
+            self.delayed_start_call = None
+
+    def _fmt_duration(self, duration):
+        if duration == float("inf"):
+            return "Infinite"
+
+        return "%i:%02i" % (duration / 60, duration % 60)
+
+    def cue_program(self, program, seekSeconds=0):
+        logging.debug("In cue_program, program={}, offset=".format(program, seekSeconds))
+        # Clear any timeouts set for the previous program
+        self._clear_timeouts()
+
+        if program.playback_duration != float("inf"):
+            secondsUntilEnd = program.playback_duration - seekSeconds
+
+            if secondsUntilEnd <= 0.0:
+                errormsg = """secondsUntilEnd == {} for program {}"""
+                logging.error(errormsg.format(secondsUntilEnd, program))
+            else:
+                errormsg = """secondsUntilEnd == {} for program {}"""
+                logging.debug(errormsg.format(secondsUntilEnd, program))
+                self.video_end_timeout = reactor.callLater(secondsUntilEnd, self.on_program_ended)
+
+        if seekSeconds > 0:
+            logging.info("Playing program {}, seeking {}s".format(program, seekSeconds))
+        else:
+            logging.info("Playing program {}".format(program))
+
+        # Start playback
+        self.player.play_program(program, resume_offset=seekSeconds)
+        self.playing_program = program
+
+    def set_next_program(self, program):
+        self.next_program = program
+        if program:
+            logging.info("Next scheduled video_id=%i @ %s" % (
+                program.media_id, program.program_start))
+        else:
+            logging.warning("Scheduled nothing")
+
+
     def stop_schedule(self):
         logging.info("Stopping schedule")
         try:
@@ -138,13 +153,13 @@ class Playout(object):
         #self.set_next_program(None)
 
     def start_schedule(self):
-        logging.info("Starting schedule")
         self.stop_schedule()
+        logging.info("Starting schedule")
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
 
     def refresh_schedule(self):
-        """Refresh the schedule from the backend, reload the jukebox 
+        """Refresh the schedule from the backend, reload the jukebox
         provider, and re-start the schedule."""
         logging.info("Refreshing schedule...")
         self.schedule.fetch_from_backend(days=2)
@@ -153,21 +168,10 @@ class Playout(object):
         self.self_pending_refresh = reactor.callLater(60*60*24, self.refresh_schedule)
 
     def on_program_ended(self):
-        """
-        try:
-            logging.debug("Video '%s' #%i ended with %.1fs left. " % (
-                self.playing_program.title, self.playing_program.media_id,
-                self.player.seconds_until_end_of_playing_video())
-                )
-            pass
-        # TODO: Add proper exception/exceptionlogging
-        except:
-            logging.warning("Excepted while trying to log on_program_ended")
-        """
         logging.debug("on_program_ended invoked")
-        if self.on_end_call_stack:
-            func = self.on_end_call_stack.pop(0)
-            func()
+
+        if self.programEndCallbackStack:
+            self.programEndCallbackStack.pop(0)()
         else:
             self.on_idle()
 
@@ -217,8 +221,8 @@ class Playout(object):
                 filename=LOOP_FILENAME,
                 loop=True)
             self.cue_program(program)
-            self.on_end_call_stack.append(self.play_ident)
-            self.on_end_call_stack.append(self.play_jukebox)
+            self.programEndCallbackStack.append(self.play_ident)
+            self.programEndCallbackStack.append(self.play_jukebox)
         elif time_until_next >= 12+IDENT_LENGTH:
             logging.info("Pause idle: %.1fs" % time_until_next)
             PAUSE_LENGTH = time_until_next
@@ -230,7 +234,7 @@ class Playout(object):
                     filename=LOOP_FILENAME,
                     loop=True)
             self.cue_program(program)
-            self.on_end_call_stack.append(self.play_ident)
+            self.programEndCallbackStack.append(self.play_ident)
         else:
             logging.info("Short idle: %.1fs" % time_until_next)
             # Show pausescreen
@@ -259,9 +263,6 @@ def start_test_player():
         print(("Added %i @ %s" % (n, v.program_start)))
         schedule.add(v)
     player.attach_schedule(schedule)
-    # import playoutweb
-    # playoutweb.start_web(None, playout_service=service, playout=player,
-    #                      schedule=schedule, port=8888)
     return player
 
 

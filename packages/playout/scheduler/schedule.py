@@ -65,7 +65,7 @@ class Schedule(object):
                     .format(e, last))
             pass
 
-        logging.debug("get_current_program returned: ", program)
+        logging.debug("get_current_program returned: {}".format(program))
         return last
 
     def get_next_program(self):
@@ -79,7 +79,7 @@ class Schedule(object):
                 # program is closer to now
                 next = program
 
-        logging.debug("get_next_program returned: ", program)
+        logging.debug("get_next_program returned: {}".format(program))
 
         ## Testing new code in production, woot
         try:
@@ -113,34 +113,22 @@ class Schedule(object):
 
         return next_program
 
-
-    def get_programs_by_date(self, date=None, as_dict=False):
-        if not date:
-            date = clock.now().date()
-        l = []
-        for program in self.programs:
-            if program.program_start.date() == date:
-                if as_dict:
-                    l.append(program.to_dict())
-                else:
-                    l.append(program)
-        return l
-
     def fetch_from_backend(self, date=None, days=7):
         "Testing in schedulestore"
         if not date:
             date = clock.now().date()
+
         logging.info("Fetching {} days of schedule from backend starting from {}".\
                 format(days, date))
+
         programs = []
 
-        for day in range(days):
-            try:
-                program_list = schedulestore.load(date+datetime.timedelta(days=day))
-                for weirdLegacyDict in program_list:
-                    programs.append(Program.fromWeirdLegacyDict(weirdLegacyDict))
-            except Exception as e:
-                raise
+        try:
+            program_list = schedulestore.load(date, days)
+            for weirdLegacyDict in program_list:
+                programs.append(Program.fromWeirdLegacyDict(weirdLegacyDict))
+        except Exception as e:
+            raise
 
         if programs:
             self.programs = programs

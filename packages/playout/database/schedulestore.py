@@ -12,13 +12,13 @@ from vision.configuration import configuration
 from .video import Video
 
 # For compatibility reasons, just grafting on the data format
-# the scheduler expects to find in the code according to the 
+# the scheduler expects to find in the code according to the
 # old pickle data format
 def _millisecond_duration_from_endpoints(starttime, endtime):
     duration = int(((endtime - starttime).seconds * 1000) +\
             ((endtime - starttime).microseconds / 1000))
     return duration
-              
+
 def _fetch(date):
     query = '''query {
           fkGetScheduleForDate(fromDate: "%s") {
@@ -65,19 +65,21 @@ class ScheduledVideo():
         video.name = entry['videoName']
         return cls(video, startTime, endTime)
 
-def load(schedule_day):
-    logging.info("Getting schedule for date {}".format(schedule_day.isoformat()))
-
-    scheduleJSON = _fetch(schedule_day)
-
-    returned_entries = scheduleJSON['data']['fkGetScheduleForDate']['edges']
-    logging.info("Got {} entries.".format(len(returned_entries)))
+def load(startDate, numDays = 1):
+    logging.info("Getting {} days of schedule starting at date {}".format(numDays, startDate.isoformat()))
 
     massaged_schedule = []
 
-    for entrynode in returned_entries:
-        scheduledVideo = ScheduledVideo.fromGraphNode(entrynode)
-        massaged_schedule.append(scheduledVideo.asWeirdLegacyDict())
+    for offsetDay in range(numDays):
+        schedule_day = startDate + datetime.timedelta(days=offsetDay)
+
+        scheduleJSON = _fetch(schedule_day)
+        returned_entries = scheduleJSON['data']['fkGetScheduleForDate']['edges']
+        logging.info("Got {} entries.".format(len(returned_entries)))
+
+        for entrynode in returned_entries:
+            scheduledVideo = ScheduledVideo.fromGraphNode(entrynode)
+            massaged_schedule.append(scheduledVideo.asWeirdLegacyDict())
 
     return massaged_schedule
 
