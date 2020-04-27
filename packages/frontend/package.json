@@ -14,17 +14,16 @@
   "dependencies": {
     "isomorphic-unfetch": "^3.0.0",
     "moment": "^2.24.0",
-    "next": "^9.2.1",
+    "next": "^9.3.5",
     "next-cookies": "^2.0.3",
-    "node-sass": "^4.13.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "node-sass": "^4.14.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-meta-tags": "^0.7.4",
     "react-moment": "^0.9.7",
-    "sass": "^1.25.0",
+    "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "shaka-player": "^2.5.9",
-    "video.js": "^7.6.6",
-    "webrtc-adapter": "^7.5.0"
+    "shaka-player": "^2.5.10",
+    "video.js": "^7.7.5"
   }
 }
