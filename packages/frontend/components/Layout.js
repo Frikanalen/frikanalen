@@ -9,10 +9,7 @@ const Layout = props => (
         <title>Frikanalen</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </MetaTags>
-    <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"/>
-      <link href="https://vjs.zencdn.net/7.6.6/video-js.css" rel="stylesheet" />
+      <link href="scripts/video-js.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="static/controls.css" />
     <Header className="foo"/>
     <main>{props.children}</main>
@@ -20,7 +17,47 @@ const Layout = props => (
     <style jsx>{`
     `}</style>
     <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap');
+        @font-face {
+          font-family: 'Material Icons';
+          font-style: normal;
+          font-weight: 400;
+          src: url(/fonts/MaterialIcons.ttf) format('truetype');
+        }
+
+        .material-icons {
+          font-family: 'Material Icons';
+          font-weight: normal;
+          font-style: normal;
+          font-size: 24px;
+          line-height: 1;
+          letter-spacing: normal;
+          text-transform: none;
+          display: inline-block;
+          white-space: nowrap;
+          word-wrap: normal;
+          direction: ltr;
+        }
+        @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 400;
+          font-display: swap;
+          src: local('Roboto'), local('Roboto-Regular'), url(/fonts/Roboto400.ttf) format('truetype');
+        }
+        @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 700;
+          font-display: swap;
+          src: local('Roboto Bold'), local('Roboto-Bold'), url(/fonts/Roboto700.ttf) format('truetype');
+        }
+        @font-face {
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: 900;
+          font-display: swap;
+          src: local('Roboto Black'), local('Roboto-Black'), url(/fonts/Roboto900.ttf) format('truetype');
+        }
 
         * {
           box-sizing: border-box;
@@ -48,7 +85,7 @@ const Layout = props => (
             max-width: 100%;
             width: 1024px;
             margin: 0 auto;
-            padding-top: 60px;
+            padding-top: 20px;
             grid-template-area: content;
         }
         header {
@@ -60,10 +97,11 @@ const Layout = props => (
             background: #fff;
         }
         footer {
+            margin-top: 30px;
             grid-template-area: footer;
         }
         html, body {
-            background: #e7e7e7;
+            background: #b6b6b6;
             width: 100%;
             height: 100%;
             margin: 0;
@@ -104,9 +142,8 @@ const Footer = props => (
         footer p {
             width: 100%;
             margin: 0;
-            padding: 0;
             padding-top: 0.5em;
-            height: 1.5em;
+            padding-bottom: 0.5em;
             background-color: rgba(255, 255, 255, 0.8);
         }
         `}</style>

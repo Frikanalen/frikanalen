@@ -1,11 +1,11 @@
 import Layout from '../components/Layout';
 import * as env from '../components/constants';
 import Link from 'next/link';
-import fetch from 'isomorphic-unfetch';
 import React, { Component } from 'react';
+
+import fetch from 'isomorphic-unfetch';
 import Moment from 'react-moment';
 import 'moment/locale/nb';
-
 
 class Schedule extends Component {
     ScheduleItem(item) {
@@ -15,14 +15,10 @@ class Schedule extends Component {
           <span className="start_time"><Moment format="HH:mm">{item.starttime}</Moment></span>
           <span className="end_time"><Moment format="HH:mm">{item.endtime}</Moment></span>
           <span className="publisher">
-            <Link href={"/organizations/" + item.organizationId}>
-            <a>{item.organizationName}</a> 
-            </Link>
+            {item.organizationName}
           </span>
           <div className="title">
-            <Link href={"/videos/" + item.videoId}>
-                <a>{item.videoName}</a>
-            </Link>
+            {item.videoName}
           </div>
             <style jsx>{`
             .schedule_item {
@@ -57,7 +53,7 @@ class Schedule extends Component {
     );
     }
 
-    schedule_for_date = async (date) => {
+    static async schedule_for_date(schedule_day) {
         const query = `
           query {
           fkGetScheduleForDate(fromDate: "` +schedule_day.toISOString()+ `") {
@@ -75,7 +71,7 @@ class Schedule extends Component {
           }
           }
         `;
-        const url = process.env.GRAPHQL_URL;
+        const url = env.GRAPHQL_URL;
         const opts = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -88,8 +84,8 @@ class Schedule extends Component {
     }
 
     static async getInitialProps(ctx) {
-        schedule_day = new Date()
-        schedule_for_date = schedule_for_date(schedule_day);
+        const schedule_day = new Date()
+        const data = await this.schedule_for_date(schedule_day);
 
         return {
             date: schedule_day,
