@@ -3,8 +3,15 @@ import { instanceOf } from 'prop-types';
 import * as env from './constants';
 import React, { Component } from 'react';
 import cookies from 'next-cookies';
+import fetch from 'isomorphic-unfetch';
 
 class PlayoutAdmin extends Component {
+}
+class NotLoggedInException extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+    }
 }
 
 class UserAuth extends Component {
@@ -12,18 +19,16 @@ class UserAuth extends Component {
         super(props);
         this.handle_login_form = this.handle_login_form.bind(this);
         this.handle_logout = this.handle_logout.bind(this);
-        this.email = React.createRef();
-        this.password = React.createRef();
         this.handle_logout = this.handle_logout.bind(this);
         this.get_token = this.get_token.bind(this);
         this.state = {
             token: cookies(props).token || null,
+            field_email:'',
+            field_password:'',
             showLogin: false
-//            showLogin: true,
         };
-        this.load_profile_data();
+        this.load_profile_data()
     }
-
 
     showLogin() {
         this.setState ({
@@ -36,15 +41,12 @@ class UserAuth extends Component {
         if (this.state.is_staff) {
             staff_button = (
                 <div>
-                <Link href="playout" as="playout">
+                <Link href="/playout" as="/playout">
                 <a>playout</a>
                 </Link>
-                <style>{`
-                    .user_nav>div {
-                        padding: 0 5px;
-                    }
+                <style jsx>{`
                     a {
-                    color: #F25252;
+                        color: #460d0d; //#be0e0e;
                     }
                 `}</style>
                 </div>
@@ -54,12 +56,12 @@ class UserAuth extends Component {
         }
         return (
             <div className="user_nav">
-                <div className="user_id_box">
-                    <div className="material-icons">account_box</div>
-                    <div className="username">{this.state.email}</div>
-                </div>
-                { staff_button }
-                <div onClick={this.handle_logout}>logg ut</div>
+            <div className="user_id_box">
+            <div className="material-icons">account_box</div>
+            <div className="username">{this.state.email}</div>
+            </div>
+            { staff_button }
+            <div onClick={this.handle_logout}>logg ut</div>
             <style jsx>{`
             .user_nav {
                 font-family: 'Roboto', sans-serif;
@@ -69,27 +71,33 @@ class UserAuth extends Component {
                 align-items: center;
                 align-content: stretch;
                 height:32px;
-                padding: 0;
+                padding-left: 0px;
             }
             .user_nav>div {
                 margin-right: 10px
             }
+            div {
+                padding: 2px 10px;
+                color: black;
+            }
             .user_id_box {
                 display: flex;
                 align-items: center;
-                background-color: #8AC979;
+                background-color: white;
+                opacity: 0.7;
                 color: black;
-                padding: 0px 3px;
+                padding: 0;
                 margin: 0 20px 0 0;
             }
             .username {
-                font-size: calc(inherit - 2pt);
-                padding: 0 1px;
+                font-size: 16px;
+                padding: 2px;
             }
             .material-icons {
                 vertical-align: middle;
                 line-height: inherit;
                 padding: 0;
+                padding-left: 1px;
             }
             @media screen and (max-width: 630px) {
                 .user_id_box {
@@ -108,10 +116,12 @@ class UserAuth extends Component {
         return (
             <div className="login_prompt">
             <form id="login" onSubmit={this.handle_login_form} />
-            <input form="login" id="email" type="text" 
-                ref={this.email} placeholder="epost" maxLength="30" />
-            <input form="login" id="password" type="password" 
-                ref={this.password} placeholder="passord" maxLength="4096" />
+            <input form="login" id="email" type="text" autoComplete="username"
+            placeholder="epost" maxLength="30" 
+            onChange = {(event) => {this.setState({field_email:event.target.value})}}/>
+            <input form="login" id="password" type="password" autoComplete="current-password"
+            placeholder="passord" maxLength="4096" 
+            onChange = {(event) => {this.setState({field_password:event.target.value})}}/>
             <div id="breaker"></div>
             <input id="login_button" form="login" type="submit" value="logg inn" />
             <div className="eller">…eller</div>
@@ -193,11 +203,10 @@ class UserAuth extends Component {
             user_bar = this.logged_in_nav();
         } else {
             if(this.state.showLogin) 
-                user_bar= this.loginOrRegisterPrompt();
+                user_bar = this.loginOrRegisterPrompt();
             else
                 return null;
         }
-        if(typeof window !== 'undefined') {
         return (
             <div className="userBar">
             {user_bar}
@@ -205,8 +214,8 @@ class UserAuth extends Component {
             .userBar {
                 min-height: 32px;
                 padding: 0 0 0 50px;
-                background: black;
                 color: #ddd;
+                background-color: #468b4a;
                 font-family: 'Roboto', sans-serif;
                 font-weight: bold;
             }
@@ -218,13 +227,13 @@ class UserAuth extends Component {
             `}</style>
             </div>
         );
-        } else { 
-            return null;
-        }
     };
 
     handle_logout = () => {
-        document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        //fixme: This is not right
+        if (typeof document !== 'undefined') {
+            document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        }
 
         this.setState({
             token: null,
@@ -234,10 +243,9 @@ class UserAuth extends Component {
 
     handle_login_form = (e, data) => {
         e.preventDefault();
-        this.get_token(this.email.current.value, this.password.current.value);
+        this.get_token(this.state.field_email, this.state.field_password);
     };
 
-    NotLoggedInException() {};
 
     load_profile_data = () => {
         fetch(env.API_BASE_URL + 'user',  {
@@ -249,7 +257,7 @@ class UserAuth extends Component {
         })
             .then(res => {
                 if (res.status == 401) {
-                    throw new this.NotLoggedInException();
+                    throw new NotLoggedInException;
                 } else {
                     return res.json();
                 }
@@ -263,7 +271,7 @@ class UserAuth extends Component {
                 })
             })
             .catch(e => {
-                if (e instanceof this.NotLoggedInException) {
+                if (e instanceof NotLoggedInException) {
                     this.handle_logout();
                 } else {
                     throw(e);
@@ -278,25 +286,24 @@ class UserAuth extends Component {
                 'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + btoa(email + ":" + password),
             },
-        })
-            .then(res => {
+        }).then(res => {
                 if (res.status == 401) {
-                    throw new this.NotLoggedInException();
+                    throw new NotLoggedInException();
                 } else {
                     return res.json();
                 }
-            })
-            .then(json => {
+        }).then(json => {
+            if (typeof document !== 'undefined') {
                 document.cookie = `token=${json.key}; path=/`;
-                this.setState({
-                    token: json.key,
-                });
-                this.load_profile_data();
-                this.setState({
-                    token: json.key,
-                });
-            })
-            .catch(e => console.log(e));
+            }
+            this.setState({
+                token: json.key,
+            });
+            this.load_profile_data();
+            this.setState({
+                token: json.key,
+            });
+        }).catch(e => console.log("Error in get_token", e));
     }
 }
 

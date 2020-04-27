@@ -27,10 +27,8 @@ class Header extends Component {
 
               <nav>
                 <div className="headerLinks">
-                    <Link href="/schedule" as="/schedule"><a>Sendeplan</a></Link>
-                    <Link href="/videos" as="/videos"><a>Arkiv</a></Link>
-                    <Link href="/members" as="/members"><a>Medlemmer</a></Link>
-                    <Link href="/about" as="/about"><a>Om oss</a></Link>
+                    <Link href="/" as="/"><a>Direkte</a></Link>
+                    <Link href="/om" as="/om"><a>Om oss</a></Link>
                     <a onClick={this.showLogin} >Logg inn</a>
                 </div>
                 { userauth }
@@ -45,8 +43,9 @@ class Header extends Component {
 
                 .headerLinks {
                     padding: 0 30px;
+                    padding-bottom: 2px;
                     padding-left: 50px;
-                    background: #535151;
+                    background: black;
                     display: flex;
                     font-family: 'Roboto', sans-serif;
                     font-weight: bold;
