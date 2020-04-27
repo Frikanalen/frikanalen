@@ -4,22 +4,9 @@ import os
 import sys
 from logging import handlers
 
-sys.path.append(os.path.dirname(__file__) + 'src/')
-sys.path.append(os.path.dirname(__file__) + 'lib/')
-
-from vision import playlist
+from scheduler import Schedule
 from vision import playout
 from vision.configuration import configuration
-
-
-def sanity_test():
-    # TODO: Create a proper sanity test
-    if not os.path.isdir("cache/dailyplan"):
-        print("The directory 'cache/dailyplan' has to exist in work directory")
-        sys.exit(1)
-    if not os.path.isdir("cache/logs"):
-        print("The directory 'cache/logs' has to exist in work directory")
-        sys.exit(1)
 
 def logging_excepthook(type, value, tb):
     "Exception handler that logs"
@@ -28,32 +15,38 @@ def logging_excepthook(type, value, tb):
     sys.__excepthook__(type, value, tb)
 
 def setup_logging():
-    log_fmt = ("%(asctime)s %(levelname)s:%(name)s "
+    fmt = ("%(asctime)s %(levelname)s:%(name)s "
                "%(filename)s:%(lineno)d %(message)s")
-    logging.basicConfig(level=logging.DEBUG, format=log_fmt)
+    logging.basicConfig(level=logging.ERROR, format=fmt)
+    if configuration.logFormat == 'json':
+        from pythonjsonlogger import jsonlogger
+        formatter = jsonlogger.JsonFormatter(fmt, json_ensure_ascii=False)
+    else:
+        formatter = logging.Formatter(fmt)
+        logging.basicConfig(level=logging.WARNING, format=fmt)
+
     logger = logging.getLogger()
-    handler = handlers.TimedRotatingFileHandler(
-        "cache/logs/integrated_playout.log", when="D")
-    handler.setLevel(logging.DEBUG)
-    handler.setFormatter(logging.Formatter(log_fmt))
+    logger.setLevel(logging.DEBUG)
+    logger.handlers.clear()
+
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+
     logger.addHandler(handler)
     sys.excepthook = logging_excepthook
 
 if __name__ == "__main__":
-    sanity_test()
     setup_logging()
     logging.info("FK Integrated Playout started")
-    logging.info("Configuration details:\n%s" % configuration.config_strings())
+    logging.info("Configuration details:\n%s" % configuration.__repr__())
 
     # Create today's schedule
-    schedule = playlist.Schedule()
-    schedule.update_from_pg_cache(days=14)
+    schedule = Schedule()
     # Start the player
-    playout_service = playout.PlayoutService()
-    playout = playout.Playout(service=playout_service)
+    playout = playout.Playout()
 
     # Setting the schedule starts playback
-    playout.set_schedule(schedule)
+    playout.load_schedule()
 
     # Heat up the reactor
     from twisted.internet import reactor

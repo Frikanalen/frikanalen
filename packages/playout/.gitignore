@@ -7,7 +7,6 @@ __pycache__/
 
 # Files used for development
 env
-cache/logs/
-repo/
 
-cache/dailyplan/plan*.pickle
+logs/
+cache/
