@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch'
-import {LiveVideoPlayer, ScheduleInfo} from './LiveVideoPlayer.js'
+import LiveVideoPlayer from './LiveVideoPlayer.js'
+import ScheduleInfo from './ScheduleInfo.js'
 import DASHPlayer from '../components/DASHPlayer.js';
 //import VideoPlayer from '../components/VideoJS.js';
 //let ShakaPlayer;
