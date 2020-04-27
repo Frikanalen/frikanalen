@@ -5,6 +5,8 @@ from database import Video
 from . import clock
 from vision.configuration import configuration
 
+import datetime
+
 class Program(object):
     """
     program_start
@@ -59,9 +61,12 @@ class Program(object):
         dt = (self.program_start - clock.now())
         return dt.seconds + dt.microseconds / 1e6 + duration
 
+    def endTime(self):
+        return self.program_start + datetime.timedelta(seconds=self.playback_duration)
+
     def __repr__(self):
-        return "<Program <Scheduled for %s, dur %fs> <Video #%i: \"%s\">>" % \
-            (self.program_start, self.playback_duration, self.media_id, self.title)
+        return "<Program <Scheduled for [%s]-[%s]> <Video #%i: \"%s\">>" % \
+            (self.program_start, self.endTime(), self.media_id, self.title)
 
     # Idiotic marshalling...
     def from_dict(self, d):
@@ -80,7 +85,7 @@ class Program(object):
             end = "inf"
             duration = "inf"
         elif duration:
-            end = (self.program_start+datetime.timedelta(seconds=self.playback_duration)).isoformat()
+            end = self.endTime().isoformat()
         d = {
           "media_id": self.media_id,
           "program_start": self.program_start and self.program_start.isoformat(),
