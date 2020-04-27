@@ -3,13 +3,14 @@ import pickle
 import os
 import requests
 import logging
-from dateutil.parser import isoparse
 
 from twisted.enterprise import adbapi
 
-
 from vision.configuration import configuration
 from .video import Video
+
+from scheduler.program import ScheduledVideo
+from scheduler import schedule
 
 # For compatibility reasons, just grafting on the data format
 # the scheduler expects to find in the code according to the
@@ -38,37 +39,10 @@ def _fetch(date):
     request = requests.post(configuration.graphqlEndpoint, json={'query':query})
     return request.json()
 
-class ScheduledVideo():
-    def __init__(self, video, startTime, endTime):
-        self.video = video
-        self.startTime = startTime
-        self.endTime = endTime
-
-    def asWeirdLegacyDict(self):
-        """ The schedule uses this dict format so just as an intermediate
-        step in cleaning up this code, this returns a dict with that format."""
-        duration = _millisecond_duration_from_endpoints(self.startTime, self.endTime)
-        video = {
-                'broadcast_location': self.video.id,
-                'duration': duration,
-                'name': self.video.name,
-                'starttime': self.startTime,
-                }
-        return video
-
-    @classmethod
-    def fromGraphNode(cls, node):
-        entry = node['node']
-        startTime = isoparse(entry['starttime']).astimezone(tz=None).replace(tzinfo=None)
-        endTime = isoparse(entry['endtime']).astimezone(tz=None).replace(tzinfo=None)
-        video = Video(entry['videoId'])
-        video.name = entry['videoName']
-        return cls(video, startTime, endTime)
-
 def load(startDate, numDays = 1):
     logging.info("Getting {} days of schedule starting at date {}".format(numDays, startDate.isoformat()))
 
-    massaged_schedule = []
+    newSchedule = schedule.Schedule()
 
     for offsetDay in range(numDays):
         schedule_day = startDate + datetime.timedelta(days=offsetDay)
@@ -78,10 +52,9 @@ def load(startDate, numDays = 1):
         logging.info("Got {} entries.".format(len(returned_entries)))
 
         for entrynode in returned_entries:
-            scheduledVideo = ScheduledVideo.fromGraphNode(entrynode)
-            massaged_schedule.append(scheduledVideo.asWeirdLegacyDict())
+            newSchedule.programs.append(ScheduledVideo.fromGraphNode(entrynode))
 
-    return massaged_schedule
+    return newSchedule
 
 if __name__=="__main__":
     pass

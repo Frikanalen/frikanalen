@@ -46,7 +46,7 @@ if __name__ == "__main__":
     playout = playout.Playout()
 
     # Setting the schedule starts playback
-    playout.attach_schedule(schedule)
+    playout.load_schedule()
 
     # Heat up the reactor
     from twisted.internet import reactor

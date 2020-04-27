@@ -14,6 +14,7 @@ from scheduler import clock
 from vision import jukebox
 from scheduler import Schedule, Program
 from vision.configuration import configuration
+from database import schedulestore
 
 
 # TODO: Ident, loop, etc should be full program obects and not be
@@ -55,19 +56,18 @@ class Playout(object):
         # the current architecture does not receive media end messages
         # from CasparCG
         self.video_end_timeout = None
-        self.delayed_start_call = None
 
         # Temporary stack for sequence of videos before going to on_idle
         self.programEndCallbackStack=[]
 
-    def attach_schedule(self, schedule):
+    def load_schedule(self):
         "Set schedule and start playing"
         logging.debug("Attaching schedule")
-        self.schedule = schedule
-        self.refresh_schedule()
+        self.schedule = schedulestore.load(clock.now().date(), numDays=2)
 
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
+        self.self_pending_refresh = reactor.callLater(60*60*24, self.load_schedule)
 
         if not self.playing_program:
             self.resume_schedule()
@@ -99,9 +99,6 @@ class Playout(object):
         if self.video_end_timeout and not self.video_end_timeout.called:
             self.video_end_timeout.cancel()
             self.video_end_timeout = None
-        if self.delayed_start_call and not self.delayed_start_call.called:
-            self.delayed_start_call.cancel()
-            self.delayed_start_call = None
 
     def _fmt_duration(self, duration):
         if duration == float("inf"):
@@ -110,7 +107,7 @@ class Playout(object):
         return "%i:%02i" % (duration / 60, duration % 60)
 
     def cue_program(self, program, seekSeconds=0):
-        logging.debug("In cue_program, program={}, offset=".format(program, seekSeconds))
+        logging.debug("In cue_program, program={}, offset={}".format(program, seekSeconds))
         # Clear any timeouts set for the previous program
         self._clear_timeouts()
 
@@ -142,7 +139,6 @@ class Playout(object):
         else:
             logging.warning("Scheduled nothing")
 
-
     def stop_schedule(self):
         logging.info("Stopping schedule")
         try:
@@ -150,22 +146,12 @@ class Playout(object):
                 self.scheduler_task.stop()
         except AttributeError:
             pass
-        #self.set_next_program(None)
 
     def start_schedule(self):
+        logging.info("Starting schedule (will stop the old one if it exists)")
         self.stop_schedule()
-        logging.info("Starting schedule")
         self.scheduler_task = ScheduledCall(self.cue_next_program)
         self.scheduler_task.start(self)
-
-    def refresh_schedule(self):
-        """Refresh the schedule from the backend, reload the jukebox
-        provider, and re-start the schedule."""
-        logging.info("Refreshing schedule...")
-        self.schedule.fetch_from_backend(days=2)
-        self.random_provider.reload()
-        self.start_schedule()
-        self.self_pending_refresh = reactor.callLater(60*60*24, self.refresh_schedule)
 
     def on_program_ended(self):
         logging.debug("on_program_ended invoked")
@@ -245,26 +231,6 @@ class Playout(object):
             #self.cue_program(program) # TODO: Doesn't handle looping
             self.player.pause_screen()
             self.playing_program = program
-
-def start_test_player():
-    log_fmt = (
-        "%(asctime)s %(levelname)s:%(name)s %(filename)s:%(lineno)d "
-        "%(message)s")
-    logging.basicConfig(level=logging.DEBUG, format=log_fmt)
-
-    schedule = Schedule()
-    v = Program(media_id=1758, start_time=clock.now() - datetime.timedelta(0, 5), title="First",
-                  playback_offset=10, playback_duration=10.0)
-    schedule.add(v)
-    for n in range(1):
-        delta = datetime.timedelta(0, 6+(n)*10.0)
-        v = Program(media_id= 1758, start_time=clock.now() + delta, title="No %i" % n,
-                      playback_offset=30+60*n, playback_duration=9.0)
-        print(("Added %i @ %s" % (n, v.program_start)))
-        schedule.add(v)
-    player.attach_schedule(schedule)
-    return player
-
 
 def _get_class(cls):
     mod_path, cls_name = cls.split(':')
