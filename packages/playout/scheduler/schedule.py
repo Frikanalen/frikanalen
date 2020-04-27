@@ -20,13 +20,21 @@ class Schedule(object):
         now = clock.now()
         last = None
         for program in self.programs:
+            # Has this program started in the past?
             if program.program_start <= now:
-                # program already started
                 last = program
-                if program.playback_duration and (program.seconds_since_playback() >= program.playback_duration):
+                # Is this program done?
+                if program.playback_duration is None:
+                    warning = """
+                    get_current_program originally did not assume duration was not None.
+                    Tore removed this check because it seemed superfluous.
+                    This has turned out not to be the case for this program: """
+                    logging.error(warning, program);
+                if (program.seconds_since_scheduled_start() >= program.playback_duration):
                     last = None
             if last and program.program_start >= now:
                 break
+        logging.debug("get_current_program returned: ", program)
         return last
 
     def get_next_program(self):
@@ -39,6 +47,7 @@ class Schedule(object):
             if not next or next.program_start > program.program_start:
                 # program is closer to now
                 next = program
+        logging.debug("get_next_program returned: ", program)
         return next
 
     def get_programs_by_date(self, date=None, as_dict=False):
@@ -57,57 +66,22 @@ class Schedule(object):
         "Testing in schedulestore"
         if not date:
             date = clock.now().date()
+        logging.info("Fetching {} days of schedule from backend starting from {}".\
+                format(days, date))
         programs = []
-        day_loaded = []
-        for day in range(days):
-            l = schedulestore.get_schedule_by_date(date+datetime.timedelta(days=day))
-            this_date = date+datetime.timedelta(days=day)
-            if not l:
-                day_loaded.append((this_date, False))
-                continue
-            day_loaded.append((this_date, True))
-            for d in l:
-                programs.append(Program(
-                    media_id=d["broadcast_location"],
-                    program_start=d["starttime"],
-                    playback_offset=0.0,
-                    playback_duration=d["duration"] / 1000.,
-                    title=d["name"],
-                    # unused:
-                    # endtime, video_id, header, schedule_reagion....
-                    data=d
-                ))
-        # Just print continously what days weren't loaded
-        start = None
-        last = None
-        err = []
-        while day_loaded:
-            day, loaded = day_loaded.pop(0)
-            if (not start) and (not loaded):
-                # We have hit a first failure
-                start = day
-                last = day
-            elif start and (not loaded):
-                # The failure-streak lasts until today at least
-                last = day
-            if (start and loaded) or (not day_loaded and start):
-                # But it ended today
-                if start == last:
-                    # It was a single day
-                    err.append(str(start))
-                else:
-                    # It was a streak
-                    err.append("%s - %s" % (str(start), str(last)))
-        if err:
-            logging.warning("Failed to update plans: %s" % ','.join(err))
-        # Reconstruct playlist
-        if programs:
-            self.programs = []
-            for program in programs:
-                self.add(program)
-        else:
-            logging.warning("Cache empty")
 
+        for day in range(days):
+            try:
+                program_list = schedulestore.load(date+datetime.timedelta(days=day))
+                for weirdLegacyDict in program_list:
+                    programs.append(Program.fromWeirdLegacyDict(weirdLegacyDict))
+            except Exception as e:
+                raise
+
+        if programs:
+            self.programs = programs
+        else:
+            logging.warning("Schedule is empty!")
 
 if __name__=="__main__":
     pass

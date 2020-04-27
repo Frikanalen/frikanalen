@@ -55,13 +55,13 @@ class Playout(object):
     def resume_current_program(self):
         current_program = self.playing_program
         if current_program:
-            self.cue_program(current_program, current_program.seconds_since_playback())
+            self.cue_program(current_program, current_program.seconds_since_scheduled_start())
 
     def resume_playback(self):
         # TODO: Rename to resume_schedule
         current_program = self.schedule.get_current_program()
         if current_program:
-            self.cue_program(current_program, current_program.seconds_since_playback())
+            self.cue_program(current_program, current_program.seconds_since_scheduled_start())
         else:
             self.on_idle()
 
@@ -150,7 +150,7 @@ class Playout(object):
         self.schedule.fetch_from_backend(days=2)
         self.random_provider.reload()
         self.start_schedule()
-        self.duration_call = reactor.callLater(datetime.timedelta(days=1).seconds, self.refresh_schedule)
+        self.self_pending_refresh = reactor.callLater(60*60*24, self.refresh_schedule)
 
     def on_program_ended(self):
         """
@@ -164,6 +164,7 @@ class Playout(object):
         except:
             logging.warning("Excepted while trying to log on_program_ended")
         """
+        logging.debug("on_program_ended invoked")
         if self.on_end_call_stack:
             func = self.on_end_call_stack.pop(0)
             func()
@@ -197,6 +198,8 @@ class Playout(object):
         time_until_next = float("inf")
         if self.next_program:
             time_until_next = self.next_program.seconds_until_playback()
+        logging.info("on_idle is invoked, with %.1fs left until next item" %\
+               (time_until_next,))
         # The rules.
         use_jukebox = configuration.useJukebox
         use_jukebox &= time_until_next > (120+IDENT_LENGTH)

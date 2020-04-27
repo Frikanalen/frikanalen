@@ -17,10 +17,10 @@ class PlaylistTestCase(unittest.TestCase):
 		start = clock.now()+datetime.timedelta(seconds=5)
 		p.set_program(100, program_start=start, playback_duration=200)
 		self.assertEqual(p.seconds_until_playback(), 5)
-		self.assertNotEqual(p.seconds_since_playback(), 5)
+		self.assertNotEqual(p.seconds_since_scheduled_start(), 5)
 		t.advance(datetime.timedelta(seconds=10))
 		self.assertNotEqual(p.seconds_until_playback(), 5)
-		self.assertEqual(p.seconds_since_playback(), 5)
+		self.assertEqual(p.seconds_since_scheduled_start(), 5)
 		d = p.jsondict()
 		self.assertEqual(d["program_end"], (start+datetime.timedelta(seconds=200)).ctime())
 		self.assertEqual(d["program_start"], (start).ctime())
@@ -46,7 +46,7 @@ class PlaylistTestCase(unittest.TestCase):
 		# At beginning of first video
 		self.assertEqual(s.get_current_program(), p1)
 		self.assertEqual(p1.seconds_until_playback(), 0)
-		self.assertEqual(p1.seconds_since_playback(), 0)
+		self.assertEqual(p1.seconds_since_scheduled_start(), 0)
 		# At start of second video
 		t.advance(datetime.timedelta(seconds=5))
 		self.assertEqual(s.get_current_program(), p2)
