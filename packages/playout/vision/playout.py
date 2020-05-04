@@ -74,7 +74,9 @@ class Playout(object):
 
     def resume_current_program(self):
         current_program = self.schedule.get_current_program()
+        logging.debug("in resume_current_program; current_program=", current_program)
         if current_program:
+            logging.debug("resume_current_program invoking cue_program({})".format(current_program))
             self.cue_program(current_program, current_program.seconds_since_scheduled_start())
 
     def resume_schedule(self):
@@ -90,15 +92,20 @@ class Playout(object):
         """Starts the next program
 
         Set the next program with Playout.set_next_program"""
+        logging.debug("In cue_next_program - self.next_program=", self.next_program)
         if self.next_program:
             self.cue_program(self.next_program)
             self.next_program = None
 
     def _clear_timeouts(self):
         """Clears any previously set timeouts"""
+        logging.debug("in _clear_timeouts")
         if self.video_end_timeout and not self.video_end_timeout.called:
+            logging.debug("clearing timeouts")
             self.video_end_timeout.cancel()
             self.video_end_timeout = None
+        else:
+            logging.debug("not clearing timeout")
 
     def _fmt_duration(self, duration):
         if duration == float("inf"):
@@ -108,6 +115,7 @@ class Playout(object):
 
     def cue_program(self, program, seekSeconds=0):
         logging.debug("In cue_program, program={}, offset={}".format(program, seekSeconds))
+        logging.debug("schedule.programs = ", self.schedule.programs)
         # Clear any timeouts set for the previous program
         self._clear_timeouts()
 
@@ -172,6 +180,7 @@ class Playout(object):
             program_start=clock.now(),
             playback_duration=video["duration"],
             title=video["name"])
+        logging.debug("jukebox invoking cue_program({})".format(program))
         self.cue_program(program)
 
     def play_ident(self):
@@ -182,6 +191,7 @@ class Playout(object):
             playback_duration=2, #IDENT_LENGTH,
             title="Frikanalen Vignett",
             filename=IDENT_FILENAME)
+        logging.debug("play_ident invoking cue_program({})".format(program))
         self.cue_program(program)
 
     def on_idle(self):
@@ -206,6 +216,7 @@ class Playout(object):
                 title="Jukebox pause screen",
                 filename=LOOP_FILENAME,
                 loop=True)
+            logging.debug("on_idle invoking cue_program({})".format(program))
             self.cue_program(program)
             self.programEndCallbackStack.append(self.play_ident)
             self.programEndCallbackStack.append(self.play_jukebox)
@@ -219,6 +230,7 @@ class Playout(object):
                     title="Pause screen",
                     filename=LOOP_FILENAME,
                     loop=True)
+            logging.debug("on_idle invoking cue_program({})".format(program))
             self.cue_program(program)
             self.programEndCallbackStack.append(self.play_ident)
         else:
