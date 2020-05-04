@@ -36,7 +36,7 @@ def prettyprint_programs(message):
 
     prevdate = ''
     for program in programs:
-        re3 = r'\[(?P<start>.*?)\]-\[(?P<end>.*?)\].*?(?P<vidnum>\#\d+).*?\[(?P<vidname>.*?)\]'
+        re3 = r'\[(?P<start>.*?)\]-\[(?P<end>.*?)\].*?(?P<vidnum>\#-?\d+).*?\[(?P<vidname>.*?)\]'
         progdata = re.search(re3, program).groupdict()
         progstr = ''
         if prevdate != progdata['start'][0:10]:
