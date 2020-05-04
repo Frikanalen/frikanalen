@@ -74,7 +74,7 @@ class Playout(object):
 
     def resume_current_program(self):
         current_program = self.schedule.get_current_program()
-        logging.debug("in resume_current_program; current_program=", current_program)
+        logging.debug("in resume_current_program; current_program=%s", current_program)
         if current_program:
             logging.debug("resume_current_program invoking cue_program({})".format(current_program))
             self.cue_program(current_program, current_program.seconds_since_scheduled_start())
@@ -92,7 +92,7 @@ class Playout(object):
         """Starts the next program
 
         Set the next program with Playout.set_next_program"""
-        logging.debug("In cue_next_program - self.next_program=", self.next_program)
+        logging.debug("In cue_next_program - self.next_program=%s", self.next_program)
         if self.next_program:
             self.cue_program(self.next_program)
             self.next_program = None
@@ -115,7 +115,7 @@ class Playout(object):
 
     def cue_program(self, program, seekSeconds=0):
         logging.debug("In cue_program, program={}, offset={}".format(program, seekSeconds))
-        logging.debug("schedule.programs = ", self.schedule.programs)
+        logging.debug("schedule.programs = %s", self.schedule.programs)
         # Clear any timeouts set for the previous program
         self._clear_timeouts()
 
