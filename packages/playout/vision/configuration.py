@@ -30,7 +30,7 @@ class Configuration():
         self.cfg =self.load_and_parse(filename)
 
     def __repr__(self):
-        return pprint.pprint(self.cfg)
+        return pprint.pformat(self.cfg)
         
 configuration = Configuration()
 
