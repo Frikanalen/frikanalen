@@ -1,0 +1,32 @@
+#!/usr/bin/python3.7
+
+import json
+import sys
+#import dateutil.parser
+from datetime import datetime
+
+severities = {
+        'DEBUG':    '\x1b[37mDEBUG\x1b[0m',
+         'INFO':    '\x1b[32m INFO\x1b[0m',
+        }
+
+
+def new_date(timestamp):
+    print('-' * 80)
+    print(timestamp.date())
+    print('-' * 80)
+
+last_date = None
+for line in sys.stdin.readlines():
+    linedata = json.loads(line)
+    timestamp = datetime.strptime(linedata[u'asctime'], '%Y-%m-%d %H:%M:%S,%f')
+    if last_date != timestamp.date():
+        new_date(timestamp)
+        last_date = timestamp.date()
+
+    timeofday = timestamp.strftime('%H:%M:%S')
+    severitystring = severities.get(linedata[u'levelname'])
+    print('[{}] [{}]: {}'.format(timeofday, severitystring, linedata[u'message']))
+
+#    if linedata[u'levelname'] not in severities:
+#        print(linedata[u'levelname'])
