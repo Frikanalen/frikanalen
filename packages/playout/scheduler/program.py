@@ -1,6 +1,7 @@
 # TODO: Need a Program that represents a generic program on disk w/o being scheduled
 # TODO: Program that represents the following: jukebox, dead air, pause, program guide, ident
 
+import logging
 from database import Video
 from . import clock
 from vision.configuration import configuration
@@ -49,6 +50,10 @@ class Program(object):
 
     def seconds_until_playback(self):
         dt = (self.program_start - clock.now())
+        logging.debug(
+                "seconds_until_playback called; dt ({}) = self.program_start ({}) - clock.now() ({}); retval = {}"
+                .format(dt, self.program_start, clock.now(), dt.seconds + dt.microseconds / 1e6)
+                )
         return dt.seconds + dt.microseconds / 1e6
 
     def seconds_until_end(self):
