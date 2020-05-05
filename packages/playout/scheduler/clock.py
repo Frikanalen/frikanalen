@@ -9,9 +9,14 @@ test_time = datetime.datetime(year=2011, month=7, day=19, hour=12, minute=10, se
 #test_time = datetime.datetime(year=2011, month=7, day=19, hour=11, minute=59, second=45) # 15 sec before broadcast
 #test_time = datetime.datetime(year=2011, month=7, day=19, hour=11, minute=57, second=0) # Three minutes before broadcast
 import time
+import logging
 
 class RealTime(object):
     def now(self):
+        logging.debug(
+                "RealTime clock.now() = {}; datetime.datetime.now() [{}] + timemachine_delta [{}]"
+                .format(datetime.datetime.now()+timemachine_delta, datetime.datetime.now(), timemachine_delta)
+                )
         return datetime.datetime.now()+timemachine_delta
 
 class ManualTime(object):
