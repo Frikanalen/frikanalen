@@ -73,7 +73,7 @@ class ManageVideoList(TemplateView):
       return redirect('/login/?next=%s' % request.path)
     context = {}
     context["title"] = _('My videos')
-    videos = Video.objects.filter(editor=request.user).order_by('name')
+    videos = Video.objects.filter(creator=request.user).order_by('name')
 
     p = Paginator(videos, 20)
     s = request.GET.get("page")
@@ -110,7 +110,7 @@ class VideoFormForAdmin(ModelForm):
     fields = (
       'name',
       'categories',
-      'editor',
+      'creator',
       'organization',
       'has_tono_records',
       'is_filler',
@@ -138,7 +138,7 @@ class AbstractVideoFormView(TemplateView):
         initial["is_filler"] = False
 
       if request.user.is_superuser:
-        initial["editor"] = request.user.id
+        initial["creator"] = request.user.id
         if not instance:
           form = self.AdminForm(initial=initial)
         else:
@@ -171,7 +171,7 @@ class ManageVideoNew(AbstractVideoFormView):
     if request.user.is_superuser:
       video = Video()
     else:
-      video = Video(editor=request.user)
+      video = Video(creator=request.user)
     # Since this is not an import we set this to True
     video.proper_import = True
 

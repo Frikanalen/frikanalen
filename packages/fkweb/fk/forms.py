@@ -10,7 +10,7 @@ class UserForm(forms.ModelForm):
     pass
     class Meta:
         model = User
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'phone_number']
 
 
 class UserChangeForm(forms.ModelForm):
@@ -22,7 +22,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('password', 'date_of_birth', 'is_active', 'is_superuser')
+        fields = ('password', 'date_of_birth', 'is_active', 'is_superuser', 'phone_number')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -39,7 +39,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'date_of_birth')
+        fields = ('email', 'first_name', 'last_name', 'date_of_birth', 'phone_number')
 
     def clean_password2(self):
         # Check that the two password entries match

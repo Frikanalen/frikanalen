@@ -17,6 +17,8 @@ from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 """
 Models for the Frikanalen database.
@@ -75,6 +77,9 @@ class User(AbstractBaseUser):
     last_name = models.CharField(blank=True, max_length=30, verbose_name='last name')
     is_active = models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')
     is_superuser = models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='admin status')
+    identity_confirmed = models.BooleanField(default=False, help_text='Whether the identity of this user has been confirmed by Frikanalen management.', verbose_name='identity confirmed')
+
+    phone_number = PhoneNumberField(blank=True, help_text='Phone number at which this user can be reached', verbose_name='phone number')
 
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     date_of_birth = models.DateField(blank=True, null=True)
@@ -117,14 +122,18 @@ class Organization(models.Model):
     homepage = models.CharField('Link back to the organisation home page.',
                                 blank=True, null=True, max_length=255)
 
-    # No such concept yet. Every member can add members.
-    # owner = models.ForeignKey(User)
+    postal_address = models.TextField('Postal address for organization.',
+                                blank=True, null=True, max_length=2048)
+
+    # The user legally marked as the editor for this organization
+    editor = models.ForeignKey(User, on_delete=models.SET_NULL, 
+            blank=True, null=True, related_name='editor')
+
     # Videos to feature on their frontpage, incl other members
     # featured_videos = models.ManyToManyField("Video")
     # twitter_email = models.CharField(null=True,max_length=255)
     # twitter_tags = models.CharField(null=True,max_length=255)
     # To be copied into every video they create
-    # homepage = models.CharField(blank=True, max_length=255)
     # categories = models.ManyToManyField(Category)
 
     class Meta:
@@ -235,7 +244,7 @@ class Video(models.Model):
     # Code for editors' internal use
     # production_code = models.CharField(null=True,max_length=255)
     categories = models.ManyToManyField(Category)
-    editor = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
+    creator = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
     has_tono_records = models.BooleanField(default=False)
     is_filler = models.BooleanField('Play automatically?',
                                     help_text = 'You still have the editorial responsibility.  Only affect videos from members.',

@@ -23,7 +23,7 @@ class FillJukeboxIntegrationTests(TestCase):
     def test_fills_in(self):
         Video.objects.create(
             name="video",
-            editor_id=1, organization_id=1,
+            creator_id=1, organization_id=1,
             duration=datetime.timedelta(minutes=60),
             proper_import=True, is_filler=True)
         start_date = parse_to_datetime('2019-06-30 12:00')
@@ -36,7 +36,7 @@ class FillJukeboxIntegrationTests(TestCase):
     def test_fills_in_only_where_it_can(self):
         Video.objects.create(
             name="video",
-            editor_id=1, organization_id=1,
+            creator_id=1, organization_id=1,
             duration=datetime.timedelta(minutes=60),
             proper_import=True, is_filler=True)
         start_date = parse_to_datetime('2019-06-30 12:00')
@@ -75,7 +75,7 @@ class FillJukeboxUnitTests(TestCase):
             kwargs['duration'] =datetime.timedelta(minutes=min)
         return Video(
                 id=vid, name="id:%d, min:%d" % (vid, min),
-                editor_id=1, organization_id=1,
+                creator_id=1, organization_id=1,
                 proper_import=True, is_filler=True,
                 **kwargs)
 
