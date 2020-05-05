@@ -36,7 +36,10 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 
 ## Current development focus
 
-- We are migrating to Kubernetes
+- We are migrating to Kubernetes - most everything done there, but:
+    - Our Django installation needs to move from a QEMU VM to Kubernetes
+    - Schedule generation needs rewriting/moving
+    - Upload receiver and file mover/processer needs moving
 - We are modernizing our playout code
     - Instrumentalization, monitoring/alerting
     - Intelligently filling idle air time [with graphics](packages/utils/on-air-graphics)
