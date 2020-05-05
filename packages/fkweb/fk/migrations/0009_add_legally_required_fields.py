@@ -36,6 +36,11 @@ class Migration(migrations.Migration):
         migrations.RunPython(set_editor_if_only_one_member, nop),
         migrations.AddField(
             model_name='organization',
+            name='visitor_address',
+            field=models.TextField(blank=True, max_length=2048, null=True, verbose_name='Visitor address for organization.'),
+        ),
+        migrations.AddField(
+            model_name='organization',
             name='postal_address',
             field=models.TextField(blank=True, max_length=2048, null=True, verbose_name='Postal address for organization.'),
         ),

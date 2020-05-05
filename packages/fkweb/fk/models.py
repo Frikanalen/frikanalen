@@ -124,6 +124,8 @@ class Organization(models.Model):
 
     postal_address = models.TextField('Postal address for organization.',
                                 blank=True, null=True, max_length=2048)
+    visitor_address = models.TextField('Visitor address for organization.',
+                                blank=True, null=True, max_length=2048)
 
     # The user legally marked as the editor for this organization
     editor = models.ForeignKey(User, on_delete=models.SET_NULL, 
