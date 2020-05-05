@@ -6,6 +6,7 @@ User={{app_user}}
 Group={{app_user}}
 PIDFile=/run/fkupload/gunicorn.pid
 WorkingDirectory={{upload_app_dir}}
+Environment=FK_API={{fk_api_url}}
 Environment=UPLOAD_DIR={{upload_dir}}
 Environment=FINISHED_DIR={{upload_finished_dir}}
 Environment=FK_TOKEN={{fk_auth_token}}
