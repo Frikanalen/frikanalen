@@ -124,7 +124,7 @@ class Organization(models.Model):
 
     postal_address = models.TextField('Postal address for organization.',
                                 blank=True, null=True, max_length=2048)
-    visitor_address = models.TextField('Visitor address for organization.',
+    street_address = models.TextField('Street address for organization.',
                                 blank=True, null=True, max_length=2048)
 
     # The user legally marked as the editor for this organization
