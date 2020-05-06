@@ -4,5 +4,5 @@ mediaAssets:
 graphqlEndpoint: https://forrige.frikanalen.no/graphql
 playerClass: vision.players.casparcg_player:CasparCGPlayer
 casparHost: localhost
-useJukebox: true
+useJukebox: false
 logFormat: json
