@@ -1,0 +1,19 @@
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: riot
+  namespace: matrixorg
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`matrix.frikanalen.no`) 
+    kind: Rule
+    services:
+    - kind: Service
+      name: riot
+      scheme: http
+      port: 8765
+  tls:
+    certResolver: default

@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: atem-control
+spec:
+  type: ClusterIP
+  selector:
+    app: atem-control
+  ports:
+    # Three types of ports for a service
+    # nodePort - a static port assigned on each the node
+    # port - port exposed internally in the cluster
+    # targetPort - the container port to send requests to
+    - protocol: TCP
+      port: 80
+      name: web

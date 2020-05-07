@@ -1,0 +1,18 @@
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: prometheus-service
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`prometheus.frikanalen.no`) 
+    kind: Rule
+    services:
+    - kind: Service
+      name: prometheus-service
+      namespace: default
+      scheme: http
+      port: 9090

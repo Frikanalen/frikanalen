@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shaka-config
+  namespace: streaming
+data:
+  arguments: >-
+    in=udp://0.0.0.0:9000,stream=0,init_segment=livehd-audio.webm,segment_template=livehd-audio-$Number$.webm
+    in=udp://0.0.0.0:9003,stream=0,bw=3000000,init_segment=livehd-video2.webm,template=livehd-video2-$Number$.webm
+    --mpd_output index.mpd --dump_stream_info --min_buffer_time=10
+    --time_shift_buffer_depth=300 --segment_duration=3 --io_block_size 65536
