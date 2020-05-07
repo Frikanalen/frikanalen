@@ -1,0 +1,77 @@
+---
+#kind: IngressRoute
+#apiVersion: traefik.containo.us/v1alpha1
+#metadata:
+#  name: fk-frontend-prod-http
+#  namespace: default
+#spec:
+#  entryPoints: 
+#    - web
+#  routes:
+#  - match: Host(`beta.frikanalen.no`) 
+#    kind: Rule
+#    middlewares:
+#      - name: scheme-redirect
+#    services:
+#      - name: dummy
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: middlewares.traefik.containo.us
+spec:
+  group: traefik.containo.us
+  version: v1alpha1
+  names:
+    kind: Middleware
+    plural: middlewares
+    singular: middleware
+  scope: Namespaced
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: scheme-redirect
+  namespace: default
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+    port: 443
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: fk-frontend-prod-http
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+    - match: Host(`frikanalen.no`) || Host(`www.frikanalen.no`)
+      kind: Rule
+      services:
+      - kind: Service
+        name: fk-frontend-prod
+        scheme: http
+        port: 3000
+      middlewares:
+        - name: scheme-redirect
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: fk-frontend-prod-https
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`frikanalen.no`) || Host(`www.frikanalen.no`) 
+    kind: Rule
+    services:
+    - kind: Service
+      name: fk-frontend-prod
+      scheme: http
+      port: 3000
+  tls:
+    certResolver: default

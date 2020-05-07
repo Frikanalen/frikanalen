@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+spec:
+  entryPoints:
+    - traefik
+  routes:
+  - match: Host(`traefik.admin.frikanalen.no`)
+    kind: Rule
+    services:
+    - name: api@internal
+      kind: TraefikService
+    middlewares: 
+      - name: basic-auth
