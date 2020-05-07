@@ -5,9 +5,9 @@ obe-hd.frikanalen.no
 tx1.frikanalen.no
 tx2.frikanalen.no
 tx3.frikanalen.no
+tx4.frikanalen.no
 
 [upload]
-#simula.gunkies.org # deprecated
 file01.frikanalen.no nginx=true domain=upload.frikanalen.no
 
 [web]
