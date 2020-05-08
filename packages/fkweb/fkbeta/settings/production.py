@@ -46,7 +46,7 @@ DATABASES = {
         'NAME': get_env_setting('DATABASE_NAME'),
         'USER': get_env_setting('DATABASE_USER'),
         'PASSWORD': get_env_setting('DATABASE_PASS'),
-        'HOST': 'localhost',
+        'HOST': get_env_setting('DATABASE_HOST'),
     }
 }
 ########## END DATABASE CONFIGURATION
