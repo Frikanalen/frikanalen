@@ -48,8 +48,8 @@ drawHoursHand = (hours) => {
     const height = 125;
     if (!(hours % 60)) {
     }
-    ctx.rotate((hours * Math.PI)/30 + Math.PI);
-    ctx.fillRect(-width/2, 0, width, height);
+    ctx.rotate((hours * (2 * Math.PI/12))- Math.PI);
+    ctx.fillRect(-width/2.0, 0, width, height);
     ctx.restore();
 }
 var d = new Date()
@@ -80,7 +80,7 @@ drawClock = () => {
     }
     drawSecondHand(seconds);
     drawMinutesHand(minutes);
-    drawHoursHand(hours);
+    drawHoursHand(hours + (minutes / 60.0));
 }
 drawClock();
 setInterval(drawClock, 1000);

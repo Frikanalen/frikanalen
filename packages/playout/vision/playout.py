@@ -32,15 +32,15 @@ class Playout(object):
     # invoked
     def getDelayForNext(self):
         # Queue next
-        program = self.schedule.get_next_program()
+        next_program = self.schedule.get_next_program()
         if program == None:
             self.scheduler_task.stop()
             self.set_next_program(None)
             # This will actually call cue_next_program once more.
             logging.warning("Program schedule empty")
             return 0.0
-        self.set_next_program(program)
-        return program.seconds_until_playback()
+        self.set_next_program(next_program)
+        return next_program.seconds_until_playback()
 
     def __init__(self, player_class=None):
         if player_class is None:
@@ -63,11 +63,10 @@ class Playout(object):
     def load_schedule(self):
         "Set schedule and start playing"
         logging.debug("Attaching schedule")
-        self.schedule = schedulestore.load(clock.now().date(), numDays=2)
+        self.schedule = schedulestore.load(clock.now().date(), numDays=1)
 
-        self.scheduler_task = ScheduledCall(self.cue_next_program)
-        self.scheduler_task.start(self)
-        self.self_pending_refresh = reactor.callLater(60*60*24, self.load_schedule)
+        self.start_schedule()
+        self.self_pending_refresh = reactor.callLater(60*60, self.load_schedule)
 
         if not self.playing_program:
             self.resume_schedule()
@@ -228,7 +227,7 @@ class Playout(object):
                     program_start=clock.now(),
                     playback_duration=time_until_next-IDENT_LENGTH,
                     title="Pause screen",
-                    filename=LOOP_FILENAME,
+                    filename='[HTML]" "https://graphics.frikanalen.no/clock',
                     loop=True)
             logging.debug("on_idle invoking cue_program({})".format(program))
             self.cue_program(program)
