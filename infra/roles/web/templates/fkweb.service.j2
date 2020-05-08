@@ -10,6 +10,10 @@ Environment=SECRET_KEY={{app_secret_key}}
 Environment=DATABASE_USER={{app_user}}
 Environment=DATABASE_PASS={{app_db_pass}}
 Environment=DATABASE_NAME={{app_db_name}}
+# This is a compatibility option. Previous versions of fkweb
+#  hardcode "localhost". That won't be true when we transition
+# to kubernetes, but that doesn't apply to this file.
+Environment=DATABASE_HOST=localhost
 ExecStart={{app_dir}}/env/bin/gunicorn --pid /run/fkweb/gunicorn.pid fkbeta.wsgi:application -b {{app_bind}}
 Restart=always
 PrivateTmp=true
