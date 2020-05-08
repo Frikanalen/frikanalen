@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+{% for item, IP in static_hosts.items() %}
+{% set short_name = item.split('.') %}
+{{ IP }}	{{ item }}	{{ short_name[0] }}
+{% endfor %}
+
+# The following lines are desirable for IPv6 capable hosts
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters

@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: shaka-packager
+  namespace: streaming
+spec:
+  type: ClusterIP
+  selector:
+    app: shaka-packager
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web

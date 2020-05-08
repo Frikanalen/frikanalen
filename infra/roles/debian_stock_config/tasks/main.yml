@@ -1,4 +1,4 @@
----
+- include: roles/debian_stock_config/tasks/hosts.yml
 - include_vars: packages.yml
 - name: "Install common Debian base packages"
   apt:

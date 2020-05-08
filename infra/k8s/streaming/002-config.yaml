@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ffmpeg-config
+  namespace: streaming
+data:
+  ffmpeg_options: -probesize 100M -threads 10 -strict -2
+  source_url: http://192.168.3.1:9094/tx2.ts
+  encoding_options: >-
+    -pix_fmt yuv420p -filter_complex [0:v]split=2[s0][s2]
+    -map 0:1 -codec:a libvorbis -f webm udp://127.0.0.1:9000
+    -deadline realtime -codec:v libvpx-vp9
+    -map [s0] -crf 25 -b:v 500k -maxrate:v:0 700k -row-mt 1 -speed 7 
+      -deadline realtime -cpu-used 6 -f webm udp://127.0.0.1:9001
+    -map [s2] -crf 25 -b:v 2500k -maxrate:v:0 3000k -row-mt 1 -speed 7
+      -deadline realtime -cpu-used 6 -f webm udp://127.0.0.1:9003 

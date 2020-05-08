@@ -1,0 +1,20 @@
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: grafana-service
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`grafana.frikanalen.no`) 
+    kind: Rule
+    services:
+    - kind: Service
+      name: grafana-service
+      namespace: default
+      scheme: http
+      port: 3000
+  tls:
+    certResolver: default

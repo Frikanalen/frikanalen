@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fk-playout
+spec:
+  selector:
+    matchLabels:
+      app: fk-playout
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: fk-playout
+    spec:
+      containers:
+      - name: fk-playout
+        image: toresbe/fk-playout:0.0.1
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+        - name: tz-config
+          mountPath: /etc/localtime
+      volumes:
+      - name: config-volume
+        configMap:
+          name: fk-playout-config
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Europe/Oslo
+          type: File

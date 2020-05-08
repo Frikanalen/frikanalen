@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atem-control
+spec:
+  selector:
+    matchLabels:
+      app: atem-control
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: atem-control
+    spec:
+      containers:
+      - name: atem-control
+        image: toresbe/fk-atem-control-service:0.0.1
+        ports:
+          - name: web
+            containerPort: 80
