@@ -1,4 +1,4 @@
-FROM debian
+FROM python:3-alpine
 
 # Pull missing packages
 RUN apt-get update
@@ -14,6 +14,6 @@ RUN pip install -r requirements-dev.txt
 RUN ./manage.py migrate
 RUN ./manage.py loaddata frikanalen
 
-CMD ["./manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["./manage.py", "runserver", "0.0.0.0:80"]
 
-EXPOSE 8000
+EXPOSE 80
