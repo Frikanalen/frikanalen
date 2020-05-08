@@ -1,0 +1,48 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-auth
+spec:
+  basicAuth:
+    secret: authsecret
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: scheme-redirect
+  namespace: kube-system
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: http-catchall
+#spec:
+#  entryPoints:
+#  - web
+#  routes:
+#  - match: HostRegexp(`{host:.+}`) #Host(`beta.frikanalen.no`)
+#    kind: Rule
+#    services:
+#    - name: traefik-redirect-dummy
+#      port: 80
+#    middlewares:
+#    - name: https-redirect
+#    priority: 50
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: traefik-redirect-dummy
+#  namespace: kube-system
+#spec:
+#  ports:
+#  - name: web
+#    port: 80
+#    protocol: TCP
+#    targetPort: web
+#  type: ClusterIP

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fk-playout-config
+  namespace: default
+data:
+  config.yaml: |
+    mediaAssets:
+      scheme: file
+    graphqlEndpoint: https://forrige.frikanalen.no/graphql
+    playerClass: vision.players.casparcg_player:CasparCGPlayer
+    casparHost: 192.168.3.34
+    useJukebox: true
+    logFormat: json

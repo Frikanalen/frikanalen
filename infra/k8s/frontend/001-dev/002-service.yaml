@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: fk-frontend-staging
+spec:
+  type: ClusterIP
+  selector:
+    app: fk-frontend-staging
+  ports:
+    # Three types of ports for a service
+    # nodePort - a static port assigned on each the node
+    # port - port exposed internally in the cluster
+    # targetPort - the container port to send requests to
+    - protocol: TCP
+      port: 3000
+      name: web

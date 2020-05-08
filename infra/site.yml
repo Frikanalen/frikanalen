@@ -2,6 +2,7 @@
 - name: Apply common Debian config
   hosts: all
   become: true
+  gather_facts: false
   roles:
      - role: debian_stock_config
        when: ansible_facts['os_family'] == 'Debian'

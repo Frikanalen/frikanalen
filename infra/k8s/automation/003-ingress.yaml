@@ -1,0 +1,31 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-atem-prefix
+  namespace: default
+spec:
+  stripPrefix:
+    prefixes:
+      - /playout/atem
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: atem-control
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`beta.frikanalen.no`) || Host(`frikanalen.no`)) && PathPrefix(`/playout/atem/`)
+    kind: Rule
+    middlewares:
+      - name: strip-atem-prefix
+        namespace: default
+    services:
+    - kind: Service
+      name: atem-control
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default

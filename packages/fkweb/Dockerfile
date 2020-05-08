@@ -1,4 +1,6 @@
-FROM debian
+FROM python:3-buster as base
+
+FROM base as builder
 
 # Pull missing packages
 RUN apt-get update
@@ -6,14 +8,18 @@ RUN apt-get install -y python postgresql python-pip libpq-dev python-dev
 
 # Copy over the files we need to start
 RUN mkdir -p /srv/frikanalen
-ADD . /srv/frikanalen/
 
+ADD . /srv/frikanalen
 WORKDIR /srv/frikanalen
 RUN pip install -r requirements-dev.txt
+
+FROM builder
+
+ADD . /srv/frikanalen/
 
 RUN ./manage.py migrate
 RUN ./manage.py loaddata frikanalen
 
-CMD ["./manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["./manage.py", "runserver", "0.0.0.0:80"]
 
-EXPOSE 8000
+EXPOSE 80
