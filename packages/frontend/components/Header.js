@@ -21,7 +21,7 @@ class Header extends Component {
             <header>
               <div id="header-logo">
                 <Link href="/" as="/">
-                    <a><img className="logo" src="/static/frikanalen.png" alt="Frikanalen" /></a>
+                    <a><img className="logo" src="/images/frikanalen.png" alt="Frikanalen" /></a>
                 </Link>
               </div>
 

@@ -10,7 +10,7 @@ const Layout = props => (
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </MetaTags>
       <link href="scripts/video-js.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="static/controls.css" />
+    <link rel="stylesheet" type="text/css" href="style/controls.css" />
     <Header className="foo"/>
     <main>{props.children}</main>
     <Footer />
