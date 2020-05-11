@@ -1,6 +1,18 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
+  name: cors
+  namespace: default
+spec:
+  headers:
+    customResponseHeaders:
+      Access-Control-Allow-Origin: "*"
+      Access-Control-Allow-Headers: "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+      Access-Control-Allow-Methods: "POST"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
   name: strip-media-prefix
   namespace: streaming
 spec:
@@ -20,6 +32,8 @@ spec:
   - match: (Host(`beta.frikanalen.no`) || Host(`frikanalen.no`)) && PathPrefix(`/stream/`)
     kind: Rule
     middlewares:
+      - name: cors
+        namespace: default
       - name: strip-media-prefix
         namespace: streaming
     services:

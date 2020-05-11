@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  selector:
+    matchLabels:
+      app: django
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+      - name: django
+        image: toresbe/fk-django:latest
+        env:
+          - name: DJANGO_SETTINGS_MODULE
+            value: fkbeta.settings.production
+        envFrom:
+        - secretRef:
+            name: postgres-secret-django
+        ports:
+          - name: web
+            containerPort: 8080
+        volumeMounts:
+        - mountPath: /srv/collected_staticfiles
+          name: static-files
+        lifecycle:
+          postStart:
+            exec:
+              command: ["./manage.py", "collectstatic"]
+      - name: nginx
+        image: nginx
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d
+          readOnly: true
+          name: nginx-conf
+        - mountPath: /usr/share/nginx/html
+          name: static-files
+        ports:
+          - name: web
+            containerPort: 80
+      volumes:
+      - name: static-files
+        emptyDir: {}
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+          items:
+            - key: site.conf
+              path: site.conf
+

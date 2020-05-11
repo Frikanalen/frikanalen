@@ -4,5 +4,5 @@ metadata:
   name: frontend-prod-config
   namespace: default
 data:
-  API_BASE_URL: "https://forrige.frikanalen.no/api/"
-  GRAPHQL_URL: "https://forrige.frikanalen.no/graphql"
+  API_BASE_URL: "https://frikanalen.no/api/"
+  GRAPHQL_URL: "https://frikanalen.no/graphql"
