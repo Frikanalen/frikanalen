@@ -1,4 +1,4 @@
-LEGACY_API='https://forrige.frikanalen.no/api/'
+LEGACY_API='https://frikanalen.no/api/'
 
 import logging
 import requests
