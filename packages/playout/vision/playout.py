@@ -33,7 +33,7 @@ class Playout(object):
     def getDelayForNext(self):
         # Queue next
         next_program = self.schedule.get_next_program()
-        if program == None:
+        if next_program == None:
             self.scheduler_task.stop()
             self.set_next_program(None)
             # This will actually call cue_next_program once more.

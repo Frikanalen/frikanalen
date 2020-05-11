@@ -20,6 +20,6 @@ ADD . /srv/frikanalen/
 RUN ./manage.py migrate
 RUN ./manage.py loaddata frikanalen
 
-CMD ["./manage.py", "runserver", "0.0.0.0:80"]
+CMD ["./manage.py", "runserver", "0.0.0.0:8080"]
 
-EXPOSE 80
+EXPOSE 8080

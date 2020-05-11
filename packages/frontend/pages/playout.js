@@ -86,10 +86,6 @@ class Playout extends Component {
         return knapperad
     }
 
-    MezzanineSource = () => {
-
-    }
-
     ATEM = () => {
         var inputs = [
             {index: 2, name: "tx1"},
@@ -130,13 +126,13 @@ class Playout extends Component {
     }
 
             //    <DASHPlayer manifestUri="https://beta.frikanalen.no/stream/multiviewer.webm" />
+                //<this.ATEM/>
     render = () => {
         return (
             <Layout>
             <div className="playoutControl">
                 <div className="header">playout-styring</div>
                 <Realtime />
-                <this.ATEM />
             </div>
             <style jsx global>{`
                 .playoutControl >div {
