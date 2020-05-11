@@ -1,0 +1,25 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: fill-next-weeks-agenda
+spec:
+  schedule: "00 22 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: django
+            image: toresbe/fk-django:latest
+            args:
+              - ./manage.py
+              - fill_next_weeks_agenda
+              - -v
+              - '2'
+            env:
+              - name: DJANGO_SETTINGS_MODULE
+                value: fkbeta.settings.production
+            envFrom:
+            - secretRef:
+                name: postgres-secret-django
+          restartPolicy: OnFailure

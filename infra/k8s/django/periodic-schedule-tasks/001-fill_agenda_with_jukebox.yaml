@@ -1,0 +1,25 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: fill-next-weeks-agenda-with-jukebox
+spec:
+  schedule: "00 23 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: django
+            image: toresbe/fk-django:latest
+            args:
+              - ./manage.py
+              - fill_agenda_with_jukebox
+              - -v
+              - '2'
+            env:
+              - name: DJANGO_SETTINGS_MODULE
+                value: fkbeta.settings.production
+            envFrom:
+            - secretRef:
+                name: postgres-secret-django
+          restartPolicy: OnFailure
