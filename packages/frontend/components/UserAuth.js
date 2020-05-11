@@ -25,7 +25,7 @@ class UserAuth extends Component {
             token: cookies(props).token || null,
             field_email:'',
             field_password:'',
-            showLogin: false
+            showLogin: true
         };
         this.load_profile_data()
     }
@@ -52,7 +52,7 @@ class UserAuth extends Component {
                 </div>
             )
         } else {
-            staff_button = <></>
+            staff_button = <div></div>
         }
         return (
             <div className="user_nav">

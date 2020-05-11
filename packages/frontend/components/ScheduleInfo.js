@@ -5,7 +5,7 @@ export class ScheduleInfo extends Component {
     constructor(props){
         super(props);
         const json = this.fetchJSON().then(json => {
-            const sched = json.data.fkOnRightNows.edges
+            const sched = json.data.allFkOnRightNows.edges
             //console.log(sched[2].node)
             this.setState({
                     previous:  sched[2].node,
@@ -22,7 +22,7 @@ export class ScheduleInfo extends Component {
     fetchJSON = async () => {
         const query = `
         query {
-          fkOnRightNows {
+          allFkOnRightNows {
             edges {
               node {
                 starttime
@@ -45,7 +45,7 @@ export class ScheduleInfo extends Component {
 
     updateSchedule = async () => {
         const json = await this.fetchJSON()
-        const sched = json.data.fkOnRightNows.edges
+        const sched = json.data.allFkOnRightNows.edges
         //console.log(sched[2].node)
         this.setState({
                 previous:  sched[2].node,
