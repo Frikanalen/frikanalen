@@ -1,0 +1,53 @@
+---
+#kind: IngressRoute
+#apiVersion: traefik.containo.us/v1alpha1
+#metadata:
+#  name: django-http
+#  namespace: default
+#spec:
+#  entryPoints: 
+#    - web
+#  routes:
+#  - match: Host(`beta.frikanalen.no`) 
+#    kind: Rule
+#    middlewares:
+#      - name: scheme-redirect
+#    services:
+#      - name: dummy
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-http
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+    - match: Host(`forrige.frikanalen.no`) 
+      kind: Rule
+      services:
+      - kind: Service
+        name: django
+        scheme: http
+        port: 80
+      middlewares:
+        - name: scheme-redirect
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-https
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`forrige.frikanalen.no`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
