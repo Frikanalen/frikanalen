@@ -94,7 +94,7 @@ export default class Realtime extends React.Component {
     };
     init_janus = () => {
         var server = null;
-        server = "https://janus.frikanalen.no/";
+        server = "http://simula.frikanalen.no:3005";
 
         this.opaqueId = "streamingtest-"+Janus.randomString(12);
 
@@ -123,7 +123,7 @@ export default class Realtime extends React.Component {
     render = () => {
         return (
             <div>
-            <video autoPlay="true" ref={this.videoRef} />
+            <video autoPlay={true} ref={this.videoRef} />
             </div>
         );
     }
