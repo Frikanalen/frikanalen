@@ -15,5 +15,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: frikanalen/atem-control-service
           tag_with_ref: true
-          path: frikanalen/packages/utils/atem-control-service/
-          dockerfile: ./packages/utils/atem-control-service/Dockerfile
+          dockerfile: packages/utils/atem-control-service/Dockerfile
