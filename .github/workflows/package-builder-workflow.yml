@@ -1,0 +1,19 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Build and push Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - name: ATEM control service
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ DOCKER_USERNAME }}
+          password: ${{ DOCKER_PASSWORD }}
+          repository: frikanalen/atem-control-service
+          tag_with_ref: true
+          path: ./packages/utils/atem-control-service/
+          dockerfile: ./packages/utils/atem-control-service/Dockerfile
