@@ -8,6 +8,8 @@ jobs:
     name: Build and push Docker images
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
       - name: ATEM control service
         uses: docker/build-push-action@v1.1.0
         with:
@@ -15,4 +17,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: frikanalen/atem-control-service
           tag_with_ref: true
-          dockerfile: packages/utils/atem-control-service/Dockerfile
+          path: frikanalen/packages/utils/atem-control-service
+          dockerfile: frikanalen/packages/utils/atem-control-service/Dockerfile
