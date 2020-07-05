@@ -54,7 +54,7 @@ spec:
   entryPoints: 
     - websecure
   routes:
-  - match: Host(`frikanalen.no`)
+  - match: Host(`www.frikanalen.no`) || Host(`frikanalen.no`)
     kind: Rule
     services:
     - kind: Service
