@@ -243,7 +243,7 @@ class APITest(TestCase):
             [v['video']['duration'] for v in r.data['results']])
         self.assertEqual(
             ['nuug_user@fake.com', 'dummy_user@fake.com'],
-            [v['video']['editor'] for v in r.data['results']])
+            [v['video']['creator'] for v in r.data['results']])
 
 
 class VodTemplateTag(TestCase):

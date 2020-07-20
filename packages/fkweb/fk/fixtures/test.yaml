@@ -46,7 +46,7 @@
 - model: fk.video
   pk: 1
   fields:
-    editor: 1
+    creator: 1
     name: "tech video"
     organization: 1
     duration: "00:00:10.01"  # 10.01s
@@ -57,7 +57,7 @@
 - model: fk.video
   pk: 2
   fields:
-    editor: 2
+    creator: 2
     name: "dummy video"
     organization: 2  # Dummy org
     duration: "0:01:00"  # 1m
@@ -68,7 +68,7 @@
 - model: fk.video
   pk: 3
   fields:
-    editor: 4
+    creator: 4
     name: "unpublished video"
     organization: 2
     duration: "0.0010"
@@ -79,7 +79,7 @@
 - model: fk.video
   pk: 4
   fields:
-    editor: 4
+    creator: 4
     name: "broken video"
     organization: 2
     duration: "1"

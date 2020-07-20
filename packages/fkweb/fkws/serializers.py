@@ -31,7 +31,7 @@ class VideoFileSerializer(serializers.ModelSerializer):
 
 
 class VideoSerializer(serializers.ModelSerializer):
-    editor = serializers.SlugRelatedField(
+    creator = serializers.SlugRelatedField(
         slug_field='email', queryset=get_user_model().objects.all(),
         default=serializers.CurrentUserDefault())
     organization = serializers.SlugRelatedField(
@@ -47,7 +47,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "name",
             "header",
             "description",
-            "editor",
+            "creator",
             "organization",
             "duration",
             #'videofiles',
@@ -70,7 +70,7 @@ class VideoSerializer(serializers.ModelSerializer):
     def validate(self, data):
         is_creation = not self.instance
         if is_creation and not data.get('organization'):
-            potential_orgs = data['editor'].organization_set.all()
+            potential_orgs = data['creator'].organization_set.all()
             if len(potential_orgs) == 0:
                 raise serializers.ValidationError(
                     {'organization': "Field required when "

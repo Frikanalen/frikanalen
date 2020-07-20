@@ -217,7 +217,7 @@ class PermissionsTest(APITestCase):
                  'organization': 'Dummy org'}, # this should actually fail
                 {'id': 5, 'name': 'created test video',
                     'duration': '00:01:02.300000', 'categories': [],
-                    'organization': 'Dummy org', 'editor': 'nuug_user@fake.com'},
+                    'organization': 'Dummy org', 'creator': 'nuug_user@fake.com'},
                 status.HTTP_201_CREATED,
             ),
             (
@@ -399,9 +399,9 @@ class FilterTest(APITestCase):
             ('?ref_url=b', ['dummy video']),
             ('?ref_url__startswith=b', ['dummy video']),
             ('?ref_url__startswith=a', ['unpublished video', 'tech video']),
-            ('?editor__email=nuug', []),
-            ('?editor__email=nuug_user@fake.com', ['tech video']),
-            ('?editor__email=dummy_user@fake.com&name=', ['dummy video']),
+            ('?creator__email=nuug', []),
+            ('?creator__email=nuug_user@fake.com', ['tech video']),
+            ('?creator__email=dummy_user@fake.com&name=', ['dummy video']),
             ('?proper_import=false', ['broken video']),
             ('?proper_import=true', ['unpublished video', 'dummy video', 'tech video']),
         ]

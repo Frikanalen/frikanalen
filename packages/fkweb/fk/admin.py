@@ -29,7 +29,8 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_superuser',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('date_of_birth',)}),
+        ('Personal info', {'fields': ('date_of_birth','phone_number',)}),
+        ('Administrative info', {'fields': ('identity_confirmed',)}),
         ('Permissions', {'fields': ('is_superuser',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -54,9 +55,9 @@ class VideoFileInline(admin.StackedInline):
     extra = 0
 
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'editor', 'organization')
+    list_display = ('name', 'creator', 'organization')
     inlines = [VideoFileInline]
-    search_fields = ["name", "description", "organization__name", "header", "editor__email"]
+    search_fields = ["name", "description", "organization__name", "header", "creator__email"]
     list_filter = ("proper_import", "is_filler", "publish_on_web", "has_tono_records")
 
 class OrganizationAdmin(admin.ModelAdmin):
