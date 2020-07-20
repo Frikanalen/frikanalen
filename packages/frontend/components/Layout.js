@@ -3,16 +3,23 @@ import Header from './Header';
 import UserAuth from './UserAuth';
 import MetaTags from 'react-meta-tags';
 
+import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container'
+
 const Layout = props => (
-  <div className="page">
+    <Container>
     <MetaTags>
         <title>Frikanalen</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </MetaTags>
-      <link href="scripts/video-js.css" rel="stylesheet" />
+    <link href="scripts/video-js.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="style/controls.css" />
+    <Row>
     <Header className="foo"/>
+    </Row>
+    <Row>
     <main>{props.children}</main>
+    </Row>
     <Footer />
     <style jsx>{`
     `}</style>
@@ -62,13 +69,6 @@ const Layout = props => (
         * {
           box-sizing: border-box;
 }
-        body > div:first-child,
-          div#__next,
-          div#__next > div,
-          div#__next > div > div {
-            height: 100%;
-            padding: 0;
-          }
         .page {
             min-height: 100%;
             display: grid; 
@@ -121,7 +121,7 @@ const Layout = props => (
             }
         }
 `}</style>
-  </div>
+    </Container>
 );
 
 const Footer = props => (
