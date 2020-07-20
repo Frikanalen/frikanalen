@@ -221,6 +221,11 @@ class ManageVideoEdit(AbstractVideoFormView):
 
 def fill_next_weeks_agenda():
     slots = WeeklySlot.objects.all()
+
+    if len(slots) == 0:
+        logger.warning("No WeeklySlots defined; exiting")
+        return
+
     for slot in slots:
         if not slot.purpose:
             logger.info("No purpose connected, so nothing to fill")
@@ -246,17 +251,14 @@ def fill_next_weeks_agenda():
         item.save()
 
 
-def fill_agenda_with_jukebox(start=None, days=3):
+def fill_agenda_with_jukebox(start=None, days=1):
     start = start or timezone.now()
-    videos = Video.objects.fillers().order_by('?')
     end = start + datetime.timedelta(days=days)
-    # get sched
-    startdt, enddt = Scheduleitem.objects.expand_to_surrounding(start, end)
-    pre_scheduled = Scheduleitem.objects.filter(starttime__gte=startdt,
-            starttime__lte=enddt).order_by('starttime')
 
-    create_sched = _fill_agenda_with_jukebox(start, end, pre_scheduled, videos)
-    for schedobj in create_sched:
+    candidates = Video.objects.fillers().order_by('?')
+
+    jukebox_choices = _items_for_gap(start, end, candidates)
+    for schedobj in jukebox_choices:
         video = schedobj['video']
         item = Scheduleitem(
             video=video,
@@ -264,42 +266,68 @@ def fill_agenda_with_jukebox(start=None, days=3):
             starttime=schedobj['starttime'],
             duration=video.duration)
         item.save()
-    return create_sched
 
+    return jukebox_choices
 
 def ceil_minute(dt):
-    return dt + datetime.timedelta(0, dt.second and (60 - dt.second), -dt.microsecond)
+    return floor_minute(dt) + datetime.timedelta(minutes=1)
 
 def floor_minute(dt):
-    return dt - datetime.timedelta(0, dt.second, dt.microsecond)
+    """ Returns the datetime with seconds and microseconds cleared """
+    return dt.replace(second=0, microsecond=0)
 
-def _fill_agenda_with_jukebox(start, end, pre_scheduled, videos):
-    left_sched = list(pre_scheduled)
-    full_items = []
-    nextstart = ceil_minute(start)
+def _items_for_gap(start, end, candidates):
+    print("Being asked to fill gap from {} to {}".format(start,end))
+    # The smallest gap this function will try to fill
+    MINIMUM_GAP_SECONDS = 300
+    # The schedule granularity in minutes (eg. 5 means the scheduler
+    # will schedule at 13:05, 13:10, etc.) 
+    SCHEDULE_GRANULARITY = 5
+
+    # Get a list of previously scheduled videos
+    startdt, enddt = Scheduleitem.objects.expand_to_surrounding(start, end)
+    already_scheduled = list(Scheduleitem.objects.filter(starttime__gte=startdt,
+            starttime__lte=enddt).order_by('starttime'))
+
+    start_of_gap = ceil_minute(start)
     end = floor_minute(end)
+
     pool = None
+    full_items = []
     while True:
-        try:
-            sched = left_sched.pop(0)
-            if sched.endtime() < nextstart:
+        end_of_gap = end
+
+        # Get the first video already existing in schedule
+        # that falls within the current time range
+        if len(already_scheduled):
+            extant_video = already_scheduled.pop(0)
+
+            # Keep trying until we find one that ends
+            # inside the range we are working with
+            if extant_video.endtime() < start_of_gap:
                 continue
-            if sched.starttime > end:
-                sched = None
-        except IndexError:
-            sched = None
-        nextend = end
-        if sched and floor_minute(sched.starttime) < end:
-            nextend = floor_minute(sched.starttime)
-        sec = (nextend - nextstart).total_seconds()
-        if sec > 30:
-            (items, pool) = _fill_time_with_jukebox(nextstart, nextend, videos, current_pool=pool)
+
+            # If it doesn't begin until after the
+            # end of our window, the window is 
+            # empty; otherwise this video is now
+            # the end of our gap
+            if extant_video.starttime > end:
+                extant_video = None
+            else:
+                end_of_gap = floor_minute(extant_video.starttime)
+
+        gap = (end_of_gap - start_of_gap).total_seconds()
+
+        if gap > MINIMUM_GAP_SECONDS:
+            (items, pool) = _fill_time_with_jukebox(start_of_gap, end_of_gap, candidates, current_pool=pool)
             full_items.extend(items)
         else:
-            logging.info("Available time too litle, only %d sec" % sec)
-        if nextend >= end:
+            logging.info("Not filling %d second gap" % gap)
+
+        if end_of_gap >= end:
             break
-        nextstart = ceil_minute(sched.endtime())
+
+        start_of_gap = ceil_minute(extant_video.endtime())
     return full_items
 
 def _fill_time_with_jukebox(start, end, videos, current_pool=None):
