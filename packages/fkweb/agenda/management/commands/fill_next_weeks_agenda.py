@@ -4,10 +4,11 @@ from agenda.views import fill_next_weeks_agenda
 
 class Command(BaseCommand):
     args = ''
-    help = 'Automatically create schedule for the next week'
+    help = 'Schedule videos according to predefined WeeklySlot criteria'
 
     def handle(self, *args, **options):
         if 1 < int(options['verbosity']):
             import logging
-            logging.basicConfig(level=logging.INFO)
+            logging.basicConfig(level=logging.DEBUG)
+
         fill_next_weeks_agenda()
