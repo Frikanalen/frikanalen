@@ -159,7 +159,47 @@ class TokenSerializer(serializers.ModelSerializer):
             'user',
         )
 
+class NewUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    # These two need to be explitly included because
+    # they are not required in the database model
+    # but we want new users to have these values set
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    date_of_birth = serializers.DateField()
+
+    def create(self, validated_data):
+        user = get_user_model().objects.create(
+            email = validated_data['email'],
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+            date_of_birth = validated_data['date_of_birth']
+        )
+
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
+
+    class Meta:
+        model = User
+        fields = (
+                'id',
+                'email',
+                'first_name',
+                'last_name',
+                'date_of_birth',
+                'password'
+                )
+
+        write_only_fields = (
+                'password',
+                )
+
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = User
         fields = (
@@ -168,7 +208,8 @@ class UserSerializer(serializers.ModelSerializer):
                 'last_name',
                 'date_joined',
                 'is_staff',
-                'date_of_birth'
+                'date_of_birth',
+                'password'
                 )
 
         read_only_fields = (

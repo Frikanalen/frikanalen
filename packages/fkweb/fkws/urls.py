@@ -15,6 +15,7 @@ router.register(r'api/categories', views.CategoryViewSet)
 urlpatterns = [
     url(r'^api/$', views.api_root, name='api-root'),
     url(r'^api/jukebox_csv$', views.jukebox_csv, name='jukebox-csv'),
+    url(r'^api/user/register$', views.UserCreate.as_view(), name='api-user-create'),
     url(r'^api/user$', views.UserDetail.as_view(), name='api-user-detail'),
     url(r'^api/obtain-token$',
         views.ObtainAuthToken.as_view(), name='api-token-auth'),

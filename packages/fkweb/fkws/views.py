@@ -15,9 +15,11 @@ from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from django.contrib.auth import get_user_model
 
 import fkvod.search
 
@@ -39,6 +41,7 @@ from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
 from fkws.serializers import VideoUploadTokenSerializer
 from fkws.serializers import UserSerializer
+from fkws.serializers import NewUserSerializer
 
 
 @api_view(['GET'])
@@ -373,6 +376,12 @@ class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
+
+class UserCreate(generics.CreateAPIView):
+    throttle_classes = [AnonRateThrottle]
+    permission_classes = [AllowAny]
+
+    serializer_class = NewUserSerializer
 
 class UserDetail(generics.RetrieveUpdateAPIView):
     """
