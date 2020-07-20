@@ -24,8 +24,8 @@
     {% endif %}
     <div class="ontv-editor">
         {% trans "Editor: " %}
-        {{ scheditem.video.editor.first_name }} {{ scheditem.video.editor.last_name }}
-        ({{ scheditem.video.editor.email }})
+        {{ scheditem.video.creator.first_name }} {{ scheditem.video.creator.last_name }}
+        ({{ scheditem.video.creator.email }})
     </div>
 </div>
 {% endif %}

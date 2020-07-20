@@ -119,7 +119,7 @@ function _create_new_video() {
         name: '-',
         duration: '0:00:01',
         categories: [],
-        editor: '{{ request.user }}',
+        creator: '{{ request.user }}',
     };
     return fetch('{% url 'api-video-list' %}', {
         method: 'POST',

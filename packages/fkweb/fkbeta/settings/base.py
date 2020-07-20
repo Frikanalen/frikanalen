@@ -239,6 +239,7 @@ THIRD_PARTY_APPS = (
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
+    'phonenumber_field',
 )
 
 # Apps specific for this project go here.
