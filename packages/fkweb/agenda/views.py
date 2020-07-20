@@ -277,7 +277,7 @@ def floor_minute(dt):
     return dt.replace(second=0, microsecond=0)
 
 def _items_for_gap(start, end, candidates):
-    print("Being asked to fill gap from {} to {}".format(start,end))
+    logger.info("Being asked to fill gap from {} to {}".format(start,end))
     # The smallest gap this function will try to fill
     MINIMUM_GAP_SECONDS = 300
     # The schedule granularity in minutes (eg. 5 means the scheduler
