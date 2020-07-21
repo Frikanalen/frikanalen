@@ -1,62 +1,18 @@
 import Link from 'next/link';
 import Layout from '../components/Layout';
 import * as env from '../components/constants';
+import Container from 'react-bootstrap/Container'
 
 export var about_render = (data) => {
     return (
     <Layout>
-      <div id="main">
-      <div id="leftbar">
-      <nav>
-      <Link href="/om" as="/om"><p><a>om oss</a></p></Link>
-      <Link href="/om/vedtekter" as="/om/vedtekter"><p><a>vedtekter</a></p></Link>
-      <Link href="/om/kontakt" as="/om/kontakt"><p><a>kontakt</a></p></Link>
-      </nav>
-      </div>
-      <div id="mainContent">
+    <Container className="about-text">
         {data}
-      </div>
-      </div>
-            <style jsx>{`
-            #main {
-                color: white;
-            }
+            <style jsx global>{`
 
-            #main p {
-                color: #ddd;
-            }
-            #main {
-                font-family: 'Roboto', sans-serif;
-                max-width: 100%;
-                min-height: 100%;
-                padding-bottom: 40px;
-                width: 1024px;
-                display: grid;
-                grid-template-areas: "leftBar mainContent"
-                                     ". mainContent";
-            }
-
-            #mainContent {
-                grid-area: "mainContent"; 
+            .about-text {
+                color: #eee;
                 background: #333131;
-                width: 800px;
-                margin-left: 0px;
-                align-self:stretch;
-                padding-left: 15px;
-                padding-right: 15px;
-                font-size: 20px;
-            }
-
-            #leftbar {
-            width: 160px;
-                grid-area: "leftBar"; 
-                padding-left: 15px;
-                padding-right: 40px;
-                background: #434141;
-                align-self:start;
-                justify-self:center;
-                font-size: 26px;
-                font-weight: bold;
             }
 
             h2 {
@@ -67,6 +23,7 @@ export var about_render = (data) => {
                 color: #ddd;
             }
             `}</style>
+	</Container>
         </Layout>
     )
 
