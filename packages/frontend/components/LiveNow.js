@@ -3,13 +3,9 @@ import fetch from 'isomorphic-unfetch'
 import LiveVideoPlayer from './LiveVideoPlayer.js'
 import ScheduleInfo from './ScheduleInfo.js'
 import DASHPlayer from '../components/DASHPlayer.js';
-//import VideoPlayer from '../components/VideoJS.js';
-//let ShakaPlayer;
-//if(typeof window !== 'undefined') {
-//    ShakaPlayer = require('shaka-player-react');
-//} else {
-//    ShakaPlayer = () => {return <></>};
-//}
+
+import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container'
 
 class LiveNow extends Component {
     render = () => {
@@ -25,28 +21,27 @@ class LiveNow extends Component {
             }
 
             return (
-            <div id="live_now">
-                <div className="header">direkte nå</div>
+            <Container className="live-now">
+                <Row className="header"><span>direkte nå</span></Row>
+                <Row>
                 <DASHPlayer manifestUri='https://frikanalen.no/stream/index.mpd' />
+                </Row>
+                <Row>
                 <ScheduleInfo />
-                <style jsx>{`
-                    #live_now {
+                <style jsx global>{`
+                    .live-now {
                         color: white;
                         background: #535151;
-                        padding: 0;
+                        margin-bottom: 20px;
                     }
 
-                    #live_now > .header {
+                    div.row.header {
+                        display:block;
                         font-family: 'Roboto', sans-serif;
+                        background: #535151;
                         text-align: center;
-                        font-weight: bold;
+                        font-size: 18pt;
                         color: #eee;
-                        font-size: 20pt;
-                    }
-                    @media screen and (max-width: 1024px) {
-                        #live_now > .header {
-                            font-size:14pt;
-                        }
                     }
 
                 `}</style>
@@ -55,7 +50,8 @@ class LiveNow extends Component {
                         padding:0;
                     }
                 `}</style>
-            </div>
+                </Row>
+            </Container>
             );
         } else {
             return null

@@ -127,11 +127,11 @@ export class ScheduleInfo extends Component {
                 { programme_row (this.state.previous, "previous") }
                 { programme_row (this.state.current, "current") }
                 { programme_row (this.state.next, "next") }
-                <p className="fullScheduleLink"><Link href="/schedule" as="/schedule"><a>vis mer...</a></Link></p>
                 <style jsx>{`
                 .onRightNow {
                     color: white;
                     background: #555;
+                    width: 100%;
                 }
                 .fullScheduleLink {
                     text-align: center;

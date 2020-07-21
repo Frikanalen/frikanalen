@@ -10,7 +10,6 @@ const Layout = props => (
     <Container>
     <MetaTags>
         <title>Frikanalen</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </MetaTags>
     <link href="scripts/video-js.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="style/controls.css" />
@@ -85,7 +84,6 @@ const Layout = props => (
             max-width: 100%;
             width: 1024px;
             margin: 0 auto;
-            padding-top: 20px;
             grid-template-area: content;
         }
         header {
@@ -94,6 +92,7 @@ const Layout = props => (
             width: 100%;
             margin: 0 auto;
             margin-top: 100px;
+            margin-bottom: 20px;
             background: #fff;
         }
         footer {
@@ -126,13 +125,15 @@ const Layout = props => (
 
 const Footer = props => (
     <footer>
+    <Row>
         <p>
         <a href="https://frikanalen.no/api/">REST API</a>&nbsp;|&nbsp;
         <a href="https://frikanalen.no/xmltv/">XMLTV</a>&nbsp;|&nbsp;
         <a href="http://github.com/Frikanalen">Source code</a>
         &nbsp;&copy; 2009-2020 Foreningen Frikanalen
         </p>
-    <style jsx>{`
+    </Row>
+    <style jsx global>{`
         footer {
             font-size: 75%;
             font-style: italic;

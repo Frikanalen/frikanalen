@@ -11,8 +11,8 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 const BetaDisclaimer = () => (
-      <Container>
-      <Row className="beta-disclaimer">
+    <Container className="beta-disclaimer">
+      <Row className="icon-row">
       <Col md="auto">
              <svg id="beta-disclaimer-icon" xmlns="http://www.w3.org/2000/svg" height="100" viewBox="0 0 24 24" preserveAspectRatio="xMaxYMax meet" width="100">
                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -20,7 +20,7 @@ const BetaDisclaimer = () => (
             </svg>
       </Col>
       <Col className="beta-text">
-              <h1>Velkommen til nye frikanalen.no!</h1>
+              <h3>Velkommen til nye frikanalen.no!</h3>
               <p>Etter mye hardt arbeide bak scenene kan vi endelig presentere
               første versjon av nye frikanalen.no.</p>
               <p> Det er i første omgang nødvendig å bruke <a
@@ -31,40 +31,39 @@ const BetaDisclaimer = () => (
       </Col>
       </Row>
       <style jsx global>{`
+        .icon-row {
+            place-items: center;
+        }
         .beta-disclaimer {
             background-color: black;
             opacity: .6;
             color: white;
-            margin-bottom: 20px;
         }
         #beta-disclaimer-icon {
             fill: yellow;
-            margin: 30px auto;
         }
         .beta-text {
+            padding: 10px;
             padding-left: 0px;
-            padding-right: 20px;
-            font-family: 'Roboto', sans-serif;
+        }
+        @media only screen and (max-width: 768px) {
+            .icon-row {
+                display: inline;
             }
-
-        a {
-            color: #aaaaff;
-            text-decoration: underline;
+            #beta-disclaimer-icon {
+                display: block;
+                margin: 0 auto;
+            }
         }
       `}</style>
-      </Container>
+    </Container>
 )
 
 export default function index() {
   return (
     <Layout>
-      <BetaDisclaimer/>
       <LiveNow/>
-      <style jsx global>{`
-      main {
-        padding-top: 20px;
-      }
-      `}</style>
+      <BetaDisclaimer/>
     </Layout>
   );
 }
