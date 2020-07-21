@@ -54,7 +54,14 @@ class LiveNow extends Component {
             </Container>
             );
         } else {
-            return null
+            <Container className="live-now">
+                <Row className="header"><span>direkte nå</span></Row>
+                <Row>
+                </Row>
+                <Row>
+                <ScheduleInfo />
+                </Row>
+            </Container>
         }
     }
     
