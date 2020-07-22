@@ -15,19 +15,20 @@ export default function About() {
 	  <p>Målet med Frikanalen er å styrke ytringsfrihet og
 	  deltakerdemokratiet gjennom å gi flere mulighet til å ytre seg
 	  gjennom TV-mediet.</p>
+	  <hr />
 	  <div className="d-flex justify-content-end">
 		<p>Frikanalens formålsparagraf</p>
 	  </div>
       </Alert> </Col> </Row> 
 	<Row> <Col>
       <h2>Frikanalen er sivilsamfunnets videoplatform.</h2>
-      <p>Vi ønsker i samarbeide med våre medlemsorganisasjoner utvikle en
-      videoplattform tilrettelagt for behovene til norsk demokrati, organisasjonsliv og
-      frivillighet, uten forhåndssensur.</p>
+      <p>Vi ønsker i samarbeid med våre medlemsorganisasjoner utvikle en
+      videoplattform uten forhåndssensur, tilrettelagt for behovene til norsk
+	  demokrati, organisasjonsliv og frivillighet.</p>
       <p>Vi tilbyr alle våre medlemmer adgang til en riksdekkende TV-kanal med
       formidlingsplikt - som vil si at alle kabelleverandører er på samme måte
       som NRK, forpliktet til å bære vår kanal.</p>
-      <p>Etter et omfattende frivillig arbeide vurderer vi vår kanal stabil nok
+      <p>Etter et omfattende frivillig arbeid vurderer vi vår kanal stabil nok
       til å ta kontakt med tilbydere. Vi er allerede båret av RiksTV, og er i
       forhandlinger med Telia og Telenor om å få vår kanal båret av dem.</p>
       <p>Det pågår også et arbeide med å tilrettelegge for brukerstyrte
