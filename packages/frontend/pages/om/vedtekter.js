@@ -1,8 +1,15 @@
-import {about_render} from '../om.js';
+import Layout from '../../components/Layout';
+import WindowWidget from '../../components/WindowWidget';
+import Col from 'react-bootstrap/Col'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
 
 export default function About() {
-    return about_render(
-        <div>
+	return (
+		<Layout>
+		<WindowWidget>
+	<Container>
+	
         <h1>Vedtekter for Foreningen Frikanalen</h1>
         
         <p>(Vedtatt på stiftelsesmøtet 14. juni 2007. Revidert av Årsmøtet 4. februar 2008, 28.april 2011 og 28. mai 2015.) </p>
@@ -151,6 +158,8 @@ export default function About() {
       tilsluttede medlemmer minst to måneder før Årsmøtet. Til oppløsning
       kreves 3⁄4 stemmeflertall. Årsmøtet bestemmer hvordan eventuelle
       disponible midler og eiendeler skal fordeles. </p>
-    </div>
+		</Container>
+		</WindowWidget>
+		</Layout>
   );
 }

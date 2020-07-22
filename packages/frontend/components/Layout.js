@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Header from './Header';
-import UserAuth from './UserAuth';
 import MetaTags from 'react-meta-tags';
 
 import Row from 'react-bootstrap/Row'

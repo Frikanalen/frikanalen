@@ -1,11 +1,17 @@
-import {about_render} from '../om.js';
+import Layout from '../../components/Layout';
+import WindowWidget from '../../components/WindowWidget';
+import Container from 'react-bootstrap/Container'
 
-export default function Blimed() {
-    return about_render(
-        <div>
+export default function KontaktOss() {
+    return (
+		<Layout>
+		<WindowWidget>
+	<Container>
             <h2>Kontakt oss</h2>
             <p>Leder Ola Tellesbø kan nås på <a href="mailto:post@frikanalen.no">post@frikanalen.no</a></p>
             <p>Teknisk leder Tore Sinding Bekkedal kan nås på <a href="mailto:toresbe@gmail.com">toresbe@gmail.com</a></p>
-        </div>
+	    </Container>
+	    </WindowWidget>
+	    </Layout>
     )
 }

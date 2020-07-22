@@ -35,8 +35,7 @@ const BetaDisclaimer = () => (
             place-items: center;
         }
         .beta-disclaimer {
-            background-color: black;
-            opacity: .6;
+            background-color: #353535;
             color: white;
         }
         #beta-disclaimer-icon {

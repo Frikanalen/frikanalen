@@ -54,6 +54,7 @@ class LiveNow extends Component {
             </Container>
             );
         } else {
+	return (
             <Container className="live-now">
                 <Row className="header"><span>direkte nå</span></Row>
                 <Row>
@@ -62,6 +63,7 @@ class LiveNow extends Component {
                 <ScheduleInfo />
                 </Row>
             </Container>
+	);
         }
     }
     
