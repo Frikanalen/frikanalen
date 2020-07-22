@@ -11,7 +11,7 @@ class Header extends Component {
         return (
             <header>
             <Navbar bg="light">
-                <Navbar.Brand href="#home">
+                <Navbar.Brand href="/">
                     <img className="logo" src="/images/frikanalen.png" alt="Frikanalen" />
                 </Navbar.Brand>
             </Navbar>
