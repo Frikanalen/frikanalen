@@ -1,6 +1,6 @@
 #
 # ---- Base Node ----
-FROM node:10-alpine AS base
+FROM node:14-alpine AS base
 # install node
 RUN apk add --no-cache nodejs-current tini
 # set working directory
@@ -33,7 +33,7 @@ RUN npm install
 FROM base AS release
 # copy production node_modules
 COPY --from=dependencies /root/chat/prod_node_modules ./node_modules
-FROM node:10
+FROM node:14
 
 WORKDIR /usr/app
 
