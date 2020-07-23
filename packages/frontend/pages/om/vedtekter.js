@@ -129,7 +129,7 @@ export default function About() {
         
         <h3>§ 5-1. Styrets oppgaver</h3>
         
-        <p>Styret skal: 
+        <p>Styret skal:</p>
         <ul>
         <li>lede Foreningen Frikanalen i perioden mellom Årsmøtene</li>
         <li>iverksette Årsmøtets vedtak</li>
@@ -141,7 +141,7 @@ export default function About() {
         <li>disponere organisasjonens inntekter i tråd med handlingsplan, budsjett og til beste for Foreningen Frikanalen som landsomfattende organisasjon.</li>
         <li>ved styreleder innkalle til styremøter</li>
       </ul>
-        Styret er beslutningsdyktig når leder eller nestleder og to styremedlemmer er tilstede. </p>
+        <p>Styret er beslutningsdyktig når leder eller nestleder og to styremedlemmer er tilstede. </p>
         
         <h3>§ 5-2. Signatur</h3>
         

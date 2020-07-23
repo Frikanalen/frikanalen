@@ -1,5 +1,6 @@
 import Layout from '../components/Layout';
 import LiveNow from '../components/LiveNow';
+import WindowWidget from '../components/WindowWidget'
 
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -11,6 +12,7 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 const BetaDisclaimer = () => (
+    <WindowWidget>
     <Container className="beta-disclaimer">
       <Row className="icon-row">
       <Col md="auto">
@@ -35,14 +37,12 @@ const BetaDisclaimer = () => (
             place-items: center;
         }
         .beta-disclaimer {
-            background-color: #353535;
             color: white;
         }
         #beta-disclaimer-icon {
             fill: yellow;
         }
         .beta-text {
-            padding: 10px;
             padding-left: 0px;
         }
         @media only screen and (max-width: 768px) {
@@ -56,6 +56,7 @@ const BetaDisclaimer = () => (
         }
       `}</style>
     </Container>
+    </WindowWidget>
 )
 
 export default function index() {

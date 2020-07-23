@@ -130,19 +130,8 @@ export class ScheduleInfo extends Component {
                 <style jsx>{`
                 .onRightNow {
                     color: white;
-                    background: #555;
+                    background: rgba(0, 0, 0, 0.1);
                     width: 100%;
-                }
-                .fullScheduleLink {
-                    text-align: center;
-                    font-family: 'Roboto', sans-serif;
-                    background-color: #666;
-                    margin: 0;
-                    padding: 5px;
-                }
-                .fullScheduleLink a {
-                    background-color: #555;
-                    padding: 5px 10px;
                 }
                 `}</style>
                 </span>

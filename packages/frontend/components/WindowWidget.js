@@ -4,15 +4,21 @@ import MetaTags from 'react-meta-tags'
 
 import styles from './WindowWidget.module.sass'
 
+import Col from 'react-bootstrap/Row'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 
-const WindowWidget = props => (
-	<Container className={styles.WindowWidget}>
-	<Row>
+const WindowWidget = props => {
+    var containerStyle;
+    if (props.nomargin) {
+        containerStyle = styles.BareWindowWidget
+    } else {
+        containerStyle = styles.WindowWidget
+    }
+    return (
+	<Container className={containerStyle}>
 	{props.children}
-	</Row>
 	</Container>
-)
+)}
 
 export default WindowWidget

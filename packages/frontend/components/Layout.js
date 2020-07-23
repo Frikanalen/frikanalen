@@ -10,13 +10,11 @@ const Layout = props => (
     <MetaTags>
         <title>Frikanalen</title>
     </MetaTags>
-    <link href="scripts/video-js.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="style/controls.css" />
     <Row>
     <Header className="foo"/>
     </Row>
     <Row>
-    <main>{props.children}</main>
+    {props.children}
     </Row>
     <Footer />
     <style jsx>{`
@@ -64,39 +62,8 @@ const Layout = props => (
           src: local('Roboto Black'), local('Roboto-Black'), url(/fonts/Roboto900.ttf) format('truetype');
         }
 
-        * {
-          box-sizing: border-box;
-}
-        .page {
-            min-height: 100%;
-            display: grid; 
-            grid-template-layout: "header header header"
-                                    ". content ."
-                                    "footer footer footer";
-            grid-template-rows: auto 1fr auto;
-            grid-template-columns: 100%;
-        }
         video {
-        width: 100%;
-        }
-        main {
-            max-width: 100%;
-            width: 1024px;
-            margin: 0 auto;
-            grid-template-area: content;
-        }
-        header {
-            grid-template-area: header;
-            max-width: 1024px;
             width: 100%;
-            margin: 0 auto;
-            margin-top: 100px;
-            margin-bottom: 20px;
-            background: #fff;
-        }
-        footer {
-            margin-top: 30px;
-            grid-template-area: footer;
         }
         html, body {
             background: #b6b6b6;
@@ -110,41 +77,33 @@ const Layout = props => (
             color:inherit;
         }
 
+        header {
+            width: 100%;
+            margin-bottom: 20px;
+            background: #fff;
+        }
         @media screen and (max-width: 1024px) {
-            header {
-                margin-top: 0px;
-            }
-            main {
-                padding-top: 5px;
-            }
         }
 `}</style>
     </Container>
 );
 
 const Footer = props => (
-    <footer>
-    <Row>
-        <p>
+    <footer className="fixed-bottom">
         <a href="https://frikanalen.no/api/">REST API</a>&nbsp;|&nbsp;
         <a href="https://frikanalen.no/xmltv/">XMLTV</a>&nbsp;|&nbsp;
         <a href="http://github.com/Frikanalen">Source code</a>
         &nbsp;&copy; 2009-2020 Foreningen Frikanalen
-        </p>
-    </Row>
-    <style jsx global>{`
+    <style jsx global >{`
         footer {
-            font-size: 75%;
+            display: block;
+            width: 100%;
+
+            background-color: rgba(255, 255, 255, 0.8);
+            color: rgba(0, 0, 0, 0.5);
+
             font-style: italic;
             text-align: center;
-        }
-
-        footer p {
-            width: 100%;
-            margin: 0;
-            padding-top: 0.5em;
-            padding-bottom: 0.5em;
-            background-color: rgba(255, 255, 255, 0.8);
         }
         `}</style>
     </footer>
