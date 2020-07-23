@@ -32,7 +32,6 @@
     "shaka-player": "^3.0.1",
     "shaka-player-react": "^1.0.1",
     "video.js": "^7.7.5",
-    "webpack-dev-server": "https://github.com/webpack/webpack-dev-server.git#v4",
     "webrtc-adapter": "^7.6.0"
   }
 }
