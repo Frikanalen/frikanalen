@@ -1,9 +1,11 @@
 Frikanalen web frontend
 =
 
+![Build frontend package](https://github.com/Frikanalen/frikanalen/workflows/Build%20frontend%20package/badge.svg)
+
 This is the new frontend, under active development.
 
-It can be reached at beta.frikanalen.no.
+It can be reached at frikanalen.no.
 
 To deploy:
 --
