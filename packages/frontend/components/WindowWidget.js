@@ -16,7 +16,7 @@ const WindowWidget = props => {
         containerStyle = styles.WindowWidget
     }
     return (
-	<Container className={containerStyle}>
+	<Container fluid="lg" className={containerStyle}>
 	{props.children}
 	</Container>
 )}

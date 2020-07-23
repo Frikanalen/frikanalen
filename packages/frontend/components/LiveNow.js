@@ -23,7 +23,7 @@ class LiveNow extends Component {
 
         return (
             <WindowWidget nomargin>
-            <Container>
+            <Container fluid>
             <Row>
             <DASHPlayer manifestUri='https://frikanalen.no/stream/index.mpd' />
             </Row>

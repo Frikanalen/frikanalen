@@ -11,7 +11,7 @@ export default function About() {
   return (
   <Layout>
   <WindowWidget>
-      <Container> <Row> <Col> <Alert variant="info" className="lead">
+      <Alert variant="info" className="lead">
 	  <p>Målet med Frikanalen er å styrke ytringsfrihet og
 	  deltakerdemokratiet gjennom å gi flere mulighet til å ytre seg
 	  gjennom TV-mediet.</p>
@@ -19,9 +19,7 @@ export default function About() {
 	  <div className="d-flex justify-content-end">
 		<p>Frikanalens formålsparagraf</p>
 	  </div>
-      </Alert> </Col> </Row> 
-	<Row> <Col>
-      <h2>Frikanalen er sivilsamfunnets videoplatform.</h2>
+      </Alert>       <h2>Frikanalen er sivilsamfunnets videoplatform.</h2>
       <p>Vi ønsker i samarbeid med våre medlemsorganisasjoner utvikle en
       videoplattform uten forhåndssensur, tilrettelagt for behovene til norsk
 	  demokrati, organisasjonsliv og frivillighet.</p>
@@ -35,9 +33,6 @@ export default function About() {
       direktesendinger rett ut til vår TV-kanal. I tillegg til dette er vi i
       full gang med å utvikle en god løsning for spredning av video på
       nett. Så følg med!</p>
-	  </Col>
-	  </Row>
-	  </Container>
   </WindowWidget>
   </Layout>
   );

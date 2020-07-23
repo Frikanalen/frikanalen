@@ -3,7 +3,6 @@ import * as env from '../components/constants';
 import Link from 'next/link';
 import React, { Component } from 'react';
 import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
 import WindowWidget from '../components/WindowWidget'
 
 import fetch from 'isomorphic-unfetch';
@@ -13,7 +12,6 @@ import 'moment/locale/nb';
 class Schedule extends Component {
     ScheduleItem(item) {
         return (
-            <Col>
         <div className="schedule_item" key={item.scheduleitemId}>
           <div className="material-icons" style={{display:'none'}}>expand_more</div>
           <span className="start_time"><Moment format="HH:mm">{item.starttime}</Moment></span>
@@ -26,6 +24,7 @@ class Schedule extends Component {
           </div>
             <style jsx>{`
             .schedule_item {
+                break-inside: avoid-column;
                 margin: 0px 0px 5px 0px;
                 color: white;
             }
@@ -51,7 +50,6 @@ class Schedule extends Component {
             }
             `}</style>
         </div>
-            </Col>
     );
     }
 
@@ -110,13 +108,17 @@ class Schedule extends Component {
                 .programmes {
                     column-count: 2;
                 }
+                @media only screen and (max-width: 768px) {
+                    .programmes {
+                        column-count: 1;
+                    }
+                }
+             }
 
                 .schedule_date {
                     text-align: center;
                     padding: 10px;
-                }
-
-                `}</style>
+                }`}</style>
             </WindowWidget>
         </Layout>
         );

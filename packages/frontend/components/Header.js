@@ -16,7 +16,7 @@ class Header extends Component {
                 </Navbar.Brand>
             </Navbar>
             <Navbar bg="dark" variant="dark">
-                <Nav>
+                <Nav className="mr-auto">
                     <Nav.Link href="/">Direkte</Nav.Link>
                     <Nav.Link href="/schedule">Sendeplan</Nav.Link>
 		    <NavDropdown title="Om">
@@ -25,6 +25,9 @@ class Header extends Component {
                     <NavDropdown.Item href="/om/styret">Styret</NavDropdown.Item>
                     <NavDropdown.Item href="/om/kontakt">Kontakt oss</NavDropdown.Item>
 		    </NavDropdown>
+                </Nav>
+                <Nav className="ml-auto">
+                    <Nav.Link href="/login">Logg inn/registrer</Nav.Link>
                 </Nav>
             </Navbar>
             </header>
