@@ -18,6 +18,7 @@ class Header extends Component {
             <Navbar bg="dark" variant="dark">
                 <Nav>
                     <Nav.Link href="/">Direkte</Nav.Link>
+                    <Nav.Link href="/schedule">Sendeplan</Nav.Link>
 		    <NavDropdown title="Om">
                     <NavDropdown.Item href="/om">Om oss</NavDropdown.Item>
                     <NavDropdown.Item href="/om/vedtekter">Vedtekter</NavDropdown.Item>
