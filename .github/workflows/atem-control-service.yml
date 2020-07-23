@@ -1,8 +1,10 @@
-name: Build
+name: Build ATEM control service
 on:
   push:
     branches:
       - master
+    paths:
+      - 'packages/utils/atem-control-service'
 jobs:
   build:
     name: Build and push Docker images
