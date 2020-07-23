@@ -21,7 +21,7 @@ export default function LoginForm() {
         e.preventDefault();
         var login = await UserAuth.login(email, password)
         if (login === true) {
-            await UserAuth.profile_data()
+            await UserAuth.refreshLocalStorage()
             Router.push('/')
         } else {
             setErrorMessage(<Alert variant="danger">{login}</Alert>)
