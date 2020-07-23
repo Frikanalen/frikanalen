@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: django
-        image: toresbe/fk-django:latest
+        image: frikanalen/django-backend:latest
         env:
           - name: DJANGO_SETTINGS_MODULE
             value: fkbeta.settings.production
@@ -30,7 +30,7 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["./manage.py", "collectstatic", "--noinput"]
+              command: ["/bin/sh", "-c", "./manage.py collectstatic --noinput; ./manage.py migrate"]
       - name: nginx
         image: nginx
         volumeMounts:
