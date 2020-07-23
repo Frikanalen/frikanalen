@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 
 const Layout = props => (
-    <Container>
+    <Container fluid>
     <MetaTags>
         <title>Frikanalen</title>
     </MetaTags>
@@ -62,9 +62,6 @@ const Layout = props => (
           src: local('Roboto Black'), local('Roboto-Black'), url(/fonts/Roboto900.ttf) format('truetype');
         }
 
-        video {
-            width: 100%;
-        }
         html, body {
             background: #b6b6b6;
             width: 100%;
@@ -82,8 +79,7 @@ const Layout = props => (
             margin-bottom: 20px;
             background: #fff;
         }
-        @media screen and (max-width: 1024px) {
-        }
+
 `}</style>
     </Container>
 );
