@@ -34,7 +34,8 @@ class UserAuth extends Component {
     constructor (props) {
         super(props)
         this.state = {
-            loggedIn: false
+            loggedIn: false,
+            email: ''
         }
         this.logout = this.logout.bind(this)
     }
