@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: fk-frontend-prod
-        image: toresbe/fk-frontend:0.0.1
+        image: frikanalen/frontend:latest
         imagePullPolicy: Always
         ports:
           - name: web
