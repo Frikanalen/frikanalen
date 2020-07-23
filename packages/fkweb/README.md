@@ -1,7 +1,9 @@
 fkweb
 =====
 
-website and API for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
+![Build fkweb](https://github.com/Frikanalen/frikanalen/workflows/Build%20Django%20backend%20service/badge.svg)
+
+Backend API for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
 
 Creating a local development environment
 ----------------------------------------
