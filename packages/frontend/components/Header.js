@@ -1,3 +1,4 @@
+import Card from 'react-bootstrap/Card'
 import Link from 'next/link';
 import React, { Component } from 'react';
 import Row from 'react-bootstrap/Row'
@@ -5,6 +6,7 @@ import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Container from 'react-bootstrap/Container'
+import UserAuth from './UserAuth'
 
 class Header extends Component {
     render () {
@@ -27,7 +29,7 @@ class Header extends Component {
 		    </NavDropdown>
                 </Nav>
                 <Nav className="ml-auto">
-                    <Nav.Link href="/login">Logg inn/registrer</Nav.Link>
+                    <UserAuth />
                 </Nav>
             </Navbar>
             </header>

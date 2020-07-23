@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import fetch from 'isomorphic-unfetch'
 import LiveVideoPlayer from './LiveVideoPlayer.js'
 import ScheduleInfo from './ScheduleInfo.js'
-import DASHPlayer from '../components/DASHPlayer.js';
+import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
+import dynamic from 'next/dynamic';
+
+const ShakaPlayer = dynamic(
+  () => import('shaka-player-react'), 
+  { ssr: false }
+);
 
 import WindowWidget from './WindowWidget.js'
 
@@ -25,7 +31,7 @@ class LiveNow extends Component {
             <WindowWidget nomargin>
             <Container fluid>
             <Row>
-            <DASHPlayer manifestUri='https://frikanalen.no/stream/index.mpd' />
+            <ShakaPlayer src='https://frikanalen.no/stream/index.mpd' />
             </Row>
             <Row>
             <ScheduleInfo />

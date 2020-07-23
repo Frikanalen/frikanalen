@@ -1,309 +1,99 @@
-import Link from 'next/link';
-import { instanceOf } from 'prop-types';
-import * as env from './constants';
+import Nav from 'react-bootstrap/Nav'
 import React, { Component } from 'react';
-import cookies from 'next-cookies';
-import fetch from 'isomorphic-unfetch';
-
-class PlayoutAdmin extends Component {
-}
-class NotLoggedInException extends Error {
-    constructor(message) {
-        super(message);
-        this.name = this.constructor.name;
-    }
-}
+import axios from 'axios'
+import * as env from './constants';
+import Cookies from 'js-cookie'
+import NavDropdown from 'react-bootstrap/NavDropdown'
 
 class UserAuth extends Component {
-    constructor(props) {
-        super(props);
-        this.handle_login_form = this.handle_login_form.bind(this);
-        this.handle_logout = this.handle_logout.bind(this);
-        this.handle_logout = this.handle_logout.bind(this);
-        this.get_token = this.get_token.bind(this);
-        this.state = {
-            token: cookies(props).token || null,
-            field_email:'',
-            field_password:'',
-            showLogin: true
-        };
-        this.load_profile_data()
+    logout() {
+        console.log('hi')
+        Cookies.remove('token')
+        localStorage.removeItem('user-id')
+        this.setState({loggedIn: false})
     }
 
-    showLogin() {
-        this.setState ({
-            showLogin: true,
-        })
-    }
-
-    logged_in_nav = () => {
-        var staff_button;
-        if (this.state.is_staff) {
-            staff_button = (
+    render () {
+        if (!this.state.loggedIn) {
+            return (<Nav.Link href="/login">Logg inn/registrer</Nav.Link>)
+        } else {
+            return (
                 <div>
-                <Link href="/playout" as="/playout">
-                <a>playout</a>
-                </Link>
-                <style jsx>{`
-                    a {
-                        color: #460d0d; //#be0e0e;
+                <NavDropdown className="userdropdown" title={this.state.email}>
+                    <NavDropdown.Item onClick={this.logout}>Logg ut</NavDropdown.Item>
+                </NavDropdown>
+                <style jsx global>{`
+                    .userdropdown > a { 
+                        color: #eee !important;
                     }
                 `}</style>
                 </div>
             )
-        } else {
-            staff_button = <div></div>
         }
-        return (
-            <div className="user_nav">
-            <div className="user_id_box">
-            <div className="material-icons">account_box</div>
-            <div className="username">{this.state.email}</div>
-            </div>
-            { staff_button }
-            <div onClick={this.handle_logout}>logg ut</div>
-            <style jsx>{`
-            .user_nav {
-                font-family: 'Roboto', sans-serif;
-                font-weight: 700;
-                display: flex;
-                flex-wrap: no-wrap;
-                align-items: center;
-                align-content: stretch;
-                height:32px;
-                padding-left: 0px;
-            }
-            .user_nav>div {
-                margin-right: 10px
-            }
-            div {
-                padding: 2px 10px;
-                color: black;
-            }
-            .user_id_box {
-                display: flex;
-                align-items: center;
-                background-color: white;
-                opacity: 0.7;
-                color: black;
-                padding: 0;
-                margin: 0 20px 0 0;
-            }
-            .username {
-                font-size: 16px;
-                padding: 2px;
-            }
-            .material-icons {
-                vertical-align: middle;
-                line-height: inherit;
-                padding: 0;
-                padding-left: 1px;
-            }
-            @media screen and (max-width: 630px) {
-                .user_id_box {
-                    padding: 0px 1px;
-                }
-                .user_nav {
-                    font-size: 11pt;
-                }
-            }
-            `}</style>
-            </div>
-        );
-    };
-
-    loginOrRegisterPrompt = () => {
-        return (
-            <div className="login_prompt">
-            <form id="login" onSubmit={this.handle_login_form} />
-            <input form="login" id="email" type="text" autoComplete="username"
-            placeholder="epost" maxLength="30" 
-            onChange = {(event) => {this.setState({field_email:event.target.value})}}/>
-            <input form="login" id="password" type="password" autoComplete="current-password"
-            placeholder="passord" maxLength="4096" 
-            onChange = {(event) => {this.setState({field_password:event.target.value})}}/>
-            <div id="breaker"></div>
-            <input id="login_button" form="login" type="submit" value="logg inn" />
-            <div className="eller">…eller</div>
-            <Link href="/register/"><button>registrer ny bruker</button>
-            </Link>
-            <style jsx>{`
-            .login_prompt {        
-                    min-height: 32px;
-                    display: flex;
-                    flex-wrap: wrap;
-                    align-items: baseline;
-                    align-content: center;
-                }
-                @media screen and (max-width: 630px) {
-                    .login_prompt {        
-                        flex-basis: 100%;
-                        justify-content: flex-start;
-                    }
-                    input, button {
-                    }
-                    #breaker {
-                      flex-basis: 100%;
-                      height: 0;
-                    }
-                    .login_prompt>input, .login_prompt>button, {
-                        flex-grow: 1;
-                    }
-                }
-
-                form {
-                    display: none;
-                }
-                .eller {
-                    margin: 0 3px 0 8px;
-                    flex-grow: 0;
-                }
-
-                input, button {
-                    font-family: 'Roboto', sans-serif;
-                    font-weight: bold;
-                    font-size: 12pt;
-                }
-                @media screen and (max-width: 1024px) {
-                    input, button {
-                        font-size: 8pt;
-                    }
-                }
-
-
-                input[type=submit], button{
-                    margin: 1px;
-                    color: black;
-                    background: white;
-                    border: none;
-                }
-
-                input[type=text], input[type=password] {
-                    border: 1px solid black;
-                    width: 160px;
-                    padding: 1px 4px;
-                }
-
-                a, a:link{
-                    display: inline-block;
-                    text-decoration: none;
-                    margin: 1px;
-                    color: black;
-                    background: white;
-                    border: none;
-                }
-            `}</style>
-            </div>
-        )
-    };
-
-    render = props => {
-        let user_bar = null;
-        if(this.state.token !== null) {
-            user_bar = this.logged_in_nav();
-        } else {
-            if(this.state.showLogin) 
-                user_bar = this.loginOrRegisterPrompt();
-            else
-                return null;
+    }
+    constructor (props) {
+        super(props)
+        this.state = {
+            loggedIn: false
         }
-        return (
-            <div className="userBar">
-            {user_bar}
-            <style jsx>{`
-            .userBar {
-                min-height: 32px;
-                padding: 0 0 0 50px;
-                color: #ddd;
-                background-color: #468b4a;
-                font-family: 'Roboto', sans-serif;
-                font-weight: bold;
-            }
-            @media screen and (max-width: 1024px) {
-                .userBar {
-                    padding: 0 0 0 5px;
+        this.logout = this.logout.bind(this)
+    }
+    static async login(email, password) {
+        var apiBaseUrl = "https://frikanalen.no/api/";
+
+        try {
+            var response = await axios.get(apiBaseUrl+'obtain-token', {
+                auth: {
+                    username:email,
+                    password:password
                 }
+            })
+            if (typeof document !== 'undefined') {
+                Cookies.set('token', response.data.key)
+                localStorage.setItem('user-id', response.data.user)
             }
-            `}</style>
-            </div>
-        );
-    };
-
-    handle_logout = () => {
-        //fixme: This is not right
-        if (typeof document !== 'undefined') {
-            document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+            return true
+        } catch (error) {
+            if (error.response) {
+                if(error.response.status == 401) 
+                    return 'Feil brukernavn/passord'
+                else
+                    return 'Serverfeil!'
+            } else {
+                return 'Nettverksfeil!'
+            }
         }
-
-        this.setState({
-            token: null,
-            user_id: null
-        });
     }
 
-    handle_login_form = (e, data) => {
-        e.preventDefault();
-        this.get_token(this.state.field_email, this.state.field_password);
-    };
+    static async refreshLocalStorage() {
+        var apiBaseUrl = "https://frikanalen.no/api/";
 
-
-    load_profile_data = () => {
-        fetch(env.API_BASE_URL + 'user',  {
-            method: 'GET',
+        console.log('lol')
+        var response = await axios.get(apiBaseUrl+'user', {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + this.state.token,
+                'Authorization': 'Token ' + Cookies.get('token')
             }
         })
-            .then(res => {
-                if (res.status == 401) {
-                    throw new NotLoggedInException;
-                } else {
-                    return res.json();
-                }
-            })
-            .then(json => {
-                this.setState({
-                    email: json.email,
-                    first_name: json.first_name,
-                    last_name: json.last_name,
-                    is_staff: json.is_staff,
-                })
-            })
-            .catch(e => {
-                if (e instanceof NotLoggedInException) {
-                    this.handle_logout();
-                } else {
-                    throw(e);
-                }
-            })
+        console.log(response.data)
+        localStorage.setItem("user-email", response.data.email)
+        localStorage.setItem("user-first_name", response.data.first_name)
+        localStorage.setItem("user-last_name", response.data.last_name)
+        localStorage.setItem("user-is_staff", response.data.is_staff)
     }
 
-    get_token = (email, password) => {
-        fetch(env.API_BASE_URL + 'obtain-token', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa(email + ":" + password),
-            },
-        }).then(res => {
-                if (res.status == 401) {
-                    throw new NotLoggedInException();
-                } else {
-                    return res.json();
-                }
-        }).then(json => {
-            if (typeof document !== 'undefined') {
-                document.cookie = `token=${json.key}; path=/`;
-            }
-            this.setState({
-                token: json.key,
-            });
-            this.load_profile_data();
-            this.setState({
-                token: json.key,
-            });
-        }).catch(e => console.log("Error in get_token", e));
+    componentDidMount() {
+        this.setState({
+            email: localStorage.getItem("user-email"),
+            loggedIn: localStorage.getItem("user-id"),
+        })
+    }
+
+
+    static async profile_data() {
+        if (localStorage.getItem('user-id') === null) {
+            await this.refreshLocalStorage()
+        }
     }
 }
 
