@@ -5,7 +5,7 @@ import fetch from 'isomorphic-unfetch';
 import React, { Component } from 'react';
 import Realtime from '../components/WebRTC.js';
 //import VideoPlayer from '../components/VideoJS.js';
-import DASHPlayer from '../components/DASHPlayer.js';
+//import DASHPlayer from '../components/DASHPlayer.js';
 
 class Playout extends Component {
     constructor (props) {
