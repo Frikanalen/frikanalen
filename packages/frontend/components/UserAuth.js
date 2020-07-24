@@ -8,6 +8,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 class UserAuth extends Component {
     logout() {
         Cookies.remove('token')
+        localStorage.removeItem("user-id")
         localStorage.removeItem("user-email")
         localStorage.removeItem("user-first_name")
         localStorage.removeItem("user-last_name")
@@ -55,6 +56,7 @@ class UserAuth extends Component {
             if (typeof document !== 'undefined') {
                 Cookies.set('token', response.data.key)
             }
+            localStorage.setItem("user-id", response.data.user)
             return true
         } catch (error) {
             if (error.response) {
@@ -80,6 +82,7 @@ class UserAuth extends Component {
                 }
             })
 
+            localStorage.setItem("user-id", response.data.id)
             localStorage.setItem("user-email", response.data.email)
             localStorage.setItem("user-first_name", response.data.first_name)
             localStorage.setItem("user-last_name", response.data.last_name)
@@ -112,7 +115,7 @@ class UserAuth extends Component {
 
 
     static async profile_data() {
-        if (localStorage.getItem('user-id') === null) {
+        if (localStorage.getItem('user-id') == null) {
             await refreshLocalStorage()
         }
     }
