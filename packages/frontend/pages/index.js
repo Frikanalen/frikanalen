@@ -68,9 +68,7 @@ const BetaDisclaimer = () => (
 export default function index() {
   return (
     <Layout>
-      <div>
       <LiveNow/>
-      </div>
       <BetaDisclaimer/>
     </Layout>
   );
