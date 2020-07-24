@@ -44,7 +44,6 @@ const BetaDisclaimer = () => (
             fill: yellow;
         }
         .beta-text {
-            padding-left: 0px;
         }
         @media only screen and (max-width: 768px) {
             .icon-row {

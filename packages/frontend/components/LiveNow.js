@@ -6,7 +6,7 @@ import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
 import dynamic from 'next/dynamic';
 
 const ShakaPlayer = dynamic(
-  () => import('shaka-player-react'), 
+  () => import('./ShakaPlayer.js'), 
   { ssr: false }
 );
 
@@ -18,26 +18,10 @@ import Container from 'react-bootstrap/Container'
 
 class LiveNow extends Component {
     render = () => {
-        const videoJsOptions = {
-            autoplay: true,
-            controls: true,
-            fluid: true,
-            sources: [{
-                src: '//frikanalen.no/stream/frikanalen/frikanalen.mpd',
-                type: 'application/dash+xml',
-            }]
-        }
-
         return (
             <WindowWidget nomargin>
-            <Container fluid>
-            <Row> <Col>
-            <ShakaPlayer src='https://frikanalen.no/stream/index.mpd' />
-	    </Col> </Row>
-            <Row><Col>
+            <ShakaPlayer src='https://frikanalen.no/stream/index.m3u8' />
             <ScheduleInfo />
-            </Col></Row>
-            </Container>
             </WindowWidget>
         );
     }
