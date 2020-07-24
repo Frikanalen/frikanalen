@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Header from './Header';
 import MetaTags from 'react-meta-tags';
 
+import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 
@@ -20,10 +21,12 @@ const Layout = props => (
         <title>Frikanalen</title>
     </MetaTags>
     <Row>
-    <Header className="foo"/>
+    <Header/>
     </Row>
     <Row>
+    <Col>
     {props.children}
+    </Col>
     </Row>
     <Footer />
     </Container>

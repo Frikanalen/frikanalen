@@ -25,7 +25,7 @@ class Schedule extends Component {
             <style jsx>{`
             .schedule_item {
                 break-inside: avoid-column;
-                margin: 0px 0px 5px 0px;
+                padding: 0px 0px 0px 0px;
                 color: white;
             }
 
@@ -115,10 +115,10 @@ class Schedule extends Component {
                 }
              }
 
-                .schedule_date {
-                    text-align: center;
-                    padding: 10px;
-                }`}</style>
+             .schedule_date {
+                 text-align: center;
+                 padding: 10px;
+             }`}</style>
             </WindowWidget>
         </Layout>
         );

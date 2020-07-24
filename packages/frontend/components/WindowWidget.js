@@ -10,11 +10,9 @@ import Container from 'react-bootstrap/Container'
 
 const WindowWidget = props => {
     var containerStyle;
-    if (props.nomargin) {
-        containerStyle = styles.BareWindowWidget
-    } else {
-        containerStyle = styles.WindowWidget
-    }
+
+    containerStyle = props.nomargin ? styles.BareWindowWidget : styles.WindowWidget
+
     return (
 	<Container fluid="lg" className={containerStyle}>
 	{props.children}
