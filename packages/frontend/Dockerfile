@@ -1,6 +1,6 @@
 #
 # ---- Base Node ----
-FROM node:14-alpine AS base
+FROM node:12-alpine AS base
 # install node
 RUN apk add --no-cache nodejs-current tini
 # set working directory
@@ -15,7 +15,7 @@ COPY package.json .
 FROM base AS dependencies
 # install node packages
 RUN npm set progress=false && npm config set depth 0
-RUN npm install --only=production
+RUN yarn install --only=production
 # copy production node_modules aside
 RUN cp -R node_modules prod_node_modules
 # install ALL node_modules, including 'devDependencies'
@@ -33,14 +33,14 @@ RUN npm install
 FROM base AS release
 # copy production node_modules
 COPY --from=dependencies /root/chat/prod_node_modules ./node_modules
-FROM node:14-alpine
+FROM node:12-alpine
 
 WORKDIR /usr/app
 
 COPY package.json .
-RUN npm install --quiet
+RUN yarn install --quiet
 
 COPY . .
 
-#CMD npm run dev
-CMD npm run build && npm run start
+CMD yarn run dev
+#CMD yarn build && yarn run start
