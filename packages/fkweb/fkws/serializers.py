@@ -203,6 +203,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+                'id',
                 'email',
                 'first_name',
                 'last_name',
@@ -213,6 +214,7 @@ class UserSerializer(serializers.ModelSerializer):
                 )
 
         read_only_fields = (
+                'id',
                 'email',
                 'is_staff',
                 'date_joined',
