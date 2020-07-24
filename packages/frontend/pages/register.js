@@ -1,4 +1,4 @@
-import * as env from '../components/constants'
+import configs from '../components/configs';
 
 import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card'
@@ -15,7 +15,7 @@ import axios from 'axios'
 export default function Signupform() {
     async function signup(e) {
         e.preventDefault()
-        const result = await axios.post(env.API_BASE_URL + "user/register",
+        const result = await axios.post(configs.api + "user/register",
             {
                 email: email,
                 password: password,

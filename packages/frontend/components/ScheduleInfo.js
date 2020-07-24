@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import * as env from './constants';
+import configs from './configs';
 import React, { Component } from 'react';
 export class ScheduleInfo extends Component {
     constructor(props){
@@ -39,7 +39,7 @@ export class ScheduleInfo extends Component {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query })
         };
-        const res = await fetch(env.GRAPHQL_URL, opts)
+        const res = await fetch(configs.graphql, opts)
         return res.json()
     }
 

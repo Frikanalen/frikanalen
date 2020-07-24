@@ -1,10 +1,9 @@
-import Layout from '../components/Layout';
 import WindowWidget from '../components/WindowWidget';
-import * as env from '../components/constants';
 
 import Card from 'react-bootstrap/Card'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
+import Layout from '../components/Layout';
 import Row from 'react-bootstrap/Row'
 
 export default function About() {
@@ -14,8 +13,8 @@ export default function About() {
       <Card bg="primary" text="light">
       <Card.Body>
       <Card.Title>Målet med Frikanalen er å styrke ytringsfrihet og
-	  deltakerdemokratiet gjennom å gi flere mulighet til å ytre seg
-	  gjennom TV-mediet.</Card.Title>
+	  deltakerdemokratiet ved å gi flere mulighet til å ytre seg
+	  i TV-mediet.</Card.Title>
       <Card.Text className="d-flex justify-content-end">
 		<p>Frikanalens formålsparagraf</p>
       </Card.Text>

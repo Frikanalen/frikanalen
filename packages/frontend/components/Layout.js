@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 
 const Footer = () => (
-    <footer className="fixed-bottom">
+    <footer className="d-none d-lg-block fixed-bottom">
         <a href="https://frikanalen.no/api/">REST API</a>&nbsp;|&nbsp;
         <a href="https://frikanalen.no/xmltv/">XMLTV</a>&nbsp;|&nbsp;
         <a href="http://github.com/Frikanalen">Source code</a>
@@ -16,7 +16,7 @@ const Footer = () => (
 )
 
 const Layout = props => (
-    <Container fluid>
+    <Container fluid className={"mainContainer"}>
     <MetaTags>
         <title>Frikanalen</title>
     </MetaTags>
@@ -29,11 +29,11 @@ const Layout = props => (
     </Col>
     </Row>
     <Footer />
-    <style jsx>{`
-    .mainColumn {
-        padding: 0;
-        margin: 0;
-    }`}</style>
+    <style jsx global>{`
+        .mainContainer {
+            padding: 0; !important
+        }
+    `}</style>
     </Container>
 );
 

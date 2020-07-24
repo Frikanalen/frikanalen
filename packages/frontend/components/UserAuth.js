@@ -1,7 +1,7 @@
 import Nav from 'react-bootstrap/Nav'
 import React, { Component } from 'react';
 import axios from 'axios'
-import * as env from './constants';
+import configs from './configs';
 import Cookies from 'js-cookie'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 

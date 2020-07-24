@@ -1,5 +1,11 @@
+// There are a few problems with this code: 
+//
+// - The URL is hard-coded
+// - ATEM functionality is awkwardly coded
+// - The entire thing is terrible
+
+import configs from '../components/configs';
 import Layout from '../components/Layout';
-import * as env from '../components/constants';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 import React, { Component } from 'react';

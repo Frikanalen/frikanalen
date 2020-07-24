@@ -1,5 +1,5 @@
 import Layout from '../components/Layout';
-import * as env from '../components/constants';
+import configs from '../components/configs';
 import Link from 'next/link';
 import React, { Component } from 'react';
 import Col from 'react-bootstrap/Col'
@@ -71,7 +71,7 @@ class Schedule extends Component {
           }
           }
         `;
-        const url = env.GRAPHQL_URL;
+        const url = configs.graphql;
         const opts = {
             method: "POST",
             headers: { "Content-Type": "application/json" },

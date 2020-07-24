@@ -1,7 +1,13 @@
 {
-  "name": "frikanalen",
+  "name": "frikanalen-frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Frikanalen web frontend",
+  "repository": {
+      "type" : "git",
+      "url" : "https://github.com/Frikanalen/frikanalen.git",
+      "directory": "packages/frontend"
+  },
+  "homepage": "https://frikanalen.no/",
   "main": "index.js",
   "scripts": {
     "dev": "next",

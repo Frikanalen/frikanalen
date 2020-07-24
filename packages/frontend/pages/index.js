@@ -6,10 +6,10 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 
-process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-  // application specific logging, throwing an error, or other logic here
-});
+//process.on('unhandledRejection', (reason, p) => {
+//  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+//  // application specific logging, throwing an error, or other logic here
+//});
 
 const BetaDisclaimer = () => (
     <WindowWidget>
@@ -62,7 +62,9 @@ const BetaDisclaimer = () => (
 export default function index() {
   return (
     <Layout>
+      <div>
       <LiveNow/>
+      </div>
       <BetaDisclaimer/>
     </Layout>
   );

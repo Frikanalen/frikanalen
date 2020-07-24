@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import React, { Component } from 'react';
-import * as env from './constants';
 import fetch from 'isomorphic-unfetch'
 
 export class LiveVideoPlayer extends Component {
