@@ -19,6 +19,9 @@ export default function Signupform() {
             {
                 email: email,
                 password: password,
+                first_name: givenName,
+                last_name: familyName,
+                date_of_birth: '2020-07-24'
             }
         )
         console.log(result)

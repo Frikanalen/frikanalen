@@ -23,7 +23,7 @@ class UserAuth extends Component {
             return (
                 <div>
                 <NavDropdown className="userdropdown" title={this.state.email}>
-                    <NavDropdown.Item onClick={this.logout}>Logg ut</NavDropdown.Item>
+                    <NavDropdown.Item onClick={this.boundLogout}>Logg ut</NavDropdown.Item>
                 </NavDropdown>
                 <style jsx global>{`
                     .userdropdown > a { 
@@ -40,7 +40,7 @@ class UserAuth extends Component {
             loggedIn: false,
             email: ''
         }
-        this.logout = this.logout.bind(this)
+        this.boundLogout = this.logout.bind(this)
     }
 
     static async login(email, password) {
@@ -74,7 +74,6 @@ class UserAuth extends Component {
         var apiBaseUrl = "https://frikanalen.no/api/";
 
         try {
-            console.log('trying with token: ' + Cookies.get('token'))
             var response = await axios.get(apiBaseUrl+'user', {
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,7 +89,7 @@ class UserAuth extends Component {
         } catch (error) {
             console.log('Encountered the following while attempting to refresh user profile')
             console.log(error)
-            await logout()
+            this.logout()
         }
     }
 
@@ -101,10 +100,7 @@ class UserAuth extends Component {
     }
 
     componentDidMount() {
-        console.log(localStorage.getItem('user-id'))
         UserAuth.verifySession().then(result => {
-            console.log('lol')
-            console.log(result)
             this.setState({
                 loggedIn: localStorage.getItem("user-id") ? true : false,
                 email: localStorage.getItem("user-email"),
