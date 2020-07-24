@@ -9,12 +9,11 @@ import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 
 const WindowWidget = props => {
-    var containerStyle;
-
-    containerStyle = props.nomargin ? styles.BareWindowWidget : styles.WindowWidget
+    const containerStyle = props.nomargin ? styles.BareWindowWidget : null
+    const backgroundStyle = props.invisible ? styles.InvisibleWindowWidget : null
 
     return (
-	<Container fluid="lg" className={containerStyle}>
+	<Container fluid="lg" className={[styles.WindowWidget, containerStyle, backgroundStyle]}>
 	{props.children}
 	</Container>
 )}

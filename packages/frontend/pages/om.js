@@ -2,7 +2,7 @@ import Layout from '../components/Layout';
 import WindowWidget from '../components/WindowWidget';
 import * as env from '../components/constants';
 
-import Alert from 'react-bootstrap/Alert'
+import Card from 'react-bootstrap/Card'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -10,16 +10,20 @@ import Row from 'react-bootstrap/Row'
 export default function About() {
   return (
   <Layout>
-  <WindowWidget>
-      <Alert variant="info" className="lead">
-	  <p>Målet med Frikanalen er å styrke ytringsfrihet og
+  <WindowWidget invisible nomargin>
+      <Card bg="primary" text="light">
+      <Card.Body>
+      <Card.Title>Målet med Frikanalen er å styrke ytringsfrihet og
 	  deltakerdemokratiet gjennom å gi flere mulighet til å ytre seg
-	  gjennom TV-mediet.</p>
-	  <hr />
-	  <div className="d-flex justify-content-end">
+	  gjennom TV-mediet.</Card.Title>
+      <Card.Text className="d-flex justify-content-end">
 		<p>Frikanalens formålsparagraf</p>
-	  </div>
-      </Alert>       <h2>Frikanalen er sivilsamfunnets videoplatform.</h2>
+      </Card.Text>
+      </Card.Body>
+      </Card> 
+  </WindowWidget>
+  <WindowWidget>
+      <h2>Frikanalen er sivilsamfunnets videoplatform.</h2>
       <p>Vi ønsker i samarbeid med våre medlemsorganisasjoner utvikle en
       videoplattform uten forhåndssensur, tilrettelagt for behovene til norsk
 	  demokrati, organisasjonsliv og frivillighet.</p>
