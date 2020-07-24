@@ -1,0 +1,23 @@
+name: Build on-air graphics package
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/utils/on-air-graphics/**'
+jobs:
+  build:
+    name: Build and push Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+      - name: Build docker
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: frikanalen/on-air-graphics
+          tag_with_ref: true
+          path: packages/utils/on-air-graphics
+          dockerfile: packages/utils/on-air-graphics/Dockerfile
