@@ -19,13 +19,13 @@ class Header extends Component {
             </Navbar>
             <Navbar bg="dark" variant="dark">
                 <Nav className="mr-auto">
-                    <Nav.Link href="/">Direkte</Nav.Link>
-                    <Nav.Link href="/schedule">Sendeplan</Nav.Link>
+                    <Link href="/" passHref><Nav.Link>Direkte</Nav.Link></Link>
+                    <Link href="/schedule" passHref><Nav.Link>Sendeplan</Nav.Link></Link>
 		    <NavDropdown title="Om">
-                    <NavDropdown.Item href="/om">Om oss</NavDropdown.Item>
-                    <NavDropdown.Item href="/om/vedtekter">Vedtekter</NavDropdown.Item>
-                    <NavDropdown.Item href="/om/styret">Styret</NavDropdown.Item>
-                    <NavDropdown.Item href="/om/kontakt">Kontakt oss</NavDropdown.Item>
+                    <Link href="/om" passHref><NavDropdown.Item>Om oss</NavDropdown.Item></Link>
+                    <Link href="/om/vedtekter" passHref><NavDropdown.Item>Vedtekter</NavDropdown.Item></Link>
+                    <Link href="/om/styret" passHref><NavDropdown.Item>Styret</NavDropdown.Item></Link>
+                    <Link href="/om/kontakt" passHref><NavDropdown.Item>Kontakt oss</NavDropdown.Item></Link>
 		    </NavDropdown>
                 </Nav>
                 <Nav className="ml-auto">

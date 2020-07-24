@@ -24,11 +24,16 @@ const Layout = props => (
     <Header/>
     </Row>
     <Row>
-    <Col>
+    <Col className={"mainColumn"}>
     {props.children}
     </Col>
     </Row>
     <Footer />
+    <style jsx>{`
+    .mainColumn {
+        padding: 0;
+        margin: 0;
+    }`}</style>
     </Container>
 );
 
