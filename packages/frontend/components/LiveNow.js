@@ -12,6 +12,7 @@ const ShakaPlayer = dynamic(
 
 import WindowWidget from './WindowWidget.js'
 
+import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 
@@ -30,12 +31,12 @@ class LiveNow extends Component {
         return (
             <WindowWidget nomargin>
             <Container fluid>
-            <Row>
+            <Row> <Col>
             <ShakaPlayer src='https://frikanalen.no/stream/index.mpd' />
-            </Row>
-            <Row>
+	    </Col> </Row>
+            <Row><Col>
             <ScheduleInfo />
-            </Row>
+            </Col></Row>
             </Container>
             </WindowWidget>
         );
