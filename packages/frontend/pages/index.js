@@ -11,11 +11,12 @@ import Container from 'react-bootstrap/Container'
 //  // application specific logging, throwing an error, or other logic here
 //});
 
+
 const BetaDisclaimer = () => (
     <WindowWidget>
-    <Container className="beta-disclaimer">
+    <Container fluid="lg" className="beta-disclaimer">
       <Row className="icon-row">
-      <Col md="auto">
+      <Col md="auto" className="icon-box">
              <svg id="beta-disclaimer-icon" xmlns="http://www.w3.org/2000/svg" height="100" viewBox="0 0 24 24" preserveAspectRatio="xMaxYMax meet" width="100">
                 <path d="M0 0h24v24H0z" fill="none"/>
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -47,18 +48,23 @@ const BetaDisclaimer = () => (
         }
         @media only screen and (max-width: 768px) {
             .icon-row {
-                display: inline;
+                width: 100%;
             }
             #beta-disclaimer-icon {
-                display: block;
-                margin: 0 auto;
+            }
+            .icon-box {
+                flex-shrink: 1;
+                flex-grow: 1;
+                text-align: center;
+            }
+            .beta-text {
+                flex-grow: 1;
             }
         }
       `}</style>
     </Container>
     </WindowWidget>
 )
-
 export default function index() {
   return (
     <Layout>
