@@ -13,7 +13,7 @@ import Container from 'react-bootstrap/Container'
 
 
 const BetaDisclaimer = () => (
-    <WindowWidget>
+    <WindowWidget nomargin>
     <Container fluid="lg" className="beta-disclaimer">
       <Row className="icon-row">
       <Col md="auto" className="icon-box">
@@ -37,19 +37,19 @@ const BetaDisclaimer = () => (
         .icon-row {
             place-items: center;
         }
-        .beta-disclaimer {
-            color: white;
-        }
+
         #beta-disclaimer-icon {
             fill: yellow;
         }
-        .beta-text {
+
+        @media only screen and (min-width: 768px) {
+            .beta-text { padding-left: 0; }
         }
-        @media only screen and (max-width: 768px) {
+
+        @media only screen and (max-width: 767px) {
+            .icon-row { padding-top: 24px; }
             .icon-row {
                 width: 100%;
-            }
-            #beta-disclaimer-icon {
             }
             .icon-box {
                 flex-shrink: 1;
