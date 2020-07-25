@@ -60,8 +60,24 @@ export default class DASHPlayer extends Component {
 
     render() {
         return ( 
-            <div ref={this.videoContainer}>
+            <div className={"aspect-enforced-container"} ref={this.videoContainer}>
             <video ref={this.video} />
+            <style jsx>{`
+                /* I'm not sure if this is the right way to do this */
+                .aspect-enforced-container {
+                    width: 100%;
+                    padding-top: 56.25%;
+                    height: 0px;
+                    position: relative;
+                }
+                video {
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+            `}</style>
             </div>
         );
     }
