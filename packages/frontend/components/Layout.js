@@ -20,10 +20,10 @@ const Layout = props => (
     <MetaTags>
         <title>Frikanalen</title>
     </MetaTags>
-    <Row>
+    <Row noGutters>
     <Header/>
     </Row>
-    <Row>
+    <Row noGutters>
     <Col className={"mainColumn"}>
     {props.children}
     </Col>
