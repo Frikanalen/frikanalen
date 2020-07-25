@@ -1,8 +1,8 @@
-const env = process.env.ENV || 'development';
+const env = process.env.FRONTEND_ENV || 'development';
 
 const configs = {
   development: {
-    api: 'https://localhost:8000/api/',
+    api: 'http://localhost:8080/api/',
     graphql: 'https://frikanalen.no/graphql',
     atem: 'https://frikanalen.no/playout/atem/program'
   },
