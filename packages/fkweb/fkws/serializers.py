@@ -199,9 +199,24 @@ class NewUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
+    organization_roles = serializers.SerializerMethodField()
+
+    def get_organization_roles(self, obj):
+        editor_list = list(obj.editor.all().values_list('id', flat=True))
+
+        # A user may be both member and editor. As editor status supersedes
+        # member status, if they are editor, we filter out the membership
+        membership_list = list(filter(lambda x: x not in editor_list,
+                        obj.organization_set.all().values_list('id', flat=True)))
+
+        return list(
+            [{'role': 'editor', 'org': o} for o in editor_list] +
+            [{'role': 'member', 'org': o} for o in membership_list]
+        )
 
     class Meta:
         model = User
+
         fields = (
                 'id',
                 'email',
@@ -210,6 +225,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'date_joined',
                 'is_staff',
                 'date_of_birth',
+                'organization_roles',
                 'password'
                 )
 
