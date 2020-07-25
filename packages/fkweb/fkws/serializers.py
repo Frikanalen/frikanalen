@@ -221,8 +221,8 @@ class UserSerializer(serializers.ModelSerializer):
                         obj.organization_set.all().values_list('id', flat=True)))
 
         return list(
-            [{'role': 'editor', 'org': o} for o in editor_list] +
-            [{'role': 'member', 'org': o} for o in membership_list]
+            [{'role': 'editor', 'organization_id': o} for o in editor_list] +
+            [{'role': 'member', 'organization_id': o} for o in membership_list]
         )
 
     class Meta:
