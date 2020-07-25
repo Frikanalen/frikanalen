@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: fk-frontend-prod
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: fk-frontend-prod
