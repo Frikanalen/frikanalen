@@ -58,6 +58,7 @@ def api_root(request, format=None):
         'videofiles': reverse('api-videofile-list', request=request),
         'videos': reverse('api-video-list', request=request),
         'user': reverse('api-user-detail', request=request),
+        'user/register': reverse('api-user-create', request=request),
     })
 
 
