@@ -29,9 +29,11 @@ from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
 from fk.models import User
+from fk.models import Organization
 
 from fkws.permissions import IsInOrganizationOrDisallow
 from fkws.permissions import IsInOrganizationOrReadOnly
+from fkws.permissions import IsOrganizationEditorOrReadOnly
 from fkws.permissions import IsStaffOrReadOnly
 from fkws.serializers import AsRunSerializer
 from fkws.serializers import CategorySerializer
@@ -41,6 +43,7 @@ from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
 from fkws.serializers import VideoUploadTokenSerializer
 from fkws.serializers import UserSerializer
+from fkws.serializers import OrganizationSerializer
 from fkws.serializers import NewUserSerializer
 
 
@@ -57,6 +60,7 @@ def api_root(request, format=None):
         'scheduleitems': reverse('api-scheduleitem-list', request=request),
         'videofiles': reverse('api-videofile-list', request=request),
         'videos': reverse('api-video-list', request=request),
+        'organization': reverse('api-organization-list', request=request),
         'user': reverse('api-user-detail', request=request),
         'user/register': reverse('api-user-create', request=request),
     })
@@ -219,6 +223,7 @@ class VideoFilter(djfilters.FilterSet):
             'ref_url': ['exact', 'startswith', 'icontains'],
         }
 
+
 class VideoList(generics.ListCreateAPIView):
     """
     List of videos
@@ -369,6 +374,20 @@ class VideoFileList(generics.ListCreateAPIView):
             video.save()
         super(VideoFileList, self).perform_create(serializer)
 
+
+class OrganizationList(generics.ListCreateAPIView):
+    queryset = Organization.objects.all()
+    serializer_class = OrganizationSerializer
+    pagination_class = Pagination
+    permission_classes = (IsOrganizationEditorOrReadOnly,)
+
+class OrganizationDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Video file details
+    """
+    queryset = Organization.objects.all()
+    serializer_class = OrganizationSerializer
+    permission_classes = (IsOrganizationEditorOrReadOnly,)
 
 class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     """

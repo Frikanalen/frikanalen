@@ -206,7 +206,8 @@ class APITest(TestCase):
 
         self.assertEqual(
             set(['scheduleitems', 'asrun', 'category', 'videofiles',
-                 'videos', 'obtain-token', 'jukebox-csv', 'user']),
+                 'videos', 'obtain-token', 'jukebox-csv', 'user',
+                 'organization', 'user/register']),
             set(r.data.keys()))
 
     def test_api_video_list(self):

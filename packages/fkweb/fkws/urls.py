@@ -33,6 +33,10 @@ urlpatterns = [
         views.VideoFileList.as_view(), name='api-videofile-list'),
     url(r'^api/videofiles/(?P<pk>\d+)$',
         views.VideoFileDetail.as_view(), name='api-videofile-detail'),
+    url(r'^api/organization/$',
+        views.OrganizationList.as_view(), name='api-organization-list'),
+    url(r'^api/organization/(?P<pk>\d+)$',
+        views.OrganizationDetail.as_view(), name='api-organization-detail'),
 ]
 
 urlpatterns += router.urls

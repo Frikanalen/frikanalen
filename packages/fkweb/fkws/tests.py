@@ -25,8 +25,10 @@ class PermissionsTest(APITestCase):
             ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
+            ('organization', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_401_UNAUTHORIZED),
             ('user', status.HTTP_401_UNAUTHORIZED),
+            ('user/register', status.HTTP_405_METHOD_NOT_ALLOWED),
         ]
         self._helper_test_reading_all_pages_from_root(pages)
 
@@ -40,6 +42,8 @@ class PermissionsTest(APITestCase):
             ('scheduleitems', status.HTTP_200_OK),
             ('videofiles', status.HTTP_200_OK),
             ('videos', status.HTTP_200_OK),
+            ('organization', status.HTTP_200_OK),
+            ('user/register', status.HTTP_405_METHOD_NOT_ALLOWED),
         ]
         self._user_auth('nuug_user@fake.com')
         self._helper_test_reading_all_pages_from_root(pages)

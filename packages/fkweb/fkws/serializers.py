@@ -14,6 +14,17 @@ from fk.models import Video
 from fk.models import User
 from fk.models import VideoFile
 
+class OrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organization
+        fields = (
+                'id',
+                'name',
+                'homepage',
+                'postal_address',
+                'street_address',
+                'editor_id',
+        )
 
 class VideoFileSerializer(serializers.ModelSerializer):
     class Meta:
