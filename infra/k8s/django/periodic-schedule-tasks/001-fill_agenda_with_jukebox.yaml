@@ -10,7 +10,7 @@ spec:
         spec:
           containers:
           - name: django
-            image: toresbe/fk-django:latest
+            image: frikanalen/django-backend
             args:
               - ./manage.py
               - fill_agenda_with_jukebox
