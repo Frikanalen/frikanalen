@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "description": "Frikanalen web frontend",
   "repository": {
-      "type" : "git",
-      "url" : "https://github.com/Frikanalen/frikanalen.git",
-      "directory": "packages/frontend"
+    "type": "git",
+    "url": "https://github.com/Frikanalen/frikanalen.git",
+    "directory": "packages/frontend"
   },
   "homepage": "https://frikanalen.no/",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "FRONTEND_ENV=development next",
     "build": "next build",
-    "start": "next start"
+    "start": "FRONTEND_ENV=production next start"
   },
   "keywords": [],
   "author": "Tore Sinding Bekkedal",
@@ -37,6 +37,7 @@
     "sass-loader": "^9.0.2",
     "shaka-player": "^3.0.1",
     "shaka-player-react": "^1.0.1",
+    "swr": "^0.2.3",
     "video.js": "^7.7.5",
     "webrtc-adapter": "^7.6.0"
   }

@@ -1,18 +1,23 @@
 import Nav from 'react-bootstrap/Nav'
+import Link from 'next/link';
 import React, { Component } from 'react';
 import axios from 'axios'
-import configs from './configs';
+import configs from './configs'
 import Cookies from 'js-cookie'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
+function delete_local_session() {
+    Cookies.remove('token')
+    localStorage.removeItem("user-id")
+    localStorage.removeItem("user-email")
+    localStorage.removeItem("user-first_name")
+    localStorage.removeItem("user-last_name")
+    localStorage.removeItem("user-is_staff")
+}
+
 class UserAuth extends Component {
     logout() {
-        Cookies.remove('token')
-        localStorage.removeItem("user-id")
-        localStorage.removeItem("user-email")
-        localStorage.removeItem("user-first_name")
-        localStorage.removeItem("user-last_name")
-        localStorage.removeItem("user-is_staff")
+        delete_local_session()
         this.setState({loggedIn: false, email: ''})
     }
 
@@ -23,6 +28,9 @@ class UserAuth extends Component {
             return (
                 <div>
                 <NavDropdown className="userdropdown" title={this.state.email}>
+                    <Link href="/profile" passHref>
+                        <NavDropdown.Item>Brukerside</NavDropdown.Item>
+                    </Link>
                     <NavDropdown.Item onClick={this.boundLogout}>Logg ut</NavDropdown.Item>
                 </NavDropdown>
                 <style jsx global>{`
@@ -44,10 +52,8 @@ class UserAuth extends Component {
     }
 
     static async login(email, password) {
-        var apiBaseUrl = "https://frikanalen.no/api/";
-
         try {
-            var response = await axios.get(apiBaseUrl+'obtain-token', {
+            var response = await axios.get(configs.api+'obtain-token', {
                 auth: {
                     username:email,
                     password:password
@@ -71,10 +77,8 @@ class UserAuth extends Component {
     }
 
     static async refreshLocalStorage() {
-        var apiBaseUrl = "https://frikanalen.no/api/";
-
         try {
-            var response = await axios.get(apiBaseUrl+'user', {
+            var response = await axios.get(configs.api+'user', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Token ' + Cookies.get('token')
@@ -89,7 +93,7 @@ class UserAuth extends Component {
         } catch (error) {
             console.log('Encountered the following while attempting to refresh user profile')
             console.log(error)
-            this.logout()
+            delete_local_session()
         }
     }
 
@@ -109,10 +113,16 @@ class UserAuth extends Component {
         )
     }
 
-
     static async profile_data() {
         if (localStorage.getItem('user-id') == null) {
             await refreshLocalStorage()
+        }
+        return {
+            id: localStorage.getItem("user-id"),
+            email: localStorage.getItem("user-email"),
+            first_name: localStorage.getItem("user-first_name"),
+            last_name: localStorage.getItem("user-last_name"),
+            is_staff: localStorage.getItem("user-is_staff")
         }
     }
 }
