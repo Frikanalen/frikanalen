@@ -42,5 +42,5 @@ RUN yarn install --quiet
 
 COPY . .
 
-CMD yarn run dev
-#CMD yarn build && yarn run start
+#CMD yarn run dev
+CMD yarn build && yarn run start
