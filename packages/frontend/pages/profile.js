@@ -73,6 +73,7 @@ function OrganizationCard(props) {
         <Card body bg="light">
         <Card.Title className="mb-1">{org.name}</Card.Title>
         <Card.Subtitle className="mb-2 text-muted">{roleText}</Card.Subtitle>
+        <Card.Link href={"/o/" + org.id}>Offentlig side</Card.Link>
         </Card>
     )
 }
