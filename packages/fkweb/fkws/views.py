@@ -217,7 +217,7 @@ class VideoFilter(djfilters.FilterSet):
             'has_tono_records': ['exact'],
             'is_filler': ['exact'],
             'name': ['exact', 'icontains'],
-            'organization__name': ['exact'],
+            'organization': ['exact'],
             'played_count_web': ['exact', 'gt', 'gte', 'lt', 'lte'],
             'publish_on_web': ['exact'],
             'ref_url': ['exact', 'startswith', 'icontains'],
@@ -251,7 +251,7 @@ class VideoList(generics.ListCreateAPIView):
 
     `name__icontains` - substring is part of name/title of the video
 
-    `organization__name` - the name of the organization this video is associated with
+    `organization` - organization behind video
 
     `played_count_web` - the number of times this video was played on the web
 
