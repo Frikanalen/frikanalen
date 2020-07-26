@@ -6,6 +6,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+import logging
+
 from fk.models import AsRun
 from fk.models import Category
 from fk.models import Organization
@@ -14,7 +16,17 @@ from fk.models import Video
 from fk.models import User
 from fk.models import VideoFile
 
+logger = logging.getLogger(__name__)
+
 class OrganizationSerializer(serializers.ModelSerializer):
+    editor_name = serializers.SerializerMethodField()
+
+    def get_editor_name(self, obj):
+        if obj.editor:
+            return obj.editor.first_name + " " + obj.editor.last_name
+        logger.warning('Organization %d has no editor assigned' % (obj.id))
+        return 'Ingen redaktør!'
+
     class Meta:
         model = Organization
         fields = (
@@ -24,6 +36,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
                 'postal_address',
                 'street_address',
                 'editor_id',
+                'editor_name',
         )
 
 class VideoFileSerializer(serializers.ModelSerializer):
