@@ -42,5 +42,8 @@ RUN yarn install --quiet
 
 COPY . .
 
-#CMD yarn run dev
-CMD yarn build && yarn run start
+ENV NEXT_PUBLIC_ENV production
+
+RUN yarn build
+
+CMD yarn run start

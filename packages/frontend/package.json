@@ -13,7 +13,7 @@
     "dev": "NEXT_PUBLIC_ENV=development next",
     "staging": "NEXT_PUBLIC_ENV=staging next",
     "build": "next build",
-    "start": "NEXT_PUBLIC_ENV=production next"
+    "start": "NEXT_PUBLIC_ENV=production next start"
   },
   "keywords": [],
   "author": "Tore Sinding Bekkedal",
