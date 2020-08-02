@@ -281,6 +281,8 @@ class Video(models.Model):
     ref_url = models.CharField(
         blank=True, max_length=1024, help_text='URL for reference')
     duration = models.DurationField(blank=True, default=datetime.timedelta(0))
+
+    # TODO: This should probably be transitioned to a models.UUIDField?
     upload_token = models.CharField( blank=True, default=uuid.uuid4().hex, 
         max_length=32, help_text='Video upload token (used by fkupload/frontend)')
 
