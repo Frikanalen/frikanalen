@@ -1,32 +1,30 @@
-import Link from 'next/link';
-import Header from './Header';
-import MetaTags from 'react-meta-tags';
+import Link from "next/link";
+import Header from "./Header";
+import MetaTags from "react-meta-tags";
 
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import Container from 'react-bootstrap/Container'
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
 
 const Footer = () => (
-    <footer className="d-none d-lg-block fixed-bottom">
-        <a href="https://frikanalen.no/api/">REST API</a>&nbsp;|&nbsp;
-        <a href="https://frikanalen.no/xmltv/">XMLTV</a>&nbsp;|&nbsp;
-        <a href="http://github.com/Frikanalen">Source code</a>
-        &nbsp;&copy; 2009-2020 Foreningen Frikanalen
-    </footer>
-)
+  <footer className="d-none d-lg-block fixed-bottom">
+    <a href="https://frikanalen.no/api/">REST API</a>&nbsp;|&nbsp;
+    <a href="https://frikanalen.no/xmltv/">XMLTV</a>&nbsp;|&nbsp;
+    <a href="http://github.com/Frikanalen">Source code</a>
+    &nbsp;&copy; 2009-2020 Foreningen Frikanalen
+  </footer>
+);
 
-const Layout = props => (
-    <Container fluid className={"mainContainer"}>
+const Layout = (props) => (
+  <Container fluid className={"mainContainer"}>
     <MetaTags>
-        <title>Frikanalen</title>
+      <title>Frikanalen</title>
     </MetaTags>
     <Row noGutters>
-    <Header/>
+      <Header />
     </Row>
     <Row noGutters>
-    <Col className={"mainColumn"}>
-    {props.children}
-    </Col>
+      <Col className={"mainColumn"}>{props.children}</Col>
     </Row>
     <Footer />
     <style jsx global>{`
@@ -34,7 +32,7 @@ const Layout = props => (
             padding: 0; !important
         }
     `}</style>
-    </Container>
+  </Container>
 );
 
 export default Layout;

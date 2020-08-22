@@ -22,109 +22,114 @@
 //
 
 var Janus = null;
-var React = require('react');
+var React = require("react");
 
 export default class Realtime extends React.Component {
-    handle_message = (msg, jsep) => {
-        Janus.debug(" ::: Got a message :::");
-        Janus.debug(msg);
-        var result = msg["result"];
-        if(result !== null && result !== undefined) {
-            if(result["status"] !== undefined && result["status"] !== null) {
-                var status = result["status"];
-                if(status === 'stopped')
-                    stopStream();
-            }
-        } else if(msg["error"] !== undefined && msg["error"] !== null) {
-            stopStream();
-            return;
-        }
-        if(jsep !== undefined && jsep !== null) {
-            Janus.debug("Handling SDP as well...");
-            Janus.debug(jsep);
-            // Offer from the plugin, let's answer
-            this.streaming.createAnswer(
-                {
-                    jsep: jsep,
-                    // We want recvonly audio/video and, if negotiated, datachannels
-                    media: { audioSend: false, videoSend: false, data: true },
-                    success: (jsep) => {
-                        Janus.debug("Got SDP!");
-                        Janus.debug(jsep);
-                        var body = { "request": "start" };
-                        this.streaming.send({"message": body, "jsep": jsep});
-                    },
-                    error: function(error) {
-                        Janus.error("WebRTC error:", error);
-                    }
-                });
-        }
+  handle_message = (msg, jsep) => {
+    Janus.debug(" ::: Got a message :::");
+    Janus.debug(msg);
+    var result = msg["result"];
+    if (result !== null && result !== undefined) {
+      if (result["status"] !== undefined && result["status"] !== null) {
+        var status = result["status"];
+        if (status === "stopped") stopStream();
+      }
+    } else if (msg["error"] !== undefined && msg["error"] !== null) {
+      stopStream();
+      return;
     }
-
-    startStream(id) {
-        this.streaming.send({"message": { "request": "watch", id: id}});
+    if (jsep !== undefined && jsep !== null) {
+      Janus.debug("Handling SDP as well...");
+      Janus.debug(jsep);
+      // Offer from the plugin, let's answer
+      this.streaming.createAnswer({
+        jsep: jsep,
+        // We want recvonly audio/video and, if negotiated, datachannels
+        media: { audioSend: false, videoSend: false, data: true },
+        success: (jsep) => {
+          Janus.debug("Got SDP!");
+          Janus.debug(jsep);
+          var body = { request: "start" };
+          this.streaming.send({ message: body, jsep: jsep });
+        },
+        error: function (error) {
+          Janus.error("WebRTC error:", error);
+        },
+      });
     }
-    attach_stream_plugin = () => {
-        // Attach to Streaming plugin
-        this.janus.attach(
-            {
-                plugin: "janus.plugin.streaming",
-                opaqueId: this.opaqueId,
-                success: (pluginHandle) => {
-                    this.streaming = pluginHandle;
-                    Janus.log("Plugin attached! (" + this.streaming.getPlugin() + ", id=" + this.streaming.getId() + ")");
-                    this.startStream(1);
-                },
-                error: function(error) {
-                    Janus.error("  -- Error attaching plugin... ", error);
-                },
-                onmessage: this.handle_message,
-                onremotestream: (stream) => {
-                    Janus.attachMediaStream(this.videoRef.current, stream)
-                }
-            });
-    }
+  };
 
-    start_session = () => {
-    };
-    componentDidMount = () => {
-        Janus = require('../components/janus.js').default;
-        console.log(Janus)
-        this.init_janus();
-    };
-    init_janus = () => {
-        var server = null;
-        server = "http://simula.frikanalen.no:3005";
-
-        this.opaqueId = "streamingtest-"+Janus.randomString(12);
-
-        var bitrateTimer = null;
-        var spinner = null;
-
-        console.log(Janus);
-        Janus.init({debug: "all", callback: () => {
-            if(!Janus.isWebrtcSupported()) {
-                return;
-            }
-            this.janus = new Janus( {
-                server: server,
-                success: this.attach_stream_plugin,
-                error: function(error) {},
-            })
-        }});
-    }
-
-    constructor(props) {
-        super(props);
-        this.videoRef = React.createRef();
-        this.janus = null;
-        this.streaming = null;
-    }
-    render = () => {
-        return (
-            <div>
-            <video autoPlay={true} ref={this.videoRef} />
-            </div>
+  startStream(id) {
+    this.streaming.send({ message: { request: "watch", id: id } });
+  }
+  attach_stream_plugin = () => {
+    // Attach to Streaming plugin
+    this.janus.attach({
+      plugin: "janus.plugin.streaming",
+      opaqueId: this.opaqueId,
+      success: (pluginHandle) => {
+        this.streaming = pluginHandle;
+        Janus.log(
+          "Plugin attached! (" +
+            this.streaming.getPlugin() +
+            ", id=" +
+            this.streaming.getId() +
+            ")"
         );
-    }
+        this.startStream(1);
+      },
+      error: function (error) {
+        Janus.error("  -- Error attaching plugin... ", error);
+      },
+      onmessage: this.handle_message,
+      onremotestream: (stream) => {
+        Janus.attachMediaStream(this.videoRef.current, stream);
+      },
+    });
+  };
+
+  start_session = () => {};
+  componentDidMount = () => {
+    Janus = require("../components/janus.js").default;
+    console.log(Janus);
+    this.init_janus();
+  };
+  init_janus = () => {
+    var server = null;
+    server = "http://simula.frikanalen.no:3005";
+
+    this.opaqueId = "streamingtest-" + Janus.randomString(12);
+
+    var bitrateTimer = null;
+    var spinner = null;
+
+    console.log(Janus);
+    Janus.init({
+      debug: "all",
+      callback: () => {
+        if (!Janus.isWebrtcSupported()) {
+          return;
+        }
+        this.janus = new Janus({
+          server: server,
+          success: this.attach_stream_plugin,
+          error: function (error) {},
+        });
+      },
+    });
+  };
+
+  constructor(props) {
+    super(props);
+    this.videoRef = React.createRef();
+    this.janus = null;
+    this.streaming = null;
+  }
+  render = () => {
+    return (
+      <div>
+        <video autoPlay={true} ref={this.videoRef} />
+      </div>
+    );
+  };
 }
