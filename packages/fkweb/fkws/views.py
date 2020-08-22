@@ -251,7 +251,7 @@ class VideoList(generics.ListCreateAPIView):
 
     `name__icontains` - substring is part of name/title of the video
 
-    `organization` - organization behind video
+    `organization` - Frikanalen ID of organization behind video
 
     `played_count_web` - the number of times this video was played on the web
 

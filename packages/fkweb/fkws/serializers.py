@@ -59,7 +59,7 @@ class VideoSerializer(serializers.ModelSerializer):
         slug_field='email', queryset=get_user_model().objects.all(),
         default=serializers.CurrentUserDefault())
     organization = serializers.SlugRelatedField(
-        slug_field='name', queryset=Organization.objects.all(),
+        slug_field='id', queryset=Organization.objects.all(),
         required=False)
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
@@ -226,16 +226,16 @@ class UserSerializer(serializers.ModelSerializer):
     organization_roles = serializers.SerializerMethodField()
 
     def get_organization_roles(self, obj):
-        editor_list = list(obj.editor.all().values_list('id', flat=True))
+        editor_list = list(obj.editor.all())
 
         # A user may be both member and editor. As editor status supersedes
         # member status, if they are editor, we filter out the membership
         membership_list = list(filter(lambda x: x not in editor_list,
-                        obj.organization_set.all().values_list('id', flat=True)))
+                        obj.organization_set.all()))
 
         return list(
-            [{'role': 'editor', 'organization_id': o} for o in editor_list] +
-            [{'role': 'member', 'organization_id': o} for o in membership_list]
+            [{'role': 'editor', 'organization_id': o.id, 'organization_name': o.name} for o in editor_list] +
+            [{'role': 'member', 'organization_id': o.id, 'organization_name': o.name} for o in membership_list]
         )
 
     class Meta:
