@@ -45,7 +45,7 @@ class VideoUpload extends Component {
     console.log("beginning upload");
     this.uploader.setOption("multipart_params", {
       upload_token: this.token["upload_token"],
-      video_id: 1,
+      video_id: this.videoID,
     });
     this.uploader.start();
   }
@@ -53,6 +53,7 @@ class VideoUpload extends Component {
   constructor(props) {
     super(props);
     this.browseRef = React.createRef();
+    this.videoID = props.videoID
     this.token = null;
     this.fileAdded = this.fileAdded.bind(this);
     this.uploadProgress = this.uploadProgress.bind(this);
@@ -78,7 +79,7 @@ class VideoUpload extends Component {
 
   async componentDidMount() {
     // TODO: Error handling
-    this.token = await get_upload_token(1);
+    this.token = await get_upload_token(this.videoID);
     this.uploader = new plupload.Uploader({
       runtimes: "html5",
       browse_button: this.browseRef.current,
