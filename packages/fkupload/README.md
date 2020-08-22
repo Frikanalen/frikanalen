@@ -19,13 +19,16 @@ It uses Python3. Do this to install first time:
 The protocol
 ------------
 
+When a video object is created, Django assignes an upload token UUID
+to this video.
+
+That token is fetched from the Frikanalen API using the
+`https://frikanalen.no/api/videos/<video_id>/upload_token` end point.
+
 The upload protocol uses POST to submit one or more chunks of the
 video file to upload.  Included in each POST is the the video ID and
 an upload token associated with the video ID and the filename of the
 video file.
-
-The token is fetched from the Frikanalen API using the
-`https://frikanalen.no/api/videos/<video_id>/upload_token` end point.
 
 Here is an example, a simple upload consisting of two chunks, sent as
 multipart/form-data in the POST:
