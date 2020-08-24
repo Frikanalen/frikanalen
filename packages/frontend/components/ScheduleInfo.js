@@ -77,10 +77,12 @@ export class ScheduleInfo extends Component {
     const programme_row = (programme, DOMclass) => {
       return (
         <div className={"programme " + DOMclass}>
-          <span className="startTime">
-            {this.as_HH_mm(programme.starttime)}
+          <span className="times">
+            <span className="startTime">
+              {this.as_HH_mm(programme.starttime)}
+            </span>
+            <span className="endTime">{this.as_HH_mm(programme.endtime)}</span>
           </span>
-          <span className="endTime">{this.as_HH_mm(programme.endtime)}</span>
           <span className="organization">{programme.orgname}</span>
           <span className="lineBreak"></span>
           <span className="name">{programme.name}</span>
@@ -100,10 +102,13 @@ export class ScheduleInfo extends Component {
               }
             }
 
+            .programme > .times {
+              white-space: nowrap;
+            }
             .programme.current {
               background: rgba(0, 0, 0, 0.2);
             }
-            .programme > .endTime::before {
+            .programme > .times > .endTime::before {
               content: "–";
             }
             @media screen and (max-width: 1024px) {
@@ -118,7 +123,7 @@ export class ScheduleInfo extends Component {
             .programme > .organization::after {
               content: ":";
             }
-            .programme > .endTime {
+            .programme > .times > .endTime {
               margin-right: 5px;
               color: #888;
             }

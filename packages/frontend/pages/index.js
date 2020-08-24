@@ -13,13 +13,13 @@ import Container from "react-bootstrap/Container";
 
 const BetaDisclaimer = () => (
   <WindowWidget nomargin>
-    <Container fluid="lg" className="beta-disclaimer">
+    <Container fluid className="beta-disclaimer">
       <Row className="icon-row">
         <Col md="auto" className="icon-box">
           <svg
             id="beta-disclaimer-icon"
             xmlns="http://www.w3.org/2000/svg"
-            height="100"
+            height="80"
             viewBox="0 0 24 24"
             preserveAspectRatio="xMaxYMax meet"
             width="100"
@@ -29,7 +29,11 @@ const BetaDisclaimer = () => (
           </svg>
         </Col>
         <Col className="beta-text">
-          <h3>Velkommen til nye frikanalen.no!</h3>
+          <h4>Velkommen til nye frikanalen.no!</h4>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
           <p>
             Etter mye hardt arbeide bak scenene kan vi endelig presentere første
             versjon av nye frikanalen.no.
@@ -49,33 +53,11 @@ const BetaDisclaimer = () => (
       <style jsx global>{`
         .icon-row {
           place-items: center;
+          padding: 5px;
         }
 
         #beta-disclaimer-icon {
           fill: yellow;
-        }
-
-        @media only screen and (min-width: 768px) {
-          .beta-text {
-            padding-left: 0;
-          }
-        }
-
-        @media only screen and (max-width: 767px) {
-          .icon-row {
-            padding-top: 24px;
-          }
-          .icon-row {
-            width: 100%;
-          }
-          .icon-box {
-            flex-shrink: 1;
-            flex-grow: 1;
-            text-align: center;
-          }
-          .beta-text {
-            flex-grow: 1;
-          }
         }
       `}</style>
     </Container>
@@ -84,8 +66,17 @@ const BetaDisclaimer = () => (
 export default function index() {
   return (
     <Layout>
-      <LiveNow />
-      <BetaDisclaimer />
+      <Container>
+        <Row sm={1} xl={2}>
+          <Col>
+            {" "}
+            <LiveNow />
+          </Col>
+          <Col>
+            <BetaDisclaimer />
+          </Col>
+        </Row>
+      </Container>
     </Layout>
   );
 }
