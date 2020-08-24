@@ -282,9 +282,22 @@ class Video(models.Model):
         blank=True, max_length=1024, help_text='URL for reference')
     duration = models.DurationField(blank=True, default=datetime.timedelta(0))
 
-    # TODO: This should probably be transitioned to a models.UUIDField?
-    upload_token = models.CharField( blank=True, default=uuid.uuid4().hex, 
-        max_length=32, help_text='Video upload token (used by fkupload/frontend)')
+    # This function is a workaround so we can pass a callable
+    # to default argument. Otherwise, the migration analyser evaluates
+    # the UUID and then concludes a new default value has been assigned,
+    # helpfully generating a migration.
+    #
+    # upload_token should be migrated to a UUIDField, and that transition
+    # needs to be tested throughout the upload chain.
+    # upload_token = models.UUIDField(blank=True, default=uuid.uuid4,
+    #                 editable=False,
+    #                 help_text='Video upload token (used by fkupload/frontend)')
+
+    def default_uuid_value():
+        return uuid.uuid4().hex
+
+    upload_token = models.CharField(blank=True, default=default_uuid_value,
+            max_length=32, help_text='Video upload token (used by fkupload/frontend)')
 
     objects = VideoManager()
 
