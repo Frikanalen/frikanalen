@@ -60,7 +60,13 @@ class VideoSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer()
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
-    videofiles = VideoFileSerializer(many=True, read_only=True)
+    files = serializers.SerializerMethodField()
+
+    def get_files(self, video):
+        file_list = {}
+        for vf in VideoFile.objects.filter(video=video):
+            file_list[vf.format.fsname] = settings.FK_MEDIA_URLPREFIX+vf.location(relative=True)
+        return file_list
 
     class Meta:
         model = Video
@@ -69,8 +75,9 @@ class VideoSerializer(serializers.ModelSerializer):
             "name",
             "header",
             "description",
+            "files",
             "creator",
-            "videofiles",
+            "files",
             "organization",
             "duration",
             "categories",
@@ -87,7 +94,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "large_thumbnail_url",
             )
         read_only_fields = (
-            "framerate", "created_time", "updated_time", "videofiles")
+            "framerate", "created_time", "updated_time", "files")
 
     def validate(self, data):
         is_creation = not self.instance
