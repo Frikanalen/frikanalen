@@ -177,7 +177,6 @@ class VideoFile(models.Model):
     video = models.ForeignKey("Video", on_delete=models.PROTECT)
     format = models.ForeignKey("FileFormat", on_delete=models.PROTECT)
     filename = models.CharField(max_length=256)
-    old_filename = models.CharField(max_length=256, default='', blank=True)
     # source = video = models.ForeignKey("VideoFile")
     integrated_lufs = models.FloatField(
         'Integrated LUFS of file defined in ITU R.128',

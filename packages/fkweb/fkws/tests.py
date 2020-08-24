@@ -210,8 +210,7 @@ class PermissionsTest(APITestCase):
         tests = [
             (
                 reverse('api-videofile-list'),
-                {'video': 1, 'format': 1, 'filename': 'test.mov',
-                 'old_filename': 'a'},
+                {'video': 1, 'format': 1, 'filename': 'test.mov'},
                 {'id': 5, 'video': 1, 'filename': 'test.mov'},
                 status.HTTP_201_CREATED,
             ),
@@ -249,8 +248,7 @@ class PermissionsTest(APITestCase):
         tests = [
             (
                 reverse('api-videofile-list'),
-                {'video': 1, 'format': 1, 'filename': 'test.mov',
-                 'old_filename': 'a'},
+                {'video': 1, 'format': 1, 'filename': 'test.mov'},
                 {'id': 5, 'video': 1, 'filename': 'test.mov'},
                 status.HTTP_201_CREATED,
             ),
@@ -286,7 +284,7 @@ class PermissionsTest(APITestCase):
         thing_tests = [
             ('api-videofile-detail',
              VideoFile.objects.get(video__name='tech video'),
-             'old_filename'),
+             'filename'),
             ('api-scheduleitem-detail',
              Scheduleitem.objects.get(video__name='tech video'),
              'default_name'),
@@ -302,7 +300,7 @@ class PermissionsTest(APITestCase):
         thing_tests = [
             ('api-videofile-detail',
              VideoFile.objects.get(video__name='tech video'),
-             'old_filename'),
+             'filename'),
             ('api-scheduleitem-detail',
              Scheduleitem.objects.get(video__name='tech video'),
              'default_name'),
@@ -318,7 +316,7 @@ class PermissionsTest(APITestCase):
         thing_tests = [
             ('api-videofile-detail',
              VideoFile.objects.get(video__name='dummy video'),
-             'old_filename'),
+             'filename'),
             ('api-scheduleitem-detail',
              Scheduleitem.objects.get(video__name='dummy video'),
              'default_name'),

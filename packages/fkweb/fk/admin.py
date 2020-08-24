@@ -56,8 +56,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 class VideoFileInline(admin.StackedInline):
-    fields = ('format', 'filename', 'old_filename')
-    #readonly_fields = ['format', 'filename']
+    fields = ('format', 'filename')
     model = VideoFile
     extra = 0
 
