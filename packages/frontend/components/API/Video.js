@@ -1,3 +1,4 @@
+import Organization from "./Organization";
 import { Component } from "react";
 import { APIGET, APIPOST } from "./Fetch.js";
 
@@ -13,14 +14,22 @@ export function get_upload_token(video_id) {
 export default class Video {
   constructor() {
     this.ID = null;
+    this.org = new Organization();
+    this.assets = {};
   }
 
-  async load(videoID) {
-    const videoData = await APIGET("videos/" + videoID);
+  async loadJSON(videoData) {
     this.ID = videoData.id;
     this.name = videoData.name;
     this.header = videoData.header;
     this.categories = videoData.categories;
+    this.published = videoData.publish_on_web;
+    this.org.loadJSON(videoData.organization);
+    this.files = videoData.files;
+  }
+
+  async load(videoID) {
+    this.loadJSON(await APIGET("videos/" + videoID));
   }
 
   async save() {
@@ -29,18 +38,20 @@ export default class Video {
         name: this.name,
         header: this.header,
         categories: this.categories,
-        organization: this.organization,
+        organization: this.org.ID,
       });
       try {
         this.ID = foo.id;
       } catch (e) {
         console.log(e);
       }
+      console.log("video ID now ", foo.id);
     }
   }
 
-  setOrganization(newOrganization) {
-    this.organization = newOrganization;
+  setOrganization(newOrganizationID) {
+    this.org = new Organization();
+    this.org.ID = newOrganizationID;
   }
 
   setHeader(newHeader) {

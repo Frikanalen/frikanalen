@@ -11,6 +11,7 @@ import useSWR from "swr";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+// TODO: Use OrganizationFetcher from API component
 
 const AuthenticatedFetcher = (url) =>
   axios

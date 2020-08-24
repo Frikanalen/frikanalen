@@ -49,11 +49,10 @@ export default class VideoCreate extends Component {
             errors.push(
               <Alert variant="danger">
                 <Alert.Heading>{key}</Alert.Heading>
-                {e.response.data[key]}
               </Alert>
             );
           }
-          this.setState({ errors: <Alert>{errors}</Alert> });
+          this.setState({ errors: errors });
         } else {
           console.log(e.response.status);
           console.log(e.response.data);
