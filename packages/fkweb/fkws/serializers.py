@@ -58,9 +58,7 @@ class VideoSerializer(serializers.ModelSerializer):
     creator = serializers.SlugRelatedField(
         slug_field='email', queryset=get_user_model().objects.all(),
         default=serializers.CurrentUserDefault())
-    organization = serializers.SlugRelatedField(
-        slug_field='id', queryset=Organization.objects.all(),
-        required=False)
+    organization = OrganizationSerializer()
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
 
@@ -74,7 +72,6 @@ class VideoSerializer(serializers.ModelSerializer):
             "creator",
             "organization",
             "duration",
-            #'videofiles',
             "categories",
             "framerate",
             "proper_import",
