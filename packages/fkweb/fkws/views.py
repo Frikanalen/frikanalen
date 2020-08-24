@@ -5,11 +5,9 @@ import csv
 import datetime
 
 from django.http import HttpResponse
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django_filters import rest_framework as djfilters
-from rest_framework import filters
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
@@ -19,7 +17,6 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from django.contrib.auth import get_user_model
 
 import fkvod.search
 
@@ -28,7 +25,6 @@ from fk.models import Category
 from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
-from fk.models import User
 from fk.models import Organization
 
 from fkws.permissions import IsInOrganizationOrDisallow
@@ -41,6 +37,7 @@ from fkws.serializers import ScheduleitemSerializer
 from fkws.serializers import TokenSerializer
 from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
+from fkws.serializers import VideoCreateSerializer
 from fkws.serializers import VideoUploadTokenSerializer
 from fkws.serializers import UserSerializer
 from fkws.serializers import OrganizationSerializer
@@ -275,7 +272,6 @@ class VideoList(generics.ListCreateAPIView):
 
     """
     queryset = Video.objects.filter(proper_import=True)
-    serializer_class = VideoSerializer
     pagination_class = Pagination
     filter_class = VideoFilter
     permission_classes = (IsInOrganizationOrReadOnly,)
@@ -283,6 +279,11 @@ class VideoList(generics.ListCreateAPIView):
         f.column for f in Video._meta.fields
         if f.column in VideoSerializer.Meta().fields
     ]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return VideoCreateSerializer
+        return VideoSerializer
 
     def get_queryset(self):
         # Can filtering on proper_import be done using a different
@@ -381,6 +382,7 @@ class OrganizationList(generics.ListCreateAPIView):
     pagination_class = Pagination
     permission_classes = (IsOrganizationEditorOrReadOnly,)
 
+
 class OrganizationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Video file details
@@ -388,6 +390,7 @@ class OrganizationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
     permission_classes = (IsOrganizationEditorOrReadOnly,)
+
 
 class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -397,11 +400,13 @@ class VideoFileDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = VideoFileSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
 
+
 class UserCreate(generics.CreateAPIView):
     throttle_classes = [AnonRateThrottle]
     permission_classes = [AllowAny]
 
     serializer_class = NewUserSerializer
+
 
 class UserDetail(generics.RetrieveUpdateAPIView):
     """

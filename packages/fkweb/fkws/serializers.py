@@ -54,10 +54,10 @@ class VideoFileSerializer(serializers.ModelSerializer):
 
 
 class VideoSerializer(serializers.ModelSerializer):
+    organization = OrganizationSerializer(read_only=True)
     creator = serializers.SlugRelatedField(
         slug_field='email', queryset=get_user_model().objects.all(),
         default=serializers.CurrentUserDefault())
-    organization = OrganizationSerializer()
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
     files = serializers.SerializerMethodField()
@@ -110,6 +110,12 @@ class VideoSerializer(serializers.ModelSerializer):
                       "editor has more than one organization."}])
             data['organization'] = potential_orgs[0]
         return data
+
+
+class VideoCreateSerializer(VideoSerializer):
+    organization = serializers.SlugRelatedField(
+        slug_field='id', queryset=Organization.objects.all(),
+        required=False)
 
 
 class VideoUploadTokenSerializer(serializers.ModelSerializer):
@@ -226,6 +232,7 @@ class NewUserSerializer(serializers.ModelSerializer):
                 'password',
                 )
 
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     organization_roles = serializers.SerializerMethodField()
@@ -236,11 +243,24 @@ class UserSerializer(serializers.ModelSerializer):
         # A user may be both member and editor. As editor status supersedes
         # member status, if they are editor, we filter out the membership
         membership_list = list(filter(lambda x: x not in editor_list,
-                        obj.organization_set.all()))
+                                      obj.organization_set.all()))
 
         return list(
-            [{'role': 'editor', 'organization_id': o.id, 'organization_name': o.name} for o in editor_list] +
-            [{'role': 'member', 'organization_id': o.id, 'organization_name': o.name} for o in membership_list]
+            [
+                {
+                    'role': 'editor',
+                    'organization_id': o.id,
+                    'organization_name': o.name
+                }
+                for o in editor_list
+            ] + [
+                {
+                    'role': 'member',
+                    'organization_id': o.id,
+                    'organization_name': o.name
+                }
+                for o in membership_list
+            ]
         )
 
     class Meta:
@@ -265,13 +285,16 @@ class UserSerializer(serializers.ModelSerializer):
                 'date_joined',
                 )
 
+
 class CategorySerializer(serializers.ModelSerializer):
     videocount = serializers.SerializerMethodField('count_videos')
+
     def count_videos(self, category):
         return (Video.objects
                 .public()
                 .filter(categories=category)
                 .count())
+
     class Meta:
         model = Category
         fields = (
