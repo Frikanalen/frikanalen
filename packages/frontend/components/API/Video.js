@@ -15,7 +15,6 @@ export default class Video {
   constructor() {
     this.ID = null;
     this.org = new Organization();
-    this.assets = {};
   }
 
   async loadJSON(videoData) {
@@ -29,7 +28,10 @@ export default class Video {
   }
 
   async load(videoID) {
-    this.loadJSON(await APIGET("videos/" + videoID));
+    if (typeof videoID === "undefined") {
+      videoID = this.ID;
+    }
+    await this.loadJSON(await APIGET("videos/" + videoID));
   }
 
   async save() {

@@ -58,6 +58,7 @@ class VideoUpload extends Component {
     this.fileAdded = this.fileAdded.bind(this);
     this.uploadProgress = this.uploadProgress.bind(this);
     this.startUpload = this.startUpload.bind(this);
+    this.uploadComplete = props.onUploadComplete;
     this.state = {
       fileName: null,
       fileSize: null,
@@ -89,9 +90,7 @@ class VideoUpload extends Component {
       init: {
         FilesAdded: this.fileAdded,
         UploadProgress: this.uploadProgress,
-        UploadComplete: (i, e) => {
-          console.log(this);
-        },
+        UploadComplete: this.uploadComplete,
       },
     });
     this.uploader.init();

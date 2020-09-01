@@ -23,6 +23,43 @@ export default class VideoPage extends Component {
     super(props);
     this.video = new Video();
     this.video.loadJSON(props.videoJSON);
+    this.state = {
+      videoState: this.getStateFromVideo(),
+    };
+  }
+
+  // Divine the UI-relevant state of the video. If no file is present, we
+  // will sleep five seconds before checking again, because the user lands
+  // straight on the video page after uploading.
+  // TODO: Expose this in a better way in the Video class.
+  getStateFromVideo() {
+    console.log(this.video.files);
+    var videoState = "";
+    if (!this.video.published) {
+      videoState = "unpublished";
+    } else {
+      // If there is only an original/broadcast file, we can surmise that
+      // the file is being processed.
+      if ("theora" in this.video.files) {
+        videoState = "playable";
+      } else {
+        if ("original" in this.video.files || "broadcast" in this.video.files) {
+          setTimeout(() => {
+            this.video.load().then(() => {
+              this.setState({
+                videoState: this.getStateFromVideo(),
+              });
+            });
+          }, 1000);
+          videoState = "processing";
+        } else {
+          videoState = "nofile";
+        }
+      }
+    }
+
+    console.log(this.video.files, videoState);
+    return videoState;
   }
 
   vodBox() {
@@ -37,16 +74,59 @@ export default class VideoPage extends Component {
     );
   }
 
+  processingSpinnerBox() {
+    return (
+      <div>
+        <Spinner animation="border" />
+      </div>
+    );
+  }
+
+  pendingSpinnerBox() {
+    return (
+      <div>
+        <Spinner animation="border" />
+      </div>
+    );
+  }
+
+  uploadBox() {
+    return (
+      <VideoUpload
+        videoID={this.video.ID}
+        onUploadComplete={() => {
+          this.setState({
+            videoState: "pending",
+          });
+          setTimeout(() => {
+            this.video.load().then(() => {
+              this.setState({
+                videoState: this.getStateFromVideo(),
+              });
+            });
+          }, 5000);
+        }}
+      />
+    );
+  }
+
   render() {
     var videoPage = null;
-    if (!this.video.published) {
+
+    console.log(this.state);
+
+    if (this.state == "unpublished") {
       videoPage = <p>Denne filen er ikke publisert</p>;
-    } else if (!Object.keys(this.video.files).length) {
-      console.log("this video ID:", this.video);
-      videoPage = <VideoUpload videoID={this.video.ID} />;
-    } else {
+    } else if (this.state.videoState == "playable") {
       videoPage = this.vodBox();
+    } else if (this.state.videoState == "nofile") {
+      videoPage = this.uploadBox();
+    } else if (this.state.videoState == "pending") {
+      videoPage = this.pendingSpinnerBox();
+    } else if (this.state.videoState == "processing") {
+      videoPage = this.processingSpinnerBox();
     }
+
     return (
       <Layout>
         <WindowWidget invisible>
@@ -55,7 +135,7 @@ export default class VideoPage extends Component {
               <Col className="videoBox">
                 <h3>{this.video.name}</h3>
                 <p>
-                  Publisert av{" "}
+                  Publisert av:{" "}
                   <a href={"/org/" + this.video.org.ID}>
                     {this.video.org.name}
                   </a>
