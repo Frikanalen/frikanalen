@@ -10,9 +10,5 @@ tx4.frikanalen.no
 [upload]
 file01.frikanalen.no nginx=true domain=upload.frikanalen.no
 
-[web]
-frikanalen-prod.nuug.no domain=frikanalen.no
-frikanalen-dev.nuug.no domain=dev.frikanalen.no
-
 [playout]
 tx2.frikanalen.no

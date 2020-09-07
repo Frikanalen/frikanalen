@@ -1,8 +1,0 @@
----
-app_user: fkweb
-app_dir: /srv/fkweb
-app_bind: 127.0.0.1:3000
-app_db_name: fkweb
-app_db_pass: "{{ vault_db_pass }}"
-app_secret_key: "{{ vault_web_secret }}"
-domain: frikanalen.no
