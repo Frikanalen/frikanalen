@@ -37,7 +37,7 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 ## Current development focus
 
 - We are migrating to Kubernetes - most everything done there, but:
-    - Our Django installation needs to move from a QEMU VM to Kubernetes
+    - ~~Our Django installation needs to move from a QEMU VM to Kubernetes~~
     - Schedule generation needs rewriting/moving
     - Upload receiver and file mover/processer needs moving
 - We are modernizing our playout code
@@ -45,7 +45,7 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
     - Intelligently filling idle air time [with graphics](packages/utils/on-air-graphics)
 - We are writing a new front-end
     - Migrating functionality from legacy site: Video archive, member sign-up, scheduling, ...
-    - The current development is only tested in Chrome and needs cross-browser testing/CSS adjustment
+    - ~~The current development is only tested in Chrome and needs cross-browser testing/CSS adjustment~~
 
 Running all tests
 -----------------
