@@ -9,6 +9,7 @@ switcher.
 
 
 `GET /getPoster.png?text=foo&heading=bar`
+
 `POST /getPoster.png <- {"text": "foo", "heading": "bar"}`
 
 Returns a 1280x720 PNG file.
