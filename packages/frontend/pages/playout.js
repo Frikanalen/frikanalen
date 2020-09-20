@@ -1,64 +1,75 @@
-// There are a few problems with this code:
-//
-// - The URL is hard-coded
-// - ATEM functionality is awkwardly coded
-// - The entire thing is terrible
-
 import configs from "../components/configs";
 import Layout from "../components/Layout";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import React, { Component } from "react";
 import Realtime from "../components/WebRTC.js";
-//import VideoPlayer from '../components/VideoJS.js';
-//import DASHPlayer from '../components/DASHPlayer.js';
 
-class Playout extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      program: 0,
-    };
-    fetch("https://frikanalen.no/playout/atem/program")
-      .then((res) => res.json())
-      .then((json) => {
-        this.setState({
-          program: json.inputIndex,
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+class ATEMControl {
+  constructor(atemURL) {
+    this.atemURL = atemURL;
+    this.program = null;
   }
 
-  set_input = (input_index) => {
-    fetch("https://frikanalen.no/playout/atem/program", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ inputIndex: input_index }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        this.setState({
-          program: json.inputIndex,
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
+  async connect(URL) {
+    try {
+      var data = await fetch(this.atemURL);
+      var json = await data.json();
+      this.program = json.inputIndex;
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-  InputButton = (props) => {
+  async setProgram(inputIndex) {
+    try {
+      var data = await fetch(this.atemURL, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ inputIndex: inputIndex }),
+      });
+      var json = await data.json();
+      this.program = json.inputIndex;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+
+class ATEMPanel extends Component {
+  constructor(props) {
+    super(props);
+    this.ATEM = new ATEMControl(configs.atem);
+    this.state = { program: null };
+    this.inputs = [
+      { index: 2, name: "tx1" },
+      { index: 3, name: "tx2" },
+      { index: 1, name: "tx3" },
+      { index: 4, name: "rx1" },
+      { index: 1000, name: "color bars" },
+    ];
+  }
+
+  async componentDidMount() {
+    await this.ATEM.connect();
+    this.setState({ program: this.ATEM.program });
+  }
+
+  InputButton = (input) => {
     return (
       <span>
         <button
-          className={props.input.index == this.state.program ? "active" : ""}
-          onClick={() => this.set_input(props.input.index)}
+          className={input.index == this.state.program ? "active" : ""}
+          onClick={() =>
+            this.ATEM.setProgram(input.index).then(
+              this.setState({ program: this.ATEM.program })
+            )
+          }
         >
-          {props.input.name}
+          {input.name}
         </button>
         <style jsx>{`
           button {
@@ -81,29 +92,11 @@ class Playout extends Component {
       </span>
     );
   };
-
-  Knapperad = (props) => {
-    const knapper = props.knapper;
-    console.log(knapper);
-    const knapperad = knapper.map((knapp) => (
-      <this.InputButton key={knapp.index} input={knapp} />
-    ));
-    return knapperad;
-  };
-
-  ATEM = () => {
-    var inputs = [
-      { index: 2, name: "tx1" },
-      { index: 3, name: "tx2" },
-      { index: 1, name: "tx3" },
-      { index: 1000, name: "color bars" },
-    ];
+  render() {
     return (
       <div id="ATEM">
         <label>Programutgang til OBE (NEP):</label>
-        <div>
-          <this.Knapperad knapper={inputs} />
-        </div>
+        <div>{this.inputs.map((input) => this.InputButton(input))}</div>
         <style jsx>{`
           #ATEM {
             background: #555;
@@ -128,16 +121,17 @@ class Playout extends Component {
         `}</style>
       </div>
     );
-  };
+  }
+}
 
-  //    <DASHPlayer manifestUri="https://beta.frikanalen.no/stream/multiviewer.webm" />
-  //<this.ATEM/>
+class Playout extends Component {
   render = () => {
     return (
       <Layout>
         <div className="playoutControl">
           <div className="header">playout-styring</div>
           <Realtime />
+          <ATEMPanel />
         </div>
         <style jsx global>{`
           .playoutControl > div {
