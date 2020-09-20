@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stills-generator
+spec:
+  selector:
+    matchLabels:
+      app: stills-generator
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: stills-generator
+    spec:
+      containers:
+      - name: stills-generator
+        image: frikanalen/stills-generator:latest
+        ports:
+          - name: web
+            containerPort: 80

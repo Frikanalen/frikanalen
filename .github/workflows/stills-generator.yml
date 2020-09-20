@@ -1,0 +1,23 @@
+name: Build stills generator microservice
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/utils/stills-generator'
+jobs:
+  build:
+    name: Build and push Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+      - name: Stills generator
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: frikanalen/stills-generator
+          tag_with_ref: true
+          path: packages/utils/stills-generator
+          dockerfile: packages/utils/stills-generator/Dockerfile
