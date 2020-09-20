@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: atem-control
-        image: toresbe/fk-atem-control-service:0.0.1
+        image: frikanalen/atem-control-service:latest
         ports:
           - name: web
             containerPort: 80
