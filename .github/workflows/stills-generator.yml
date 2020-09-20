@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - 'packages/utils/stills-generator'
+      - 'packages/utils/stills-generator/**'
 jobs:
   build:
     name: Build and push Docker images
