@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 
 const ATEM_HOST = process.env.ATEM_HOST || undefined;
 const LISTEN_PORT = process.env.PORT || undefined;
+const FK_API_URL = process.env.FK_API_URL || 'https://frikanalen.no/api'
 
 class AtemControl {
     constructor() {
@@ -90,7 +91,7 @@ class AtemControl {
     }
 
     async check_if_staff(token) {
-        let res = await fetch('https://dev.frikanalen.no/api/user', 
+        let res = await fetch(FK_API_URL + '/user', 
             {
                 headers: { 'Authorization': 'Token ' + token, }
             }
