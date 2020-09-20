@@ -31,9 +31,14 @@ class AtemControl {
             this.myAtem.setAudioMixerInputProps(1, {mixOption: 2});
             this.myAtem.setAudioMixerInputProps(2, {mixOption: 2});
             this.myAtem.setAudioMixerInputProps(3, {mixOption: 2});
+            this.myAtem.setAudioMixerInputProps(4, {mixOption: 2}).then(res => console.log(res))
+            this.myAtem.setAudioMixerInputGain(4, 1.0).then(res => console.log(res));
             //this.myAtem.setMultiViewerSource({source:2, windowIndex: 2}, 0).then(res => console.log(res))
             //this.myAtem.setMultiViewerSource({source:3, windowIndex: 3}, 0).then(res => console.log(res))
-            //this.myAtem.setMultiViewerSource({source:1, windowIndex: 4}, 0).then(res => console.log(res))
+            //this.myAtem.setInputSettings({shortName:"RX", longName:"RX"}, 4).then(res => console.log(res))
+            this.myAtem.setMultiViewerSource({source:3, windowIndex: 3}, 0).then(res => console.log(res))
+            this.myAtem.setMultiViewerSource({source:4, windowIndex: 4}, 0).then(res => console.log(res))
+            this.myAtem.changeProgramInput(3)
             //this.myAtem.setInputSettings({shortName:"TX1", longName:"TX1"}, 2).then(res => console.log(res))
             //this.myAtem.setInputSettings({shortName:"TX2", longName:"TX2"}, 3).then(res => console.log(res))
             //this.myAtem.setInputSettings({shortName:"TX3", longName:"TX3"}, 1).then(res => console.log(res))
