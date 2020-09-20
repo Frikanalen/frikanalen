@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: stills-generator
+spec:
+  type: ClusterIP
+  selector:
+    app: stills-generator
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web

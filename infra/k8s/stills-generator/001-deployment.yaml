@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: atem-control
+  name: stills-generator
 spec:
   selector:
     matchLabels:
-      app: atem-control
+      app: stills-generator
   minReadySeconds: 5
   template:
     metadata:
       labels:
-        app: atem-control
+        app: stills-generator
     spec:
       containers:
-      - name: atem-control
-        image: toresbe/fk-atem-control-service:0.0.1
+      - name: stills-generator
+        image: frikanalen/stills-generator:latest
         ports:
           - name: web
             containerPort: 80
