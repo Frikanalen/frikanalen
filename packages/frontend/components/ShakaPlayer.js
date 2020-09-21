@@ -16,7 +16,6 @@ export default class DASHPlayer extends Component {
   }
 
   initApp() {
-    console.log("hiiii");
     // Install built-in polyfills to patch browser incompatibilities.
     shaka.polyfill.installAll();
 
@@ -26,7 +25,7 @@ export default class DASHPlayer extends Component {
       this.initPlayer();
     } else {
       // This browser does not have the minimum set of APIs we need.
-      console.error("Browser not supported!");
+      //console.error("Browser not supported!");
     }
   }
 
@@ -58,7 +57,7 @@ export default class DASHPlayer extends Component {
       .load(this.props.src)
       .then(function () {
         // This runs if the asynchronous load is successful.
-        console.log("The video has now been loaded!");
+        //console.log("The video has now been loaded!");
       })
       .catch(this.onError); // onError is executed if the asynchronous load fails.
   }

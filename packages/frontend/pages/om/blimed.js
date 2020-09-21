@@ -8,11 +8,20 @@ export default function Blimed() {
     <Layout>
       <WindowWidget>
         <h2>Bli med!</h2>
-        <p>Alle ikke-kommersielle organisasjoner kan tegne medlemskap i Frikanalen og få sitt innhold sendt på riksdekkende fjernsyn.</p>
+        <p>
+          Alle ikke-kommersielle organisasjoner kan tegne medlemskap i
+          Frikanalen og få sitt innhold sendt på riksdekkende fjernsyn.
+        </p>
         <Alert variant="info">
-        <h3>Du er litt for tidlig ute!</h3>
-        <p>Denne nettsiden er under aktiv utvikling. Vi kommer med en utførlig guide her så fort vi kan.</p>
-        <p>I mellomtiden henviser vi til «<a href="/om/kontakt">Kontakt oss</a>» for informasjon om kontingent og innmelding.</p>
+          <h3>Du er litt for tidlig ute!</h3>
+          <p>
+            Denne nettsiden er under aktiv utvikling. Vi kommer med en utførlig
+            guide her så fort vi kan.
+          </p>
+          <p>
+            I mellomtiden henviser vi til «<a href="/om/kontakt">Kontakt oss</a>
+            » for informasjon om kontingent og innmelding.
+          </p>
         </Alert>
       </WindowWidget>
     </Layout>

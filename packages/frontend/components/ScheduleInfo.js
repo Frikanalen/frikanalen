@@ -2,75 +2,47 @@ import Link from "next/link";
 import configs from "./configs";
 import React, { Component } from "react";
 export class ScheduleInfo extends Component {
-  constructor(props) {
-    super(props);
-    const json = this.fetchJSON().then((json) => {
-      const sched = json.data.allFkOnRightNows.edges;
-      //console.log(sched[2].node)
-      this.setState({
-        previous: sched[2].node,
-        current: sched[1].node,
-        next: sched[0].node,
-        ready: true,
-      });
-    });
-    this.state = {
-      ready: false,
-    };
-  }
-
-  fetchJSON = async () => {
-    const query = `
-        query {
-          allFkOnRightNows {
-            edges {
-              node {
-                starttime
-                endtime
-                name
-                orgname
-              }
-            }
-          }
-        }
-        `;
-    const opts = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
-    };
-    const res = await fetch(configs.graphql, opts);
-    return res.json();
-  };
-
-  updateSchedule = async () => {
-    const json = await this.fetchJSON();
-    const sched = json.data.allFkOnRightNows.edges;
-    //console.log(sched[2].node)
+  async componentWillMount() {
+    const foo = await fetch(configs.api + "scheduleitems/?days=1");
+    const json = await foo.json();
     this.setState({
-      previous: sched[2].node,
-      current: sched[1].node,
-      next: sched[0].node,
+      schedule: json.results,
+    });
+    this.findRunningProgram();
+    this.setState({
       ready: true,
     });
+  }
 
-    // FIXME: This code should somehow run on the timecode coming from the live video,
-    // for now, we're just hacking things
-    var ms_until_next = new Date(sched[1].node.endtime) - Date.now();
-    if (ms_until_next < 10000) ms_until_next = 10000;
-    setTimeout(
-      function () {
-        this.componentDidMount();
-      }.bind(this),
-      ms_until_next
-    );
-  };
+  findRunningProgram() {
+    const now = new Date();
+    var currentItem;
+    // FIXME: This will render wrong if the user's browser is not
+    // in the Europe/Oslo timezone
+    for (let id in this.state.schedule) {
+      const startTime = new Date(Date.parse(this.state.schedule[id].starttime));
+      const endTime = new Date(Date.parse(this.state.schedule[id].endtime));
+      if (startTime <= now && endTime > now) {
+        currentItem = parseInt(id);
+        console.log(id, this.state.schedule[id]);
+        break;
+      }
+    }
+    this.setState({
+      currentItem: currentItem,
+    });
+  }
 
   as_HH_mm(datestr) {
     let d = new Date(datestr);
     return (
       ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2)
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { ready: false };
   }
 
   render() {
@@ -83,9 +55,13 @@ export class ScheduleInfo extends Component {
             </span>
             <span className="endTime">{this.as_HH_mm(programme.endtime)}</span>
           </span>
-          <span className="organization">{programme.orgname}</span>
+          <span className="organization">
+            {programme.video.organization.name}
+          </span>
           <span className="lineBreak"></span>
-          <span className="name">{programme.name}</span>
+          <span className="name">
+            <a href={"v/" + programme.video.id}>{programme.video.name}</a>
+          </span>
           <style jsx>{`
             .programme {
               font-family: "Roboto", sans-serif;
@@ -134,11 +110,21 @@ export class ScheduleInfo extends Component {
 
     if (!this.state.ready) return null;
     else {
+      console.log(typeof this.state.currentItem);
       return (
         <span className="onRightNow">
-          {programme_row(this.state.previous, "previous")}
-          {programme_row(this.state.current, "current")}
-          {programme_row(this.state.next, "next")}
+          {programme_row(
+            this.state.schedule[this.state.currentItem - 1],
+            "previous"
+          )}
+          {programme_row(
+            this.state.schedule[this.state.currentItem],
+            "current"
+          )}
+          {programme_row(
+            this.state.schedule[this.state.currentItem + 1],
+            "next"
+          )}
           <style jsx>{`
             .onRightNow {
               color: white;

@@ -6,11 +6,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 
-//process.on('unhandledRejection', (reason, p) => {
-//  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-//  // application specific logging, throwing an error, or other logic here
-//});
-
 const BetaDisclaimer = () => (
   <WindowWidget nomargin>
     <Container fluid className="beta-disclaimer">
@@ -39,7 +34,6 @@ const BetaDisclaimer = () => (
             versjon av nye frikanalen.no.
           </p>
           <p>
-            {" "}
             Det er i første omgang nødvendig å bruke{" "}
             <a href="https://forrige.frikanalen.no/">de gamle nettsidene</a> for
             å laste opp innhold, eller se i videoarkivet.
