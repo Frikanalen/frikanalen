@@ -39,11 +39,11 @@ class Header extends Component {
               <Link href="/om" passHref>
                 <NavDropdown.Item>Om oss</NavDropdown.Item>
               </Link>
-              <Link href="/om/blimed" passHref>
-                <NavDropdown.Item>Bli med!</NavDropdown.Item>
-              </Link>
               <Link href="/om/vedtekter" passHref>
                 <NavDropdown.Item>Vedtekter</NavDropdown.Item>
+              </Link>
+              <Link href="/om/styret" passHref>
+                <NavDropdown.Item>Styret</NavDropdown.Item>
               </Link>
               <Link href="/om/kontakt" passHref>
                 <NavDropdown.Item>Kontakt oss</NavDropdown.Item>
