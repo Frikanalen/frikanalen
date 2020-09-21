@@ -31,16 +31,11 @@ const BetaDisclaimer = () => (
         <Col>
           <p>
             Etter mye hardt arbeide bak scenene kan vi endelig presentere første
-            versjon av nye frikanalen.no.
+            versjon av nye frikanalen.no!
           </p>
           <p>
-            Det er i første omgang nødvendig å bruke{" "}
-            <a href="https://forrige.frikanalen.no/">de gamle nettsidene</a> for
-            å laste opp innhold, eller se i videoarkivet.
-          </p>
-          <p>
-            De eksisterende funksjonene vil bli implementert fortløpende på den
-            nye siden!
+            Snart vil det komme en nyhetsseksjon så dere vil kunne få et
+            innblikk i alt arbeidet som er gjort.
           </p>
         </Col>
       </Row>
