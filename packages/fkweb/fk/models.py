@@ -407,11 +407,7 @@ class ScheduleitemManager(models.Manager):
             date = timezone.now().date()
         elif hasattr(date, 'date'):
             date = date.date()
-        # Take current date, but make an object at 00:00.
-        # Then make that an aware datetime so our comparisons
-        # are correct.
-        day_start = datetime.datetime.combine(date, datetime.time(0))
-        startdt = timezone.make_aware(day_start, timezone.get_current_timezone())
+        startdt = datetime.datetime.combine(date, datetime.time(0))
         enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
             startdt, enddt = self.expand_to_surrounding(startdt, enddt)
