@@ -47,7 +47,7 @@ class AtemControl {
 
         // TODO: Should be a GET method
         this.app.post('/preview', (req, res) => {
-            fetch('https://stills-generator.frikanalen.no/getPoster.png',
+            fetch('http://stills-generator/getPoster.png',
                 {
                     headers: {'Content-Type': 'application/json'},
                     method: 'post',
@@ -56,7 +56,6 @@ class AtemControl {
                 .then(data => data.buffer())
                 .then(data => res.type('image/png').send(data))
                 })
-        })
 
         this.app.post('/upload', (req, res) => {
             let token = req.headers['x-access-token'] || req.headers['authorization'] || req.cookies.token
@@ -74,7 +73,7 @@ class AtemControl {
                 if(!staff) {
                     res.status(403).send('eek').end()
                 } else {
-                    fetch('https://stills-generator.frikanalen.no/getPoster.rgba',
+                    fetch('http://stills-generator/getPoster.rgba',
                         {
                             method: 'post',
                             body: JSON.stringify(req.body),
