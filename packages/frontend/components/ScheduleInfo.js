@@ -24,7 +24,7 @@ export class ScheduleInfo extends Component {
       const endTime = new Date(Date.parse(this.state.schedule[id].endtime));
       if (startTime <= now && endTime > now) {
         currentItem = parseInt(id);
-        console.log(id, this.state.schedule[id]);
+        //console.log(id, this.state.schedule[id]);
         break;
       }
     }
@@ -47,6 +47,7 @@ export class ScheduleInfo extends Component {
 
   render() {
     const programme_row = (programme, DOMclass) => {
+        if (typeof(programme) === 'undefined') return false;
       return (
         <div className={"programme " + DOMclass}>
           <span className="times">
@@ -110,15 +111,16 @@ export class ScheduleInfo extends Component {
 
     if (!this.state.ready) return null;
     else {
-      console.log(typeof this.state.currentItem);
+      console.log(this.state.currentItem);
+      //console.log(typeof this.state.currentItem);
       return (
         <span className="onRightNow">
-          {(this.state.currentItem != 0) ?  programme_row( this.state.schedule[this.state.currentItem - 1], "previous") : null}
+          {(this.state.currentItem != 0) ? programme_row( this.state.schedule[this.state.currentItem - 1], "previous") : null}
           {programme_row(
             this.state.schedule[this.state.currentItem],
             "current"
           )}
-          {(this.state.currentItem == this.state.schedule.length) ?  programme_row( this.state.schedule[this.state.currentItem + 1], "next") : null}
+          {(this.state.currentItem != this.state.schedule.length) ? programme_row( this.state.schedule[this.state.currentItem + 1], "next") : false}
           <style jsx>{`
             .onRightNow {
               color: white;
