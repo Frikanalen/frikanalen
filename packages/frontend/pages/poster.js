@@ -30,7 +30,7 @@ export default class PosterManager extends Component {
 	}
 
 	async uploadPoster() {
-		fetch('https://stills-generator.frikanalen.no/program',
+		fetch('https://stills-generator.frikanalen.no/upload',
 			{
 				method: 'post',
 				headers: { 'Content-Type': 'application/json' },
