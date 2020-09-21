@@ -33,49 +33,51 @@ export default function LoginForm() {
   // if the session is valid, redirect to landing page.
   return (
     <Layout>
-      <Card variant="primary" border="primary" className="loginCard">
-        <Card.Body>
-          <Card.Title>Logg inn</Card.Title>
-          {errorMessage}
-          <Form onSubmit={(event) => login(event)}>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>Epostadresse</Form.Label>
-              <Form.Control
-                type="email"
-                autoComplete="username"
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Oppgi epostadresse"
-              />
-            </Form.Group>
-            <Form.Group controlId="formBasicPassword">
-              <Form.Label>Passord</Form.Label>
-              <Form.Control
-                type="password"
-                autoComplete="current-password"
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Passord"
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Logg inn
-            </Button>
-            <span className="registration-invitation">
-              ...eller <a href="/register">registrer ny bruker</a>
-            </span>
-            <style jsx global>{`
-              .registration-invitation {
-                padding-left: 10px;
-              }
-              .loginCard {
-                color: black;
-                width: 70%;
-                margin: 0 auto;
-                margin-top: 40px;
-              }
-            `}</style>
-          </Form>
-        </Card.Body>
-      </Card>
+      <WindowWidget invisible>
+        <Card variant="primary" border="primary" className="loginCard">
+          <Card.Body>
+            <Card.Title>Logg inn</Card.Title>
+            {errorMessage}
+            <Form onSubmit={(event) => login(event)}>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Epostadresse</Form.Label>
+                <Form.Control
+                  type="email"
+                  autoComplete="username"
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Oppgi epostadresse"
+                />
+              </Form.Group>
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>Passord</Form.Label>
+                <Form.Control
+                  type="password"
+                  autoComplete="current-password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Passord"
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Logg inn
+              </Button>
+              <span className="registration-invitation">
+                ...eller <a href="/register">registrer ny bruker</a>
+              </span>
+              <style jsx global>{`
+                .registration-invitation {
+                  padding-left: 10px;
+                }
+                .loginCard {
+                  color: black;
+                  width: 70%;
+                  margin: 0 auto;
+                  margin-top: 40px;
+                }
+              `}</style>
+            </Form>
+          </Card.Body>
+        </Card>
+      </WindowWidget>
     </Layout>
   );
 }
