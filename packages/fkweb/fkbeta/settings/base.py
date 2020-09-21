@@ -197,6 +197,8 @@ TEMPLATES = [
 MIDDLEWARE = (
     'corsheaders.middleware.CorsMiddleware',
     # Default Django middleware.
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
