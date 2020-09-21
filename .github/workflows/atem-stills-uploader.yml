@@ -1,0 +1,23 @@
+name: Build stills generator microservice
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/utils/atem-stills-upload/**'
+jobs:
+  build:
+    name: Build and push Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+      - name: Stills uploader
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: frikanalen/atem-stills-upload
+          tag_with_ref: true
+          path: packages/utils/atem-stills-upload
+          dockerfile: packages/utils/atem-stills-upload/Dockerfile
