@@ -1,4 +1,4 @@
-name: Build stills generator microservice
+name: Build stills uploader microservice
 on:
   push:
     branches:
