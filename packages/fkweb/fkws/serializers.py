@@ -147,6 +147,7 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
             "video",
             "schedulereason",
             "starttime",
+            "endtime",
             "duration"
             )
 

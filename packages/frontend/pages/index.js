@@ -69,7 +69,6 @@ export default function index() {
       <Container>
         <Row sm={1} xl={2}>
           <Col>
-            {" "}
             <LiveNow />
           </Col>
           <Col>
