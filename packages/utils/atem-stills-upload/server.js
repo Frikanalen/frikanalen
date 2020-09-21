@@ -45,13 +45,16 @@ class AtemControl {
 
         this.app.get('/ping', (req, res) => { res.send('pong'); });
 
-        // TODO: Should be a GET method
-        this.app.post('/preview', (req, res) => {
+        // TODO: move from buffer() to streams
+        this.app.get('/preview', (req, res) => {
+            const text = req.query.text;
+            const heading = req.query.heading;
+
             fetch('http://stills-generator/getPoster.png',
                 {
                     headers: {'Content-Type': 'application/json'},
                     method: 'post',
-                    body: JSON.stringify(req.body),
+                    body: JSON.stringify({text: text, heading: heading}),
                 })
                 .then(data => data.buffer())
                 .then(data => res.type('image/png').send(data))
