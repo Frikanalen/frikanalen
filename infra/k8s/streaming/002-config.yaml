@@ -14,7 +14,7 @@ metadata:
   namespace: streaming
 data:
   ffmpeg_options: -probesize 100M -threads 10 -strict -2
-  source_url: http://192.168.3.1:9094/tx2.ts
+  source_url: http://192.168.3.1:9094/frikanalen.ts
   encoding_options: >-
     -pix_fmt yuv420p -filter_complex [0:v]split=2[s1][s2]
 
