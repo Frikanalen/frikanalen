@@ -113,18 +113,12 @@ export class ScheduleInfo extends Component {
       console.log(typeof this.state.currentItem);
       return (
         <span className="onRightNow">
-          {programme_row(
-            this.state.schedule[this.state.currentItem - 1],
-            "previous"
-          )}
+          {(this.state.currentItem != 0) ?  programme_row( this.state.schedule[this.state.currentItem - 1], "previous") : null}
           {programme_row(
             this.state.schedule[this.state.currentItem],
             "current"
           )}
-          {programme_row(
-            this.state.schedule[this.state.currentItem + 1],
-            "next"
-          )}
+          {(this.state.currentItem == this.state.schedule.length) ?  programme_row( this.state.schedule[this.state.currentItem + 1], "next") : null}
           <style jsx>{`
             .onRightNow {
               color: white;
