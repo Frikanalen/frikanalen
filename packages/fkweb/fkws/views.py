@@ -5,6 +5,9 @@ import csv
 import datetime
 import pytz
 
+import logging
+logger = logging.getLogger(__name__)
+
 from django.core.cache import caches
 from django.views.decorators.cache import never_cache
 from django.http import HttpResponse
@@ -199,7 +202,6 @@ class ScheduleitemList(generics.ListCreateAPIView):
         return queryset.order_by('starttime')
 
     def dispatch(self, request, *args, **kwargs):
-        print([x for x in request.GET.items()])
         params = request.GET
         res = super().dispatch(request, *args, **kwargs)
 
@@ -219,14 +221,15 @@ class ScheduleitemList(generics.ListCreateAPIView):
             cache_res = cache.get(cache_key)
 
             if cache_res:
-                print('cache hit')
+                logger.warning('[Scheduleitem] cache hit')
                 return cache_res
 
         res.render()
 
-        print('cache miss')
+        logger.warning('[Scheduleitem] cache miss')
+
         if res.status_code == 200:
-            cache.set(cache_key, res, 50)
+            cache.set(cache_key, res, None)
 
         return res
 
