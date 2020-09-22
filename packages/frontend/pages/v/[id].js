@@ -132,7 +132,7 @@ export default class VideoPage extends Component {
         <WindowWidget invisible>
           <Container fluid>
             <Row xl={2}>
-              <Col className="videoBox">
+              <Col className={styles.videoBox}>
                 <h3>{this.video.name}</h3>
                 <p>
                   Publisert av:{" "}

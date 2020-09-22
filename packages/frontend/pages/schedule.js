@@ -11,29 +11,29 @@ import moment from "moment";
 import "moment/locale/nb";
 
 class Schedule extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            date: moment(),
-            shows: [],
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: moment(),
+      shows: [],
+    };
+  }
 
-    ScheduleItem(item) {
-        return (
-            <div className="schedule_item" key={item.id}>
-            <div className="material-icons" style={{ display: "none" }}>
-            expand_more
-            </div>
-            <span className="start_time">
-            <Moment format="HH:mm">{item.starttime}</Moment>
-            </span>
-            <span className="end_time">
-            <Moment format="HH:mm">{item.endtime}</Moment>
-            </span>
-            <span className="publisher">{item.video.organization.name}</span>
-            <div className="title">{item.video.name}</div>
-            <style jsx>{`
+  ScheduleItem(item) {
+    return (
+      <div className="schedule_item" key={item.id}>
+        <div className="material-icons" style={{ display: "none" }}>
+          expand_more
+        </div>
+        <span className="start_time">
+          <Moment format="HH:mm">{item.starttime}</Moment>
+        </span>
+        <span className="end_time">
+          <Moment format="HH:mm">{item.endtime}</Moment>
+        </span>
+        <span className="publisher">{item.video.organization.name}</span>
+        <div className="title">{item.video.name}</div>
+        <style jsx>{`
           .schedule_item {
             break-inside: avoid-column;
             padding: 0px 0px 0px 0px;
@@ -60,42 +60,44 @@ class Schedule extends Component {
             content: "–";
           }
         `}</style>
-            </div>
-        );
-    }
+      </div>
+    );
+  }
 
-    async schedule_for_date(schedule_day) {
-        const res = await fetch(
-            configs.api + "scheduleitems/?days=1&date=" + moment(this.state.date).format('YYYYMMDD')
-        );
-        const json = await res.json()
-        return json.results;
-    }
+  async schedule_for_date(schedule_day) {
+    const res = await fetch(
+      configs.api +
+        "scheduleitems/?days=1&date=" +
+        moment(this.state.date).format("YYYYMMDD")
+    );
+    const json = await res.json();
+    return json.results;
+  }
 
-    async componentDidMount() {
-        const schedule = await this.schedule_for_date(this.state.date);
+  async componentDidMount() {
+    const schedule = await this.schedule_for_date(this.state.date);
 
-        this.setState({
-            shows: schedule,
-        });
-    }
+    this.setState({
+      shows: schedule,
+    });
+  }
 
-    render() {
-        const date_options = { dateStyle: "full" };
-        return (
-            <Layout>
-            <WindowWidget>
-            <div className="schedule_date">
+  render() {
+    const date_options = { dateStyle: "full" };
+    return (
+      <Layout>
+        <WindowWidget>
+          <div className="schedule_date">
             <h1>
-            <Moment locale="nb" format="dddd Do MMMM">
-            {this.state.date}
-            </Moment>
+              <Moment locale="nb" format="dddd Do MMMM">
+                {this.state.date}
+              </Moment>
             </h1>
-            </div>
-            <div className="programmes">
+          </div>
+          <div className="programmes">
             {this.state.shows.map((x) => this.ScheduleItem(x))}
-            </div>
-            <style jsx>{`
+          </div>
+          <style jsx>{`
                 .programmes {
                     column-count: 2;
                 }
@@ -110,10 +112,10 @@ class Schedule extends Component {
                  text-align: center;
                  padding: 10px;
              }`}</style>
-            </WindowWidget>
-            </Layout>
-        );
-    }
+        </WindowWidget>
+      </Layout>
+    );
+  }
 }
 
 export default Schedule;

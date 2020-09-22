@@ -47,7 +47,7 @@ export class ScheduleInfo extends Component {
 
   render() {
     const programme_row = (programme, DOMclass) => {
-        if (typeof(programme) === 'undefined') return false;
+      if (typeof programme === "undefined") return false;
       return (
         <div className={"programme " + DOMclass}>
           <span className="times">
@@ -115,12 +115,22 @@ export class ScheduleInfo extends Component {
       //console.log(typeof this.state.currentItem);
       return (
         <span className="onRightNow">
-          {(this.state.currentItem != 0) ? programme_row( this.state.schedule[this.state.currentItem - 1], "previous") : null}
+          {this.state.currentItem != 0
+            ? programme_row(
+                this.state.schedule[this.state.currentItem - 1],
+                "previous"
+              )
+            : null}
           {programme_row(
             this.state.schedule[this.state.currentItem],
             "current"
           )}
-          {(this.state.currentItem != this.state.schedule.length) ? programme_row( this.state.schedule[this.state.currentItem + 1], "next") : false}
+          {this.state.currentItem != this.state.schedule.length
+            ? programme_row(
+                this.state.schedule[this.state.currentItem + 1],
+                "next"
+              )
+            : false}
           <style jsx>{`
             .onRightNow {
               color: white;
