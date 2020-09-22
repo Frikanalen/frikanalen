@@ -32,13 +32,13 @@ export default function About() {
         </p>
         <p>
           Vi tilbyr alle våre medlemmer adgang til en riksdekkende TV-kanal med
-          formidlingsplikt - som vil si at alle kabelleverandører er på samme
-          måte som NRK, forpliktet til å bære vår kanal.
+          formidlingsplikt - som vil si at alle kabelleverandører er forpliktet
+          til å bære vår kanal, på samme måte som NRK.
         </p>
         <p>
-          Etter et omfattende frivillig arbeid vurderer vi vår kanal stabil nok
-          til å ta kontakt med tilbydere. Vi er allerede båret av RiksTV, og er
-          i forhandlinger med Telia og Telenor om å få vår kanal båret av dem.
+          Etter et omfattende frivillig arbeid har vi vurdert vår kanal stabil
+          nok til å ta kontakt med tilbydere. Vi er nå på RiksTV og Telenor
+          (Te-We), og i forhandlinger med Telia.
         </p>
         <p>
           Det pågår også et arbeide med å tilrettelegge for brukerstyrte
