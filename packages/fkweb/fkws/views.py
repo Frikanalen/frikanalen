@@ -5,8 +5,7 @@ import csv
 import datetime
 import pytz
 
-from django.core.cache import cache
-from django.views.decorators.cache import cache_control
+from django.core.cache import caches
 from django.views.decorators.cache import never_cache
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -147,6 +146,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsStaffOrReadOnly,)
     pagination_class = Pagination
 
+@method_decorator(never_cache, name='dispatch')
 class ScheduleitemList(generics.ListCreateAPIView):
     """
     Video events schedule
@@ -154,11 +154,10 @@ class ScheduleitemList(generics.ListCreateAPIView):
     Query parameters
     ----------------
 
-    `date` - YearMonthDay as digits, for example `?date=20130130` or
-             "today", for example `?date=today`.  Default is today.
+    `date` - Date expressed in the format YYYYMMDD (eg. 20201231), or
+             "today".  Default is today, Europe/Oslo time.
 
-    `days` - How many days to return, for example, `?days=7`.
-             Default is 7 days.
+    `days` - Number of days schedule requested. Default is 7 days.
 
     `page_size` - How many items per page. If set to 0 it will list
                   all items.  Default is 50 items.
@@ -205,6 +204,8 @@ class ScheduleitemList(generics.ListCreateAPIView):
         res = super().dispatch(request, *args, **kwargs)
 
         cacheable = True
+        cache = caches['schedule']
+
         if params.get('surrounding') != None: cacheable = False
         if params.get('ordering') != None: cacheable = False
         if params.get('page_size') != None: cacheable = False
@@ -218,10 +219,12 @@ class ScheduleitemList(generics.ListCreateAPIView):
             cache_res = cache.get(cache_key)
 
             if cache_res:
+                print('cache hit')
                 return cache_res
 
         res.render()
 
+        print('cache miss')
         if res.status_code == 200:
             cache.set(cache_key, res, 50)
 

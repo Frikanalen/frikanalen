@@ -8,6 +8,7 @@ import pytz
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth import get_user_model
+from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.db import models
@@ -459,6 +460,12 @@ class Scheduleitem(models.Model):
         verbose_name = 'TX schedule entry'
         verbose_name_plural = 'TX schedule entries'
         ordering = ('-id',)
+
+    def _clear_cache(self):
+        caches['schedule'].clear()
+
+    post_save = _clear_cache
+    post_delete = _clear_cache
 
     def __str__(self):
         t = self.starttime
