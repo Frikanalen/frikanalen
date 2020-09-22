@@ -128,7 +128,7 @@ class Organization(models.Model):
                                 blank=True, null=True, max_length=2048)
 
     # The user legally marked as the editor for this organization
-    editor = models.ForeignKey(User, on_delete=models.SET_NULL, 
+    editor = models.ForeignKey(User, on_delete=models.SET_NULL,
             blank=True, null=True, related_name='editor')
 
     # Videos to feature on their frontpage, incl other members
