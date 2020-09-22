@@ -200,7 +200,6 @@ class ScheduleitemList(generics.ListCreateAPIView):
         return queryset.order_by('starttime')
 
     def dispatch(self, request, *args, **kwargs):
-        print([x for x in request.GET.items()])
         params = request.GET
         res = super().dispatch(request, *args, **kwargs)
 
