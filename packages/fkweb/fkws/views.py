@@ -149,7 +149,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsStaffOrReadOnly,)
     pagination_class = Pagination
 
-@method_decorator(never_cache, name='dispatch')
+@method_decorator(never_cache, name='get')
 class ScheduleitemList(generics.ListCreateAPIView):
     """
     Video events schedule
@@ -201,9 +201,8 @@ class ScheduleitemList(generics.ListCreateAPIView):
 
         return queryset.order_by('starttime')
 
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         params = request.GET
-
 
         date = self.parse_YYYYMMDD_or_today(params.get('date', None))
         days = self.parse_int_or_7(params.get('days', None))
@@ -214,7 +213,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
         cache = caches['schedule']
         cache_key = 'schedule-%s-%s' % (date.strftime('%Y%m%d'), days)
 
-        if request.headers.get('Accept', '') != '*/*': cacheable = False
+        if (type(request.accepted_renderer).__name__) != 'JSONRenderer': cacheable = False
         if params.get('surrounding') != None: cacheable = False
         if params.get('ordering') != None: cacheable = False
         if params.get('page_size') != None: cacheable = False
@@ -225,12 +224,16 @@ class ScheduleitemList(generics.ListCreateAPIView):
             if cache_res:
                 logger.warning('[Scheduleitem] cache hit')
                 return cache_res
+            else:
+                logger.warning('[Scheduleitem] cache miss')
+        else:
+            logger.warning('[Scheduleitem] not caching')
 
-        res = super().dispatch(request, *args, **kwargs)
-
+        res = super().get(request, *args, **kwargs)
+        res.accepted_renderer = request.accepted_renderer
+        res.accepted_media_type = request.accepted_media_type
+        res.renderer_context = self.get_renderer_context()
         res.render()
-
-        logger.warning('[Scheduleitem] cache miss')
 
         if res.status_code == 200:
             cache.set(cache_key, res, None)
