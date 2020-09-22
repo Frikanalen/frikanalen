@@ -1,4 +1,5 @@
 import configs from "../components/configs";
+import Cookies from "js-cookie";
 import Layout from "../components/Layout";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
@@ -25,8 +26,8 @@ class ATEMControl {
     try {
       var data = await fetch(this.atemURL, {
         method: "POST",
-        credentials: "include",
         headers: {
+          "Authorization": Cookies.get('token'),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ inputIndex: inputIndex }),
