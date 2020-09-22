@@ -49,6 +49,7 @@ class ATEMPanel extends Component {
       { index: 3, name: "tx2" },
       { index: 1, name: "tx3" },
       { index: 4, name: "rx1" },
+      { index: 3010, name: "still 1" },
       { index: 1000, name: "color bars" },
     ];
   }
