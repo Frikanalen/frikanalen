@@ -203,26 +203,30 @@ class ScheduleitemList(generics.ListCreateAPIView):
 
     def dispatch(self, request, *args, **kwargs):
         params = request.GET
-        res = super().dispatch(request, *args, **kwargs)
 
+
+        date = self.parse_YYYYMMDD_or_today(params.get('date', None))
+        days = self.parse_int_or_7(params.get('days', None))
+
+        # This cache is cleared on save() and delete() in
+        # fk/models.py:Scheduleitem
         cacheable = True
         cache = caches['schedule']
+        cache_key = 'schedule-%s-%s' % (date.strftime('%Y%m%d'), days)
 
+        if request.headers.get('Accept', '') != '*/*': cacheable: False
         if params.get('surrounding') != None: cacheable = False
         if params.get('ordering') != None: cacheable = False
         if params.get('page_size') != None: cacheable = False
 
         if cacheable:
-            date = self.parse_YYYYMMDD_or_today(params.get('date', None))
-            days = self.parse_int_or_7(params.get('days', None))
-            renderer = type(res.accepted_renderer).__name__
-
-            cache_key = 'schedule-%s-%s-%s' % (date.strftime('%Y%m%d'), days, renderer)
             cache_res = cache.get(cache_key)
 
             if cache_res:
                 logger.warning('[Scheduleitem] cache hit')
                 return cache_res
+
+        res = super().dispatch(request, *args, **kwargs)
 
         res.render()
 
