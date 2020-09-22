@@ -214,7 +214,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
         cache = caches['schedule']
         cache_key = 'schedule-%s-%s' % (date.strftime('%Y%m%d'), days)
 
-        if request.headers.get('Accept', '') != '*/*': cacheable: False
+        if request.headers.get('Accept', '') != '*/*': cacheable = False
         if params.get('surrounding') != None: cacheable = False
         if params.get('ordering') != None: cacheable = False
         if params.get('page_size') != None: cacheable = False
