@@ -424,6 +424,9 @@ class OrganizationList(generics.ListCreateAPIView):
     pagination_class = Pagination
     permission_classes = (IsOrganizationEditorOrReadOnly,)
 
+    def perform_create(self, serializer):
+        serializer.save(editor=self.request.user)
+
 
 class OrganizationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
