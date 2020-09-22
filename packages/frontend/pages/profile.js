@@ -81,15 +81,18 @@ function OrganizationList(props) {
   var organizationList;
 
   if (user.organization_roles) {
+    if (user.organization_roles.length) {
     organizationList = user.organization_roles.map((role, idx) => (
       <Col key={idx}>
-        {" "}
         <OrganizationCard role={role} />
         <br />
       </Col>
     ));
-  }
+  } else {
+          organizationList = (<Col>Ingen organisasjoner tilknyttet denne brukeren.</Col>)
+  } 
 
+  }
   return (
     <Container fluid>
       <Row xs={1} lg={2}>
@@ -105,6 +108,10 @@ function OrganizationsCard(props) {
     <Col>
       <Card variant="light" className="text-dark">
         <Card.Body>
+          <Alert variant="info">
+          <Alert.Heading>Vi jobber med saken!</Alert.Heading>
+            Her vil det snart komme et skjema for å melde en organisasjon inn i Frikanalen.
+          </Alert>
           <Card.Title>Organisasjoner</Card.Title>
           <OrganizationList profile={props.profile} />
         </Card.Body>
