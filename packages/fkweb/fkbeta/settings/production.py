@@ -55,7 +55,18 @@ DATABASES = {
 
 ########## CACHE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#caches
-#CACHES = {}
+# FIXME: The cache clearing in schedule will probably clear the entire cache
+CACHES = {
+        'schedule': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': [ 'memcache:11211', ],
+            'TIMEOUT': None,
+            },
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': [ 'memcache:11211', ],
+            }
+        }
 ########## END CACHE CONFIGURATION
 
 
