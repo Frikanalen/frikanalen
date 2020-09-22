@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import WindowWidget from "../components/WindowWidget";
 import fetch from "isomorphic-unfetch";
 
+import Cookies from "js-cookie";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -25,19 +26,21 @@ export default class PosterManager extends Component {
   resetImageTimeout() {
     const stillsGeneratorBase = "https://stills-generator.frikanalen.no/";
     const queryString =
-      "preview/?text=" + this.state.text + "&heading=" + this.state.heading;
+      "preview/?text=" + encodeURI(this.state.text) + "&heading=" + encodeURI(this.state.heading);
     this.setState({ imageUrl: stillsGeneratorBase + queryString });
   }
 
   async uploadPoster() {
     fetch("https://stills-generator.frikanalen.no/upload", {
       method: "post",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+          "Authorization": "Token " + Cookies.get('token'),
+          "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         text: this.state.text,
         heading: this.state.heading,
       }),
-      credentials: "include",
     });
   }
 
