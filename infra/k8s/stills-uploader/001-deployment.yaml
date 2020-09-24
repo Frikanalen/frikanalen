@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stills-upload
+spec:
+  selector:
+    matchLabels:
+      app: stills-upload
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: stills-upload
+    spec:
+      containers:
+      - name: stills-upload
+        image: frikanalen/atem-stills-upload:latest
+        ports:
+          - name: web
+            containerPort: 80
