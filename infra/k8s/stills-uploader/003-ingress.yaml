@@ -1,0 +1,33 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors
+  namespace: default
+spec:
+  headers:
+    customResponseHeaders:
+      Access-Control-Allow-Origin: "*"
+      Access-Control-Allow-Headers: "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+      Access-Control-Allow-Methods: "POST"
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: stills-upload
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`stills-generator.frikanalen.no`)
+    kind: Rule
+    middlewares:
+      - name: cors
+        namespace: default
+    services:
+    - kind: Service
+      name: stills-upload
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
