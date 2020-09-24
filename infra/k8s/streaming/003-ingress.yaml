@@ -2,13 +2,13 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: cors
-  namespace: default
+  namespace: streaming
 spec:
   headers:
     customResponseHeaders:
       Access-Control-Allow-Origin: "*"
-      Access-Control-Allow-Headers: "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-      Access-Control-Allow-Methods: "POST"
+      Access-Control-Allow-Headers: "range"
+      Access-Control-Allow-Methods: "GET, POST, OPTIONS"
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -33,7 +33,7 @@ spec:
     kind: Rule
     middlewares:
       - name: cors
-        namespace: default
+        namespace: streaming
       - name: strip-media-prefix
         namespace: streaming
     services:

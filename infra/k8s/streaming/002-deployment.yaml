@@ -18,6 +18,9 @@ spec:
       volumes:
       - name: shared-data
         emptyDir: {}
+      - name: nginx-config
+        configMap:
+          name: nginx-config
       containers:
       - name: ffmpeg
         image: jrottenberg/ffmpeg:4.1-alpine
@@ -56,5 +59,7 @@ spec:
         volumeMounts:
         - name: shared-data
           mountPath: /usr/share/nginx/html
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
         ports:
         - containerPort: 80
