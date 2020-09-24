@@ -5,8 +5,10 @@ import csv
 import datetime
 import pytz
 
-from django.core.cache import cache
-from django.views.decorators.cache import cache_control
+import logging
+logger = logging.getLogger(__name__)
+
+from django.core.cache import caches
 from django.views.decorators.cache import never_cache
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -147,6 +149,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (IsStaffOrReadOnly,)
     pagination_class = Pagination
 
+@method_decorator(never_cache, name='get')
 class ScheduleitemList(generics.ListCreateAPIView):
     """
     Video events schedule
@@ -154,11 +157,10 @@ class ScheduleitemList(generics.ListCreateAPIView):
     Query parameters
     ----------------
 
-    `date` - YearMonthDay as digits, for example `?date=20130130` or
-             "today", for example `?date=today`.  Default is today.
+    `date` - Date expressed in the format YYYYMMDD (eg. 20201231), or
+             "today".  Default is today, Europe/Oslo time.
 
-    `days` - How many days to return, for example, `?days=7`.
-             Default is 7 days.
+    `days` - Number of days schedule requested. Default is 7 days.
 
     `page_size` - How many items per page. If set to 0 it will list
                   all items.  Default is 50 items.
@@ -199,30 +201,42 @@ class ScheduleitemList(generics.ListCreateAPIView):
 
         return queryset.order_by('starttime')
 
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         params = request.GET
-        res = super().dispatch(request, *args, **kwargs)
 
+        date = self.parse_YYYYMMDD_or_today(params.get('date', None))
+        days = self.parse_int_or_7(params.get('days', None))
+
+        # This cache is cleared on save() and delete() in
+        # fk/models.py:Scheduleitem
         cacheable = True
+        cache = caches['schedule']
+        cache_key = 'schedule-%s-%s' % (date.strftime('%Y%m%d'), days)
+
+        if (type(request.accepted_renderer).__name__) != 'JSONRenderer': cacheable = False
         if params.get('surrounding') != None: cacheable = False
         if params.get('ordering') != None: cacheable = False
         if params.get('page_size') != None: cacheable = False
 
         if cacheable:
-            date = self.parse_YYYYMMDD_or_today(params.get('date', None))
-            days = self.parse_int_or_7(params.get('days', None))
-            renderer = type(res.accepted_renderer).__name__
-
-            cache_key = 'schedule-%s-%s-%s' % (date.strftime('%Y%m%d'), days, renderer)
             cache_res = cache.get(cache_key)
 
             if cache_res:
+                logger.warning('[Scheduleitem] cache hit')
                 return cache_res
+            else:
+                logger.warning('[Scheduleitem] cache miss')
+        else:
+            logger.warning('[Scheduleitem] not caching')
 
+        res = super().get(request, *args, **kwargs)
+        res.accepted_renderer = request.accepted_renderer
+        res.accepted_media_type = request.accepted_media_type
+        res.renderer_context = self.get_renderer_context()
         res.render()
 
         if res.status_code == 200:
-            cache.set(cache_key, res, 50)
+            cache.set(cache_key, res, None)
 
         return res
 

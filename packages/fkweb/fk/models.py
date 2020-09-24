@@ -4,14 +4,19 @@ import datetime
 import os
 import uuid
 
+import logging
+logger = logging.getLogger(__name__)
+
 import pytz
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth import get_user_model
+from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
+from django.dispatch import receiver
 from django.urls import reverse
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.utils import timezone
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
@@ -459,6 +464,12 @@ class Scheduleitem(models.Model):
         verbose_name = 'TX schedule entry'
         verbose_name_plural = 'TX schedule entries'
         ordering = ('-id',)
+
+    @staticmethod
+    @receiver([post_save, post_delete])
+    def _clear_cache(**kwargs):
+        logger.warning('[Scheduleitem] cache flush')
+        caches['schedule'].clear()
 
     def __str__(self):
         t = self.starttime

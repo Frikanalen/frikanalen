@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached
+spec:
+  selector:
+    matchLabels:
+      app: memcached
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: memcached
+    spec:
+      containers:
+      - name: memcached
+        image: memcached:1.6-alpine
+        ports:
+          - name: memcached
+            containerPort: 11211

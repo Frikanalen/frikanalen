@@ -363,3 +363,15 @@ CSP_REPORT_URI = "/csp-report"
 # the login cookie it's all safe.
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$' # anyway, only enable CORS for the API
+
+CACHES = {
+        'schedule': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'schedule-cache',
+            'TIMEOUT': None,
+            'KEY_PREFIX': 'schedule-',
+            },
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            }
+        }
