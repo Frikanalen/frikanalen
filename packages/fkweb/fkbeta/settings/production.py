@@ -59,12 +59,12 @@ DATABASES = {
 CACHES = {
         'schedule': {
             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': [ 'memcache:11211', ],
+            'LOCATION': [ 'memcached:11211', ],
             'TIMEOUT': None,
             },
         'default': {
             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': [ 'memcache:11211', ],
+            'LOCATION': [ 'memcached:11211', ],
             }
         }
 ########## END CACHE CONFIGURATION
