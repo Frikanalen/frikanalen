@@ -184,7 +184,6 @@ TEMPLATES = [
             ],
             'builtins': [
                 'django.templatetags.i18n',
-                'django.contrib.staticfiles.templatetags.staticfiles',
             ]
         },
     },
