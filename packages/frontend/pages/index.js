@@ -8,22 +8,21 @@ import Container from "react-bootstrap/Container";
 
 const BetaDisclaimer = () => (
   <WindowWidget nomargin>
-    <Container fluid className="beta-disclaimer">
-      <Row className="icon-row">
-        <Col md="auto" className="icon-box">
+    <Container fluid className="betaBisclaimer">
+      <Row className="iconRow">
+        <Col md="auto" className="iconBox">
           <svg
-            id="beta-disclaimer-icon"
+            id="betaDisclaimerIcon"
             xmlns="http://www.w3.org/2000/svg"
-            height="80"
-            viewBox="0 0 24 24"
+            height="73"
+            viewBox="2 2 22 22"
             preserveAspectRatio="xMaxYMax meet"
-            width="100"
+            width="73"
           >
-            <path d="M0 0h24v24H0z" fill="none" />
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
           </svg>
         </Col>
-        <Col className="beta-text">
+        <Col className="betaText">
           <h4>Velkommen til nye frikanalen.no!</h4>
         </Col>
       </Row>
@@ -40,12 +39,22 @@ const BetaDisclaimer = () => (
         </Col>
       </Row>
       <style jsx global>{`
-        .icon-row {
-          place-items: center;
-          padding: 5px;
+        .iconBox {
+          margin-top: 10px;
         }
-
-        #beta-disclaimer-icon {
+        .iconRow {
+          place-items: center stretch;
+        }
+        @media (max-width: 767.98px) {
+        .betaText h4 {
+          margin-top: 2px;
+          }
+        #betaDisclaimerIcon {
+          margin-top: 11px;
+          }
+          }
+        #betaDisclaimerIcon {
+          margin-top: 0px;
           fill: yellow;
         }
       `}</style>
