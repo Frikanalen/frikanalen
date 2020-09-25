@@ -2,7 +2,7 @@ import Link from "next/link";
 import configs from "./configs";
 import React, { Component } from "react";
 export class ScheduleInfo extends Component {
-  async componentWillMount() {
+  async componentDidMount() {
     const foo = await fetch(configs.api + "scheduleitems/?days=1");
     const json = await foo.json();
     this.setState({
@@ -23,14 +23,15 @@ export class ScheduleInfo extends Component {
       const startTime = new Date(Date.parse(this.state.schedule[id].starttime));
       const endTime = new Date(Date.parse(this.state.schedule[id].endtime));
       if (startTime <= now && endTime > now) {
-        currentItem = parseInt(id);
-        //console.log(id, this.state.schedule[id]);
-        break;
+        // Refresh the current running program; add 1s
+        // to guard against race conditions
+        setTimeout(() => {this.findRunningProgram()}, endTime - now + 1000);
+        this.setState({
+          currentItem: parseInt(id),
+        });
+        return;
       }
     }
-    this.setState({
-      currentItem: currentItem,
-    });
   }
 
   as_HH_mm(datestr) {
@@ -49,7 +50,7 @@ export class ScheduleInfo extends Component {
     const programme_row = (programme, DOMclass) => {
       if (typeof programme === "undefined") return false;
       return (
-        <div className={"programme " + DOMclass}>
+        <div key={programme.id} className={"programme " + DOMclass}>
           <span className="times">
             <span className="startTime">
               {this.as_HH_mm(programme.starttime)}
@@ -111,8 +112,6 @@ export class ScheduleInfo extends Component {
 
     if (!this.state.ready) return null;
     else {
-      console.log(this.state.currentItem);
-      //console.log(typeof this.state.currentItem);
       return (
         <span className="onRightNow">
           {this.state.currentItem != 0
