@@ -17,6 +17,6 @@ FROM builder
 
 ADD . /srv/frikanalen/
 
-CMD ["./manage.py", "runserver", "0.0.0.0:8080"]
+CMD ["gunicorn", "fkbeta.wsgi:application", "--bind", "0.0.0.0:8080"]
 
 EXPOSE 8080
