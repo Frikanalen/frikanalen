@@ -26,7 +26,10 @@ export default class PosterManager extends Component {
   resetImageTimeout() {
     const stillsGeneratorBase = "https://stills-generator.frikanalen.no/";
     const queryString =
-      "preview/?text=" + encodeURI(this.state.text) + "&heading=" + encodeURI(this.state.heading);
+      "preview/?text=" +
+      encodeURI(this.state.text) +
+      "&heading=" +
+      encodeURI(this.state.heading);
     this.setState({ imageUrl: stillsGeneratorBase + queryString });
   }
 
@@ -34,8 +37,8 @@ export default class PosterManager extends Component {
     fetch("https://stills-generator.frikanalen.no/upload", {
       method: "post",
       headers: {
-          "Authorization": "Token " + Cookies.get('token'),
-          "Content-Type": "application/json"
+        Authorization: "Token " + Cookies.get("token"),
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         text: this.state.text,

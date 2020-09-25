@@ -27,7 +27,7 @@ class ATEMControl {
       var data = await fetch(this.atemURL, {
         method: "POST",
         headers: {
-          "Authorization": Cookies.get('token'),
+          Authorization: Cookies.get("token"),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ inputIndex: inputIndex }),
