@@ -6,17 +6,13 @@ This is the new frontend, under active development.
 
 It can be reached at frikanalen.no.
 
-## To deploy:
+## Running locally:
 
-- Install debian requirements (docker-compose, docker.io)
-- Set up .env file
-- docker-compose build
-- docker-compose up -d
+First, install the dependencies (obviously this requires yarn)
 
-## Sample .env file:
+`yarn install`
 
-```
-PORT=3002
-API_URL=https://dev.frikanalen.no/api
-GRAPHQL_URL=https://dev.frikanalen.no/graphql
-```
+Then there are two profiles to choose from; either 
+
+* `yarn run dev` - if you are using a local Django instance (in which case it will expect to find it at `localhost:8080`), or 
+* `yarn run staging` - to run the frontend against the production backend API.
