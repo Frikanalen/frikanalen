@@ -167,6 +167,7 @@ export default class Profile extends Component {
     return (
       <Layout>
         <WindowWidget invisible>
+          <h2>Hei, {this.state.profileData.first_name}!</h2>
           <UserCard profile={this.state.profileData} />
         </WindowWidget>
         <WindowWidget invisible>

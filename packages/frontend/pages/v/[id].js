@@ -146,12 +146,14 @@ export default class VideoPage extends Component {
                   </p>
                 </div>
               </Col>
-              <Col className={styles.otherVideos}>
-                <h4>Nyeste videoer fra {this.video.org.name}</h4>
-                <Alert variant="info">
-                  <Alert.Heading>Funksjonen kommer snart!</Alert.Heading>
-                  Frikanalen.no utvikles aktivt.
-                </Alert>
+              <Col>
+                <div className={styles.otherVideos}>
+                  <h4>Nyeste videoer fra {this.video.org.name}</h4>
+                  <Alert variant="info">
+                    <Alert.Heading>Funksjonen kommer snart!</Alert.Heading>
+                    Frikanalen.no utvikles aktivt.
+                  </Alert>
+                </div>
               </Col>
             </Row>
           </Container>
