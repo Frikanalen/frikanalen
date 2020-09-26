@@ -9,7 +9,7 @@ export default function Blimed() {
       <WindowWidget>
         <h2>Bli med!</h2>
         <p>
-          Alle ikke-kommersielle organisasjoner kan tegne medlemskap i
+          Alle individer ikke-kommersielle organisasjoner kan tegne medlemskap i
           Frikanalen og få sitt innhold sendt på riksdekkende fjernsyn.
         </p>
         <Alert variant="info">

@@ -74,8 +74,8 @@ export default function Signupform() {
             <Card.Text>
               <Alert variant="info">
                 <p>
-                  For å laste opp innhold må organisasjonen formelt innmeldes i
-                  Frikanalen.
+                  For å laste opp innhold må individet eller organisasjonen
+                  formelt innmeldes i Frikanalen.
                 </p>
                 <p>
                   For mer om medlemskap, se: «<a href="/om/blimed">Bli med!</a>»
