@@ -46,13 +46,13 @@ const BetaDisclaimer = () => (
           place-items: center stretch;
         }
         @media (max-width: 767.98px) {
-        .betaText h4 {
-          margin-top: 2px;
+          .betaText h4 {
+            margin-top: 2px;
           }
-        #betaDisclaimerIcon {
-          margin-top: 11px;
+          #betaDisclaimerIcon {
+            margin-top: 11px;
           }
-          }
+        }
         #betaDisclaimerIcon {
           margin-top: 0px;
           fill: yellow;

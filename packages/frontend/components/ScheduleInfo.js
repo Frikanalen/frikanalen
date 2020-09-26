@@ -25,7 +25,9 @@ export class ScheduleInfo extends Component {
       if (startTime <= now && endTime > now) {
         // Refresh the current running program; add 1s
         // to guard against race conditions
-        setTimeout(() => {this.findRunningProgram()}, endTime - now + 1000);
+        setTimeout(() => {
+          this.findRunningProgram();
+        }, endTime - now + 1000);
         this.setState({
           currentItem: parseInt(id),
         });

@@ -1,8 +1,13 @@
+import dynamic from "next/dynamic";
+
+import { Component } from "react";
+import { APIGET } from "../../components/API/Fetch.js";
+
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
-import dynamic from "next/dynamic";
+import Alert from "react-bootstrap/Alert";
 
 import Layout from "../../components/Layout";
 import Organization from "../../components/API/Organization";
@@ -14,9 +19,7 @@ import styles from "./VideoPage.module.sass";
 const VideoUpload = dynamic(() => import("../../components/VideoUpload"), {
   ssr: false,
 });
-
-import { APIGET } from "../../components/API/Fetch.js";
-import { Component } from "react";
+//const ShakaPlayer = dynamic(() => import('shaka-player-react'), { ssr: false });
 
 export default class VideoPage extends Component {
   constructor(props) {
@@ -65,7 +68,6 @@ export default class VideoPage extends Component {
   vodBox() {
     return (
       <video
-        className="player"
         poster={this.video.files.large_thumb}
         controls
         src={this.video.files.theora}
@@ -131,17 +133,26 @@ export default class VideoPage extends Component {
       <Layout>
         <WindowWidget invisible>
           <Container fluid>
-            <Row xl={2}>
-              <Col className={styles.videoBox}>
-                <h3>{this.video.name}</h3>
-                <p>
-                  Publisert av:{" "}
-                  <a href={"/org/" + this.video.org.ID}>
-                    {this.video.org.name}
-                  </a>
-                </p>
+            <Row xs={1} xl={2}>
+              <Col>
+                <div className={styles.videoContainer}>{videoPage}</div>
+                <div className={styles.videoInfo}>
+                  <h3>{this.video.name}</h3>
+                  <p>
+                    Publisert av:{" "}
+                    <a href={"/org/" + this.video.org.ID}>
+                      {this.video.org.name}
+                    </a>
+                  </p>
+                </div>
               </Col>
-              {videoPage}
+              <Col className={styles.otherVideos}>
+                <h4>Nyeste videoer fra {this.video.org.name}</h4>
+                <Alert variant="info">
+                  <Alert.Heading>Funksjonen kommer snart!</Alert.Heading>
+                  Frikanalen.no utvikles aktivt.
+                </Alert>
+              </Col>
             </Row>
           </Container>
         </WindowWidget>
