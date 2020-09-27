@@ -17,6 +17,9 @@ import configs from "../components/configs";
 
 import ProfileFetcher from "../components/API/User";
 
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+
 const AuthenticatedFetcher = (url) =>
   axios
     .get(url, {
@@ -39,8 +42,71 @@ function OrganizationFetcher(id) {
 
 function UserProfile(props) {
   const user = props.profile;
+  const [firstName, setFirstName] = useState(user.first_name);
+  const [lastName, setLastName] = useState(user.last_name);
+  const [MSISDN, setMSISDN] = useState(user.phone_number);
 
-  return <p>{user.email}</p>;
+    const submitProfile = (e) => {
+        e.preventDefault()
+        const result = fetch(configs.api + 'user',
+            {
+                method: 'put',
+                headers: {
+                    Authorization: "Token " + Cookies.get("token"),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'last_name': lastName,
+                    'first_name': firstName,
+                    'phone_number': MSISDN,
+                })
+            }
+        )
+
+        UserAuth.refreshLocalStorage()
+        setTimeout(props.onChange, 2000)
+    }
+
+  return (
+    <Form onSubmit={submitProfile}>
+      <Form.Row>
+      <Col>
+        <Form.Label>Epostadressse</Form.Label>
+        <Form.Control value={user.email} readOnly />
+      </Col>
+      <Col>
+        <Form.Label>Mobilnummer</Form.Label>
+          <Form.Control
+            onChange={(e) => setMSISDN(e.target.value)}
+            value={MSISDN}
+          />
+      </Col>
+      </Form.Row>
+        <br/>
+      <Form.Row>
+        <Col>
+          <Form.Label>Fornavn</Form.Label>
+          <Form.Control
+            onChange={(e) => setFirstName(e.target.value)}
+            value={firstName}
+          />
+        </Col>
+        <Col>
+          <Form.Label>Etternavn</Form.Label>
+          <Form.Control
+            onChange={(e) => setLastName(e.target.value)}
+            value={lastName}
+          />
+        </Col>
+      </Form.Row>
+      <Row>
+      <Col>
+        <br/>
+          <Button className="float-right" type="submit" >Oppdater</Button>
+      </Col>
+      </Row>
+    </Form>
+  );
 }
 
 function UserCard(props) {
@@ -49,7 +115,7 @@ function UserCard(props) {
       <Card variant="light" className="text-dark">
         <Card.Body>
           <Card.Title>Brukerprofil</Card.Title>
-          <UserProfile profile={props.profile} />
+          <UserProfile profile={props.profile} onChange={props.onChange} />
         </Card.Body>
       </Card>
     </Col>
@@ -96,7 +162,7 @@ function OrganizationList(props) {
   }
   return (
     <Container fluid>
-      <Row xs={1} lg={2}>
+      <Row xs={1}>
         {organizationList}
       </Row>
     </Container>
@@ -109,12 +175,12 @@ function OrganizationsCard(props) {
     <Col>
       <Card variant="light" className="text-dark">
         <Card.Body>
+          <Card.Title>Organisasjoner</Card.Title>
           <Alert variant="info">
             <Alert.Heading>Vi jobber med saken!</Alert.Heading>
             Her vil det snart komme et skjema for å melde en organisasjon inn i
             Frikanalen.
           </Alert>
-          <Card.Title>Organisasjoner</Card.Title>
           <OrganizationList profile={props.profile} />
         </Card.Body>
       </Card>
@@ -168,7 +234,7 @@ export default class Profile extends Component {
       <Layout>
         <WindowWidget invisible>
           <h2>Hei, {this.state.profileData.first_name}!</h2>
-          <UserCard profile={this.state.profileData} />
+          <UserCard profile={this.state.profileData} onChange={() => this.componentDidMount()} />
         </WindowWidget>
         <WindowWidget invisible>
           <OrganizationsCard profile={this.state.profileData} />
