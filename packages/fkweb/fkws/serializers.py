@@ -275,6 +275,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'date_joined',
                 'is_staff',
                 'date_of_birth',
+                'phone_number',
                 'organization_roles',
                 'password'
                 )
