@@ -8,11 +8,12 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 
 function delete_local_session() {
   Cookies.remove("token");
-  localStorage.removeItem("user-id");
-  localStorage.removeItem("user-email");
-  localStorage.removeItem("user-first_name");
-  localStorage.removeItem("user-last_name");
-  localStorage.removeItem("user-is_staff");
+  localStorage.removeItem("userID");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userFirstName");
+  localStorage.removeItem("userLastName");
+  localStorage.removeItem("userMSISDN");
+  localStorage.removeItem("userIsStaff");
 }
 
 class UserAuth extends Component {
@@ -64,7 +65,7 @@ class UserAuth extends Component {
       if (typeof document !== "undefined") {
         Cookies.set("token", response.data.key);
       }
-      localStorage.setItem("user-id", response.data.user);
+      localStorage.setItem("userID", response.data.user);
       return true;
     } catch (error) {
       if (error.response) {
@@ -85,11 +86,12 @@ class UserAuth extends Component {
         },
       });
 
-      localStorage.setItem("user-id", response.data.id);
-      localStorage.setItem("user-email", response.data.email);
-      localStorage.setItem("user-first_name", response.data.first_name);
-      localStorage.setItem("user-last_name", response.data.last_name);
-      localStorage.setItem("user-is_staff", response.data.is_staff);
+      localStorage.setItem("userID", response.data.id);
+      localStorage.setItem("userEmail", response.data.email);
+      localStorage.setItem("userFirstName", response.data.first_name);
+      localStorage.setItem("userLastName", response.data.last_name);
+      localStorage.setItem("userMSISDN", response.data.phone_number);
+      localStorage.setItem("userIsStaff", response.data.is_staff);
     } catch (error) {
       console.log(
         "Encountered the following while attempting to refresh user profile"
@@ -108,22 +110,22 @@ class UserAuth extends Component {
   componentDidMount() {
     UserAuth.verifySession().then((result) => {
       this.setState({
-        loggedIn: localStorage.getItem("user-id") ? true : false,
-        email: localStorage.getItem("user-email"),
+        loggedIn: localStorage.getItem("userID") ? true : false,
+        email: localStorage.getItem("userEmail"),
       });
     });
   }
 
   static async profile_data() {
-    if (localStorage.getItem("user-id") == null) {
+    if (localStorage.getItem("userID") == null) {
       await refreshLocalStorage();
     }
     return {
-      id: localStorage.getItem("user-id"),
-      email: localStorage.getItem("user-email"),
-      first_name: localStorage.getItem("user-first_name"),
-      last_name: localStorage.getItem("user-last_name"),
-      is_staff: localStorage.getItem("user-is_staff"),
+      id: localStorage.getItem("userID"),
+      email: localStorage.getItem("userEmail"),
+      firstName: localStorage.getItem("userFirstName"),
+      lastName: localStorage.getItem("userLastName"),
+      isStaff: localStorage.getItem("userIsStaff"),
     };
   }
 }
