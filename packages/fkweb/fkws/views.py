@@ -226,7 +226,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
                 logger.warning('[Scheduleitem] cache hit')
                 return cache_res
             else:
-                logger.warning('[Scheduleitem] cache miss')
+                logger.warning('[Scheduleitem] cache miss, cache_key=', cache_key)
         else:
             logger.warning('[Scheduleitem] not caching')
 
@@ -237,6 +237,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
         res.render()
 
         if res.status_code == 200:
+            logger.warning('[Scheduleitem] cache store, cache_key=', cache_key)
             cache.set(cache_key, res, None)
 
         return res
