@@ -41,7 +41,8 @@ const BetaDisclaimer = () => (
             på{" "}
             <a href="https://github.com/Frikanalen/frikanalen/commits/master">
               endringsloggen i kodearkivet
-            </a>.
+            </a>
+            .
           </p>
         </Col>
       </Row>

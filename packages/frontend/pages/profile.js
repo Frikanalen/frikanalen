@@ -46,43 +46,41 @@ function UserProfile(props) {
   const [lastName, setLastName] = useState(user.last_name);
   const [MSISDN, setMSISDN] = useState(user.phone_number);
 
-    const submitProfile = (e) => {
-        e.preventDefault()
-        const result = fetch(configs.api + 'user',
-            {
-                method: 'put',
-                headers: {
-                    Authorization: "Token " + Cookies.get("token"),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    'last_name': lastName,
-                    'first_name': firstName,
-                    'phone_number': MSISDN,
-                })
-            }
-        )
+  const submitProfile = (e) => {
+    e.preventDefault();
+    const result = fetch(configs.api + "user", {
+      method: "put",
+      headers: {
+        Authorization: "Token " + Cookies.get("token"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        last_name: lastName,
+        first_name: firstName,
+        phone_number: MSISDN,
+      }),
+    });
 
-        UserAuth.refreshLocalStorage()
-        setTimeout(props.onChange, 2000)
-    }
+    UserAuth.refreshLocalStorage();
+    setTimeout(props.onChange, 2000);
+  };
 
   return (
     <Form onSubmit={submitProfile}>
       <Form.Row>
-      <Col>
-        <Form.Label>Epostadressse</Form.Label>
-        <Form.Control value={user.email} readOnly />
-      </Col>
-      <Col>
-        <Form.Label>Mobilnummer</Form.Label>
+        <Col>
+          <Form.Label>Epostadressse</Form.Label>
+          <Form.Control value={user.email} readOnly />
+        </Col>
+        <Col>
+          <Form.Label>Mobilnummer</Form.Label>
           <Form.Control
             onChange={(e) => setMSISDN(e.target.value)}
             value={MSISDN}
           />
-      </Col>
+        </Col>
       </Form.Row>
-        <br/>
+      <br />
       <Form.Row>
         <Col>
           <Form.Label>Fornavn</Form.Label>
@@ -100,10 +98,12 @@ function UserProfile(props) {
         </Col>
       </Form.Row>
       <Row>
-      <Col>
-        <br/>
-          <Button className="float-right" type="submit" >Oppdater</Button>
-      </Col>
+        <Col>
+          <br />
+          <Button className="float-right" type="submit">
+            Oppdater
+          </Button>
+        </Col>
       </Row>
     </Form>
   );
@@ -162,9 +162,7 @@ function OrganizationList(props) {
   }
   return (
     <Container fluid>
-      <Row xs={1}>
-        {organizationList}
-      </Row>
+      <Row xs={1}>{organizationList}</Row>
     </Container>
   );
 }
@@ -234,7 +232,10 @@ export default class Profile extends Component {
       <Layout>
         <WindowWidget invisible>
           <h2>Hei, {this.state.profileData.first_name}!</h2>
-          <UserCard profile={this.state.profileData} onChange={() => this.componentDidMount()} />
+          <UserCard
+            profile={this.state.profileData}
+            onChange={() => this.componentDidMount()}
+          />
         </WindowWidget>
         <WindowWidget invisible>
           <OrganizationsCard profile={this.state.profileData} />
