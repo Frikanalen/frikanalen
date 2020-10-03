@@ -31,8 +31,14 @@ class Schedule extends Component {
         <span className="end_time">
           <Moment format="HH:mm">{item.endtime}</Moment>
         </span>
-        <span className="publisher">{item.video.organization.name}</span>
-        <div className="title">{item.video.name}</div>
+        <span className="publisher">
+          <a href={"/org/" + item.video.organization.id}>
+            {item.video.organization.name}
+          </a>
+        </span>
+        <div className="title">
+          <a href={"/v/" + item.video.id}>{item.video.name}</a>
+        </div>
         <style jsx>{`
           .schedule_item {
             break-inside: avoid-column;
@@ -55,6 +61,11 @@ class Schedule extends Component {
             padding: 5px;
             white-space: pre-line;
             font-weight: normal;
+          }
+          .schedule_item > * > a {
+            link-decoration: none;
+            color: #9bb5f2;
+            font-weight: bold;
           }
           .schedule_item > .end_time::before {
             content: "–";
