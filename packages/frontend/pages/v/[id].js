@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { Component } from "react";
+import { Component, useState } from "react";
 import { APIGET } from "../../components/API/Fetch.js";
 
 import Col from "react-bootstrap/Col";
@@ -20,6 +20,33 @@ const VideoUpload = dynamic(() => import("../../components/VideoUpload"), {
   ssr: false,
 });
 //const ShakaPlayer = dynamic(() => import('shaka-player-react'), { ssr: false });
+
+class LatestVideos extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      orgID: props.orgID,
+      videos: [],
+    };
+  }
+  async componentDidMount() {
+    if (typeof this.state.orgID !== "undefined") {
+      const res = await fetch(
+        configs.api + "videos/?page_size=5&organization=" + this.state.orgID
+      );
+      const data = await res.json();
+      console.log(data.results);
+      this.setState({ videos: data.results });
+    }
+  }
+  latestVideo = (video) => {
+	  return <p><a href={"/v/" + video.id}>{video.name}</a></p>;
+  };
+  render() {
+    console.log(this.state.videos);
+    return <p>{this.state.videos.map((v) => this.latestVideo(v))}</p>;
+  }
+}
 
 export default class VideoPage extends Component {
   constructor(props) {
@@ -149,10 +176,7 @@ export default class VideoPage extends Component {
               <Col>
                 <div className={styles.otherVideos}>
                   <h4>Nyeste videoer fra {this.video.org.name}</h4>
-                  <Alert variant="info">
-                    <Alert.Heading>Funksjonen kommer snart!</Alert.Heading>
-                    Frikanalen.no utvikles aktivt.
-                  </Alert>
+                  <LatestVideos orgID={this.video.org.ID} />
                 </div>
               </Col>
             </Row>
