@@ -178,8 +178,7 @@ class FileFormat(models.Model):
 class VideoFile(models.Model):
     id = models.AutoField(primary_key=True)
     # uploader = models.ForeignKey(User) # Not migrated
-    # Until we have some way of handling file deletion, I'm erring on the side of caution
-    video = models.ForeignKey("Video", on_delete=models.PROTECT)
+    video = models.ForeignKey("Video", on_delete=models.CASCADE)
     format = models.ForeignKey("FileFormat", on_delete=models.PROTECT)
     filename = models.CharField(max_length=256)
     # source = video = models.ForeignKey("VideoFile")
