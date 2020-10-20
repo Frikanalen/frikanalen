@@ -46,6 +46,19 @@
   },
   "devDependencies": {
     "eslint-config-prettier": "^6.11.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.2",
     "prettier": "2.0.5"
+  },
+  "prettier": {
+    "printWidth": 120
+  },
+  "lint-staged": {
+    "*.{js,less,css,json,md,ts,tsx,sass,scss}": "prettier --write"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
