@@ -1,10 +1,9 @@
-import Layout from "../components/Layout";
-import LiveNow from "../components/LiveNow";
-import WindowWidget from "../components/WindowWidget";
-
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import Layout from "../components/Layout";
+import LiveNow from "../components/LiveNow";
+import WindowWidget from "../components/WindowWidget";
 
 const BetaDisclaimer = () => (
   <WindowWidget nomargin>
@@ -23,49 +22,41 @@ const BetaDisclaimer = () => (
           </svg>
         </Col>
         <Col className="betaText">
-          <h4>Velkommen til nye frikanalen.no!</h4>
+          <h4>Hei og velkommen til nye frikanalen.no!</h4>
         </Col>
       </Row>
       <Row>
         <Col>
+          <p>Etter mye hardt arbeide bak scenene kan vi endelig presentere første versjon av nye frikanalen.no!</p>
+          <p>Snart vil det komme en nyhetsseksjon så dere vil kunne få et innblikk i alt arbeidet som er gjort.</p>
           <p>
-            Etter mye hardt arbeide bak scenene kan vi endelig presentere første
-            versjon av nye frikanalen.no!
-          </p>
-          <p>
-            Snart vil det komme en nyhetsseksjon så dere vil kunne få et
-            innblikk i alt arbeidet som er gjort.
-          </p>
-          <p>
-            I mellomtiden vil du kunne få et lite innblikk i endringene ved å se
-            på{" "}
-            <a href="https://github.com/Frikanalen/frikanalen/commits/master">
-              endringsloggen i kodearkivet
-            </a>
-            .
+            I mellomtiden vil du kunne få et lite innblikk i endringene ved å se på{" "}
+            <a href="https://github.com/Frikanalen/frikanalen/commits/master">endringsloggen i kodearkivet</a>.
           </p>
         </Col>
       </Row>
-      <style jsx global>{`
-        .iconBox {
-          margin-top: 10px;
-        }
-        .iconRow {
-          place-items: center stretch;
-        }
-        @media (max-width: 767.98px) {
-          .betaText h4 {
-            margin-top: 2px;
+      <style jsx global>
+        {`
+          .iconBox {
+            margin-top: 10px;
+          }
+          .iconRow {
+            place-items: center stretch;
+          }
+          @media (max-width: 767.98px) {
+            .betaText h4 {
+              margin-top: 2px;
+            }
+            #betaDisclaimerIcon {
+              margin-top: 11px;
+            }
           }
           #betaDisclaimerIcon {
-            margin-top: 11px;
+            margin-top: 0px;
+            fill: yellow;
           }
-        }
-        #betaDisclaimerIcon {
-          margin-top: 0px;
-          fill: yellow;
-        }
-      `}</style>
+        `}
+      </style>
     </Container>
   </WindowWidget>
 );

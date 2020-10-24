@@ -10,12 +10,7 @@ export class LiveVideoPlayer extends Component {
   render() {
     return (
       <div id="live">
-        <video
-          ref={this.video}
-          controls
-          onClick={this.pause_video}
-          src="https://frikanalen.no/frikanalen.webm"
-        ></video>
+        <video ref={this.video} controls onClick={this.pause_video} src="https://frikanalen.no/frikanalen.webm"></video>
         <style jsx>{`
           #live {
             width: 100%;

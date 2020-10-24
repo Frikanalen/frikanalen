@@ -65,11 +65,7 @@ class ATEMPanel extends Component {
       <span>
         <button
           className={input.index == this.state.program ? "active" : ""}
-          onClick={() =>
-            this.ATEM.setProgram(input.index).then(
-              this.setState({ program: this.ATEM.program })
-            )
-          }
+          onClick={() => this.ATEM.setProgram(input.index).then(this.setState({ program: this.ATEM.program }))}
         >
           {input.name}
         </button>

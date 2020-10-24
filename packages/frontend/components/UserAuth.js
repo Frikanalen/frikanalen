@@ -32,9 +32,7 @@ class UserAuth extends Component {
             <Link href="/profile" passHref>
               <NavDropdown.Item>Brukerside</NavDropdown.Item>
             </Link>
-            <NavDropdown.Item onClick={this.boundLogout}>
-              Logg ut
-            </NavDropdown.Item>
+            <NavDropdown.Item onClick={this.boundLogout}>Logg ut</NavDropdown.Item>
           </NavDropdown>
           <style jsx global>{`
             .userdropdown > a {
@@ -93,9 +91,7 @@ class UserAuth extends Component {
       localStorage.setItem("userMSISDN", response.data.phone_number);
       localStorage.setItem("userIsStaff", response.data.is_staff);
     } catch (error) {
-      console.log(
-        "Encountered the following while attempting to refresh user profile"
-      );
+      console.log("Encountered the following while attempting to refresh user profile");
       console.log(error);
       delete_local_session();
     }

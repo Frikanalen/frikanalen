@@ -69,13 +69,7 @@ export default class Realtime extends React.Component {
       opaqueId: this.opaqueId,
       success: (pluginHandle) => {
         this.streaming = pluginHandle;
-        Janus.log(
-          "Plugin attached! (" +
-            this.streaming.getPlugin() +
-            ", id=" +
-            this.streaming.getId() +
-            ")"
-        );
+        Janus.log("Plugin attached! (" + this.streaming.getPlugin() + ", id=" + this.streaming.getId() + ")");
         this.startStream(1);
       },
       error: function (error) {

@@ -4,20 +4,20 @@ import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import configs from "../../components/configs";
 import Layout from "../../components/Layout";
 import WindowWidget from "../../components/WindowWidget";
-import React, { useState, useEffect } from "react";
 
 import { APIGET } from "../../components/API/Fetch";
-import { useRouter } from "next/router";
 
 function OrganizationData(props) {
   const [org, setOrg] = useState();
 
   useEffect(() => {
     async function fetchOrg(id) {
-      return await APIGET("organization/" + id);
+      return await APIGET(`organization/${id}`);
     }
 
     if (typeof props.orgID !== "undefined") {
@@ -34,9 +34,8 @@ function OrganizationData(props) {
         <h1>{org.name}</h1>
       </div>
     );
-  } else {
-    return <Spinner />;
   }
+  return <Spinner />;
 }
 
 export default function OrganizationPage() {
@@ -47,9 +46,7 @@ export default function OrganizationPage() {
       <WindowWidget>
         <OrganizationData orgID={id} />
         <Alert variant="info">
-          <Alert.Heading>
-            Denne siden er fremdeles under utbygging
-          </Alert.Heading>
+          <Alert.Heading>Denne siden er fremdeles under utbygging</Alert.Heading>
           <p>Frikanalens nettsider er i aktiv utvikling.</p>
           <p>Vi håper å ha en mer fullstendig side på plass innen kort tid.</p>
           <p>Takk for forståelsen!</p>

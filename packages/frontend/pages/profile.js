@@ -6,32 +6,29 @@ import Alert from "react-bootstrap/Alert";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import Layout from "../components/Layout";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
+import React, { Component, useState } from "react";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import WindowWidget from "../components/WindowWidget";
 import UserAuth from "../components/UserAuth";
-import React, { Component } from "react";
-import { useState } from "react";
+
 import configs from "../components/configs";
 
 import ProfileFetcher from "../components/API/User";
 
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import Layout from "../components/Layout";
 
 const AuthenticatedFetcher = (url) =>
   axios
     .get(url, {
-      headers: { Authorization: "Token " + Cookies.get("token") },
+      headers: { Authorization: `Token ${Cookies.get("token")}` },
     })
     .then((res) => res.data);
 
 function OrganizationFetcher(id) {
-  const { data, error } = useSWR(
-    configs.api + "organization/" + id,
-    AuthenticatedFetcher
-  );
+  const { data, error } = useSWR(`${configs.api}organization/${id}`, AuthenticatedFetcher);
 
   return {
     org: data,
@@ -48,10 +45,10 @@ function UserProfile(props) {
 
   const submitProfile = (e) => {
     e.preventDefault();
-    const result = fetch(configs.api + "user", {
+    const result = fetch(`${configs.api}user`, {
       method: "put",
       headers: {
-        Authorization: "Token " + Cookies.get("token"),
+        Authorization: `Token ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -74,27 +71,18 @@ function UserProfile(props) {
         </Col>
         <Col>
           <Form.Label>Mobilnummer</Form.Label>
-          <Form.Control
-            onChange={(e) => setMSISDN(e.target.value)}
-            value={MSISDN}
-          />
+          <Form.Control onChange={(e) => setMSISDN(e.target.value)} value={MSISDN} />
         </Col>
       </Form.Row>
       <br />
       <Form.Row>
         <Col>
           <Form.Label>Fornavn</Form.Label>
-          <Form.Control
-            onChange={(e) => setFirstName(e.target.value)}
-            value={firstName}
-          />
+          <Form.Control onChange={(e) => setFirstName(e.target.value)} value={firstName} />
         </Col>
         <Col>
           <Form.Label>Etternavn</Form.Label>
-          <Form.Control
-            onChange={(e) => setLastName(e.target.value)}
-            value={lastName}
-          />
+          <Form.Control onChange={(e) => setLastName(e.target.value)} value={lastName} />
         </Col>
       </Form.Row>
       <Row>
@@ -123,28 +111,25 @@ function UserCard(props) {
 }
 
 function OrganizationCard(props) {
-  const { org, isLoading, isError } = OrganizationFetcher(
-    props.role.organization_id
-  );
+  const { org, isLoading, isError } = OrganizationFetcher(props.role.organization_id);
 
   if (isLoading) return <Spinner animation="border" variant="primary" />;
   if (isError) return <Spinner animation="border" variant="primary" />;
 
-  const roleText =
-    props.role.role == "editor" ? "Du er redaktør" : "Du er medlem";
+  const roleText = props.role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 
   return (
     <Card body bg="light">
       <Card.Title className="mb-1">{org.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">{roleText}</Card.Subtitle>
-      <Card.Link href={"/o/" + org.id}>Offentlig side</Card.Link>
+      <Card.Link href={`/o/${org.id}`}>Offentlig side</Card.Link>
     </Card>
   );
 }
 
 function OrganizationList(props) {
   const user = props.profile;
-  var organizationList;
+  let organizationList;
 
   if (user.organization_roles) {
     if (user.organization_roles.length) {
@@ -155,9 +140,7 @@ function OrganizationList(props) {
         </Col>
       ));
     } else {
-      organizationList = (
-        <Col>Ingen organisasjoner tilknyttet denne brukeren.</Col>
-      );
+      organizationList = <Col>Ingen organisasjoner tilknyttet denne brukeren.</Col>;
     }
   }
   return (
@@ -176,8 +159,7 @@ function OrganizationsCard(props) {
           <Card.Title>Organisasjoner</Card.Title>
           <Alert variant="info">
             <Alert.Heading>Vi jobber med saken!</Alert.Heading>
-            Her vil det snart komme et skjema for å melde en organisasjon inn i
-            Frikanalen.
+            Her vil det snart komme et skjema for å melde en organisasjon inn i Frikanalen.
           </Alert>
           <OrganizationList profile={props.profile} />
         </Card.Body>
@@ -198,7 +180,7 @@ export default class Profile extends Component {
   async componentDidMount() {
     try {
       const profileData = await ProfileFetcher();
-      this.setState({ profileData: profileData });
+      this.setState({ profileData });
     } catch (e) {
       console.log(e);
       this.setState({ profileError: e });
@@ -213,8 +195,7 @@ export default class Profile extends Component {
           <Layout>
             <WindowWidget invisible>
               <Alert variant="danger">
-                "{this.state.profileError.message}" mens den kontaktet "
-                {this.state.profileError.config.url}"
+                "{this.state.profileError.message}" mens den kontaktet "{this.state.profileError.config.url}"
               </Alert>
             </WindowWidget>
           </Layout>
@@ -231,11 +212,11 @@ export default class Profile extends Component {
     return (
       <Layout>
         <WindowWidget invisible>
-          <h2>Hei, {this.state.profileData.first_name}!</h2>
-          <UserCard
-            profile={this.state.profileData}
-            onChange={() => this.componentDidMount()}
-          />
+          <h2>
+            Hei,
+            {this.state.profileData.first_name}!
+          </h2>
+          <UserCard profile={this.state.profileData} onChange={() => this.componentDidMount()} />
         </WindowWidget>
         <WindowWidget invisible>
           <OrganizationsCard profile={this.state.profileData} />

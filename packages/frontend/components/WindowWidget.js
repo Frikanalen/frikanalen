@@ -13,10 +13,7 @@ const WindowWidget = (props) => {
   const backgroundStyle = props.invisible ? styles.InvisibleWindowWidget : null;
 
   return (
-    <Container
-      fluid="lg"
-      className={[styles.WindowWidget, containerStyle, backgroundStyle]}
-    >
+    <Container fluid="lg" className={[styles.WindowWidget, containerStyle, backgroundStyle]}>
       {props.children}
     </Container>
   );

@@ -25,10 +25,7 @@ function humanFileSize(bytes, si = true, dp = 1) {
   do {
     bytes /= thresh;
     ++u;
-  } while (
-    Math.round(Math.abs(bytes) * r) / r >= thresh &&
-    u < units.length - 1
-  );
+  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
 
   return bytes.toFixed(dp) + " " + units[u];
 }
@@ -112,8 +109,7 @@ class VideoUpload extends Component {
             <Col>
               <div>Filnavn: {this.state.fileName}</div>
               <div>
-                Lastet opp: {humanFileSize(this.state.uploadProgressBytes)} /{" "}
-                {humanFileSize(this.state.fileSize)}
+                Lastet opp: {humanFileSize(this.state.uploadProgressBytes)} / {humanFileSize(this.state.fileSize)}
               </div>
               <Button onClick={this.startUpload}>Start</Button>
               <ProgressBar animated now={this.state.uploadProgressPercent} />
@@ -164,9 +160,7 @@ class VideoUpload extends Component {
     return (
       <Container fluid>
         <Row>
-          <Col>
-            {this.state.fileName ? this.fileUploader() : this.fileSelector()}
-          </Col>
+          <Col>{this.state.fileName ? this.fileUploader() : this.fileSelector()}</Col>
         </Row>
       </Container>
     );

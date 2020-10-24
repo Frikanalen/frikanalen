@@ -12,18 +12,13 @@ class Header extends Component {
   render() {
     var dev_message = null;
 
-    if (process.env.NEXT_PUBLIC_ENV == "development")
-      dev_message = <span>development</span>;
+    if (process.env.NEXT_PUBLIC_ENV == "development") dev_message = <span>development</span>;
 
     return (
       <header>
         <Navbar bg="light">
           <Navbar.Brand href="/">
-            <img
-              className="logo"
-              src="/images/frikanalen.png"
-              alt="Frikanalen"
-            />
+            <img className="logo" src="/images/frikanalen.png" alt="Frikanalen" />
             {dev_message}
           </Navbar.Brand>
         </Navbar>

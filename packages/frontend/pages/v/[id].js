@@ -31,16 +31,18 @@ class LatestVideos extends Component {
   }
   async componentDidMount() {
     if (typeof this.state.orgID !== "undefined") {
-      const res = await fetch(
-        configs.api + "videos/?page_size=5&organization=" + this.state.orgID
-      );
+      const res = await fetch(configs.api + "videos/?page_size=5&organization=" + this.state.orgID);
       const data = await res.json();
       console.log(data.results);
       this.setState({ videos: data.results });
     }
   }
   latestVideo = (video) => {
-	  return <p><a href={"/v/" + video.id}>{video.name}</a></p>;
+    return (
+      <p>
+        <a href={"/v/" + video.id}>{video.name}</a>
+      </p>
+    );
   };
   render() {
     console.log(this.state.videos);
@@ -93,14 +95,7 @@ export default class VideoPage extends Component {
   }
 
   vodBox() {
-    return (
-      <video
-        poster={this.video.files.large_thumb}
-        controls
-        src={this.video.files.theora}
-        type="video/ogg"
-      />
-    );
+    return <video poster={this.video.files.large_thumb} controls src={this.video.files.theora} type="video/ogg" />;
   }
 
   processingSpinnerBox() {
@@ -166,10 +161,7 @@ export default class VideoPage extends Component {
                 <div className={styles.videoInfo}>
                   <h4>{this.video.name}</h4>
                   <p>
-                    Publisert av{" "}
-                    <a href={"/org/" + this.video.org.ID}>
-                      {this.video.org.name}
-                    </a>
+                    Publisert av <a href={"/org/" + this.video.org.ID}>{this.video.org.name}</a>
                   </p>
                 </div>
               </Col>

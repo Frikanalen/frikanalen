@@ -32,17 +32,9 @@ export default class DASHPlayer extends Component {
   initPlayer() {
     // Create a Player instance.
     this.player = new shaka.Player(this.video.current);
-    this.shaka = new shaka.cast.CastProxy(
-      this.video.current,
-      this.player,
-      "892FD57F"
-    );
+    this.shaka = new shaka.cast.CastProxy(this.video.current, this.player, "892FD57F");
     this.player = this.shaka.getPlayer();
-    this.ui = new shaka.ui.Overlay(
-      this.player,
-      this.videoContainer.current,
-      this.video.current
-    );
+    this.ui = new shaka.ui.Overlay(this.player, this.videoContainer.current, this.video.current);
 
     // Attach this.player.to the window to make it easy to access in the JS console.
     window.player = this.player;

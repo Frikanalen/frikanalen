@@ -1,17 +1,17 @@
 import React, { Component } from "react";
-import WindowWidget from "../components/WindowWidget";
 import fetch from "isomorphic-unfetch";
 
 import Cookies from "js-cookie";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import Layout from "../components/Layout";
 import Row from "react-bootstrap/Row";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
+import Layout from "../components/Layout";
+import WindowWidget from "../components/WindowWidget";
 
 export default class PosterManager extends Component {
   constructor(props) {
@@ -25,11 +25,7 @@ export default class PosterManager extends Component {
 
   resetImageTimeout() {
     const stillsGeneratorBase = "https://stills-generator.frikanalen.no/";
-    const queryString =
-      "preview/?text=" +
-      encodeURI(this.state.text) +
-      "&heading=" +
-      encodeURI(this.state.heading);
+    const queryString = `preview/?text=${encodeURI(this.state.text)}&heading=${encodeURI(this.state.heading)}`;
     this.setState({ imageUrl: stillsGeneratorBase + queryString });
   }
 
@@ -37,7 +33,7 @@ export default class PosterManager extends Component {
     fetch("https://stills-generator.frikanalen.no/upload", {
       method: "post",
       headers: {
-        Authorization: "Token " + Cookies.get("token"),
+        Authorization: `Token ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -48,11 +44,11 @@ export default class PosterManager extends Component {
   }
 
   setText(text) {
-    this.setState({ text: text }, this.resetImageTimeout);
+    this.setState({ text }, this.resetImageTimeout);
   }
 
   setHeading(heading) {
-    this.setState({ heading: heading }, this.resetImageTimeout);
+    this.setState({ heading }, this.resetImageTimeout);
   }
 
   render() {
@@ -67,10 +63,7 @@ export default class PosterManager extends Component {
               <Form>
                 <Form.Group>
                   <Form.Label>Overskrift</Form.Label>
-                  <Form.Control
-                    onChange={(event) => this.setHeading(event.target.value)}
-                    placeholder="overskrift"
-                  />
+                  <Form.Control onChange={(event) => this.setHeading(event.target.value)} placeholder="overskrift" />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Tekst</Form.Label>

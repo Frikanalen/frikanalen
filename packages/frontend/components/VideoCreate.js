@@ -30,9 +30,7 @@ export default class VideoCreate extends Component {
       this.setState({ possibleCategories: categories });
     });
     ProfileFetcher().then((userProfile) => {
-      const editorOrgs = userProfile.organization_roles.filter(
-        (r) => r.role == "editor"
-      );
+      const editorOrgs = userProfile.organization_roles.filter((r) => r.role == "editor");
       this.setState({ editorOrgs: editorOrgs });
       this.state.video.setOrganization(editorOrgs[0].organization_id);
     });

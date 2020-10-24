@@ -1,13 +1,13 @@
-import Layout from "../components/Layout";
-import configs from "../components/configs";
 import Link from "next/link";
 import React, { Component } from "react";
 import Col from "react-bootstrap/Col";
-import WindowWidget from "../components/WindowWidget";
 
 import fetch from "isomorphic-unfetch";
 import Moment from "react-moment";
 import moment from "moment";
+import WindowWidget from "../components/WindowWidget";
+import configs from "../components/configs";
+import Layout from "../components/Layout";
 import "moment/locale/nb";
 
 class Schedule extends Component {
@@ -32,55 +32,51 @@ class Schedule extends Component {
           <Moment format="HH:mm">{item.endtime}</Moment>
         </span>
         <span className="publisher">
-          <a href={"/org/" + item.video.organization.id}>
-            {item.video.organization.name}
-          </a>
+          <a href={`/org/${item.video.organization.id}`}>{item.video.organization.name}</a>
         </span>
         <div className="title">
-          <a href={"/v/" + item.video.id}>{item.video.name}</a>
+          <a href={`/v/${item.video.id}`}>{item.video.name}</a>
         </div>
-        <style jsx>{`
-          .schedule_item {
-            break-inside: avoid-column;
-            padding: 0px 0px 0px 0px;
-            color: white;
-          }
+        <style jsx>
+          {`
+            .schedule_item {
+              break-inside: avoid-column;
+              padding: 0px 0px 0px 0px;
+              color: white;
+            }
 
-          .schedule_item > .publisher,
-          .schedule_item > .end_time,
-          .schedule_item > .start_time {
-            font-weight: bold;
-          }
-          .schedule_item > .publisher {
-            margin-left: 10px;
-          }
-          .schedule_item > .end_time {
-            color: #888;
-          }
-          .schedule_item > .title {
-            padding: 5px;
-            white-space: pre-line;
-            font-weight: normal;
-          }
-          .schedule_item > * > a {
-            link-decoration: none;
-            color: #9bb5f2;
-            font-weight: bold;
-          }
-          .schedule_item > .end_time::before {
-            content: "–";
-          }
-        `}</style>
+            .schedule_item > .publisher,
+            .schedule_item > .end_time,
+            .schedule_item > .start_time {
+              font-weight: bold;
+            }
+            .schedule_item > .publisher {
+              margin-left: 10px;
+            }
+            .schedule_item > .end_time {
+              color: #888;
+            }
+            .schedule_item > .title {
+              padding: 5px;
+              white-space: pre-line;
+              font-weight: normal;
+            }
+            .schedule_item > * > a {
+              link-decoration: none;
+              color: #9bb5f2;
+              font-weight: bold;
+            }
+            .schedule_item > .end_time::before {
+              content: "–";
+            }
+          `}
+        </style>
       </div>
     );
   }
 
   async schedule_for_date(schedule_day) {
-    const res = await fetch(
-      configs.api +
-        "scheduleitems/?days=1&date=" +
-        moment(this.state.date).format("YYYYMMDD")
-    );
+    const res = await fetch(`${configs.api}scheduleitems/?days=1&date=${moment(this.state.date).format("YYYYMMDD")}`);
     const json = await res.json();
     return json.results;
   }
@@ -105,10 +101,9 @@ class Schedule extends Component {
               </Moment>
             </h1>
           </div>
-          <div className="programmes">
-            {this.state.shows.map((x) => this.ScheduleItem(x))}
-          </div>
-          <style jsx>{`
+          <div className="programmes">{this.state.shows.map((x) => this.ScheduleItem(x))}</div>
+          <style jsx>
+            {`
                 .programmes {
                     column-count: 2;
                 }
@@ -122,7 +117,8 @@ class Schedule extends Component {
              .schedule_date {
                  text-align: center;
                  padding: 10px;
-             }`}</style>
+             }`}
+          </style>
         </WindowWidget>
       </Layout>
     );

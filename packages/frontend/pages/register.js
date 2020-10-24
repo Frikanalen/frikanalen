@@ -1,9 +1,5 @@
-import configs from "../components/configs";
-
 import React, { useState } from "react";
 import Card from "react-bootstrap/Card";
-import Layout from "../components/Layout";
-import WindowWidget from "../components/WindowWidget";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -11,6 +7,9 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import axios from "axios";
+import WindowWidget from "../components/WindowWidget";
+import Layout from "../components/Layout";
+import configs from "../components/configs";
 
 export default function Signupform() {
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,9 +22,9 @@ export default function Signupform() {
     e.preventDefault();
 
     try {
-      const result = await axios.post(configs.api + "user/register", {
-        email: email,
-        password: password,
+      const result = await axios.post(`${configs.api}user/register`, {
+        email,
+        password,
         first_name: givenName,
         last_name: familyName,
         date_of_birth: "2020-07-24",
@@ -38,14 +37,14 @@ export default function Signupform() {
         password: "Passord",
         email: "E-post",
       };
-      var errorList = [];
+      const errorList = [];
 
       for (var errorField in e.response.data) {
-        for (var errorIdx in e.response.data[errorField]) {
+        for (const errorIdx in e.response.data[errorField]) {
           errorList.push(
             e.response.data[errorField].map((foo) => (
               <p>
-                <em>{fieldNames[errorField]}</em>: {foo}
+                <em>{fieldNames[errorField]}</em>:{foo}
               </p>
             ))
           );
@@ -73,16 +72,12 @@ export default function Signupform() {
             <Card.Title>Registrer deg</Card.Title>
             <Card.Text>
               <Alert variant="info">
-                <p>
-                  For å laste opp innhold må individet eller organisasjonen
-                  formelt innmeldes i Frikanalen.
-                </p>
+                <p>For å laste opp innhold må individet eller organisasjonen formelt innmeldes i Frikanalen.</p>
                 <p>
                   For mer om medlemskap, se: «<a href="/om/blimed">Bli med!</a>»
                 </p>
                 <p>
-                  Her kan du opprette en bruker for tilgang til
-                  innmeldingsskjema og andre medlemsfunksjoner på siden.
+                  Her kan du opprette en bruker for tilgang til innmeldingsskjema og andre medlemsfunksjoner på siden.
                 </p>
               </Alert>
               <Form onSubmit={(event) => signup(event)}>
@@ -143,29 +138,26 @@ export default function Signupform() {
                 <Form.Row>
                   <Col>
                     <Alert type="warning">{errorMessage}</Alert>
-                    <Button
-                      className="submit"
-                      variant="primary"
-                      type="submit"
-                      primary="yes"
-                    >
+                    <Button className="submit" variant="primary" type="submit" primary="yes">
                       Submit
                     </Button>
                   </Col>
-                  <style jsx global>{`
-                    .form-row {
-                      margin: 10px;
-                    }
-                    .submit {
-                      margin-top: 10px;
-                    }
-                    .loginCard {
-                      color: black;
-                      width: 70%;
-                      margin: 0 auto;
-                      margin-top: 40px;
-                    }
-                  `}</style>
+                  <style jsx global>
+                    {`
+                      .form-row {
+                        margin: 10px;
+                      }
+                      .submit {
+                        margin-top: 10px;
+                      }
+                      .loginCard {
+                        color: black;
+                        width: 70%;
+                        margin: 0 auto;
+                        margin-top: 40px;
+                      }
+                    `}
+                  </style>
                 </Form.Row>
               </Form>
             </Card.Text>

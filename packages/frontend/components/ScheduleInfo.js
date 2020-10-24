@@ -38,9 +38,7 @@ export class ScheduleInfo extends Component {
 
   as_HH_mm(datestr) {
     let d = new Date(datestr);
-    return (
-      ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2)
-    );
+    return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
   }
 
   constructor(props) {
@@ -54,14 +52,10 @@ export class ScheduleInfo extends Component {
       return (
         <div key={programme.id} className={"programme " + DOMclass}>
           <span className="times">
-            <span className="startTime">
-              {this.as_HH_mm(programme.starttime)}
-            </span>
+            <span className="startTime">{this.as_HH_mm(programme.starttime)}</span>
             <span className="endTime">{this.as_HH_mm(programme.endtime)}</span>
           </span>
-          <span className="organization">
-            {programme.video.organization.name}
-          </span>
+          <span className="organization">{programme.video.organization.name}</span>
           <span className="lineBreak"></span>
           <span className="name">
             <a href={"v/" + programme.video.id}>{programme.video.name}</a>
@@ -117,20 +111,11 @@ export class ScheduleInfo extends Component {
       return (
         <span className="onRightNow">
           {this.state.currentItem != 0
-            ? programme_row(
-                this.state.schedule[this.state.currentItem - 1],
-                "previous"
-              )
+            ? programme_row(this.state.schedule[this.state.currentItem - 1], "previous")
             : null}
-          {programme_row(
-            this.state.schedule[this.state.currentItem],
-            "current"
-          )}
+          {programme_row(this.state.schedule[this.state.currentItem], "current")}
           {this.state.currentItem != this.state.schedule.length
-            ? programme_row(
-                this.state.schedule[this.state.currentItem + 1],
-                "next"
-              )
+            ? programme_row(this.state.schedule[this.state.currentItem + 1], "next")
             : false}
           <style jsx>{`
             .onRightNow {

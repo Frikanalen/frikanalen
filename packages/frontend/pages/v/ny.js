@@ -17,7 +17,7 @@ export default function AddVideo() {
       <WindowWidget>
         <VideoCreate
           onVideoCreated={(videoID) => {
-            router.push("/v/[id]", "/v/" + videoID);
+            router.push("/v/[id]", `/v/${videoID}`);
           }}
         />
       </WindowWidget>

@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import Router from "next/router";
 
 import Card from "react-bootstrap/Card";
-import Layout from "../components/Layout";
-import UserAuth from "../components/UserAuth";
-import WindowWidget from "../components/WindowWidget";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import WindowWidget from "../components/WindowWidget";
+import UserAuth from "../components/UserAuth";
+import Layout from "../components/Layout";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ export default function LoginForm() {
 
   async function login(e) {
     e.preventDefault();
-    var login = await UserAuth.login(email, password);
+    const login = await UserAuth.login(email, password);
     if (login === true) {
       await UserAuth.refreshLocalStorage();
       Router.push("/");
@@ -63,17 +63,19 @@ export default function LoginForm() {
               <span className="registration-invitation">
                 ...eller <a href="/register">registrer ny bruker</a>
               </span>
-              <style jsx global>{`
-                .registration-invitation {
-                  padding-left: 10px;
-                }
-                .loginCard {
-                  color: black;
-                  width: 70%;
-                  margin: 0 auto;
-                  margin-top: 40px;
-                }
-              `}</style>
+              <style jsx global>
+                {`
+                  .registration-invitation {
+                    padding-left: 10px;
+                  }
+                  .loginCard {
+                    color: black;
+                    width: 70%;
+                    margin: 0 auto;
+                    margin-top: 40px;
+                  }
+                `}
+              </style>
             </Form>
           </Card.Body>
         </Card>
