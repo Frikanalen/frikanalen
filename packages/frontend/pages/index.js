@@ -22,7 +22,7 @@ const BetaDisclaimer = () => (
           </svg>
         </Col>
         <Col className="betaText">
-          <h4>Hei og velkommen til nye frikanalen.no!</h4>
+          <h4>Velkommen til nye frikanalen.no!</h4>
         </Col>
       </Row>
       <Row>
