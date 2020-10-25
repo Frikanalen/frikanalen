@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+import json
+import requests
+import sys
+import os
+
+FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
+FK_TOKEN = os.environ.get('FK_TOKEN')
+
+
+def get_token(video_id):
+    response = requests.get(
+        '%s/videos/%d/upload_token.json' % (FK_API, video_id),
+        headers={'Authorization': 'Token %s' % FK_TOKEN}
+    )
+    data = response.json()
+    if response.status_code != 200:
+        refuse(f'Querying API for video {video_id} returned %d' % response.status_code)
+    if 'upload_token' not in data or not data['upload_token']:
+        refuse('There is no upload token set in database for this video')
+    return data['upload_token']
+
+def refuse(string):
+    print(f'[pre_create hook] {string}', file=sys.stderr)
+    sys.exit(1)
+
+if __name__=='__main__':
+    request = json.load(sys.stdin)
+    headers = request['HTTPRequest']['Header']
+
+    try:
+        upload_token = headers['Uploadtoken'][0]
+    except KeyError:
+        refuse('Upload token header not set!')
+
+    try:
+        video_id = int(headers['Videoid'][0])
+    except KeyError:
+        refuse('Video ID header not set!')
+    except ValueError:
+        refuse('Video ID header could not be converted to int!')
+
+    good_token = get_token(video_id)
+    print(good_token)
+    if upload_token != good_token:
+        refuse('Your upload token "%s" is incorrect' % upload_token)
