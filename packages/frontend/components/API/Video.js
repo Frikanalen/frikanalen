@@ -1,6 +1,5 @@
-import { Component } from "react";
 import Organization from "./Organization";
-import { APIGET, APIPOST } from "./Fetch.js";
+import { APIGET, APIPOST } from "./Fetch";
 
 export async function getCategories() {
   const categories = await APIGET("categories/");
@@ -28,10 +27,11 @@ export default class Video {
   }
 
   async load(videoID) {
+    let ID = videoID;
     if (typeof videoID === "undefined") {
-      videoID = this.ID;
+      ID = this.ID;
     }
-    await this.loadJSON(await APIGET("videos/" + videoID));
+    await this.loadJSON(await APIGET(`videos/${ID}`));
   }
 
   async save() {
@@ -60,11 +60,11 @@ export default class Video {
     this.header = newHeader;
   }
 
-  setName(new_name) {
-    this.name = new_name;
+  setName(newName) {
+    this.name = newName;
   }
 
-  setCategories(category_list) {
-    this.categories = category_list;
+  setCategories(categoryList) {
+    this.categories = categoryList;
   }
 }
