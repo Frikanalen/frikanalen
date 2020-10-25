@@ -1,13 +1,10 @@
 import { Component } from "react";
 
-import Layout from "./Layout";
-import WindowWidget from "./WindowWidget";
-
 import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-import Video, { get_categories } from "./API/Video";
+import Video, { getCategories } from "./API/Video";
 import ProfileFetcher from "./API/User";
 
 export default class VideoCreate extends Component {
@@ -26,7 +23,7 @@ export default class VideoCreate extends Component {
   }
 
   componentDidMount() {
-    get_categories().then((categories) => {
+    getCategories().then((categories) => {
       this.setState({ possibleCategories: categories });
     });
     ProfileFetcher().then((userProfile) => {

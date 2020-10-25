@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button";
-import { get_upload_token } from "./API/Video.js";
+import { getUploadToken } from "./API/Video.js";
 //let Resumable = require("resumablejs");
 //// TODO: Move Resumable into next/dynamic (I currently have no idea how to do this and my best guess didn't work)
 // TODO: Drag-and-drop support

@@ -1,14 +1,14 @@
-import Organization from "./Organization";
 import { Component } from "react";
+import Organization from "./Organization";
 import { APIGET, APIPOST } from "./Fetch.js";
 
-export async function get_categories() {
+export async function getCategories() {
   const categories = await APIGET("categories/");
-  return categories["results"];
+  return categories.results;
 }
 
-export function get_upload_token(video_id) {
-  return APIGET("videos/" + video_id + "/upload_token");
+export function getUploadToken(videoID) {
+  return APIGET(`videos/${videoID}/upload_token`);
 }
 
 export default class Video {
