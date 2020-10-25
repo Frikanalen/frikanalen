@@ -4,7 +4,6 @@ from kafka import KafkaProducer
 
 if __name__=='__main__':
     request = json.load(sys.stdin)
-    headers = request['HTTPRequest']['Header']
     p = KafkaProducer(bootstrap_servers='kafka-service.kafka:9092')
-    video_id = headers['Videoid'][0]
+    video_id = request['HTTPRequest']['Header']['Videoid'][0]
     p.write('new-video-uploaded', video_id.encode())
