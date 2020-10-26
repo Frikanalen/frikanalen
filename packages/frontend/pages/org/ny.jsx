@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 
@@ -39,7 +39,7 @@ function NewOrgForm() {
       router.push("/org/[id]", `/org/${data.id}`);
     } catch (exception) {
       // TODO: Handle this exception
-      console.log(exception);
+      // console.log(exception);
     }
   };
 
@@ -49,7 +49,6 @@ function NewOrgForm() {
       retVal += address.adresse.join("\n");
       retVal += "\n";
       retVal += `${address.postnummer} ${address.poststed}`;
-      console.log(address);
       return retVal;
     };
 
@@ -58,25 +57,23 @@ function NewOrgForm() {
 
       const exceptions = ["i", "og", "for", "mot", "ved", "av"];
 
-      for (let i = 0; i < splitStr.length; i++) {
-        if (exceptions.indexOf(splitStr[i]) == -1) {
+      for (let i = 0; i < splitStr.length; i += 1) {
+        if (exceptions.indexOf(splitStr[i]) === -1) {
           splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].slice(1);
         }
       }
-      str = splitStr.join(" ");
 
-      return str;
+      return splitStr.join(" ");
     };
 
-    const fetchBrreg = async (orgID) => {
+    const fetchBrreg = async () => {
       const res = await fetch(`https://data.brreg.no/enhetsregisteret/api/enheter/${orgBrregID}`);
       const data = await res.json();
       return data;
     };
 
-    if (orgBrregID.length == 9 && !isNaN(parseInt(orgBrregID))) {
+    if (orgBrregID.length === 9 && !Number.isNaN(parseInt(orgBrregID, 10))) {
       fetchBrreg(orgBrregID).then((org) => {
-        console.log(org);
         setOrgName(titleCase(org.navn));
         setOrgPostAdresse(`${titleCase(org.navn)}\n${formatAddress(org.forretningsadresse)}`);
       });

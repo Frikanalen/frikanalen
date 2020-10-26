@@ -1,6 +1,4 @@
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
+import React from "react";
 import WindowWidget from "../../components/WindowWidget";
 import Layout from "../../components/Layout";
 
@@ -12,7 +10,7 @@ export default function About() {
 
         <p>
           (Vedtatt på stiftelsesmøtet 14. juni 2007. Revidert av Årsmøtet 4. februar 2008, 28.april 2011 og 28. mai
-          2015.){" "}
+          2015.)
         </p>
 
         <h2>§ 1. Navn</h2>
@@ -39,7 +37,7 @@ export default function About() {
         </p>
         <p>
           Foreningen skal ikke drive redaksjonell forhåndskontroll av innhold i deltakernes programmer. Virksomheten
-          bygger på forutsetningene i Stortingets vedtak i 2004 (innst.S.nr.128) om digitalt bakkenett for fjernsyn.{" "}
+          bygger på forutsetningene i Stortingets vedtak i 2004 (innst.S.nr.128) om digitalt bakkenett for fjernsyn.
         </p>
 
         <h2>§ 3. Medlemskap</h2>
@@ -67,7 +65,7 @@ export default function About() {
 
         <p>
           Medlemmer har rett til å benytte Frikanalen til å distribuere programmer. Medlemmenes rett til å bruke
-          Frikanalen for distribusjon av programmer gjelder utelukkende ikke-kommersiell bruk.{" "}
+          Frikanalen for distribusjon av programmer gjelder utelukkende ikke-kommersiell bruk.
         </p>
         <p>
           Medlemmene gis ikke rett til å bevisst bruke senderetten til skjult eller åpenbar reklame, herunder sponsing,
@@ -76,14 +74,14 @@ export default function About() {
         <p>
           Sendetidsfordelingen skal gi mulighet for fast sendetid for medlemmer som ønsker det og sette av åpne flater
           for enkeltprogrammer. Intet enkeltmedlem skal kunne tildeles mer enn én times fast sendetid pr dag.
-          Sendetidspunkt som anses som spesielt gunstige skal rotere mellom aktørene.{" "}
+          Sendetidspunkt som anses som spesielt gunstige skal rotere mellom aktørene.
         </p>
 
         <h3>§ 3-3. Utmelding</h3>
 
         <p>
           Medlemmer som ønsker å melde seg ut må sende skriftlig melding om dette til Foreningen Frikanalen senest 1.
-          desember, for at utmeldingen skal være gyldig fra 1. januar neste år.{" "}
+          desember, for at utmeldingen skal være gyldig fra 1. januar neste år.
         </p>
 
         <h2>§ 4. Årsmøtet</h2>
@@ -91,7 +89,7 @@ export default function About() {
         <p>
           Årsmøtet er Foreningen Frikanalen høyeste myndighet. Det skal holdes ordinært Årsmøte innen utgangen av 31.
           mars hvert år. Det skal kalles inn til ekstraordinært Årsmøte dersom minst 3 styremedlemmer eller 2/3 av
-          medlemmene krever det.{" "}
+          medlemmene krever det.
         </p>
 
         <h3>§ 4-1. Innkalling og saker til Årsmøtet</h3>
@@ -100,7 +98,7 @@ export default function About() {
           Innkallingen sendes senest 4 uker før ordinært og 2 uker før ekstraordinært Årsmøte. Medlemmer må fremme
           årsmøtesaker seinest 3 uker før Årsmøtet. Styrets årsmelding, revidert regnskap og saker til behandling på
           Årsmøte skal sendes til medlemmene senest 2 uker før Årsmøtet. Alle saker som er mottatt innen denne fristen,
-          skal legges fram for Årsmøtet. Dette gjelder også forslag til vedtektsendringer.{" "}
+          skal legges fram for Årsmøtet. Dette gjelder også forslag til vedtektsendringer.
         </p>
 
         <h3>§ 4-2. Dagsorden for Årsmøtet</h3>
@@ -127,9 +125,7 @@ export default function About() {
             <li>Nestleder – velges særskilt, for 2 år</li>
             <li>3 styremedlemmer – velges for 2 år</li>
             <li>Eventuell revisor.</li>
-            <li>
-              Valgkomite - bestående av 3 medlemmer, hvorav ett medlem kan være styremedlem i det sittende styret{" "}
-            </li>
+            <li>Valgkomite - bestående av 3 medlemmer, hvorav ett medlem kan være styremedlem i det sittende styret</li>
             <li>Eventuell kontrollkomite bestående av 2 medlemmer.</li>
           </ol>
         </ol>
@@ -137,7 +133,7 @@ export default function About() {
 
         <p>
           Styret består av leder, nestleder og fire styremedlemmer valgt av årsmøtet. Alle over 15 år kan velges til
-          styreverv. Styret bør ha minst 1 medlem under 26 år og kjønnsbalanse.{" "}
+          styreverv. Styret bør ha minst 1 medlem under 26 år og kjønnsbalanse.
         </p>
 
         <h3>§ 5-1. Styrets oppgaver</h3>
@@ -172,7 +168,7 @@ export default function About() {
         <p>
           Forslag om oppløsning av Foreningen Frikanalen behandles på Årsmøte. Begrunnet forslag må være sendt styret i
           Foreningen Frikanalen og alle tilsluttede medlemmer minst to måneder før Årsmøtet. Til oppløsning kreves 3⁄4
-          stemmeflertall. Årsmøtet bestemmer hvordan eventuelle disponible midler og eiendeler skal fordeles.{" "}
+          stemmeflertall. Årsmøtet bestemmer hvordan eventuelle disponible midler og eiendeler skal fordeles.
         </p>
       </WindowWidget>
     </Layout>

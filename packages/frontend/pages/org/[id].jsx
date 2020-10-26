@@ -1,12 +1,9 @@
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import configs from "../../components/configs";
+import PropTypes from "prop-types";
 import Layout from "../../components/Layout";
 import WindowWidget from "../../components/WindowWidget";
 
@@ -14,21 +11,19 @@ import { APIGET } from "../../components/API/Fetch";
 
 function OrganizationData(props) {
   const [org, setOrg] = useState();
+  const { orgID } = props;
 
   useEffect(() => {
     async function fetchOrg(id) {
-      return await APIGET(`organization/${id}`);
+      return APIGET(`organization/${id}`);
     }
 
-    if (typeof props.orgID !== "undefined") {
-      fetchOrg(props.orgID).then((o) => setOrg(o));
+    if (typeof orgID !== "undefined") {
+      fetchOrg(orgID).then((o) => setOrg(o));
     }
-
-    console.log(props.orgID);
-  }, [props.orgID, setOrg, fetch]);
+  }, [orgID, setOrg, fetch]);
 
   if (org) {
-    console.log(org);
     return (
       <div>
         <h1>{org.name}</h1>
@@ -37,6 +32,10 @@ function OrganizationData(props) {
   }
   return <Spinner />;
 }
+
+OrganizationData.propTypes = {
+  orgID: PropTypes.number.isRequired,
+};
 
 export default function OrganizationPage() {
   const router = useRouter();

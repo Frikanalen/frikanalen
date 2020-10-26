@@ -1,8 +1,5 @@
-import { useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
-
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 
 import Layout from "../../components/Layout";
 import WindowWidget from "../../components/WindowWidget";

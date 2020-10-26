@@ -4,8 +4,7 @@ import configs from "./configs";
 export default class ScheduleInfo extends Component {
   async componentDidMount() {
     const res = await fetch(`${configs.api}scheduleitems/?days=1`, {
-    headers:{
-    }
+      headers: {},
     });
     const json = await res.json();
     this.setState({

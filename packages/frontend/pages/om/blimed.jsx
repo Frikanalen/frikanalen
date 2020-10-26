@@ -1,4 +1,4 @@
-import Container from "react-bootstrap/Container";
+import React from "react";
 import Alert from "react-bootstrap/Alert";
 import Layout from "../../components/Layout";
 import WindowWidget from "../../components/WindowWidget";

@@ -2,9 +2,9 @@ import Nav from "react-bootstrap/Nav";
 import Link from "next/link";
 import React, { Component } from "react";
 import axios from "axios";
-import configs from "./configs";
 import Cookies from "js-cookie";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import configs from "./configs";
 
 function delete_local_session() {
   Cookies.remove("token");
