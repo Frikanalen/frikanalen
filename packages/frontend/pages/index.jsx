@@ -1,3 +1,4 @@
+import React from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -30,8 +31,10 @@ const BetaDisclaimer = () => (
           <p>Etter mye hardt arbeide bak scenene kan vi endelig presentere første versjon av nye frikanalen.no!</p>
           <p>Snart vil det komme en nyhetsseksjon så dere vil kunne få et innblikk i alt arbeidet som er gjort.</p>
           <p>
-            I mellomtiden vil du kunne få et lite innblikk i endringene ved å se på{" "}
-            <a href="https://github.com/Frikanalen/frikanalen/commits/master">endringsloggen i kodearkivet</a>.
+            I mellomtiden vil du kunne få et lite innblikk i endringene ved å se på
+            {" "}
+            <a href="https://github.com/Frikanalen/frikanalen/commits/master">endringsloggen i kodearkivet</a>
+            .
           </p>
         </Col>
       </Row>

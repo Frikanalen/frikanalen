@@ -1,10 +1,13 @@
-import Link from "next/link";
-import configs from "./configs";
 import React, { Component } from "react";
-export class ScheduleInfo extends Component {
+import configs from "./configs";
+
+export default class ScheduleInfo extends Component {
   async componentDidMount() {
-    const foo = await fetch(configs.api + "scheduleitems/?days=1");
-    const json = await foo.json();
+    const res = await fetch(`${configs.api}scheduleitems/?days=1`, {
+    headers:{
+    }
+    });
+    const json = await res.json();
     this.setState({
       schedule: json.results,
     });
@@ -16,10 +19,9 @@ export class ScheduleInfo extends Component {
 
   findRunningProgram() {
     const now = new Date();
-    var currentItem;
     // FIXME: This will render wrong if the user's browser is not
     // in the Europe/Oslo timezone
-    for (let id in this.state.schedule) {
+    for (const id in this.state.schedule) {
       const startTime = new Date(Date.parse(this.state.schedule[id].starttime));
       const endTime = new Date(Date.parse(this.state.schedule[id].endtime));
       if (startTime <= now && endTime > now) {
@@ -129,5 +131,3 @@ export class ScheduleInfo extends Component {
     }
   }
 }
-
-export default ScheduleInfo;

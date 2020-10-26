@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import React, { Component } from "react";
-import Realtime from "../components/WebRTC.js";
+import Realtime from "../components/WebRTC";
 
 class ATEMControl {
   constructor(atemURL) {
