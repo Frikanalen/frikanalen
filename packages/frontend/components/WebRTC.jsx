@@ -84,7 +84,7 @@ export default class Realtime extends React.Component {
 
   start_session = () => {};
   componentDidMount = () => {
-    Janus = require("../components/janus.js").default;
+    Janus = require("../components/janus.jsx").default;
     console.log(Janus);
     this.init_janus();
   };
