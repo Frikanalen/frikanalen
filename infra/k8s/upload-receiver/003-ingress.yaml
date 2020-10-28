@@ -1,0 +1,30 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-upload-prefix
+  namespace: default
+spec:
+  stripPrefix:
+    prefixes:
+      - /upload
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: upload-receiver
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`frikanalen.no`) || Host(`www.frikanalen.no`)) && (PathPrefix(`/api/upload`))
+    priority: 10
+    kind: Rule
+    services:
+    - kind: Service
+      name: upload-receiver
+      scheme: http
+      port: 1080
+  tls:
+    certResolver: default

@@ -1,24 +1,7 @@
----
-#kind: IngressRoute
-#apiVersion: traefik.containo.us/v1alpha1
-#metadata:
-#  name: fk-frontend-prod-http
-#  namespace: default
-#spec:
-#  entryPoints: 
-#    - web
-#  routes:
-#  - match: Host(`beta.frikanalen.no`) 
-#    kind: Rule
-#    middlewares:
-#      - name: scheme-redirect
-#    services:
-#      - name: dummy
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: scheme-redirect
+  name: redirect-to-https
   namespace: default
 spec:
   redirectScheme:
@@ -29,21 +12,24 @@ spec:
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: fk-frontend-prod-http
+  name: fk-http-recirect
   namespace: default
 spec:
   entryPoints: 
     - web
   routes:
-    - match: Host(`frikanalen.no`) || Host(`www.frikanalen.no`)
-      kind: Rule
-      services:
-      - kind: Service
-        name: fk-frontend-prod
-        scheme: http
-        port: 3000
-      middlewares:
-        - name: scheme-redirect
+  - match: Host(`www.frikanalen.no`) || Host(`frikanalen.no`)
+    priority: 100
+    kind: Rule
+    services:
+    - kind: Service
+      name: fk-frontend-prod
+      scheme: http
+      port: 3000
+    middlewares:
+      redirect-to-https
+  tls:
+    certResolver: default
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -61,24 +47,5 @@ spec:
       name: fk-frontend-prod
       scheme: http
       port: 3000
-  tls:
-    certResolver: default
----
-kind: IngressRoute
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
-  name: fk-frontend-prod-api-https
-  namespace: default
-spec:
-  entryPoints: 
-    - websecure
-  routes:
-  - match: (Host(`frikanalen.no`) || Host(`www.frikanalen.no`)) && (PathPrefix(`/api`) || PathPrefix(`/static`) || PathPrefix(`/xmltv`))
-    kind: Rule
-    services:
-    - kind: Service
-      name: django
-      scheme: http
-      port: 80
   tls:
     certResolver: default

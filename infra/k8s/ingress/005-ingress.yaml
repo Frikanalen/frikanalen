@@ -4,12 +4,15 @@ metadata:
   name: traefik-dashboard
 spec:
   entryPoints:
-    - traefik
+    - websecure
   routes:
   - match: Host(`traefik.admin.frikanalen.no`)
     kind: Rule
-    services:
-    - name: api@internal
-      kind: TraefikService
     middlewares: 
       - name: basic-auth
+    services:
+      - name: api@internal
+        kind: TraefikService
+        port: 8100
+  tls:
+    certResolver: default

@@ -1,0 +1,45 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors
+  namespace: default
+spec:
+  headers:
+    customResponseHeaders:
+      Access-Control-Allow-Origin: "*"
+      Access-Control-Allow-Headers: "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+      Access-Control-Allow-Methods: "POST"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-media-prefix
+  namespace: streaming
+spec:
+  stripPrefix:
+    prefixes:
+      - /stream
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: fk-stream-https
+  namespace: streaming
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`beta.frikanalen.no`) || Host(`frikanalen.no`)) && PathPrefix(`/stream/`)
+    kind: Rule
+    middlewares:
+      - name: cors
+        namespace: default
+      - name: strip-media-prefix
+        namespace: streaming
+    services:
+    - kind: Service
+      name: shaka-packager
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default

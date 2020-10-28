@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: upload-receiver
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: csi-rbd-sc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: upload-receiver
+spec:
+  type: ClusterIP
+  selector:
+    app: upload-receiver
+  ports:
+    - protocol: TCP
+      port: 1080
+      name: web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload-receiver
+spec:
+  selector:
+    matchLabels:
+      app: upload-receiver
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: upload-receiver
+    spec:
+      containers:
+      - name: upload-receiver
+        image: frikanalen/upload-receiver:latest
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: upload-directory
+            mountPath: /srv/tusd-data/data
+        ports:
+          - name: web
+            containerPort: 1080
+        env:
+          - name: FK_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: upload-receiver-token
+                key: FK_TOKEN
+                #envFrom:
+                #  - configMapRef:
+                #      name: upload-receiver-config
+      volumes:
+        - name: upload-directory
+          persistentVolumeClaim:
+            claimName: upload-receiver
+            readOnly: false

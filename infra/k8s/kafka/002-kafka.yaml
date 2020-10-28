@@ -12,7 +12,6 @@ spec:
     protocol: TCP
   selector:
     app: kafka
-    id: "0"
   type: LoadBalancer
 ---
 apiVersion: v1
@@ -38,7 +37,7 @@ spec:
         - containerPort: 9092
         env:
         - name: KAFKA_ADVERTISED_PORT
-          value: "30718"
+          value: "9092"
         - name: KAFKA_ADVERTISED_HOST_NAME
           value: "kafka-service.kafka"
         - name: KAFKA_ZOOKEEPER_CONNECT

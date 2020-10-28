@@ -1,0 +1,16 @@
+apiVersion: v1
+#in=udp://0.0.0.0:9001,stream=video,bw=800000,init_segment=livehd-video1.mp4,template=livehd-video1-$Number$.mp4
+#in=udp://0.0.0.0:9002,stream=video,bw=1400000,init_segment=livehd-video2.mp4,template=livehd-video2-$Number$.mp4
+kind: ConfigMap
+metadata:
+  name: shaka-config
+  namespace: streaming
+data:
+  arguments: >-
+    in=udp://0.0.0.0:9000,stream=audio,init_segment=livehd-audio.mp4,segment_template=livehd-audio-$Number$.mp4
+    in=udp://0.0.0.0:9002,stream=video,bw=1400000,init_segment=livehd-video2.mp4,template=livehd-video2-$Number$.mp4
+    in=udp://0.0.0.0:9003,stream=video,bw=3000000,init_segment=livehd-video3.mp4,template=livehd-video3-$Number$.mp4
+    --mpd_output index.mpd --dump_stream_info --min_buffer_time=10
+    --hls_playlist_type LIVE --hls_master_playlist_output index.m3u8
+    --time_shift_buffer_depth=300 --segment_duration=3 --io_block_size 65536
+

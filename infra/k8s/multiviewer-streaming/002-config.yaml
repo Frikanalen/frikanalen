@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: janus-config
+  namespace: multiviewer
+data:
+  ffmpeg_options: -probesize 100M -threads 10 -strict -2
+  source_url: http://192.168.3.1:9094/tx2.ts
+  encoding_options: >-
+    -pix_fmt yuv420p -filter_complex [0:v]split=2[s1][s2]
+
+    -map 0:1 -codec:a aac -f mpegts udp://127.0.0.1:9000
+
+    -map [s1] -crf 25 -b:v 1000k -maxrate:v:0 1500k
+      -profile:v baseline
+      -deadline realtime -codec:v libx264 -preset fast 
+      -f mpegts udp://127.0.0.1:9002
+
+    -map [s2] -crf 25 -b:v 2500k -maxrate:v:0 2500k -speed 7 
+      -deadline realtime -codec:v libx264 -preset fast 
+      -f mpegts udp://127.0.0.1:9003
