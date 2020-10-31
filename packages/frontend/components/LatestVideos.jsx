@@ -31,9 +31,9 @@ export default class LatestVideos extends Component {
 
   render() {
     const { videos } = this.state;
-      if (typeof videos === "undefined") {
+    if (typeof videos === "undefined") {
       return null;
-      }
+    }
     return <p>{videos.map((v) => latestVideo(v))}</p>;
   }
 }

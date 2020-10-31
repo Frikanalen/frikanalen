@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -22,34 +20,32 @@ export default function Signupform() {
     e.preventDefault();
 
     try {
-      const result = await axios.post(`${configs.api}user/register`, {
+      await axios.post(`${configs.api}user/register`, {
         email,
         password,
         first_name: givenName,
         last_name: familyName,
         date_of_birth: "2020-07-24",
       });
-      console.log(result);
-    } catch (e) {
+    } catch (requestException) {
       const fieldNames = {
         first_name: "Fornavn",
         last_name: "Etternavn",
         password: "Passord",
         email: "E-post",
       };
-      const errorList = [];
 
-      for (var errorField in e.response.data) {
-        for (const errorIdx in e.response.data[errorField]) {
-          errorList.push(
-            e.response.data[errorField].map((foo) => (
-              <p>
-                <em>{fieldNames[errorField]}</em>:{foo}
-              </p>
-            ))
-          );
-        }
-      }
+      const returnedErrors = Object.keys(requestException.response.data);
+
+      const errorList = returnedErrors.map((key) =>
+        requestException.response.data[key].map((i) => (
+          <p>
+            <em>{fieldNames[key]}</em>
+            :
+            {i}
+          </p>
+        ))
+      );
 
       setErrorMessage(
         <Alert variant="warning">
@@ -61,9 +57,7 @@ export default function Signupform() {
       );
     }
   }
-  // {e.response.data.map(foo => <p>{foo}</p>)}
 
-  console.log();
   return (
     <Layout>
       <WindowWidget invisible>

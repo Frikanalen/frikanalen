@@ -11,12 +11,12 @@ function MyApp({ Component, pageProps }) {
 }
 
 MyApp.propTypes = {
-    Component: PropTypes.elementType.isRequired,
-    pageProps: PropTypes.objectOf(PropTypes.shape),
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.objectOf(PropTypes.shape),
 };
 
 MyApp.defaultProps = {
-    pageProps: {},
-}
+  pageProps: {},
+};
 
 export default MyApp;

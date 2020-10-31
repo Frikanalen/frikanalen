@@ -38,14 +38,14 @@ function OrganizationFetcher(id) {
 }
 
 function UserProfile(props) {
-  const user = props.profile;
+  const { user } = props;
   const [firstName, setFirstName] = useState(user.first_name);
   const [lastName, setLastName] = useState(user.last_name);
   const [MSISDN, setMSISDN] = useState(user.phone_number);
 
   const submitProfile = (e) => {
     e.preventDefault();
-    const result = fetch(`${configs.api}user`, {
+    fetch(`${configs.api}user`, {
       method: "put",
       headers: {
         Authorization: `Token ${Cookies.get("token")}`,

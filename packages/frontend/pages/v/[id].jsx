@@ -16,6 +16,7 @@ import LatestVideos from "../../components/LatestVideos";
 const VideoUpload = dynamic(() => import("../../components/VideoUpload"), {
   ssr: false,
 });
+
 function processingSpinnerBox() {
   return (
     <div>
