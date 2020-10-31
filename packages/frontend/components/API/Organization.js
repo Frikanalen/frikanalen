@@ -1,4 +1,4 @@
-import { APIGET, APIPOST } from "./Fetch.js";
+import { APIGET } from "./Fetch";
 
 export default class Organization {
   loadJSON(orgData) {
@@ -7,6 +7,6 @@ export default class Organization {
   }
 
   async load(id) {
-    this.fromJSON(await APIGET("organization/" + id));
+    this.fromJSON(await APIGET(`organization/${id}`));
   }
 }

@@ -1,14 +1,14 @@
-import configs from "../../components/configs";
-import useSWR from "swr";
 import axios from "axios";
 import Cookies from "js-cookie";
+import configs from "../configs";
 
 export async function APIGET(endpoint) {
-  var requestHeaders;
+  let requestHeaders;
+  const token = Cookies.get("token");
 
-  if (Cookies.get("token")) {
+  if (token) {
     requestHeaders = {
-      Authorization: "Token " + Cookies.get("token"),
+      Authorization: `Token ${token}`,
       "Content-Type": "application/json",
     };
   } else {
@@ -26,7 +26,7 @@ export async function APIGET(endpoint) {
 export async function APIPOST(endpoint, data) {
   const res = await axios.post(configs.api + endpoint, data, {
     headers: {
-      Authorization: "Token " + Cookies.get("token"),
+      Authorization: `Token ${Cookies.get("token")}`,
       "Content-Type": "application/json",
     },
   });

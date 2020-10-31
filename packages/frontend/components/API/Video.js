@@ -42,12 +42,7 @@ export default class Video {
         categories: this.categories,
         organization: this.org.ID,
       });
-      try {
-        this.ID = foo.id;
-      } catch (e) {
-        console.log(e);
-      }
-      console.log("video ID now ", foo.id);
+      this.ID = foo.id;
     }
   }
 
