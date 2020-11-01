@@ -6,7 +6,7 @@ import json
 import urllib.request, urllib.parse, urllib.error
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage
 from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
@@ -68,7 +68,11 @@ class AbstractVideoList(TemplateView):
             url_query_postfix = ""
 
         p = Paginator(videos, 30)
-        page = p.page(page_nr)
+        try:
+            page = p.page(page_nr)
+        except EmptyPage:
+            page = p.page(1)
+
         context = {
             "videos": page.object_list,
             "title": title,
