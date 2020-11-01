@@ -17,7 +17,7 @@ import UserAuth from "../components/UserAuth";
 
 import configs from "../components/configs";
 
-import ProfileFetcher from "../components/API/User";
+import { fkUser, getUserProfile } from "../components/TS-API/User";
 
 import Layout from "../components/Layout";
 
@@ -39,9 +39,9 @@ function OrganizationFetcher(id) {
 }
 
 function UserProfile({ profile, onChange }) {
-  const [firstName, setFirstName] = useState(profile.first_name);
-  const [lastName, setLastName] = useState(profile.last_name);
-  const [MSISDN, setMSISDN] = useState(profile.phone_number);
+  const [firstName, setFirstName] = useState(profile.firstName);
+  const [lastName, setLastName] = useState(profile.lastName);
+  const [MSISDN, setMSISDN] = useState(profile.msisdn);
 
   const submitProfile = (e) => {
     e.preventDefault();
@@ -111,13 +111,14 @@ function UserCard({ profile, onChange }) {
 }
 
 function OrganizationCard({ role }) {
-  const { org, isLoading, isError } = OrganizationFetcher(role.organization_id);
+  const { org, isLoading, isError } = OrganizationFetcher(role.orgID);
 
   if (isLoading) return <Spinner animation="border" variant="primary" />;
   if (isError) return <Spinner animation="border" variant="primary" />;
 
   const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 
+  console.log(org);
   return (
     <Card body bg="light">
       <Card.Title className="mb-1">{org.name}</Card.Title>
@@ -127,12 +128,13 @@ function OrganizationCard({ role }) {
   );
 }
 
-function OrganizationList({ profile }) {
+type ProfileProps = { profile: fkUser };
+function OrganizationList({ profile }: ProfileProps) {
   let organizationList;
 
-  if (profile.organization_roles) {
-    if (profile.organization_roles.length) {
-      organizationList = profile.organization_roles.map((role, idx) => (
+  if (profile.organizationRoles) {
+    if (profile.organizationRoles.length) {
+      organizationList = profile.organizationRoles.map((role, idx) => (
         <Col key={idx}>
           <OrganizationCard role={role} />
           <br />
@@ -149,8 +151,7 @@ function OrganizationList({ profile }) {
   );
 }
 
-function OrganizationsCard({ profile }) {
-  const { user, isLoading, isError } = profile;
+function OrganizationsCard({ profile }: ProfileProps) {
   return (
     <Col>
       <Card variant="light" className="text-dark">
@@ -169,9 +170,8 @@ function OrganizationsCard({ profile }) {
 }
 
 interface IProps {}
-interface UserJSON {}
 interface IState {
-  profileData?: UserJSON;
+  profileData: fkUser;
   profileError?: Error;
 }
 export default class Profile extends Component<IProps, IState> {
@@ -185,8 +185,7 @@ export default class Profile extends Component<IProps, IState> {
 
   async componentDidMount() {
     try {
-      const profileData = await ProfileFetcher();
-      this.setState({ profileData });
+      this.setState({ profileData: await getUserProfile() });
     } catch (e) {
       this.setState({ profileError: e });
     }
@@ -199,9 +198,7 @@ export default class Profile extends Component<IProps, IState> {
         return (
           <Layout>
             <WindowWidget invisible>
-              <Alert variant="danger">
-                «{profileError.message}» mens den kontaktet «{profileError.config.url}»
-              </Alert>
+              <Alert variant="danger">Feil: «{profileError.message}»</Alert>
             </WindowWidget>
           </Layout>
         );
@@ -217,11 +214,11 @@ export default class Profile extends Component<IProps, IState> {
     return (
       <Layout>
         <WindowWidget invisible>
-          <h2>Hei, {this.state.profileData.first_name}!</h2>
-          <UserCard profile={this.state.profileData} onChange={() => this.componentDidMount()} />
+          <h2>Hei, {profileData.firstName}!</h2>
+          <UserCard profile={profileData} onChange={() => this.componentDidMount()} />
         </WindowWidget>
         <WindowWidget invisible>
-          <OrganizationsCard profile={this.state.profileData} />
+          <OrganizationsCard profile={profileData} />
         </WindowWidget>
       </Layout>
     );
