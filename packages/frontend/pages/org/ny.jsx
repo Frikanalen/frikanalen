@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import configs from "../../components/configs";
@@ -81,7 +82,7 @@ function NewOrgForm() {
   }, [orgBrregID]);
 
   return (
-    <div>
+    <Card body bg="bright" className="text-dark">
       <Form>
         <Form.Group>
           <Form.Label>Organisasjonsnummer</Form.Label>
@@ -124,7 +125,7 @@ function NewOrgForm() {
           </Col>
         </Form.Row>
       </Form>
-    </div>
+    </Card>
   );
 }
 
