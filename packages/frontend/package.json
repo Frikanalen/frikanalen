@@ -64,7 +64,7 @@
     "printWidth": 120
   },
   "lint-staged": {
-    "*.{js,less,css,json,md,ts,tsx,sass,scss}": "prettier --write"
+    "*.{js,less,css,json,md,ts,tsx,scss}": "prettier --write"
   },
   "husky": {
     "hooks": {
