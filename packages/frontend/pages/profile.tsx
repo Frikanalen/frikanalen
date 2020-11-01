@@ -1,3 +1,5 @@
+import * as React from "react";
+import { Component, useState } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -8,7 +10,6 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
-import React, { Component, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import WindowWidget from "../components/WindowWidget";
@@ -37,11 +38,10 @@ function OrganizationFetcher(id) {
   };
 }
 
-function UserProfile(props) {
-  const { user } = props;
-  const [firstName, setFirstName] = useState(user.first_name);
-  const [lastName, setLastName] = useState(user.last_name);
-  const [MSISDN, setMSISDN] = useState(user.phone_number);
+function UserProfile({ profile, onChange }) {
+  const [firstName, setFirstName] = useState(profile.first_name);
+  const [lastName, setLastName] = useState(profile.last_name);
+  const [MSISDN, setMSISDN] = useState(profile.phone_number);
 
   const submitProfile = (e) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ function UserProfile(props) {
     });
 
     UserAuth.refreshLocalStorage();
-    setTimeout(props.onChange, 2000);
+    setTimeout(onChange, 2000);
   };
 
   return (
@@ -67,7 +67,7 @@ function UserProfile(props) {
       <Form.Row>
         <Col>
           <Form.Label>Epostadressse</Form.Label>
-          <Form.Control value={user.email} readOnly />
+          <Form.Control value={profile.email} readOnly />
         </Col>
         <Col>
           <Form.Label>Mobilnummer</Form.Label>
@@ -97,43 +97,42 @@ function UserProfile(props) {
   );
 }
 
-function UserCard(props) {
+function UserCard({ profile, onChange }) {
   return (
     <Col>
       <Card variant="light" className="text-dark">
         <Card.Body>
           <Card.Title>Brukerprofil</Card.Title>
-          <UserProfile profile={props.profile} onChange={props.onChange} />
+          <UserProfile profile={profile} onChange={onChange} />
         </Card.Body>
       </Card>
     </Col>
   );
 }
 
-function OrganizationCard(props) {
-  const { org, isLoading, isError } = OrganizationFetcher(props.role.organization_id);
+function OrganizationCard({ role }) {
+  const { org, isLoading, isError } = OrganizationFetcher(role.organization_id);
 
   if (isLoading) return <Spinner animation="border" variant="primary" />;
   if (isError) return <Spinner animation="border" variant="primary" />;
 
-  const roleText = props.role.role == "editor" ? "Du er redaktør" : "Du er medlem";
+  const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 
   return (
     <Card body bg="light">
       <Card.Title className="mb-1">{org.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">{roleText}</Card.Subtitle>
-      <Card.Link href={`/o/${org.id}`}>Offentlig side</Card.Link>
+      <Card.Link href={`/org/${org.id}`}>Offentlig side</Card.Link>
     </Card>
   );
 }
 
-function OrganizationList(props) {
-  const user = props.profile;
+function OrganizationList({ profile }) {
   let organizationList;
 
-  if (user.organization_roles) {
-    if (user.organization_roles.length) {
-      organizationList = user.organization_roles.map((role, idx) => (
+  if (profile.organization_roles) {
+    if (profile.organization_roles.length) {
+      organizationList = profile.organization_roles.map((role, idx) => (
         <Col key={idx}>
           <OrganizationCard role={role} />
           <br />
@@ -150,25 +149,32 @@ function OrganizationList(props) {
   );
 }
 
-function OrganizationsCard(props) {
-  const { user, isLoading, isError } = props.profile;
+function OrganizationsCard({ profile }) {
+  const { user, isLoading, isError } = profile;
   return (
     <Col>
       <Card variant="light" className="text-dark">
         <Card.Body>
           <Card.Title>Organisasjoner</Card.Title>
+          <a href="/org/ny">Meld inn ny organisasjon</a>
           <Alert variant="info">
             <Alert.Heading>Vi jobber med saken!</Alert.Heading>
             Her vil det snart komme et skjema for å melde en organisasjon inn i Frikanalen.
           </Alert>
-          <OrganizationList profile={props.profile} />
+          <OrganizationList profile={profile} />
         </Card.Body>
       </Card>
     </Col>
   );
 }
 
-export default class Profile extends Component {
+interface IProps {}
+interface UserJSON {}
+interface IState {
+  profileData?: UserJSON;
+  profileError?: Error;
+}
+export default class Profile extends Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -182,20 +188,19 @@ export default class Profile extends Component {
       const profileData = await ProfileFetcher();
       this.setState({ profileData });
     } catch (e) {
-      console.log(e);
       this.setState({ profileError: e });
     }
   }
 
   render() {
-    if (!this.state.profileData) {
-      if (this.state.profileError) {
-        console.log(this.state.profileError);
+    const { profileData, profileError } = this.state;
+    if (!profileData) {
+      if (profileError) {
         return (
           <Layout>
             <WindowWidget invisible>
               <Alert variant="danger">
-                "{this.state.profileError.message}" mens den kontaktet "{this.state.profileError.config.url}"
+                «{profileError.message}» mens den kontaktet «{profileError.config.url}»
               </Alert>
             </WindowWidget>
           </Layout>
@@ -212,10 +217,7 @@ export default class Profile extends Component {
     return (
       <Layout>
         <WindowWidget invisible>
-          <h2>
-            Hei,
-            {this.state.profileData.first_name}!
-          </h2>
+          <h2>Hei, {this.state.profileData.first_name}!</h2>
           <UserCard profile={this.state.profileData} onChange={() => this.componentDidMount()} />
         </WindowWidget>
         <WindowWidget invisible>

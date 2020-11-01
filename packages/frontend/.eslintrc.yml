@@ -2,9 +2,12 @@ env:
   browser: true
   es2021: true
 extends:
-  - 'plugin:react/recommended'
   - airbnb
+  - 'plugin:react/recommended'
   - 'prettier'
+  - 'prettier/react'
+  - 'plugin:@typescript-eslint/recommended'
+  - "plugin:@typescript-eslint/recommended-requiring-type-checking"
 parserOptions:
   ecmaFeatures:
     jsx: true
@@ -12,4 +15,5 @@ parserOptions:
   sourceType: module
 plugins:
   - react
+  - '@typescript-eslint'
 rules: {}

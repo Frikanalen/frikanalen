@@ -45,7 +45,10 @@
     "webrtc-adapter": "^7.6.0"
   },
   "devDependencies": {
-    "eslint": "^7.2.0",
+    "@types/react": "^16.9.55",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
+    "eslint": "^7.12.1",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.13.0",
     "eslint-plugin-import": "^2.21.2",
@@ -54,7 +57,8 @@
     "eslint-plugin-react-hooks": "^4",
     "husky": "^4.3.0",
     "lint-staged": "^10.4.2",
-    "prettier": "2.1.2"
+    "prettier": "2.1.2",
+    "typescript": "^4.0.5"
   },
   "prettier": {
     "printWidth": 120

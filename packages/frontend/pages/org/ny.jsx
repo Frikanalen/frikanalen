@@ -138,7 +138,16 @@ export default function RegisterOrganization() {
           Du vil umiddelbart kunne laste opp innhold, men for at organisasjonens innhold skal være synlig for andre
           eller sendes på sendeplanen, må betalt kontingent være registrert, og en redaktørerklæring være mottatt.
         </p>
-        <p>En mal for redaktørerklæring vil være tilgjengelig for nedlasting på organisasjonens side.</p>
+        <p>
+          Privatpersoner kan også melde seg inn i Frikanalen og sende innhold som en organisasjon, men de vil likevel
+          måtte inkludere besøks- og postadresse i henhold til{" "}
+          <a href="https://lovdata.no/lov/1992-12-04-127/§2-16">Kringkastingsloven §2-16</a>, og vil ikke ha
+          medlemsrettigheter i Frikanalen, som blant annet stemmerett.
+        </p>{" "}
+        <p>
+          En mal for redaktørerklæring vil være tilgjengelig for nedlasting på organisasjonens side. Utelat i så fall
+          organisasjonsnummer, sett organisasjonsnavn til ditt fulle navn.
+        </p>
         <Alert variant="success">
           Tips: Om du taster inn organisasjonsnummer vil skjemaet automatisk hente navn og postadresse fra Brønnøysund
         </Alert>

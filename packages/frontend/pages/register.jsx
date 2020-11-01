@@ -40,9 +40,7 @@ export default function Signupform() {
       const errorList = returnedErrors.map((key) =>
         requestException.response.data[key].map((i) => (
           <p>
-            <em>{fieldNames[key]}</em>
-            :
-            {i}
+            <em>{fieldNames[key]}</em>:{i}
           </p>
         ))
       );
