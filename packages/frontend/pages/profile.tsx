@@ -100,7 +100,7 @@ function UserProfile({ profile, onChange }) {
 function UserCard({ profile, onChange }) {
   return (
     <Col>
-      <Card variant="light" className="text-dark">
+      <Card bg="light" className="text-dark">
         <Card.Body>
           <Card.Title>Brukerprofil</Card.Title>
           <UserProfile profile={profile} onChange={onChange} />
@@ -120,7 +120,7 @@ function OrganizationCard({ role }) {
 
   console.log(org);
   return (
-    <Card body bg="light">
+    <Card body bg="white">
       <Card.Title className="mb-1">{org.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">{roleText}</Card.Subtitle>
       <Card.Link href={`/org/${org.id}`}>Offentlig side</Card.Link>
@@ -154,7 +154,7 @@ function OrganizationList({ profile }: ProfileProps) {
 function OrganizationsCard({ profile }: ProfileProps) {
   return (
     <Col>
-      <Card variant="light" className="text-dark">
+      <Card bg="light" className="text-dark">
         <Card.Body>
           <Card.Title>Organisasjoner</Card.Title>
           <a href="/org/ny">Meld inn ny organisasjon</a>
