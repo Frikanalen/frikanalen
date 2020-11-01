@@ -19,7 +19,6 @@
   "author": "Tore Sinding Bekkedal",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@types/react-bootstrap": "^0.32.24",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.21.0",
     "bootstrap": "^4.5.0",
