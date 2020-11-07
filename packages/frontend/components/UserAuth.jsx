@@ -29,7 +29,7 @@ class UserAuth extends Component {
       return (
         <div>
           <NavDropdown className="userdropdown" title={this.state.email}>
-            <Link href="/profile" passHref>
+            <Link href="/profil" passHref>
               <NavDropdown.Item>Brukerside</NavDropdown.Item>
             </Link>
             <NavDropdown.Item onClick={this.boundLogout}>Logg ut</NavDropdown.Item>
