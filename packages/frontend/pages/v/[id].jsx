@@ -123,7 +123,8 @@ export default class VideoPage extends Component {
                   <h4>{this.video.name}</h4>
                   <p>
                     Publisert av
-                    <a href="/org/{this.video.org.ID}">{this.video.org.name}</a>
+                    {" "}
+                    <a href={`org/${this.video.org.ID}`}>{this.video.org.name}</a>
                   </p>
                 </div>
               </Col>
@@ -131,6 +132,7 @@ export default class VideoPage extends Component {
                 <div className={styles.otherVideos}>
                   <h4>
                     Nyeste videoer fra
+                    {" "}
                     {this.video.org.name}
                   </h4>
                   <LatestVideos orgID={this.video.org.ID} />

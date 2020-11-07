@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import Router from "next/router";
 
 import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
@@ -22,7 +19,7 @@ export default function LoginForm() {
     const login = await UserAuth.login(email, password);
     if (login === true) {
       await UserAuth.refreshLocalStorage();
-      Router.push("/");
+      Router.push("/profil");
     } else {
       setErrorMessage(<Alert variant="danger">{login}</Alert>);
     }

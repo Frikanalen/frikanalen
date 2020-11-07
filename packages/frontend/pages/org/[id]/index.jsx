@@ -1,49 +1,48 @@
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
+import configs from "../../../components/configs";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import Layout from "../../components/Layout";
-import WindowWidget from "../../components/WindowWidget";
+import Layout from "../../../components/Layout";
+import WindowWidget from "../../../components/WindowWidget";
 
-import { APIGET } from "../../components/API/Fetch";
+import { APIGET } from "../../../components/API/Fetch";
+export async function getServerSideProps (context) {
+
+  const { id } = context.query;
+  console.log(`${configs.api}organizations/${id}`)
+  const orgJSON = await fetch(`${configs.api}organization/${id}`)
+  const orgData = await orgJSON.json();
+
+  return {
+    props: {orgData},
+  }
+
+}
 
 function OrganizationData(props) {
   const [org, setOrg] = useState();
-  const { orgID } = props;
-
-  useEffect(() => {
-    async function fetchOrg(id) {
-      return APIGET(`organization/${id}`);
-    }
-
-    if (typeof orgID !== "undefined") {
-      fetchOrg(orgID).then((o) => setOrg(o));
-    }
-  }, [orgID, setOrg, fetch]);
-
-  if (org) {
+  const { orgData } = props;
     return (
       <div>
-        <h1>{org.name}</h1>
+        <h1>{orgData.name}</h1>
       </div>
     );
-  }
-  return <Spinner />;
 }
 
 OrganizationData.propTypes = {
   orgID: PropTypes.number.isRequired,
 };
 
-export default function OrganizationPage() {
-  const router = useRouter();
-  const { id } = router.query;
+export default function OrganizationPage(props) {
+  const { orgData } = props
+
   return (
     <Layout>
       <WindowWidget>
-        <OrganizationData orgID={id} />
+        <OrganizationData orgData={orgData} />
         <Alert variant="info">
           <Alert.Heading>Denne siden er fremdeles under utbygging</Alert.Heading>
           <p>Frikanalens nettsider er i aktiv utvikling.</p>

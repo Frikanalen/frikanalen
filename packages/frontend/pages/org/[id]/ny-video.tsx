@@ -1,35 +1,54 @@
-import { Component } from "react";
+import React, { Component } from "react";
+import { useRouter } from "next/router";
 
 import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Layout from "../../../components/Layout";
+import WindowWidget from "../../../components/WindowWidget";
 
-import Video, { getCategories } from "./API/Video";
-import ProfileFetcher from "./API/User";
+import config from "../../../components/configs";
+import Video, { getCategories } from "../../../components/API/Video";
+import ProfileFetcher from "../../../components/API/User";
 
-export default class VideoCreate extends Component {
+interface fkOrganizationJSON {
+  id: number;
+  name: string;
+}
+
+const getOrgName = async (orgID: number): string => {
+  const res = await fetch(`${config.api}organization/${orgID}`);
+  console.log(`${config.api}organization/${orgID}`);
+  const resData: fkOrganizationJSON = await res.json();
+  return resData.name;
+};
+
+class VideoCreate extends Component {
   constructor(props) {
     super(props);
+    const { orgID, orgName } = props;
 
     this.onVideoCreated = props.onVideoCreated;
     this.state = {
       errors: null,
       video: new Video(),
       possibleCategories: [],
-      editorOrgs: [],
+      uploadingOrgID: orgID,
+      uploadingOrgName: orgName,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
+    const { video, uploadingOrgID } = this.state;
+    console.log(typeof uploadingOrgID);
+
     getCategories().then((categories) => {
       this.setState({ possibleCategories: categories });
     });
     ProfileFetcher().then((userProfile) => {
-      const editorOrgs = userProfile.organization_roles.filter((r) => r.role == "editor");
-      this.setState({ editorOrgs: editorOrgs });
-      this.state.video.setOrganization(editorOrgs[0].organization_id);
+      video.setOrganization(uploadingOrgID);
     });
   }
 
@@ -59,19 +78,14 @@ export default class VideoCreate extends Component {
   }
 
   render() {
+    const { uploadingOrgName } = this.state;
     return (
       <div>
         <Form>
           {this.state.errors}
           <Form.Group>
             <Form.Label>På vegne av:</Form.Label>
-            <Form.Control onChange={(e) => console.log(e)} as="select">
-              {this.state.editorOrgs.map((r) => (
-                <option key={r.organization_id} value={r.organization_id}>
-                  {r.organization_name}
-                </option>
-              ))}
-            </Form.Control>
+            <Form.Control readOnly value={uploadingOrgName ? uploadingOrgName : "Laster organisasjon..."} />
           </Form.Group>
           <Form.Group>
             <Form.Label>Navn:</Form.Label>
@@ -118,4 +132,34 @@ export default class VideoCreate extends Component {
       </div>
     );
   }
+}
+
+export async function getServerSideProps(context) {
+  const { id } = context.query;
+  const orgName = await getOrgName(id);
+
+  return {
+    props: { orgName },
+  };
+}
+
+export default function AddVideo(props) {
+  const router = useRouter();
+  const { id } = router.query;
+  const orgID = parseInt(id);
+  const { orgName } = props;
+
+  return (
+    <Layout>
+      <WindowWidget>
+        <VideoCreate
+          orgID={orgID}
+          orgName={orgName}
+          onVideoCreated={(videoID) => {
+            router.push("/v/[id]", `/v/${videoID}`);
+          }}
+        />
+      </WindowWidget>
+    </Layout>
+  );
 }

@@ -77,7 +77,7 @@ class VideoUpload extends Component {
 
   async componentDidMount() {
     // TODO: Error handling
-    this.token = await get_upload_token(this.videoID);
+    this.token = await getUploadToken(this.videoID);
     this.uploader = new plupload.Uploader({
       runtimes: "html5",
       browse_button: this.browseRef.current,

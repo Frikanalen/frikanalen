@@ -124,6 +124,8 @@ function OrganizationCard({ role }) {
       <Card.Title className="mb-1">{org.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">{roleText}</Card.Subtitle>
       <Card.Link href={`/org/${org.id}`}>Offentlig side</Card.Link>
+      <Card.Link href={`/org/${org.id}/admin`}>Administrasjonsside</Card.Link>
+      <Card.Link href={`/org/${org.id}/ny-video`}>Last opp ny video</Card.Link>
     </Card>
   );
 }
@@ -154,15 +156,14 @@ function OrganizationList({ profile }: ProfileProps) {
 function OrganizationsCard({ profile }: ProfileProps) {
   return (
     <Col>
-      <Card bg="light" className="text-dark">
+      <Card>
         <Card.Body>
           <Card.Title>Organisasjoner</Card.Title>
-          <a href="/org/ny">Meld inn ny organisasjon</a>
-          <Alert variant="info">
-            <Alert.Heading>Vi jobber med saken!</Alert.Heading>
-            Her vil det snart komme et skjema for å melde en organisasjon inn i Frikanalen.
-          </Alert>
-          <OrganizationList profile={profile} />
+          <Button href="/org/ny">Meld inn ny organisasjon</Button>
+          <p>&nbsp;</p>
+          <Card body bg="light" className="text-dark">
+            <OrganizationList profile={profile} />
+          </Card>
         </Card.Body>
       </Card>
     </Col>
