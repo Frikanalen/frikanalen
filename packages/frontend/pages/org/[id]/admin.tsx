@@ -20,7 +20,12 @@ interface VideoQueryJSON {
   results: VideoJSON[];
 }
 
-async function getLatestVideos(orgID: number): VideoQueryJSON {
+interface fkOrganizationJSON {
+  id: number;
+  name: string;
+}
+
+async function getLatestVideos(orgID: number): Promise<VideoQueryJSON> {
   console.log(`OrgID: ${orgID}`);
   if (typeof orgID === "undefined") return undefined;
   const response = await fetch(`${configs.api}videos/?organization=${orgID}&page_size=10`);
@@ -54,7 +59,7 @@ const VideoList: React.FC<{ orgID: number }> = ({ orgID }) => {
       );
     };
 
-    return videosJSON.results.map((v) => VideoCard({ v }));
+    return <React.Fragment>{videosJSON.results.map((v) => VideoCard({ v }))}</React.Fragment>;
   };
 
   return (
@@ -69,7 +74,7 @@ const VideoList: React.FC<{ orgID: number }> = ({ orgID }) => {
   );
 };
 
-const getOrgName = async (orgID: number): string => {
+const getOrgName = async (orgID: number): Promise<string> => {
   const res = await fetch(`${config.api}organization/${orgID}`);
   console.log(`${config.api}organization/${orgID}`);
   const resData: fkOrganizationJSON = await res.json();
@@ -77,10 +82,7 @@ const getOrgName = async (orgID: number): string => {
 };
 export default function OrgAdmin(props) {
   const router = useRouter();
-  const { id } = router.query;
-  const { orgName } = props;
-  let orgID = undefined;
-  if (id) orgID = parseInt(id);
+  const { orgName, orgID } = props;
 
   return (
     <Layout>
@@ -97,9 +99,13 @@ export default function OrgAdmin(props) {
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
+  const orgID = parseInt(id);
   const orgName = await getOrgName(id);
 
   return {
-    props: { orgName },
+    props: {
+      orgName,
+      orgID,
+    },
   };
 }

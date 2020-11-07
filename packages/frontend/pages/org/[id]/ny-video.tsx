@@ -16,14 +16,29 @@ interface fkOrganizationJSON {
   name: string;
 }
 
-const getOrgName = async (orgID: number): string => {
+const getOrgName = async (orgID: number): Promise<string> => {
   const res = await fetch(`${config.api}organization/${orgID}`);
   console.log(`${config.api}organization/${orgID}`);
   const resData: fkOrganizationJSON = await res.json();
   return resData.name;
 };
 
-class VideoCreate extends Component {
+class VideoCreate extends Component<
+  {
+    orgID: number;
+    orgName: string;
+    onVideoCreated: any;
+  },
+  {
+    video: Video;
+    errors: any;
+    possibleCategories: any;
+    uploadingOrgID: number;
+    uploadingOrgName: string;
+  }
+> {
+  onVideoCreated;
+
   constructor(props) {
     super(props);
     const { orgID, orgName } = props;
@@ -91,7 +106,7 @@ class VideoCreate extends Component {
             <Form.Label>Navn:</Form.Label>
             <Form.Control
               type="text"
-              onChange={(e) => this.state.video.setName(event.target.value)}
+              onChange={(e) => this.state.video.setName(e.target.value)}
               value={this.state.video.name}
               placeholder="Kort videonavn"
             />
@@ -101,7 +116,7 @@ class VideoCreate extends Component {
             <Form.Control
               type="text"
               value={this.state.video.header}
-              onChange={(e) => this.state.video.setHeader(event.target.value)}
+              onChange={(e) => this.state.video.setHeader(e.target.value)}
               placeholder="En relativt kortfattet beskrivelse"
             />
           </Form.Group>
@@ -109,7 +124,7 @@ class VideoCreate extends Component {
             <Form.Label>Kategori:</Form.Label>
             <Form.Control
               as="select"
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 var selectedCategories = [];
                 for (let i = 0; i < e.target.selectedOptions.length; i++) {
                   selectedCategories.push(e.target.selectedOptions[i].value);
@@ -146,7 +161,9 @@ export async function getServerSideProps(context) {
 export default function AddVideo(props) {
   const router = useRouter();
   const { id } = router.query;
+  if (typeof id !== "string") return <p>invalid</p>;
   const orgID = parseInt(id);
+
   const { orgName } = props;
 
   return (
