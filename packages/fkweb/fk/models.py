@@ -408,10 +408,11 @@ class Video(models.Model):
 class ScheduleitemManager(models.Manager):
     def by_day(self, date=None, days=1, surrounding=False):
         if not date:
-            date = timezone.now().date()
+            date = timezone.now().astimezone(pytz.timezone('Europe/Oslo')).date()
         elif hasattr(date, 'date'):
             date = date.date()
-        startdt = datetime.datetime.combine(date, datetime.time(0))
+        startdt = datetime.datetime.combine(date, datetime.time(0, tzinfo=pytz.timezone('Europe/Oslo')))
+        print(startdt)
         enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
             startdt, enddt = self.expand_to_surrounding(startdt, enddt)
