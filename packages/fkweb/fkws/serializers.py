@@ -131,10 +131,32 @@ class VideoUploadTokenSerializer(serializers.ModelSerializer):
             'upload_url',
         )
 
+class ScheduleitemVideoSerializer(serializers.ModelSerializer):
+    organization = OrganizationSerializer(read_only=True)
+    creator = serializers.SlugRelatedField(
+        slug_field='email', queryset=get_user_model().objects.all(),
+        default=serializers.CurrentUserDefault())
+    categories = serializers.SlugRelatedField(
+        slug_field='name', many=True, queryset=Category.objects.all())
+
+    class Meta:
+        model = Video
+        fields = (
+            "id",
+            "name",
+            "header",
+            "description",
+            "creator",
+            "organization",
+            "duration",
+            "categories",
+            )
+        read_only_fields = (
+            "framerate", "created_time", "updated_time")
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
-    video = VideoSerializer(required=False, read_only=True)
-    video_id = serializers.HyperlinkedRelatedField(
+    video = ScheduleitemVideoSerializer(read_only=True)
+    video_url = serializers.HyperlinkedRelatedField(
         source="video", view_name="api-video-detail", required=False,
         queryset=Video.objects.all())
 
@@ -142,8 +164,7 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
         model = Scheduleitem
         fields = (
             "id",
-            "default_name",
-            "video_id",
+            "video_url",
             "video",
             "schedulereason",
             "starttime",
