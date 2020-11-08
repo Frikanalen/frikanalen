@@ -1,29 +1,22 @@
 import Alert from "react-bootstrap/Alert";
-import Spinner from "react-bootstrap/Spinner";
 import configs from "../../../components/configs";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import PropTypes from "prop-types";
 import Layout from "../../../components/Layout";
 import WindowWidget from "../../../components/WindowWidget";
 
-import { APIGET } from "../../../components/API/Fetch";
 export async function getServerSideProps (context) {
-
   const { id } = context.query;
-  console.log(`${configs.api}organizations/${id}`)
   const orgJSON = await fetch(`${configs.api}organization/${id}`)
   const orgData = await orgJSON.json();
 
   return {
     props: {orgData},
   }
-
 }
 
 function OrganizationData(props) {
-  const [org, setOrg] = useState();
   const { orgData } = props;
     return (
       <div>
@@ -33,7 +26,7 @@ function OrganizationData(props) {
 }
 
 OrganizationData.propTypes = {
-  orgID: PropTypes.number.isRequired,
+  orgData: PropTypes.object,
 };
 
 export default function OrganizationPage(props) {
