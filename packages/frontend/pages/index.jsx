@@ -3,8 +3,13 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Layout from "../components/Layout";
-import LiveNow from "../components/LiveNow";
 import WindowWidget from "../components/WindowWidget";
+import ScheduleInfo from "../components/ScheduleInfo";
+import dynamic from "next/dynamic";
+
+import configs from "../components/configs";
+
+const ShakaPlayer = dynamic(() => import("../components/ShakaPlayer"), { ssr: false });
 
 const BetaDisclaimer = () => (
   <WindowWidget nomargin>
@@ -61,13 +66,17 @@ const BetaDisclaimer = () => (
     </Container>
   </WindowWidget>
 );
-export default function index() {
+export default function index(props) {
+  const { scheduleJSON } = props
   return (
     <Layout>
       <Container>
         <Row sm={1} xl={2}>
           <Col>
-            <LiveNow />
+            <WindowWidget nomargin>
+              <ShakaPlayer src="https://frikanalen.no/stream/index.m3u8" />
+              <ScheduleInfo initialJSON={scheduleJSON}/>
+            </WindowWidget>
           </Col>
           <Col>
             <BetaDisclaimer />
@@ -76,4 +85,13 @@ export default function index() {
       </Container>
     </Layout>
   );
+}
+export async function getServerSideProps(context) {
+  const scheduleRes = await fetch(`${configs.api}scheduleitems/?days=1&format=json`)
+  const scheduleJSON = await scheduleRes.json()
+  return {
+    props: {
+      scheduleJSON
+    }
+  }
 }

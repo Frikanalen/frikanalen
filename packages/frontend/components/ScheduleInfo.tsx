@@ -1,40 +1,52 @@
 import React, { Component } from "react";
 import configs from "./configs";
 
-export default class ScheduleInfo extends Component {
+type fkVideo = {
+  id: number;
+};
+
+type fkScheduleItem = {
+  id: number;
+  video: fkVideo;
+  start_time: Date;
+  end_time: Date;
+};
+
+type fkSchedule = {
+  results: fkScheduleItem[];
+};
+
+function findRunningProgram(schedule): number {
+  const now = new Date();
+  // FIXME: This will render wrong if the user's browser is not
+  // in the Europe/Oslo timezone
+  for (const id in schedule) {
+    const startTime = new Date(Date.parse(schedule[id].starttime));
+    const endTime = new Date(Date.parse(schedule[id].endtime));
+
+    if (startTime <= now && endTime > now) {
+      // Refresh the current running program; add 1s
+      // to guard against race conditions
+      setTimeout(() => {
+        this.findRunningProgram();
+      }, endTime.getTime() - now.getTime() + 1000);
+      console.log("returning", parseInt(id));
+      return parseInt(id);
+    }
+  }
+}
+
+export default class ScheduleInfo extends Component<
+  { initialSchedule: fkSchedule },
+  { schedule: fkSchedule; currentItem: number }
+> {
   async componentDidMount() {
-    const res = await fetch(`${configs.api}scheduleitems/?days=1`, {
-      headers: {},
-    });
+    const res = await fetch(`${configs.api}scheduleitems/?days=1`);
     const json = await res.json();
     this.setState({
       schedule: json.results,
+      currentItem: findRunningProgram(json.results),
     });
-    this.findRunningProgram();
-    this.setState({
-      ready: true,
-    });
-  }
-
-  findRunningProgram() {
-    const now = new Date();
-    // FIXME: This will render wrong if the user's browser is not
-    // in the Europe/Oslo timezone
-    for (const id in this.state.schedule) {
-      const startTime = new Date(Date.parse(this.state.schedule[id].starttime));
-      const endTime = new Date(Date.parse(this.state.schedule[id].endtime));
-      if (startTime <= now && endTime > now) {
-        // Refresh the current running program; add 1s
-        // to guard against race conditions
-        setTimeout(() => {
-          this.findRunningProgram();
-        }, endTime - now + 1000);
-        this.setState({
-          currentItem: parseInt(id),
-        });
-        return;
-      }
-    }
   }
 
   as_HH_mm(datestr) {
@@ -44,10 +56,17 @@ export default class ScheduleInfo extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { ready: false };
+    const { initialJSON } = props;
+    console.log("constructor", findRunningProgram(initialJSON.results));
+
+    this.state = {
+      schedule: initialJSON.results,
+      currentItem: findRunningProgram(initialJSON.results),
+    };
   }
 
   render() {
+    const { schedule, currentItem } = this.state;
     const programme_row = (programme, DOMclass) => {
       if (typeof programme === "undefined") return false;
       return (
@@ -107,26 +126,19 @@ export default class ScheduleInfo extends Component {
       );
     };
 
-    if (!this.state.ready) return null;
-    else {
-      return (
-        <span className="onRightNow">
-          {this.state.currentItem != 0
-            ? programme_row(this.state.schedule[this.state.currentItem - 1], "previous")
-            : null}
-          {programme_row(this.state.schedule[this.state.currentItem], "current")}
-          {this.state.currentItem != this.state.schedule.length
-            ? programme_row(this.state.schedule[this.state.currentItem + 1], "next")
-            : false}
-          <style jsx>{`
-            .onRightNow {
-              color: white;
-              background: rgba(0, 0, 0, 0.1);
-              width: 100%;
-            }
-          `}</style>
-        </span>
-      );
-    }
+    return (
+      <span className="onRightNow">
+        {currentItem != 0 ? programme_row(schedule[currentItem - 1], "previous") : null}
+        {programme_row(schedule[currentItem], "current")}
+        {currentItem != schedule.length ? programme_row(schedule[currentItem + 1], "next") : false}
+        <style jsx>{`
+          .onRightNow {
+            color: white;
+            background: rgba(0, 0, 0, 0.1);
+            width: 100%;
+          }
+        `}</style>
+      </span>
+    );
   }
 }
