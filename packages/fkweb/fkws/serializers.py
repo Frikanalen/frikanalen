@@ -7,6 +7,7 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
 import logging
+import pytz
 
 from fk.models import AsRun
 from fk.models import Category
@@ -159,6 +160,8 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
     video_url = serializers.HyperlinkedRelatedField(
         source="video", view_name="api-video-detail", required=False,
         queryset=Video.objects.all())
+    starttime = serializers.DateTimeField(default_timezone=pytz.timezone('Europe/Oslo'))
+    endtime = serializers.DateTimeField(default_timezone=pytz.timezone('Europe/Oslo'))
 
     class Meta:
         model = Scheduleitem
