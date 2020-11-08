@@ -44,21 +44,15 @@ const VideoList: React.FC<{ orgID: number }> = ({ orgID }) => {
   }, [orgID]);
 
   const VideoCards: React.FC<{ videosJSON: VideoQueryJSON }> = ({ videosJSON }) => {
-    console.log(`VideosCards`, videosJSON);
     if (typeof videosJSON === "undefined") return null;
 
-    const VideoCard: React.FC<{ v: VideoJSON }> = ({ v }) => {
-      console.log(`VideosCard`, v);
-
-      return (
-        <Card style={{ minWidth: "18rem", minHeight: "100%" }}>
-          <Card.Img style={{ width: "100%", height: "auto" }} variant="top" src={v.large_thumbnail_url} />
-          <Card.Title>{v.name}</Card.Title>
-          <Card.Footer>Lastet opp på (...)</Card.Footer>
-        </Card>
-      );
-    };
-
+    const VideoCard: React.FC<{ v: VideoJSON }> = ({ v }) => (
+      <Card style={{ minWidth: "18rem", minHeight: "100%" }}>
+        <Card.Img style={{ width: "100%", height: "auto" }} variant="top" src={v.large_thumbnail_url} />
+        <Card.Title>{v.name}</Card.Title>
+        <Card.Footer>Lastet opp på (...)</Card.Footer>
+      </Card>
+    );
     return <React.Fragment>{videosJSON.results.map((v) => VideoCard({ v }))}</React.Fragment>;
   };
 

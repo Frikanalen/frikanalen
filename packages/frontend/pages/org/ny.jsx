@@ -17,7 +17,7 @@ function NewOrgForm() {
   const [orgName, setOrgName] = useState("");
   const [orgBrregID, setOrgBrregID] = useState("");
   const [orgPostAdresse, setOrgPostAdresse] = useState("");
-  //  const [orgBesoksAdresse, setOrgBesoksAdresse] = useState("");
+  const [orgBesoksAdresse, setOrgBesoksAdresse] = useState("");
   const [orgURL, setOrgURL] = useState("");
 
   const createOrganization = async (e) => {
@@ -34,10 +34,10 @@ function NewOrgForm() {
           orgnr: orgBrregID,
           postal_adress: orgPostAdresse,
           homepage: orgURL,
-        }), // { inputIndex: inputIndex }),
+        }),
       });
       const data = await foo.json();
-      router.push("/org/[id]", `/org/${data.id}`);
+      router.push("/org/[id]/admin", `/org/${data.id}/admin`);
     } catch (exception) {
       // TODO: Handle this exception
       // console.log(exception);
@@ -111,7 +111,7 @@ function NewOrgForm() {
             <Form.Control
               as="textarea"
               rows="7"
-              value={orgPostAdresse}
+              value={orgBesoksAdresse}
               onChange={(e) => setOrgBesoksAdresse(e.target.value)}
             />
           </Col>
