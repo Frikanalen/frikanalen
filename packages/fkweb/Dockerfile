@@ -11,7 +11,7 @@ RUN mkdir -p /srv/frikanalen
 
 ADD . /srv/frikanalen
 WORKDIR /srv/frikanalen
-RUN pip install -r requirements-dev.txt
+RUN pip install -r requirements-prod.txt
 
 FROM builder
 

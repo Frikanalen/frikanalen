@@ -1,8 +1,4 @@
 -r requirements.txt
 # Local development and testing dependencies go in this file
-
-django-debug-toolbar == 3.1.1
+psycopg2-binary == 2.8.6
 PyYAML == 5.3.1
-
-#coverage == 3.6
-#Sphinx == 1.2b1
