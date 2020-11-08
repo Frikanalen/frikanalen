@@ -12,10 +12,6 @@ type fkScheduleItem = {
   end_time: Date;
 };
 
-type fkSchedule = {
-  results: fkScheduleItem[];
-};
-
 function findRunningProgram(schedule): number {
   const now = new Date();
   // FIXME: This will render wrong if the user's browser is not
@@ -37,8 +33,8 @@ function findRunningProgram(schedule): number {
 }
 
 export default class ScheduleInfo extends Component<
-  { initialSchedule: fkSchedule },
-  { schedule: fkSchedule; currentItem: number }
+  { initialSchedule: fkScheduleItem[] },
+  { schedule: fkScheduleItem[]; currentItem: number }
 > {
   async componentDidMount() {
     const res = await fetch(`${configs.api}scheduleitems/?days=1`);
