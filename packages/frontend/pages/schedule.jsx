@@ -14,6 +14,17 @@ async function scheduleForDate(date) {
   return json.results;
 }
 
+export async function getServerSideProps(context) {
+    const res = await fetch(`${configs.api}scheduleitems/?days=1`);
+    const json = await res.json();
+    const scheduleJSON = json.results;
+    return {
+        props: {
+            scheduleJSON,
+        }
+    }
+}
+
 function ScheduleItem(item) {
   return (
     <div className="schedule_item" key={item.id}>
@@ -73,19 +84,11 @@ function ScheduleItem(item) {
 class Schedule extends Component {
   constructor(props) {
     super(props);
+    const { scheduleJSON } = props;
     this.state = {
       date: moment(),
-      shows: [],
+      shows: scheduleJSON,
     };
-  }
-
-  async componentDidMount() {
-    const { date } = this.state;
-    const schedule = await scheduleForDate(date);
-
-    this.setState({
-      shows: schedule,
-    });
   }
 
   render() {
