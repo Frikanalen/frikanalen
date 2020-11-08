@@ -182,7 +182,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
             return datetime.datetime.strptime(inputDate, '%Y%m%d')\
                 .astimezone(pytz.timezone('Europe/Oslo'))
         except (KeyError, ValueError, TypeError):
-            return datetime.datetime.now().astimezone(pytz.timezone('Europe/Oslo'))
+            return datetime.datetime.now(tz = pytz.timezone('Europe/Oslo'))
 
     def parse_int_or_7(self, inputDays):
         try:
@@ -203,21 +203,22 @@ class ScheduleitemList(generics.ListCreateAPIView):
         return queryset.order_by('starttime')
 
     def get(self, request, *args, **kwargs):
-        params = request.GET
+        query_parameters = request.GET
 
-        date = self.parse_YYYYMMDD_or_today(params.get('date', None))
-        days = self.parse_int_or_7(params.get('days', None))
+        date = self.parse_YYYYMMDD_or_today(query_parameters.get('date', None))
+        days = self.parse_int_or_7(query_parameters.get('days', None))
 
-        # This cache is cleared on save() and delete() in
-        # fk/models.py:Scheduleitem
-        cacheable = True
+        # The schedule cache is cleared on save() and delete() in fk/models.py:Scheduleitem
         cache = caches['schedule']
         cache_key = 'schedule-%s-%s' % (date.strftime('%Y%m%d'), days)
 
+        # We only cache for the most common use case: Single day of schedule,
+        # requested as JSON. If any other parameters are set, we simply disable
+        # caching for the remainder of the request.
+        cacheable = True
         if (type(request.accepted_renderer).__name__) != 'JSONRenderer': cacheable = False
-        if params.get('surrounding') != None: cacheable = False
-        if params.get('ordering') != None: cacheable = False
-        if params.get('page_size') != None: cacheable = False
+        for disqualifying_parameter in ['surrounding', 'ordering', 'page_size']:
+            if query_parameters.get(disqualifying_parameter, None) != None: cacheable = False
 
         if cacheable:
             cache_res = cache.get(cache_key)
