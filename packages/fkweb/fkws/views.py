@@ -236,7 +236,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
         res.renderer_context = self.get_renderer_context()
         res.render()
 
-        if res.status_code == 200:
+        if cacheable and res.status_code == 200:
             logger.warning('[Scheduleitem] cache store, cache_key=%s', cache_key)
             cache.set(cache_key, res, None)
 
