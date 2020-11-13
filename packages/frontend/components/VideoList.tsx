@@ -4,6 +4,18 @@ import CardDeck from "react-bootstrap/CardDeck";
 import configs from "./configs";
 import Link from "next/link";
 
+interface VideoJSON {
+  description: string;
+  name: string;
+  id: number;
+  large_thumbnail_url: string;
+}
+
+interface VideoQueryJSON {
+  count: number;
+  results: VideoJSON[];
+}
+
 export async function getLatestVideos(orgID: number) {
   const response = await fetch(`${configs.api}videos/?organization=${orgID}&page_size=10`);
   const latestVideos = await response.json();

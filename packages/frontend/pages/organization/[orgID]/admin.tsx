@@ -8,18 +8,6 @@ import config from "../../../components/configs";
 
 import VideoList, { getLatestVideos } from "components/VideoList";
 
-interface VideoJSON {
-  description: string;
-  name: string;
-  id: number;
-  large_thumbnail_url: string;
-}
-
-interface VideoQueryJSON {
-  count: number;
-  results: VideoJSON[];
-}
-
 interface fkOrganizationJSON {
   id: number;
   name: string;
