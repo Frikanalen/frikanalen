@@ -6,6 +6,12 @@ interface fkOrgRoleJSON {
   organization_id: number;
   organization_name: string;
 }
+
+export interface fkOrg {
+  orgID: number;
+  orgName: string;
+}
+
 interface fkOrgRole {
   role: string;
   orgID: number;

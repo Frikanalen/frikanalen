@@ -17,7 +17,7 @@ import UserAuth from "../components/UserAuth";
 
 import configs from "../components/configs";
 
-import { fkUser, getUserProfile } from "../components/TS-API/User";
+import { fkUser, getUserProfile } from "../components/TS-API/API";
 
 import Layout from "../components/Layout";
 
