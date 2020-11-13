@@ -6,7 +6,7 @@ metadata:
   namespace: default
 spec:
   entryPoints: 
-    - web
+    - websecure
   routes:
   - match: Host(`prometheus.frikanalen.no`) 
     kind: Rule
@@ -16,3 +16,5 @@ spec:
       namespace: default
       scheme: http
       port: 9090
+  tls:
+    certResolver: default
