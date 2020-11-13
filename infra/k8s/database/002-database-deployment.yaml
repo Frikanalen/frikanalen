@@ -16,6 +16,7 @@ spec:
       containers:
         - name: postgres
           image: postgres:12.2
+          args: ['-c', 'shared_buffers=8GB']
           ports:
             - containerPort: 5432
           env:
