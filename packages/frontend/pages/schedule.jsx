@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 
 import fetch from "isomorphic-unfetch";
 import Moment from "react-moment";
@@ -18,9 +18,11 @@ export async function getServerSideProps(context) {
     const res = await fetch(`${configs.api}scheduleitems/?days=1`);
     const json = await res.json();
     const scheduleJSON = json.results;
+    const date = moment().toJSON();
     return {
         props: {
             scheduleJSON,
+            date,
         }
     }
 }
@@ -81,29 +83,40 @@ function ScheduleItem(item) {
   );
 }
 
-class Schedule extends Component {
-  constructor(props) {
-    super(props);
-    const { scheduleJSON } = props;
-    this.state = {
-      date: moment(),
-      shows: scheduleJSON,
-    };
-  }
+export default function Schedule(props) {
+    const [ date, setDate ] = useState(props.date)
+    const [ scheduleJSON, setScheduleJSON ] = useState(props.scheduleJSON)
+    const firstUpdate = useRef(true);
+    useEffect(() => {
+        if (firstUpdate.current) {
+            firstUpdate.current = false;
+            return;
+        }
+        scheduleForDate(date).then((s)=>setScheduleJSON(s))
+    }, [ date ]);
 
-  render() {
-    const { date, shows } = this.state;
+
     return (
       <Layout>
         <WindowWidget>
-          <div className="schedule_date">
-            <h1>
+          <div style={{ display: "flex" }}>
+            <h1 onClick={() => setDate(moment(date).add(-1, 'days'))}
+                style={{ cursor: "pointer", lineHeight: "75.6px", fontSize: "56px", padding: "10px 0" }}
+                className="material-icons">
+                navigate_before
+            </h1>
+            <h1 style={{ flexGrow: 1, textAlign: "center" }} className="schedule_date">
               <Moment locale="nb" format="dddd Do MMMM">
                 {date}
               </Moment>
             </h1>
+              <h1 onClick={() => setDate(moment(date).add(1, 'days'))}
+                  style={{ cursor: "pointer", lineHeight: "75.6px", fontSize: "56px", padding: "10px 0" }}
+                  className="material-icons">
+                  navigate_next
+              </h1>
           </div>
-          <div className="programmes">{shows.map((x) => ScheduleItem(x))}</div>
+          <div className="programmes">{scheduleJSON.map((x) => ScheduleItem(x))}</div>
           <style jsx>
             {`
                 .programmes {
@@ -125,6 +138,3 @@ class Schedule extends Component {
       </Layout>
     );
   }
-}
-
-export default Schedule;
