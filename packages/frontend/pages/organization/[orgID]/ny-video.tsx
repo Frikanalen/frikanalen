@@ -4,12 +4,12 @@ import { useRouter } from "next/router";
 import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Layout from "../../../components/Layout";
-import WindowWidget from "../../../components/WindowWidget";
+import Layout from "components/Layout";
+import WindowWidget from "components/WindowWidget";
 
-import config from "../../../components/configs";
-import Video, { getCategories } from "../../../components/API/Video";
-import ProfileFetcher from "../../../components/API/User";
+import config from "components/configs";
+import Video, { getCategories } from "components/API/Video";
+import ProfileFetcher from "components/API/User";
 
 interface fkOrganizationJSON {
   id: number;

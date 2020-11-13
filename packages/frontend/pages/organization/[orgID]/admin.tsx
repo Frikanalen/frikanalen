@@ -15,7 +15,7 @@ interface fkOrganizationJSON {
 
 const getOrgName = async (orgID: number): Promise<string> => {
   const res = await fetch(`${config.api}organization/${orgID}`);
-  console.log(`${config.api}organization/${orgID}`);
+  //console.log(`${config.api}organization/${orgID}`);
   const resData: fkOrganizationJSON = await res.json();
   return resData.name;
 };
@@ -42,9 +42,9 @@ export default function OrgAdmin(props) {
 }
 
 export async function getServerSideProps(context) {
-  const { id } = context.query;
-  const orgID = parseInt(id);
-  const orgName = await getOrgName(id);
+  const orgIDString = context.query.orgID;
+  const orgID = parseInt(orgIDString);
+  const orgName = await getOrgName(orgID);
   const latestVideos = await getLatestVideos(orgID);
 
   return {

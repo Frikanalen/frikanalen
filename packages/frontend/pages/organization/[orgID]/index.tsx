@@ -1,10 +1,10 @@
 import Alert from "react-bootstrap/Alert";
-import configs from "../../../components/configs";
+import configs from "components/configs";
 
 import React from "react";
 import PropTypes from "prop-types";
-import Layout from "../../../components/Layout";
-import WindowWidget from "../../../components/WindowWidget";
+import Layout from "components/Layout";
+import WindowWidget from "components/WindowWidget";
 import { fkOrg } from "components/TS-API/API";
 import VideoList, { getLatestVideos } from "components/VideoList";
 import Card from "react-bootstrap/Card";

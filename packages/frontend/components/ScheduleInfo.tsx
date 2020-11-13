@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import configs from "./configs";
 import { find } from "domutils";
+import Link from "next/link";
 
 type fkVideo = {
   id: number;
@@ -68,7 +69,9 @@ export default class ScheduleInfo extends Component<
             <span className="startTime">{this.as_HH_mm(programme.starttime)}</span>
             <span className="endTime">{this.as_HH_mm(programme.endtime)}</span>
           </span>
-          <span className="organization">{programme.video.organization.name}</span>
+          <span className="organization">
+            <Link href={`/organization/${programme.video.organization.id}`}>{programme.video.organization.name}</Link>
+          </span>
           <span className="lineBreak"></span>
           <span className="name">
             <a href={"v/" + programme.video.id}>{programme.video.name}</a>
