@@ -52,7 +52,7 @@ export default class ScheduleInfo extends Component<
           // Refresh the current running program; add 1s
           // to guard against race conditions
           setTimeout(() => {
-            this.findRunningProgram();
+            findRunningProgram();
           }, endTime.getTime() - now.getTime() + 1000);
           return parseInt(id);
         }
