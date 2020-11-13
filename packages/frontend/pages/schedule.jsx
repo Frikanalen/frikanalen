@@ -38,7 +38,7 @@ function ScheduleItem(item) {
         <Moment format="HH:mm">{item.endtime}</Moment>
       </span>
       <span className="publisher">
-        <a href={`/org/${item.video.organization.id}`}>{item.video.organization.name}</a>
+        <a href={`/organization/${item.video.organization.id}`}>{item.video.organization.name}</a>
       </span>
       <div className="title">
         <a href={`/v/${item.video.id}`}>{item.video.name}</a>

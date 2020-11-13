@@ -123,9 +123,9 @@ function OrganizationCard({ role }) {
     <Card body bg="white">
       <Card.Title className="mb-1">{org.name}</Card.Title>
       <Card.Subtitle className="mb-2 text-muted">{roleText}</Card.Subtitle>
-      <Card.Link href={`/org/${org.id}`}>Offentlig side</Card.Link>
-      <Card.Link href={`/org/${org.id}/admin`}>Administrasjonsside</Card.Link>
-      <Card.Link href={`/org/${org.id}/ny-video`}>Last opp ny video</Card.Link>
+      <Card.Link href={`/organization/${org.id}`}>Offentlig side</Card.Link>
+      <Card.Link href={`/organization/${org.id}/admin`}>Administrasjonsside</Card.Link>
+      <Card.Link href={`/organization/${org.id}/ny-video`}>Last opp ny video</Card.Link>
     </Card>
   );
 }
@@ -159,7 +159,7 @@ function OrganizationsCard({ profile }: ProfileProps) {
       <Card>
         <Card.Body>
           <Card.Title>Organisasjoner</Card.Title>
-          <Button href="/org/ny">Meld inn ny organisasjon</Button>
+          <Button href="/organization/ny">Meld inn ny organisasjon</Button>
           <p>&nbsp;</p>
           <Card body bg="light" className="text-dark">
             <OrganizationList profile={profile} />

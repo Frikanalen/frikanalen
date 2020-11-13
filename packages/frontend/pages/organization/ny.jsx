@@ -37,7 +37,7 @@ function NewOrgForm() {
         }),
       });
       const data = await foo.json();
-      router.push("/org/[id]/admin", `/org/${data.id}/admin`);
+      router.push("/organization/[id]/admin", `/organization/${data.id}/admin`);
     } catch (exception) {
       // TODO: Handle this exception
       // console.log(exception);
