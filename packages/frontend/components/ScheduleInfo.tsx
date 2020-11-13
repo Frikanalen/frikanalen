@@ -121,9 +121,9 @@ export default class ScheduleInfo extends Component<
 
     return (
       <span className="onRightNow">
-        {currentItem != 0 ? programme_row(schedule[currentItem - 1], "previous") : null}
-        {programme_row(schedule[currentItem], "current")}
-        {currentItem != schedule.length ? programme_row(schedule[currentItem + 1], "next") : false}
+        {currentItem != 0 ? programme_row(schedule.results[currentItem - 1], "previous") : null}
+        {programme_row(schedule.results[currentItem], "current")}
+        {currentItem != schedule.results.length ? programme_row(schedule.results[currentItem + 1], "next") : false}
         <style jsx>{`
           .onRightNow {
             color: white;
