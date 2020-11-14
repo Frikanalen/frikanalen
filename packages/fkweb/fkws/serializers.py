@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 class OrganizationSerializer(serializers.ModelSerializer):
     editor_name = serializers.SerializerMethodField()
+    fkmember = serializers.BooleanField(read_only=True)
 
     def get_editor_name(self, obj):
         if obj.editor:
@@ -38,6 +39,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
                 'street_address',
                 'editor_id',
                 'editor_name',
+                'fkmember',
         )
 
 class VideoFileSerializer(serializers.ModelSerializer):
