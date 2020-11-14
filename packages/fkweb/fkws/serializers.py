@@ -177,7 +177,7 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
         source="video", view_name="api-video-detail", required=False,
         queryset=Video.objects.all())
     starttime = serializers.DateTimeField(default_timezone=pytz.timezone('Europe/Oslo'))
-    endtime = serializers.DateTimeField(default_timezone=pytz.timezone('Europe/Oslo'))
+    endtime = serializers.DateTimeField(default_timezone=pytz.timezone('Europe/Oslo'), read_only=True)
 
     class Meta:
         model = Scheduleitem
