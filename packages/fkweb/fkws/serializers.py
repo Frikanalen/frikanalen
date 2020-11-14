@@ -21,7 +21,19 @@ logger = logging.getLogger(__name__)
 
 class OrganizationSerializer(serializers.ModelSerializer):
     editor_name = serializers.SerializerMethodField()
+    editor_email = serializers.SerializerMethodField()
+    editor_msisdn = serializers.SerializerMethodField()
     fkmember = serializers.BooleanField(read_only=True)
+
+    def get_editor_email(self, obj):
+        if obj.editor:
+            return obj.editor.email
+        return None
+
+    def get_editor_msisdn(self, obj):
+        if obj.editor:
+            return str(obj.editor.phone_number)
+        return None
 
     def get_editor_name(self, obj):
         if obj.editor:
@@ -39,6 +51,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
                 'street_address',
                 'editor_id',
                 'editor_name',
+                'editor_email',
+                'editor_msisdn',
                 'fkmember',
         )
 
