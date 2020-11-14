@@ -3,10 +3,11 @@ import React, { Component, useState, useEffect, useRef } from "react";
 import fetch from "isomorphic-unfetch";
 import Moment from "react-moment";
 import moment from "moment";
+import "moment/locale/nb";
 import WindowWidget from "../components/WindowWidget";
 import configs from "../components/configs";
 import Layout from "../components/Layout";
-import "moment/locale/nb";
+
 
 async function scheduleForDate(date) {
   const res = await fetch(`${configs.api}scheduleitems/?days=1&date=${moment(date).format("YYYYMMDD")}`);

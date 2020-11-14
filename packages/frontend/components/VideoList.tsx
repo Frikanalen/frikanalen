@@ -3,12 +3,16 @@ import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 import configs from "./configs";
 import Link from "next/link";
+import Moment from "react-moment";
+import moment from "moment";
+import "moment/locale/nb";
 
 interface VideoJSON {
   description: string;
   name: string;
   id: number;
   large_thumbnail_url: string;
+  created_time: string;
 }
 
 interface VideoQueryJSON {
@@ -28,15 +32,22 @@ const VideoList: React.FC<{ videoList: VideoQueryJSON }> = ({ videoList }) => {
 
     const VideoCard: React.FC<{ v: VideoJSON }> = ({ v }) => (
       <Card style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
-        <Card.Img
-          style={{ objectFit: "contain", height: "140.625px", background: "black" }}
-          variant="top"
-          src={v.large_thumbnail_url}
-        />
+        <Link href={`/v/${v.id}`}>
+          <Card.Img
+            style={{ cursor: "pointer", objectFit: "contain", height: "140.625px", background: "black" }}
+            variant="top"
+            src={v.large_thumbnail_url}
+          />
+        </Link>
         <Card.Body>
           <Link href={`/v/${v.id}`}>{v.name}</Link>
         </Card.Body>
-        <Card.Footer>Lastet opp på (...)</Card.Footer>
+        <Card.Footer>
+          Lastet opp{" "}
+          <Moment locale="nb" format="dddd Do MMMM">
+            {v.created_time}
+          </Moment>
+        </Card.Footer>
       </Card>
     );
     return <React.Fragment>{videosJSON.results.map((v) => VideoCard({ v }))}</React.Fragment>;

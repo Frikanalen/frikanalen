@@ -10,6 +10,50 @@ interface fkOrgRoleJSON {
 export interface fkOrg {
   orgID: number;
   orgName: string;
+  postalAddress: string;
+  streetAddress: string;
+  editorID: number;
+  editorName: string;
+  editorEmail: string;
+  editorMSISDN: string;
+  isMember: boolean;
+}
+
+export interface fkOrgJSON {
+  id: number;
+  name: string;
+  postal_address: string;
+  street_address: string;
+  editor_id: number;
+  editor_name: string;
+  editor_email: string;
+  editor_msisdn: string;
+  fkmember: boolean;
+}
+
+async function APIGET<T>(endpoint: string): Promise<T> {
+  let authHeaders = {};
+  if (typeof Cookies.get("token") !== "undefined") authHeaders = { Authorization: `Token ${Cookies.get("token")}` };
+
+  const response = await fetch(`${configs.api}${endpoint}`, { headers: authHeaders });
+
+  return await response.json();
+}
+
+export async function fkFetchOrg(orgID: number): Promise<fkOrg> {
+  const o = await APIGET<fkOrgJSON>(`organization/${orgID}`);
+
+  return {
+    orgID: o.id,
+    orgName: o.name,
+    postalAddress: o.postal_address,
+    streetAddress: o.street_address,
+    isMember: o.fkmember,
+    editorID: o.editor_id,
+    editorName: o.editor_name,
+    editorEmail: o.editor_email,
+    editorMSISDN: o.editor_msisdn,
+  };
 }
 
 interface fkOrgRole {
@@ -34,16 +78,6 @@ export interface fkUser {
   organizationRoles: fkOrgRole[];
 }
 
-async function APIGET<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${configs.api}${endpoint}`, {
-    headers: {
-      Authorization: `Token ${Cookies.get("token")}`,
-    },
-  });
-
-  return await response.json();
-}
-
 export async function getUserProfile(): Promise<fkUser> {
   const userJSON = await APIGET<fkUserJSON>("user");
 
@@ -57,13 +91,11 @@ export async function getUserProfile(): Promise<fkUser> {
     });
   });
 
-  let user: fkUser = {
+  return {
     email: userJSON.email,
     firstName: userJSON.first_name,
     lastName: userJSON.last_name,
     msisdn: userJSON.phone_number,
     organizationRoles: orgRoles,
   };
-
-  return user;
 }
