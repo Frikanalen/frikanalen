@@ -8,7 +8,7 @@ import Col from "react-bootstrap/Col";
 import { findRunningProgram } from "../../components/ScheduleInfo";
 import "moment/locale/nb";
 
-const AnalogClock = dynamic(() => import("./analogclock.js"), { ssr: false });
+const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), { ssr: false });
 
 export async function getServerSideProps(context) {
   const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
@@ -41,7 +41,7 @@ function CarouselPage({ duration, children }) {
 function NextUp(props) {
   const { scheduleJSON } = props;
   const currentProgramme = findRunningProgram(scheduleJSON.results) + 1;
-  console.log(currentProgramme);
+
   return (
     <CarouselPage duration="1000">
       <Container>
@@ -55,7 +55,7 @@ function NextUp(props) {
           <Col>
             <h2>Neste program</h2>
             <h3>
-              <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].start_time}</Moment>
+              <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
               {": "}
               {scheduleJSON.results[currentProgramme].video.organization.name}
             </h3>
@@ -64,7 +64,7 @@ function NextUp(props) {
         </Row>
         <Row>
           <Col style={{ textAlign: "center", marginTop: "30px", fontSize: "16pt" }}>
-            Alt innhold sendt på Frikanalen er for medlemsorganisasjoners ansvar.
+            Alt innhold sendt på Frikanalen er på medlemsorganisasjoners ansvar.
             <br />
             <br />
             Se våre nettsider på frikanalen.no for kontaktinformasjon til organisasjonens redaktør.

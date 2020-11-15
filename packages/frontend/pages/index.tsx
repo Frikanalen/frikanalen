@@ -76,7 +76,7 @@ export default function index(props) {
           <Col>
             <WindowWidget nomargin>
               <ShakaPlayer src="https://frikanalen.no/stream/index.m3u8" />
-              <ScheduleInfo initialJSON={scheduleJSON} />
+              <ScheduleInfo initialSchedule={scheduleJSON} />
             </WindowWidget>
           </Col>
           <Col>

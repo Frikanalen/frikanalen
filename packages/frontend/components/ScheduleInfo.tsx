@@ -3,6 +3,8 @@ import configs from "./configs";
 import { find } from "domutils";
 import Link from "next/link";
 import { APIGET, fkScheduleJSON, fkScheduleItem } from "components/TS-API/API";
+import { Col, Container, Row } from "react-bootstrap";
+import styles from "./ScheduleInfo.module.sass";
 
 export function findRunningProgram(schedule): number {
   const now = new Date();
@@ -23,6 +25,11 @@ export function findRunningProgram(schedule): number {
   }
 }
 
+function as_HH_mm(datestr) {
+  let d = new Date(datestr);
+  return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+}
+
 export default class ScheduleInfo extends Component<
   { initialSchedule: fkScheduleJSON },
   { schedule: fkScheduleItem[] }
@@ -34,17 +41,12 @@ export default class ScheduleInfo extends Component<
     });
   }
 
-  as_HH_mm(datestr) {
-    let d = new Date(datestr);
-    return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
-  }
-
   constructor(props) {
     super(props);
-    const { initialJSON } = props;
+    const { initialSchedule } = props;
 
     this.state = {
-      schedule: initialJSON.results,
+      schedule: initialSchedule.results,
     };
   }
 
@@ -53,69 +55,35 @@ export default class ScheduleInfo extends Component<
     const currentItem = findRunningProgram(schedule);
     const programme_row = (programme, DOMclass) => {
       if (typeof programme === "undefined") return false;
-      return (
-        <div key={programme.id} className={"programme " + DOMclass}>
-          <span className="times">
-            <span className="startTime">{this.as_HH_mm(programme.starttime)}</span>
-            <span className="endTime">{this.as_HH_mm(programme.endtime)}</span>
-          </span>
-          <span className="organization">
-            <Link href={`/organization/${programme.video.organization.id}`}>{programme.video.organization.name}</Link>
-          </span>
-          <span className="lineBreak"></span>
-          <span className="name">
-            <a href={"v/" + programme.video.id}>{programme.video.name}</a>
-          </span>
-          <style jsx>{`
-            .programme {
-              font-family: "Roboto", sans-serif;
-              margin: 0;
-              padding: 10px;
-              display: flex;
-              padding-bottom: 5px;
-              align-content: flex-start;
-            }
-            @media screen and (max-width: 800px) {
-              .programme > .lineBreak {
-                flex-basis: 100%;
-                height: 0;
-              }
-            }
 
-            .programme > .times {
-              white-space: nowrap;
-            }
-            .programme.current {
-              background: rgba(0, 0, 0, 0.2);
-            }
-            .programme > .times > .endTime::before {
-              content: "–";
-            }
-            @media screen and (max-width: 1024px) {
-              .programme {
-                flex-wrap: wrap;
-              }
-            }
-            .programme > .organization {
-              margin: 0 10px;
-              font-weight: bold;
-            }
-            .programme > .organization::after {
-              content: ":";
-            }
-            .programme > .times > .endTime {
-              margin-right: 5px;
-              color: #888;
-            }
-          `}</style>
-        </div>
+      return (
+        <Container className={styles.programme + " " + DOMclass} fluid>
+          <Row key={programme.id}>
+            <Col className={styles.times}>
+              <span className={styles.startTime}>{as_HH_mm(programme.starttime)}</span>
+              <span className={styles.endTime}>–{as_HH_mm(programme.endtime)}</span>
+            </Col>
+            <Col>
+              <Link href={`/organization/${programme.video.organization.id}`}>
+                <a className={styles.organization}>{programme.video.organization.name}</a>
+              </Link>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <span className="name">
+                <a href={"v/" + programme.video.id}>{programme.video.name}</a>
+              </span>
+            </Col>
+          </Row>
+        </Container>
       );
     };
 
     return (
-      <span className="onRightNow">
+      <div className={"onRightNow"}>
         {currentItem != 0 ? programme_row(schedule[currentItem - 1], "previous") : null}
-        {programme_row(schedule[currentItem], "current")}
+        {programme_row(schedule[currentItem], styles.current)}
         {currentItem != schedule.length ? programme_row(schedule[currentItem + 1], "next") : false}
         <style jsx>{`
           .onRightNow {
@@ -124,7 +92,7 @@ export default class ScheduleInfo extends Component<
             width: 100%;
           }
         `}</style>
-      </span>
+      </div>
     );
   }
 }
