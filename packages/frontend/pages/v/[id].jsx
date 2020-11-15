@@ -126,6 +126,7 @@ export default class VideoPage extends Component {
                     {" "}
                     <a href={`org/${this.video.org.ID}`}>{this.video.org.name}</a>
                   </p>
+                  <p style={{ whiteSpace: "pre-line"}}>{this.video.header}</p>
                 </div>
               </Col>
               <Col>

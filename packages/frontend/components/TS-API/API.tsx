@@ -7,9 +7,16 @@ interface fkOrgRoleJSON {
   organization_name: string;
 }
 
+export interface fkVideo {}
+
+export interface fkScheduleJSON {
+  results: fkScheduleItem[];
+}
+
 export interface fkOrg {
   orgID: number;
   orgName: string;
+  orgDescription: string;
   postalAddress: string;
   streetAddress: string;
   editorID: number;
@@ -29,9 +36,10 @@ export interface fkOrgJSON {
   editor_email: string;
   editor_msisdn: string;
   fkmember: boolean;
+  description: string;
 }
 
-async function APIGET<T>(endpoint: string): Promise<T> {
+export async function APIGET<T>(endpoint: string): Promise<T> {
   let authHeaders = {};
   if (typeof Cookies.get("token") !== "undefined") authHeaders = { Authorization: `Token ${Cookies.get("token")}` };
 
@@ -46,6 +54,7 @@ export async function fkFetchOrg(orgID: number): Promise<fkOrg> {
   return {
     orgID: o.id,
     orgName: o.name,
+    orgDescription: o.description,
     postalAddress: o.postal_address,
     streetAddress: o.street_address,
     isMember: o.fkmember,
@@ -69,6 +78,13 @@ interface fkUserJSON {
   phone_number: string;
   organization_roles: fkOrgRoleJSON[];
 }
+
+export type fkScheduleItem = {
+  id: number;
+  video: fkVideo;
+  start_time: Date;
+  end_time: Date;
+};
 
 export interface fkUser {
   readonly email: string;

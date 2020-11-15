@@ -2,25 +2,33 @@ import React, { Component } from "react";
 import configs from "./configs";
 import { find } from "domutils";
 import Link from "next/link";
+import { APIGET, fkScheduleJSON, fkScheduleItem } from "components/TS-API/API";
 
-type fkVideo = {
-  id: number;
-};
+export function findRunningProgram(schedule): number {
+  const now = new Date();
+  // FIXME: This will render wrong if the user's browser is not
+  // in the Europe/Oslo timezone
+  for (const id in schedule) {
+    const startTime = new Date(Date.parse(schedule[id].starttime));
+    const endTime = new Date(Date.parse(schedule[id].endtime));
 
-type fkScheduleItem = {
-  id: number;
-  video: fkVideo;
-  start_time: Date;
-  end_time: Date;
-};
+    if (startTime <= now && endTime > now) {
+      // Refresh the current running program; add 1s
+      // to guard against race conditions
+      setTimeout(() => {
+        findRunningProgram(schedule);
+      }, endTime.getTime() - now.getTime() + 1000);
+      return parseInt(id);
+    }
+  }
+}
 
 export default class ScheduleInfo extends Component<
-  { initialSchedule: fkScheduleItem[] },
+  { initialSchedule: fkScheduleJSON },
   { schedule: fkScheduleItem[] }
 > {
   async componentDidMount() {
-    const res = await fetch(`${configs.api}scheduleitems/?days=1`);
-    const json = await res.json();
+    const json = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
     this.setState({
       schedule: json.results,
     });
@@ -41,24 +49,6 @@ export default class ScheduleInfo extends Component<
   }
 
   render() {
-    function findRunningProgram(schedule): number {
-      const now = new Date();
-      // FIXME: This will render wrong if the user's browser is not
-      // in the Europe/Oslo timezone
-      for (const id in schedule) {
-        const startTime = new Date(Date.parse(schedule[id].starttime));
-        const endTime = new Date(Date.parse(schedule[id].endtime));
-
-        if (startTime <= now && endTime > now) {
-          // Refresh the current running program; add 1s
-          // to guard against race conditions
-          setTimeout(() => {
-            findRunningProgram(schedule);
-          }, endTime.getTime() - now.getTime() + 1000);
-          return parseInt(id);
-        }
-      }
-    }
     const { schedule } = this.state;
     const currentItem = findRunningProgram(schedule);
     const programme_row = (programme, DOMclass) => {

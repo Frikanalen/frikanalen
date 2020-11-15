@@ -33,7 +33,7 @@ RUN yarn install
 FROM base AS release
 # copy production node_modules
 COPY --from=dependencies /root/chat/prod_node_modules ./node_modules
-FROM node:12-alpine
+FROM node:14-alpine
 
 WORKDIR /usr/app
 

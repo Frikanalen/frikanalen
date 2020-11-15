@@ -3,7 +3,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shaka-player/dist/controls.css";
 import "shaka-player/dist/demo.css";
-import "../components/main.sass";
+import "components/main.sass";
 import PropTypes from "prop-types";
 
 function MyApp({ Component, pageProps }) {

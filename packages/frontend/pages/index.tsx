@@ -8,6 +8,7 @@ import ScheduleInfo from "../components/ScheduleInfo";
 import dynamic from "next/dynamic";
 
 import configs from "../components/configs";
+import { APIGET, fkScheduleJSON } from "../components/TS-API/API";
 
 const ShakaPlayer = dynamic(() => import("../components/ShakaPlayer"), { ssr: false });
 
@@ -67,7 +68,7 @@ const BetaDisclaimer = () => (
   </WindowWidget>
 );
 export default function index(props) {
-  const { scheduleJSON } = props
+  const { scheduleJSON } = props;
   return (
     <Layout>
       <Container>
@@ -75,7 +76,7 @@ export default function index(props) {
           <Col>
             <WindowWidget nomargin>
               <ShakaPlayer src="https://frikanalen.no/stream/index.m3u8" />
-              <ScheduleInfo initialJSON={scheduleJSON}/>
+              <ScheduleInfo initialJSON={scheduleJSON} />
             </WindowWidget>
           </Col>
           <Col>
@@ -87,11 +88,10 @@ export default function index(props) {
   );
 }
 export async function getServerSideProps(context) {
-  const scheduleRes = await fetch(`${configs.api}scheduleitems/?days=1&format=json`)
-  const scheduleJSON = await scheduleRes.json()
+  const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
   return {
     props: {
-      scheduleJSON
-    }
-  }
+      scheduleJSON: scheduleJSON,
+    },
+  };
 }

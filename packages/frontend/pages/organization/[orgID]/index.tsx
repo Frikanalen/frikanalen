@@ -29,6 +29,7 @@ function OrganizationData(props) {
   return (
     <div>
       <h1>{orgData.orgName}</h1>
+      <p style={{ whiteSpace: "pre-line" }}>{orgData.orgDescription}</p>
     </div>
   );
 }
@@ -44,9 +45,9 @@ function OrganizationContactInfo(props: { orgData: fkOrg }) {
           <p>
             {orgData.editorName}
             <br />
-            {orgData.editorEmail}
+            <a href={`mailto:${orgData.editorEmail}`}>{orgData.editorEmail}</a>
             <br />
-            {orgData.editorMSISDN}
+            <a href={`tel:${orgData.editorMSISDN}`}>{orgData.editorMSISDN}</a>
           </p>
         </Card.Body>
       </Card>
@@ -72,12 +73,6 @@ export default function OrganizationPage(props: { orgData: fkOrg; latestVideos: 
   return (
     <Layout>
       <WindowWidget>
-        <Alert variant="info">
-          <Alert.Heading>Denne siden er fremdeles under utbygging</Alert.Heading>
-          <p>Frikanalens nettsider er i aktiv utvikling.</p>
-          <p>Vi håper å ha en mer fullstendig side på plass innen kort tid.</p>
-          <p>Takk for forståelsen!</p>
-        </Alert>
         <OrganizationData orgData={orgData} />
         <Card bg="light" className="text-dark">
           <Card.Body>
