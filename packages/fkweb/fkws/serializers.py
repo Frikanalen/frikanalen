@@ -32,7 +32,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     def get_editor_msisdn(self, obj):
         if obj.editor:
-            return str(obj.editor.phone_number)
+            return obj.editor.phone_number.as_international
         return None
 
     def get_editor_name(self, obj):
