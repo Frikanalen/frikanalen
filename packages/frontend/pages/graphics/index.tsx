@@ -46,10 +46,10 @@ function NextUp(props) {
     <CarouselPage duration="1000">
       <Container>
         <Row>
-          <object type="image/svg+xml" data="logo.svg" style={{ margin: "60px" }} />
+          <img src="/images/frikanalen.png" style={{ margin: "30px", marginLeft: "51px" }} />
         </Row>
         <Row>
-          <Col>
+          <Col style={{ flexGrow: 0 }}>
             <AnalogClock size="1600" />
           </Col>
           <Col>
@@ -63,11 +63,13 @@ function NextUp(props) {
           </Col>
         </Row>
         <Row>
-          <Col style={{ textAlign: "center", marginTop: "30px", fontSize: "16pt" }}>
-            Alt innhold sendt på Frikanalen er på medlemsorganisasjoners ansvar.
+          <Col style={{ textAlign: "center", marginTop: "30px", fontSize: "21pt" }}>
+            Alt innhold sendt på Frikanalen av medlemsorganisasjoner er på deres eget ansvar.
             <br />
             <br />
-            Se våre nettsider på frikanalen.no for kontaktinformasjon til organisasjonens redaktør.
+            <span style={{ textAlign: "center", marginTop: "30px", fontSize: "17pt" }}>
+              Se frikanalen.no for kontakt- og redaktørinformasjon.
+            </span>
           </Col>
         </Row>
       </Container>
