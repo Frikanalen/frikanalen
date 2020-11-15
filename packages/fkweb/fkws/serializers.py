@@ -47,6 +47,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
                 'id',
                 'name',
                 'homepage',
+                'description',
                 'postal_address',
                 'street_address',
                 'editor_id',
