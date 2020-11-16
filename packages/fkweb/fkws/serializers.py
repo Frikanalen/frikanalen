@@ -32,7 +32,11 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     def get_editor_msisdn(self, obj):
         if obj.editor:
-            return obj.editor.phone_number.as_international
+            try:
+                return obj.editor.phone_number.as_international
+            except:
+                print("could not present", obj.editor.phone_number)
+                return ''
         return None
 
     def get_editor_name(self, obj):
