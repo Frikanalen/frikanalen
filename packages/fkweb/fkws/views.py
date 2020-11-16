@@ -471,7 +471,7 @@ class UserCreate(generics.CreateAPIView):
 
 
 @method_decorator(cache_page(60*60), name='dispatch')
-@method_decorator(vary_on_headers(['Authorization', 'Cookie']), name='dispatch')
+@method_decorator(vary_on_headers('Authorization', 'Cookie'), name='dispatch')
 class UserDetail(generics.RetrieveUpdateAPIView):
     """
     User details - used to manage your own user
