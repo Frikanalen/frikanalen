@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 from django.core.cache import caches
 from django.views.decorators.cache import cache_page
 from django.views.decorators.cache import never_cache
+from django.views.decorators.vary import vary_on_headers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -469,7 +470,8 @@ class UserCreate(generics.CreateAPIView):
     serializer_class = NewUserSerializer
 
 
-@method_decorator(cache_page(1), name='dispatch')
+@method_decorator(cache_page(60*60), name='dispatch')
+@method_decorator(vary_on_headers('Authorization'), name='dispatch')
 class UserDetail(generics.RetrieveUpdateAPIView):
     """
     User details - used to manage your own user
