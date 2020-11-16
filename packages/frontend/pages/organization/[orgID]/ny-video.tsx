@@ -16,13 +16,6 @@ interface fkOrganizationJSON {
   name: string;
 }
 
-const getOrgName = async (orgID: number): Promise<string> => {
-  const res = await fetch(`${config.api}organization/${orgID}`);
-  console.log(`${config.api}organization/${orgID}`);
-  const resData: fkOrganizationJSON = await res.json();
-  return resData.name;
-};
-
 class VideoCreate extends Component<
   {
     orgID: number;
@@ -150,8 +143,15 @@ class VideoCreate extends Component<
 }
 
 export async function getServerSideProps(context) {
-  const { id } = context.query;
-  const orgName = await getOrgName(id);
+  const getOrgName = async (orgID: number): Promise<string> => {
+    const res = await fetch(`${config.api}organization/${orgID}`);
+    console.log(`${config.api}organization/${orgID}`);
+    const resData: fkOrganizationJSON = await res.json();
+    return resData.name;
+  };
+
+  const { orgID } = context.query;
+  const orgName = await getOrgName(orgID);
 
   return {
     props: { orgName },
@@ -160,9 +160,8 @@ export async function getServerSideProps(context) {
 
 export default function AddVideo(props) {
   const router = useRouter();
-  const { id } = router.query;
-  if (typeof id !== "string") return <p>invalid</p>;
-  const orgID = parseInt(id);
+  const { orgID } = router.query;
+  if (typeof orgID !== "string") return <p>invalid organization</p>;
 
   const { orgName } = props;
 
@@ -170,7 +169,7 @@ export default function AddVideo(props) {
     <Layout>
       <WindowWidget>
         <VideoCreate
-          orgID={orgID}
+          orgID={parseInt(orgID)}
           orgName={orgName}
           onVideoCreated={(videoID) => {
             router.push("/v/[id]", `/v/${videoID}`);
