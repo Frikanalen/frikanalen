@@ -8,6 +8,7 @@ import configs from "./configs";
 
 function delete_local_session() {
   Cookies.remove("token");
+  Cookies.remove("sessionid");
   localStorage.removeItem("userID");
   localStorage.removeItem("userEmail");
   localStorage.removeItem("userFirstName");
