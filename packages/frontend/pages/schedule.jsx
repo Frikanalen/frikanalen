@@ -29,6 +29,10 @@ export async function getServerSideProps(context) {
 }
 
 function ScheduleItem(item) {
+  if (item.video === null) {
+      return null;
+  }
+
   return (
     <div className="schedule_item" key={item.id}>
       <div className="material-icons" style={{ display: "none" }}>
