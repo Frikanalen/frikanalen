@@ -177,7 +177,7 @@ class ScheduleitemVideoSerializer(serializers.ModelSerializer):
             "framerate", "created_time", "updated_time")
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
-    video = ScheduleitemVideoSerializer(read_only=True)
+    video = ScheduleitemVideoSerializer()
     video_url = serializers.HyperlinkedRelatedField(
         source="video", view_name="api-video-detail", required=False,
         queryset=Video.objects.all())
