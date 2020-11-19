@@ -1,45 +1,66 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var radius = canvas.height / 2;
-drawQuarters = () => {
+
+roundRect = (ctx, x,y,width,height,radius, roundBothEnds = true) => {
+  ctx.beginPath();
+  ctx.arc(x + radius, y + radius, radius, Math.PI, Math.PI+Math.PI/2);
+  ctx.lineTo(x + width - radius, y);
+  ctx.arc(x + width - radius, y + radius, radius, Math.PI + Math.PI/2, 0);
+  ctx.lineTo(x + width, y + height - radius);
+  if (!roundBothEnds) { radius = 0 }
+  ctx.arc(x + width - radius, y + height - radius, radius, 0, Math.PI/2)
+  ctx.lineTo(x + radius, y + height)
+  ctx.arc(x + radius, y + height - radius, radius, Math.PI/2, Math.PI)
+  ctx.lineTo(x , y + radius)
+  ctx.fill()
+}
+
+drawMarkers = () => {
     ctx.save();
-        for (let step = 0; step < 4; step++) {
-            const width = 6;
-            const height = 30;
+        for (let step = 0; step < 12; step++) {
+            const width = 8;
+            const height = 40;
             const distance = 200;
-            ctx.rotate(Math.PI/2);
-            ctx.fillRect(-width/2, distance, width, height);
+            ctx.rotate(Math.PI/6);
+            roundRect(ctx, -width/2, distance, width, height, 2);
         }
     ctx.restore();
 }
-drawFiveMinutes = () => {
-    ctx.save();
-        for (let step = 0; step < 16; step++) {
-            const width = 6;
-            const height = 10;
-            const distance = 220;
-            ctx.rotate(Math.PI/8);
-            ctx.fillRect(-width/2, distance, width, height);
-        }
-    ctx.restore();
+
+drawCentralSpot = () => {
+  ctx.save();
+  const dimen = 12;
+  const innerDimen = dimen - 3.5;
+  ctx.beginPath();
+  ctx.arc(0, 0, dimen, 0, 2 * Math.PI, false);
+  ctx.fillStyle = '#000';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(0, 0, innerDimen, 0, 2 * Math.PI, false);
+  ctx.fillStyle = '#F00';
+  ctx.fill();
+  ctx.restore();
 }
+
 drawSecondHand = (seconds) => {
     ctx.save();
-    const width = 3;
-    const height = 240;
-    ctx.fillStyle = '#888';
+    const width = 4;
+    const height = 150;
+    ctx.fillStyle = '#F00';
     ctx.rotate((seconds * Math.PI)/30 + Math.PI);
-    ctx.fillRect(-width/2.0, 0, width, height);
+    roundRect(ctx, -width/2.0, 0, width, height, width / 2)
     ctx.restore();
 }
+
 drawMinutesHand = (minutes) => {
     ctx.save();
-    const width = 8
-    const height = 150;
+    const width = 10
+    const height = 195;
     if (!(minutes % 60)) {
     }
     ctx.rotate((minutes * Math.PI)/30 + Math.PI);
-    ctx.fillRect(-width/2.0, 0, width, height);
+    roundRect(ctx, -width/2.0, 0, width, height, width / 2, false);
     ctx.restore();
 }
 drawHoursHand = (hours) => {
@@ -49,7 +70,7 @@ drawHoursHand = (hours) => {
     if (!(hours % 60)) {
     }
     ctx.rotate((hours * (2 * Math.PI/12))- Math.PI);
-    ctx.fillRect(-width/2.0, 0, width, height);
+    roundRect(ctx, -width/2.0, 0, width, height, width / 2, false)
     ctx.restore();
 }
 var d = new Date()
@@ -64,8 +85,7 @@ drawClock = () => {
     ctx.translate(radius, radius);
 
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-    drawFiveMinutes();
-    drawQuarters();
+    drawMarkers();
     seconds++;
     if (seconds == 60) {
         minutes++;
@@ -78,9 +98,11 @@ drawClock = () => {
     if (hours == 12) {
         hours = 0;
     }
-    drawSecondHand(seconds);
+
     drawMinutesHand(minutes);
     drawHoursHand(hours + (minutes / 60.0));
+    drawCentralSpot();
+    drawSecondHand(seconds);
 }
 drawClock();
 setInterval(drawClock, 1000);
