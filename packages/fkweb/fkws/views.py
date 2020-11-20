@@ -105,6 +105,7 @@ def jukebox_csv(request, format=None):
     return response
 
 
+@method_decorator(never_cache, name='get')
 class ObtainAuthToken(generics.RetrieveAPIView):
     """
     Get a token you can use as a header instead of basic auth.
@@ -470,8 +471,7 @@ class UserCreate(generics.CreateAPIView):
     serializer_class = NewUserSerializer
 
 
-@method_decorator(cache_page(60*60), name='dispatch')
-@method_decorator(vary_on_headers('Authorization', 'Cookie'), name='dispatch')
+@method_decorator(never_cache, name='dispatch')
 class UserDetail(generics.RetrieveUpdateAPIView):
     """
     User details - used to manage your own user
