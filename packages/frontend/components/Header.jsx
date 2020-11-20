@@ -1,9 +1,32 @@
 import Link from "next/link";
-import React from "react";
+import { UserContext } from "./UserContext";
+import React, { useContext } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import UserAuth from "./UserAuth";
+
+const UserMenu = () => {
+  const user = useContext(UserContext);
+  if (!user.isLoggedIn) {
+    return <Nav.Link href="/login">Logg inn/registrer</Nav.Link>;
+  } else {
+    return (
+      <div>
+        <NavDropdown className="userdropdown" title={user.profile?.email}>
+          <Link href="/profil" passHref>
+            <NavDropdown.Item>Brukerside</NavDropdown.Item>
+          </Link>
+          <NavDropdown.Item onClick={user.logout}>Logg ut</NavDropdown.Item>
+        </NavDropdown>
+        <style jsx global>{`
+          .userdropdown > a {
+            color: #eee !important;
+          }
+        `}</style>
+      </div>
+    );
+  }
+};
 
 export default function Header() {
   let devMessage = null;
@@ -42,7 +65,7 @@ export default function Header() {
           </NavDropdown>
         </Nav>
         <Nav className="ml-auto">
-          <UserAuth />
+          <UserMenu />
         </Nav>
       </Navbar>
     </header>

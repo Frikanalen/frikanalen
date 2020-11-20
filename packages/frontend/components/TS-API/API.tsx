@@ -1,5 +1,6 @@
+import { useContext } from "react";
 import configs from "../configs";
-import Cookies from "js-cookie";
+import { UserContext } from "components/UserContext";
 
 interface fkOrgRoleJSON {
   role: string;
@@ -39,11 +40,13 @@ export interface fkOrgJSON {
   description: string;
 }
 
-export async function APIGET<T>(endpoint: string): Promise<T> {
+export async function APIGET<T>(endpoint: string, token = null, reloadCache = false): Promise<T> {
   let authHeaders = {};
-  if (typeof Cookies.get("token") !== "undefined") authHeaders = { Authorization: `Token ${Cookies.get("token")}` };
+  let cacheOptions = "default" as RequestCache;
+  if (token) authHeaders = { Authorization: `Token ${token}` };
+  if (reloadCache) cacheOptions = "reload" as RequestCache;
 
-  const response = await fetch(`${configs.api}${endpoint}`, { headers: authHeaders });
+  const response = await fetch(`${configs.api}${endpoint}`, { cache: cacheOptions, headers: authHeaders });
 
   return await response.json();
 }
@@ -94,8 +97,8 @@ export interface fkUser {
   organizationRoles: fkOrgRole[];
 }
 
-export async function getUserProfile(): Promise<fkUser> {
-  const userJSON = await APIGET<fkUserJSON>("user");
+export async function getUserProfile(token): Promise<fkUser> {
+  const userJSON = await APIGET<fkUserJSON>("user", token, true);
 
   let orgRoles = [];
 

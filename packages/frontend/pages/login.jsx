@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Router from "next/router";
 
 import Card from "react-bootstrap/Card";
@@ -6,22 +6,31 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import WindowWidget from "../components/WindowWidget";
-import UserAuth from "../components/UserAuth";
 import Layout from "../components/Layout";
+import config from "../components/configs";
+import base64 from "base-64";
+import { UserContext } from "../components/UserContext";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const user = useContext(UserContext);
 
-  async function login(e) {
+  async function authenticate(e) {
     e.preventDefault();
-    const login = await UserAuth.login(email, password);
-    if (login === true) {
-      await UserAuth.refreshLocalStorage();
+    const r = await fetch(`${config.api}obtain-token`, {
+      headers: {
+        Authorization: "Basic " + base64.encode(email + ":" + password),
+      },
+    });
+
+    if (r.status == 200) {
+      const data = await r.json();
+      user.login(data.key);
       Router.push("/profil");
     } else {
-      setErrorMessage(<Alert variant="danger">{login}</Alert>);
+      setErrorMessage(<Alert variant="danger">{authenticate}</Alert>);
     }
   }
 
@@ -35,7 +44,7 @@ export default function LoginForm() {
           <Card.Body>
             <Card.Title>Logg inn</Card.Title>
             {errorMessage}
-            <Form onSubmit={(event) => login(event)}>
+            <Form onSubmit={(event) => authenticate(event)}>
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Epostadresse</Form.Label>
                 <Form.Control

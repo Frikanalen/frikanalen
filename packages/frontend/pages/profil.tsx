@@ -1,8 +1,5 @@
-import * as React from "react";
-import { Component, useState } from "react";
-import useSWR from "swr";
-import axios from "axios";
-import Cookies from "js-cookie";
+import React, { Component, useEffect, useContext, useState } from "react";
+import { APIGET, fkOrgJSON } from "components/TS-API/API";
 
 import Alert from "react-bootstrap/Alert";
 import Card from "react-bootstrap/Card";
@@ -13,42 +10,26 @@ import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import WindowWidget from "../components/WindowWidget";
-import UserAuth from "../components/UserAuth";
 
+import { UserContext } from "../components/UserContext";
 import configs from "../components/configs";
 
 import { fkUser, getUserProfile } from "../components/TS-API/API";
 
 import Layout from "../components/Layout";
 
-const AuthenticatedFetcher = (url) =>
-  axios
-    .get(url, {
-      headers: { Authorization: `Token ${Cookies.get("token")}` },
-    })
-    .then((res) => res.data);
-
-function OrganizationFetcher(id) {
-  const { data, error } = useSWR(`${configs.api}organization/${id}`, AuthenticatedFetcher);
-
-  return {
-    org: data,
-    isLoading: !error && !data,
-    isError: error,
-  };
-}
-
-function UserProfile({ profile, onChange }) {
-  const [firstName, setFirstName] = useState(profile.firstName);
-  const [lastName, setLastName] = useState(profile.lastName);
-  const [MSISDN, setMSISDN] = useState(profile.msisdn);
+function UserProfile() {
+  const { profile, token, refresh } = useContext(UserContext);
+  const [firstName, setFirstName] = useState(profile?.firstName);
+  const [lastName, setLastName] = useState(profile?.lastName);
+  const [MSISDN, setMSISDN] = useState(profile?.msisdn);
 
   const submitProfile = (e) => {
     e.preventDefault();
     fetch(`${configs.api}user`, {
       method: "put",
       headers: {
-        Authorization: `Token ${Cookies.get("token")}`,
+        Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -57,9 +38,7 @@ function UserProfile({ profile, onChange }) {
         phone_number: MSISDN,
       }),
     });
-
-    UserAuth.refreshLocalStorage();
-    setTimeout(onChange, 2000);
+    refresh();
   };
 
   return (
@@ -97,13 +76,13 @@ function UserProfile({ profile, onChange }) {
   );
 }
 
-function UserCard({ profile, onChange }) {
+function UserCard() {
   return (
     <Col>
       <Card bg="light" className="text-dark">
         <Card.Body>
           <Card.Title>Brukerprofil</Card.Title>
-          <UserProfile profile={profile} onChange={onChange} />
+          <UserProfile />
         </Card.Body>
       </Card>
     </Col>
@@ -111,14 +90,16 @@ function UserCard({ profile, onChange }) {
 }
 
 function OrganizationCard({ role }) {
-  const { org, isLoading, isError } = OrganizationFetcher(role.orgID);
+  const { token } = useContext(UserContext);
+  const [org, setOrg] = useState(null as fkOrgJSON);
 
-  if (isLoading) return <Spinner animation="border" variant="primary" />;
-  if (isError) return <Spinner animation="border" variant="primary" />;
+  useEffect(() => {
+    APIGET<fkOrgJSON>(`organization/${role.orgID}`, token).then((o) => setOrg(o));
+  }, []);
 
   const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 
-  console.log(org);
+  if (!org) return null;
   return (
     <Card body bg="white">
       <Card.Title className="mb-1">{org.name}</Card.Title>
@@ -130,9 +111,9 @@ function OrganizationCard({ role }) {
   );
 }
 
-type ProfileProps = { profile: fkUser };
-function OrganizationList({ profile }: ProfileProps) {
+function OrganizationList() {
   let organizationList;
+  const { profile } = useContext(UserContext);
 
   if (profile.organizationRoles) {
     if (profile.organizationRoles.length) {
@@ -153,7 +134,7 @@ function OrganizationList({ profile }: ProfileProps) {
   );
 }
 
-function OrganizationsCard({ profile }: ProfileProps) {
+function OrganizationsCard() {
   return (
     <Col>
       <Card>
@@ -162,66 +143,31 @@ function OrganizationsCard({ profile }: ProfileProps) {
           <Button href="/organization/ny">Meld inn ny organisasjon</Button>
           <p>&nbsp;</p>
           <Card body bg="light" className="text-dark">
-            <OrganizationList profile={profile} />
+            <OrganizationList />
           </Card>
         </Card.Body>
       </Card>
     </Col>
   );
 }
+export default function Profile() {
+  const { profile } = useContext(UserContext);
 
-interface IProps {}
-interface IState {
-  profileData: fkUser;
-  profileError?: Error;
-}
-export default class Profile extends Component<IProps, IState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      profileData: null,
-      profileError: null,
-    };
-  }
-
-  async componentDidMount() {
-    try {
-      this.setState({ profileData: await getUserProfile() });
-    } catch (e) {
-      this.setState({ profileError: e });
-    }
-  }
-
-  render() {
-    const { profileData, profileError } = this.state;
-    if (!profileData) {
-      if (profileError) {
-        return (
-          <Layout>
-            <WindowWidget invisible>
-              <Alert variant="danger">Feil: «{profileError.message}»</Alert>
-            </WindowWidget>
-          </Layout>
-        );
-      }
-      return (
-        <Layout>
-          <WindowWidget invisible>
-            <div>Laster inn...</div>
-          </WindowWidget>
-        </Layout>
-      );
-    }
+  if (profile == null)
     return (
       <Layout>
-        <WindowWidget invisible>
-          <h2>Hei, {profileData.firstName}!</h2>
-          <UserCard profile={profileData} onChange={() => this.componentDidMount()} />
-        </WindowWidget>
-        <WindowWidget invisible>
-          <OrganizationsCard profile={profileData} />
-        </WindowWidget>
+        <p>Du må være logget inn</p>
       </Layout>
     );
-  }
+  return (
+    <Layout>
+      <WindowWidget invisible>
+        <h2>Hei, {profile.firstName}!</h2>
+        <UserCard />
+      </WindowWidget>
+      <WindowWidget invisible>
+        <OrganizationsCard />
+      </WindowWidget>
+    </Layout>
+  );
 }

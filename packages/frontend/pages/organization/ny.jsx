@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
-import Cookies from "js-cookie";
+import { UserContext } from "../../components/UserContext";
 
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -19,14 +19,16 @@ function NewOrgForm() {
   const [orgPostAdresse, setOrgPostAdresse] = useState("");
   const [orgBesoksAdresse, setOrgBesoksAdresse] = useState("");
   const [orgURL, setOrgURL] = useState("");
+  const { token } = useContext(UserContext);
 
   const createOrganization = async (e) => {
     e.preventDefault();
+    localStorage.removeItem("userData");
     try {
       const foo = await fetch(`${configs.api}organization/`, {
         method: "POST",
         headers: {
-          Authorization: `Token ${Cookies.get("token")}`,
+          Authorization: `Token ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

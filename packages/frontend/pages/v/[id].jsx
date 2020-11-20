@@ -122,20 +122,14 @@ export default class VideoPage extends Component {
                 <div className={styles.videoInfo}>
                   <h4>{this.video.name}</h4>
                   <p>
-                    Publisert av
-                    {" "}
-                    <a href={`org/${this.video.org.ID}`}>{this.video.org.name}</a>
+                    Publisert av <a href={`org/${this.video.org.ID}`}>{this.video.org.name}</a>
                   </p>
-                  <p style={{ whiteSpace: "pre-line"}}>{this.video.header}</p>
+                  <p style={{ whiteSpace: "pre-line" }}>{this.video.header}</p>
                 </div>
               </Col>
               <Col>
                 <div className={styles.otherVideos}>
-                  <h4>
-                    Nyeste videoer fra
-                    {" "}
-                    {this.video.org.name}
-                  </h4>
+                  <h4>Nyeste videoer fra {this.video.org.name}</h4>
                   <LatestVideos orgID={this.video.org.ID} />
                 </div>
               </Col>
