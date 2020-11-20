@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { findRunningProgram } from "../../components/ScheduleInfo";
 import "moment/locale/nb";
+import Trianglify from "components/graphics/background.js";
 
 const TrianglifiedDiv = dynamic(() => import("components/graphics/background.js"), { ssr: false });
 const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), { ssr: false });
