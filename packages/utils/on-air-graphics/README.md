@@ -1,5 +1,7 @@
 # On-air graphics
 
+**NOTE:** Although it is still used by our playout, it is currently being **deprecated** in favor of the graphics integrated in the React frontend!
+
 Our video playout system is CasparCG, which means that we have a relatively full-featured
 JavaScript renderer that can be used to render - or superimpose - graphics on air.
 
