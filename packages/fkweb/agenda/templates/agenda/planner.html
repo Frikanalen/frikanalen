@@ -6,13 +6,11 @@
         overflow: auto;
     }
 
-    .dayblock {
-        float: left;
+    #content {
+        display: flex;
     }
 
     .event {
-        clear: both;
-        width: 40em;
         margin: 0;
         padding-top: 5px;
         padding-bottom: 5px;
@@ -69,7 +67,6 @@
     }
 
     #videobrowser {
-        position: fixed;
         top: 10em;
         bottom: 3em;
         width: 30em;
@@ -214,11 +211,13 @@ ProgramEvent = function() {
         return duration_to_moment(self.duration())
     });
 
-    self.video_id = ko.computed(function() {
+    self.video = ko.computed(function() {
         if (self.video())
             return self.video().id
         else
             return null;
+    }, write: (v) => {
+        self.video = v
     });
 
     self.video_name = ko.computed(function() {
@@ -355,10 +354,10 @@ PlannerViewModel = function() {
         var jsData = ko.toJS(event);
         console.log(jsData);
         delete jsData.video
-        if (jsData.video_id)
-            jsData.video_id = "http://localhost:8000/api/videos/"+jsData.video_id
+        if (jsData.video)
+            jsData.video = jsData.video
         else
-            jsData.video_id = "";
+            jsData.video = "";
         delete jsData.edit_url
         delete jsData.video_name
         delete jsData.pause_duration
@@ -425,7 +424,7 @@ $(document).ready(function() {
 
 {% load tz %}
 {% timezone TIME_ZONE %}
-<div>
+<div id="current-schedule">
     <div class="navigation_container">
     <div class="navigation">
         <div class="inner" data-bind="click: $root.previousDay">
