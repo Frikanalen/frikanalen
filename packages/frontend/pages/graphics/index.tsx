@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import { findRunningProgram } from "../../components/ScheduleInfo";
 import "moment/locale/nb";
 
+const TrianglifiedDiv = dynamic(() => import("components/graphics/background.js"), { ssr: false });
 const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), { ssr: false });
 
 export async function getServerSideProps(context) {
@@ -50,7 +51,7 @@ function NextUp(props) {
         </Row>
         <Row>
           <Col style={{ flexGrow: 0 }}>
-            <AnalogClock size="1600" />
+            <AnalogClock size="500" />
           </Col>
           <Col>
             <h2>Neste program</h2>
@@ -80,9 +81,9 @@ function NextUp(props) {
 export default function Index(props) {
   const { scheduleJSON } = props;
   return (
-    <div style={{ width: "1280px", height: "720px", position: "absolute", background: "white" }}>
+    <TrianglifiedDiv width="1280" height="720">
       <NextUp scheduleJSON={scheduleJSON} />
-    </div>
+    </TrianglifiedDiv>
   );
   return (
     <Carousel>

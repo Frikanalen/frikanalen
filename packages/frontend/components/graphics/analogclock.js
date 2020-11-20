@@ -3,81 +3,78 @@ import React, { useState, useRef, useEffect } from "react";
 let ctx;
 
 export default function AnalogClock(props) {
-  const drawSecondHand = (size, seconds) => {
+  const drawCentralSpot = () => {
     ctx.save();
-    ctx.translate(size / 2, size / 2);
-    ctx.rotate((225 * Math.PI) / 180);
-
+    const dimen = 12;
+    const innerDimen = dimen - 3.5;
     ctx.beginPath();
-    ctx.lineWidth = 10;
-    ctx.lineCap = "round";
-    ctx.rotate(seconds * (Math.PI / 30));
-
-    ctx.moveTo(0, 0);
-    ctx.lineTo(size * 0.36, size * 0.36);
-    ctx.stroke();
+    ctx.arc(0, 0, dimen, 0, 2 * Math.PI, false);
+    ctx.fillStyle = "#000";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, 0, innerDimen, 0, 2 * Math.PI, false);
+    ctx.fillStyle = "#F00";
+    ctx.fill();
     ctx.restore();
   };
-  const drawQuarters = (size) => {
-    for (let step = 0; step < 4; step++) {
-      ctx.save();
-      ctx.translate(size / 2, size / 2);
-      ctx.rotate((225 * Math.PI) / 180);
 
-      ctx.beginPath();
-      ctx.lineWidth = 40;
-      ctx.rotate(step * (Math.PI / 2));
-
-      ctx.moveTo(size * 0.3, size * 0.3);
-      ctx.lineTo(size * 0.34, size * 0.34);
-      ctx.stroke();
-      ctx.restore();
-    }
-  };
-  const drawHourNotches = (size) => {
+  const drawMarkers = () => {
+    ctx.save();
     for (let step = 0; step < 12; step++) {
-      ctx.save();
-      ctx.translate(size / 2, size / 2);
-      ctx.rotate((225 * Math.PI) / 180);
-
-      ctx.beginPath();
-      ctx.lineWidth = 16;
-      ctx.rotate(step * (Math.PI / 6));
-
-      ctx.moveTo(size * 0.3, size * 0.3);
-      ctx.lineTo(size * 0.34, size * 0.34);
-      ctx.stroke();
-      ctx.restore();
+      const width = 8;
+      const height = 40;
+      const distance = 200;
+      ctx.rotate(Math.PI / 6);
+      roundRect(ctx, -width / 2, distance, width, height, 2);
     }
-  };
-  const drawMinutesHand = (size, minutes) => {
-    ctx.save();
-    ctx.translate(size / 2, size / 2);
-    ctx.rotate((225 * Math.PI) / 180);
-
-    ctx.beginPath();
-    ctx.lineWidth = 16;
-    ctx.lineCap = "round";
-    ctx.rotate(minutes * (Math.PI / 30));
-
-    ctx.moveTo(0, 0);
-    ctx.lineTo(size * 0.3, size * 0.3);
-    ctx.stroke();
     ctx.restore();
   };
-  const drawHoursHand = (size, hours) => {
-    ctx.save();
-    ctx.translate(size / 2, size / 2);
-    ctx.rotate((225 * Math.PI) / 180);
 
+  const roundRect = (ctx, x, y, width, height, radius, roundBothEnds = true) => {
     ctx.beginPath();
-    ctx.lineWidth = 30;
-    ctx.lineCap = "round";
-    ctx.rotate(hours * (Math.PI / 24));
+    ctx.arc(x + radius, y + radius, radius, Math.PI, Math.PI + Math.PI / 2);
+    ctx.lineTo(x + width - radius, y);
+    ctx.arc(x + width - radius, y + radius, radius, Math.PI + Math.PI / 2, 0);
+    ctx.lineTo(x + width, y + height - radius);
+    if (!roundBothEnds) {
+      radius = 0;
+    }
+    ctx.arc(x + width - radius, y + height - radius, radius, 0, Math.PI / 2);
+    ctx.lineTo(x + radius, y + height);
+    ctx.arc(x + radius, y + height - radius, radius, Math.PI / 2, Math.PI);
+    ctx.lineTo(x, y + radius);
+    ctx.fill();
+  };
 
-    ctx.moveTo(0, 0);
-    ctx.lineTo(size * 0.25, size * 0.25);
-    ctx.stroke();
+  const drawSecondHand = (seconds) => {
+    ctx.save();
+    const width = 4;
+    const height = 150;
+    ctx.fillStyle = "#F00";
+    ctx.rotate((seconds * Math.PI) / 30 + Math.PI);
+    roundRect(ctx, -width / 2.0, 0, width, height, width / 2);
+    ctx.restore();
+  };
+
+  const drawMinutesHand = (minutes) => {
+    ctx.save();
+    const width = 10;
+    const height = 195;
+    if (!(minutes % 60)) {
+    }
+    ctx.rotate((minutes * Math.PI) / 30 + Math.PI);
+    roundRect(ctx, -width / 2.0, 0, width, height, width / 2, false);
+    ctx.restore();
+  };
+
+  const drawHoursHand = (hours) => {
+    ctx.save();
+    const width = 10;
+    const height = 125;
+    if (!(hours % 60)) {
+    }
+    ctx.rotate(hours * ((2 * Math.PI) / 12) - Math.PI);
+    roundRect(ctx, -width / 2.0, 0, width, height, width / 2, false);
     ctx.restore();
   };
 
@@ -90,27 +87,29 @@ export default function AnalogClock(props) {
     setContext(refCanvas.current.getContext("2d"));
   }, []);
   const update = useEffect(() => {
+    const radius = refCanvas.current.height / 2;
     if (!ctx) return;
     if (!time) return;
-    ctx.save();
-    ctx.clearRect(0, 0, size, size);
     ctx.restore();
+    ctx.clearRect(0, 0, refCanvas.current.width, refCanvas.current.height);
+    ctx.save();
+    ctx.translate(radius, radius);
 
-    drawHourNotches(size);
-    drawQuarters(size);
-
-    drawSecondHand(size, time.getSeconds() + time.getMilliseconds() / 1000);
-    drawMinutesHand(size, time.getMinutes() + time.getSeconds() / 60);
-    drawHoursHand(size, time.getHours() + time.getMinutes() / 30);
+    ctx.fillStyle = "rgba(0, 0, 0, 1)";
+    drawMarkers();
+    drawMinutesHand(time.getMinutes());
+    drawHoursHand(time.getHours() + time.getMinutes() / 60.0);
+    drawCentralSpot();
+    drawSecondHand(time.getSeconds());
   }, [time, ctx]);
-  setTimeout(() => setTime(new Date()), 40);
+  setTimeout(() => setTime(new Date()), 80);
 
   return (
     <canvas
       ref={refCanvas}
       height={size}
       width={size}
-      style={{ width: `calc(0.25 * ${size}px)`, height: `calc(0.25 * ${size}px)` }}
+      style={{ width: `calc(0.8 * ${size}px)`, height: `calc(0.8 * ${size}px)` }}
     >
       &nbsp;
     </canvas>
