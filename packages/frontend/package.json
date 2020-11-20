@@ -40,6 +40,7 @@
     "shaka-player": "^3.0.6",
     "shaka-player-react": "^1.0.1",
     "swr": "^0.3.8-beta.2",
+    "trianglify": "^4.1.1",
     "video.js": "^7.10.2",
     "webrtc-adapter": "^7.6.0"
   },
