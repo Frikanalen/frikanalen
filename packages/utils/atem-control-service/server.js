@@ -39,7 +39,7 @@ class AtemControl {
             //this.myAtem.setInputSettings({shortName:"RX", longName:"RX"}, 4).then(res => console.log(res))
             this.myAtem.setMultiViewerSource({source:3, windowIndex: 3}, 0).then(res => console.log(res))
             this.myAtem.setMultiViewerSource({source:4, windowIndex: 4}, 0).then(res => console.log(res))
-            this.myAtem.changeProgramInput(3)
+            //this.myAtem.changeProgramInput(3)
             //this.myAtem.setInputSettings({shortName:"TX1", longName:"TX1"}, 2).then(res => console.log(res))
             //this.myAtem.setInputSettings({shortName:"TX2", longName:"TX2"}, 3).then(res => console.log(res))
             //this.myAtem.setInputSettings({shortName:"TX3", longName:"TX3"}, 1).then(res => console.log(res))
