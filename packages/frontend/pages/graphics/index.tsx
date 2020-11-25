@@ -42,9 +42,12 @@ function CarouselPage({ duration, children }) {
 function NextUp(props) {
   const { scheduleJSON } = props;
   const currentProgramme = findRunningProgram(scheduleJSON.results) + 1;
-  console.log(" props: ", props);
-  console.log("CurrentProgramme: ", currentProgramme);
-  console.log("scheduleJSON: ", scheduleJSON);
+  console.log("props:");
+  console.log(props);
+  console.log("CurrentProgramme:");
+  console.log(currentProgramme);
+  console.log("scheduleJSON:");
+  console.log(scheduleJSON);
 
   return (
     <CarouselPage duration="1000">
