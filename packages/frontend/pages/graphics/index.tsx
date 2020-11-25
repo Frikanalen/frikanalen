@@ -84,7 +84,7 @@ function NextUp(props) {
 
 export default function Index(props) {
   const { scheduleJSON } = props;
-  console.log("props in landing fucntino: ", props);
+  console.log("props in landing function: ", props);
   return (
     <TrianglifiedDiv width="1280" height="720">
       <NextUp scheduleJSON={scheduleJSON} />
