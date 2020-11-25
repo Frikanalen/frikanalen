@@ -7,9 +7,10 @@ class Organization():
         self.name = name
 
 class Video():
-    def __init__(self, ID, name):
+    def __init__(self, ID, name, framerate):
         self.ID = ID
         self.name = name
+        self.framerate = framerate
         self.CRID = "crid://frikanalen.no/{}".format(ID)
 
     def __repr__(self):
@@ -31,6 +32,17 @@ class ScheduleItem():
         self.start_time = None
         self.end_time = None
         self.organization = None
+
+class ScheduledVideo(ScheduleItem):
+    def __getstate__(self):
+        return {
+                'videoID': self.video.ID,
+                'startTime': self.start_time,
+                'endTime': self.end_time,
+                'framerate': self.video.framerate,
+                'name': self.video.name,
+                'type': 'video'
+                }
 
 class Schedule():
     def _build_conn_string(self):
@@ -65,13 +77,12 @@ class Schedule():
         schedule['date'] = date
         schedule['items'] = []
         for item in schedule_data:
-            new_item = ScheduleItem()
-            new_item.video = Video(ID = item[0], name = item[1])
+            new_item = ScheduledVideo()
+            new_item.video = Video(ID = item[0], name = item[1], framerate = item[5])
             new_item.organization = Organization(ID = item[2], name = item[3])
             new_item.reason = item[4]
-            new_item.framerate = item[5]
-            new_item.startTime = item[6]
-            new_item.endTime = item[7]
+            new_item.start_time = item[6]
+            new_item.end_time = item[7]
             new_item.CRID = "crid://frikanalen.no/%d" % (item[0],)
             schedule['items'].append(new_item)
         return schedule

@@ -2,21 +2,7 @@ import psycopg2
 import jsonpickle
 from datetime import datetime, timedelta
 
-class ScheduledVideo(ScheduleItem):
-    def __getstate__(self):
-        return {
-                'videoID': self.video.ID,
-                'startTime': self.start_time,
-                'endTime': self.end_time,
-                'framerate': self.video.framerate,
-                'name': self.video.name,
-                'type': 'video'
-                }
 
-class Database():
-    def __init__(self, conn_string):
-        self.conn = psycopg2.connect(conn_string)
-        self.conn.cursor().execute("SET TIME ZONE 'Europe/Oslo';")
 
 class Schedule():
     def __init__(self):
