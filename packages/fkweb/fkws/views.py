@@ -15,6 +15,7 @@ from django.views.decorators.vary import vary_on_headers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from rest_framework.authentication import BasicAuthentication
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as djfilters
 from rest_framework import generics
@@ -105,6 +106,13 @@ def jukebox_csv(request, format=None):
     return response
 
 
+# This class generates an invalid WWW-Authentication header, so that the 
+# browser does not prompt the user in case of a 401 trying to log in on 
+# the front-end.
+class XBasicAuth(BasicAuthentication):
+    def authenticate_header(self, request):
+        return 'XXXBasic'
+
 @method_decorator(never_cache, name='get')
 class ObtainAuthToken(generics.RetrieveAPIView):
     """
@@ -115,6 +123,7 @@ class ObtainAuthToken(generics.RetrieveAPIView):
     """
     queryset = Token.objects.all()
     serializer_class = TokenSerializer
+    authentication_classes = [XBasicAuth]
     permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):
