@@ -1,0 +1,325 @@
+#!/usr/bin/env python3
+
+import aiohttp
+import asyncio
+import logging
+import requests
+
+from datetime import datetime, timedelta
+import dateparser
+
+VIDEO_LAYER = '1-50'
+API_URL = 'http://schedule-service/playout'
+LEGACY_URL = 'https://frikanalen.no/api/'
+FILE_BASE = 'https://file01.frikanalen.no/media/'
+CASPAR_HOST = '192.168.3.34'
+
+async def fetch(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.json()
+
+async def ScheduleLoader(api_url):
+    schedule_json = await fetch(api_url)
+
+    schedule = []
+
+    for item in schedule_json['items']:
+        schedule.append(PrerecordedVideo(item['video']['ID'], VIDEO_LAYER, item['framerate'],
+            dateparser.parse(item['startTime']), dateparser.parse(item['endTime'])))
+        #if item['type'] == 'video':
+        #elif item['type'] == 'graphics':
+        #    # I'm just passing by here but I think this is probably a bug
+        #    graphic = Graphic(item['url'], item['start_time'], item['end_time'])
+
+    return schedule
+
+class ScheduleExpiryException(Exception):
+    pass
+
+class VideoFiles():
+    def __init__(self, videoID):
+        self.videoID = videoID
+
+    # file_type is the old "fsname"; eg "broadcast" or "original"
+    def __getitem__(self, file_type):
+        params = {'video_id': self.videoID, 'format__fsname': file_type}
+        res = requests.get(LEGACY_URL + 'videofiles/', params=params)
+        if res.status_code != requests.codes.ok:
+            raise Exception("Could not get video files from API, HTTP %d".format(res.status_code))
+        try:
+            data = res.json()
+        except Exception:
+            raise
+
+        if data['count'] == 0:
+            return None
+
+        if data['count'] > 1:
+            logging.warning("<1 video files returned for video %d type %s, returning 1"\
+                    .format(self.videoID, file_type))
+
+        return(data['results'][0]['filename'])
+
+class Scheduler():
+    schedule_refresh_rate = timedelta(seconds=30)
+
+    async def _play_item(self, item):
+        """ Awaits a scheduled event, but if a bulletin arrives from an external
+        API (not yet implemented), it will return before its time. """
+        await item.sleep_until_time_to_prepare()
+        await self._prepare_item(item)
+        await item.sleep_until_time_to_play()
+        logging.info("Playing item")
+        await item.cue()
+        if self.schedule_age + self.schedule_refresh_rate > datetime.now():
+            raise ScheduleExpiryException
+
+    async def _prepare_item(self, item):
+        """ Loads or does whatever preparatory work needed."""
+        prepare_op = getattr(item, "prepare", None)
+        if callable(prepare_op):
+            logging.info("Preparing next item")
+            await prepare_op()
+        else:
+            logging.info("Next item {} does not have a prepare() method".format(item))
+
+    async def _validate(self):
+        pass
+
+    async def run(self):
+        while True:
+            tasks = ()
+            try:
+                self.schedule = await ScheduleLoader(API_URL)
+                self.schedule_age = datetime.now()
+            except Exception:
+                logging.error("Failed to load a schedule!")
+                raise
+            try:
+                await self._validate()
+            except Exception:
+                logging.error("Failed to validate schedule!")
+                raise
+            for item in self.schedule:
+                if not item.already_done():
+                    tasks = tasks + (await self.task_from_item(item),)
+                else:
+                    logging.debug(f"ScheduleItem {item} is in the past, skipping...")
+            await asyncio.wait(tasks)
+
+
+
+    async def task_from_item(self, item):
+        logging.info('Waiting for next cue: %s', item)
+        task = asyncio.create_task(self._play_item(item))
+        return task
+
+class Item():
+    def __init__(self, layer):
+        self.layer = layer
+
+    prepare = None
+
+    async def clear(self):
+        await CurrentPlayer.issue("CLEAR {}".format(self.layer))
+
+    def __repr__(self):
+        return '[Item]'
+
+class ImpromptuItem(Item):
+    def __init__(self, layer, startTime, endTime):
+        super().__init__(layer)
+    """ This will be implemented in the future to enable live transmissions and such. """
+    async def _completion(self):
+        # blocks until the event end is trigged by an API`
+        pass
+
+class PlannedItem(Item):
+    def __init__(self, layer, startTime, endTime):
+        self.startTime = startTime
+        self.endTime = endTime
+        super().__init__(layer)
+
+    def _seconds_left(self):
+        now = datetime.now()
+        return (self.endTime - now).total_seconds()
+
+    async def _completion(self):
+        # blocks until the scheduled end of the programme
+        # or until task is cancelled; if the task is cancelled,
+        # the CancelledError exception is implicitly raised
+        # and must be handled by anything that awaits completion
+        logging.info(f"waiting for completion {self._seconds_left()} seconds left")
+        await asyncio.sleep(self._seconds_left())
+        logging.info(f"Finished waiting")
+
+class PrerecordedVideo(PlannedItem):
+    def __init__(self, videoID, layer, framerate, startTime, endTime):
+        super().__init__(layer, startTime, endTime)
+        self.videoID = videoID
+        self.files = VideoFiles(videoID)
+        self.framerate = float(framerate/1000)
+        self.metadata = None
+
+    async def prepare(self):
+        try:
+            cmd_string = "LOADBG {} {}".format(self.layer, FILE_BASE + self.files['theora'])
+            seconds_since_start = (datetime.now() - self.startTime).total_seconds()
+            if seconds_since_start > 2.0:
+                cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
+            await CurrentPlayer.issue(cmd_string)
+        except asyncio.CancelledError:
+            pass
+
+    async def cue(self):
+        try:
+            cmd_string = "PLAY {} {}".format(self.layer, FILE_BASE + self.files['theora'])
+            seconds_since_start = (datetime.now() - self.startTime).total_seconds()
+            if seconds_since_start > 2.0:
+                cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
+
+            await CurrentPlayer.issue(cmd_string)
+            logging.info("Awaiting completion...")
+            await self._completion()
+            logging.info("Complete.")
+        except asyncio.CancelledError:
+            logging.info("Completion cancelled!.")
+            self.clear()
+
+    async def sleep_until_time_to_prepare(self):
+        now = datetime.now()
+        seconds_until_start = (self.startTime - now).total_seconds()
+        await asyncio.sleep(seconds_until_start - 5)
+
+    async def sleep_until_time_to_play(self):
+        now = datetime.now()
+        seconds_until_start = (self.startTime - now).total_seconds()
+        print(seconds_until_start)
+        await asyncio.sleep(seconds_until_start)
+
+    def already_done(self):
+        if datetime.now() > self.endTime:
+            return True
+        else:
+            return False
+
+    def __repr__(self):
+        return '[ScheduledVideo [{}-{}]: Video {}]'.format(
+                self.startTime.strftime("%d %H:%M"),
+                self.endTime.strftime("%H:%M"),
+                self.videoID)
+
+class Graphic(PlannedItem):
+    def __init__(self, url, layer, startTime, endTime):
+        super().__init__(layer, startTime, endTime)
+        self.url = url
+
+    async def cue(self):
+        try:
+            await CurrentPlayer.issue("PLAY {} [HTML] {}")
+            await self._completion()
+        except asyncio.CancelledError:
+            self.clear()
+
+class CasparPlayer():
+    def __init__(self):
+        self.reader = None
+        self.writer = None
+
+    async def _query_framerate(self):
+        channels = await self.issue('INFO')
+        channel_mode = channels[0].split(' ')[1]
+
+        if len(channels) > 1:
+            logging.warning(
+                        ('This code assumes only 1 CasparCG. It will base '
+                        'calculations on the framerate of the first channel '
+                        '(mode {}).').format(channel_mode)
+                    )
+
+        if 'i' in channel_mode:
+            self.scan_mode = 'interlaced'
+        else:
+            self.scan_mode = 'progressive'
+
+        self.scan_lines, self.frame_rate = [int(x) for x in channel_mode.split(self.scan_mode[0])]
+        self.frame_rate = float(self.frame_rate / 100)
+
+        logging.info('CasparCG mode: {}.{}'.format(channel_mode[:-2], channel_mode[-2:]))
+
+    async def connect(self):
+        ''' This code assumes that there is only one channel.'''
+        import re
+        self.reader, self.writer = await asyncio.open_connection(CASPAR_HOST, 5250)
+        await self._query_framerate()
+
+    async def _get_response(self):
+        response = await self.reader.read(3)
+
+        try:
+            return_code = int(response)
+        except ValueError:
+            raise ValueError('Did not receive numeric return code from CasparCG')
+
+        while response[-2:] != b'\r\n':
+            response += await self.reader.read(1)
+
+        logging.debug('CasparCG replied %s' % (response.decode().strip(),))
+
+        # From the AMCP spec:
+        #
+        # 200 [command] OK - The command has been executed and several lines of
+        # data (seperated by \r\n) are being returned (terminated with an
+        # additional \r\n)
+        #
+        # 201 [command] OK - The command has been executed and
+        # data (terminated by \r\n) is being returned.
+        #
+        # 202 [command] OK - The command has been executed.
+
+        if return_code == 200: # multiline returned_data
+            returned_data_buffer = b''
+
+            while returned_data_buffer[-4:] != b'\r\n\r\n':
+                returned_data_buffer += await self.reader.read(512)
+
+            returned_data = returned_data_buffer.decode().splitlines()[:-1]
+
+        elif return_code == 201: # single-line returned_data
+            returned_data = b''
+            while returned_data[-2:] != b'\r\n':
+                returned_data += await self.reader.read(512)
+
+            returned_data = returned_data.decode()
+
+        elif return_code == 202: # no data returned
+            returned_data = None
+
+        else:
+            raise ValueError('CasparCG command failed: ' + response.decode().strip())
+
+        return returned_data
+
+    async def issue(self, cmd):
+        try:
+            logging.debug("Issuing command to Caspar: %s", cmd)
+            self.writer.write((cmd + "\r\n").encode())
+            await self.writer.drain()
+            return await self._get_response()
+        except asyncio.TimeoutError:
+            raise
+
+class Playout():
+    async def run(self):
+        s = Scheduler()
+        await CurrentPlayer.connect()
+        await s.run()
+
+CurrentPlayer = CasparPlayer()
+
+if __name__=='__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    loop = asyncio.get_event_loop()
+    r = loop.run_until_complete(Playout().run())
+    print(r)

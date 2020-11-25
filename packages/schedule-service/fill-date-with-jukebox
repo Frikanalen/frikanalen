@@ -1,0 +1,147 @@
+#!/usr/bin/env
+from database import Database
+from datetime import datetime, timedelta, time
+import logging
+
+# Align all videos to 5 minute margins.
+ALIGN_TO_MINUTES = 5
+# Pad at least 20 seconds between videos
+MINIMUM_GAP = 20
+
+class Gap():
+    def __init__(self, start_time, end_time):
+        self.start_time = start_time
+        self.end_time = end_time
+
+    @property
+    def duration(self):
+        return self.end_time - self.start_time
+
+    def __repr__(self):
+        return "{}-{}".format(self.start_time, self.end_time)
+
+def get_gaps(start_time, end_time):
+    cur = db.conn.cursor()
+
+    cur.execute(
+            "select gap_start_time, gap_end_time from fk_schedule_gaps(%s, %s)",
+            (start_time, end_time)
+            )
+    return [Gap(*row) for row in cur.fetchall()]
+
+class Video():
+    def __init__(self, ID):
+        cur = db.conn.cursor()
+        cur.execute("""
+        select
+            name,
+            duration
+        from
+            fk_video
+        where
+            id=%s
+            """, (ID,))
+        result = cur.fetchall()
+        if len(result) == 0:
+            raise IndexError("No video in database with ID #{}".format(ID))
+        result = result[0]
+
+        self.ID = ID
+        self.name = result[0]
+        self.duration = result[1]
+
+    def __repr__(self):
+        return 'Video #{}: "{}"'.format(self.ID, self.name)
+
+def random_video_id(max_length=None):
+    cur = db.conn.cursor()
+
+    cur.execute("""
+        select 
+            id
+        from
+            fk_video
+        where
+            is_filler=True
+            and has_tono_records=False
+            and (duration < %s OR %s IS NULL)
+        order by random()
+        limit 1""", (max_length, max_length))
+
+    result = cur.fetchall()
+    assert len(result) == 1
+    return result[0][0]
+
+def round_up_to_schedule_granularity(gap_start):
+    orig = gap_start
+    gap_start = gap_start.replace(second=0, microsecond=0)
+    aligned_minutes = ALIGN_TO_MINUTES * (1 + int(gap_start.minute / ALIGN_TO_MINUTES))
+
+    if aligned_minutes == 60:
+        gap_start = gap_start + timedelta(hours=1)
+        aligned_minutes = 0
+
+    gap_start = gap_start.replace(minute = aligned_minutes)
+
+    print("-- Rounding: {} -> {}".format(orig, gap_start))
+    return gap_start
+
+def schedule_video(start_time, video):
+    cur = db.conn.cursor()
+
+    cur.execute("""
+    insert 
+    into 
+        fk_scheduleitem(video_id, default_name, schedulereason, starttime, duration)
+    values 
+        (%s, '', 5, %s, %s)
+    returning id
+    """, 
+    (video.ID, start_time, video.duration))
+    db.conn.commit()
+
+    print('scheduled video at {}, item # {}'.format(start_time, cur.fetchall()[0][0]))
+
+def fill_gap(gap, recurse=False):
+    if gap.duration < timedelta(seconds=MINIMUM_GAP, minutes=ALIGN_TO_MINUTES):
+        print("Skipping {} second gap...".format(gap.duration.total_seconds()))
+        return []
+
+    print("--------------------------")
+    print("Filling {} gap at {}...".format(gap.duration, gap.start_time))
+    
+    video = Video(random_video_id(max_length=gap.duration))
+
+    print("Got a {} video to do so".format(video.duration))
+
+    if not recurse:
+        gap.start_time += timedelta(seconds=5)
+        print("-- Gap before rounding: {}".format(gap.start_time))
+        gap.start_time = round_up_to_schedule_granularity(gap.start_time)
+        print("-- Gap after rounding: {}".format(gap.start_time))
+
+    schedule_video(gap.start_time, video)
+
+    print("-- Gap before video duration: {}".format(gap.start_time))
+    gap.start_time += video.duration + timedelta(seconds=20)
+    print("-- Gap before rounding: {}".format(gap.start_time))
+    gap.start_time = round_up_to_schedule_granularity(gap.start_time)
+    print("-- Gap after rounding: {}".format(gap.start_time))
+   
+    fill_gap(gap, recurse=True)
+
+def fill_today():
+    start_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    end_time = start_time + timedelta(days=1, microseconds=-1)
+    print(start_time, end_time)
+
+    gaps = get_gaps(start_time, end_time)
+    print("gaps: ", gaps)
+
+    for gap in gaps:
+        fill_gap(gap)
+
+if __name__=='__main__':
+    conn_string = "dbname=fkweb password=fkschedule_test host=192.168.39.32 user=fkschedule"
+    db = Database(conn_string)
+    print(fill_today())
