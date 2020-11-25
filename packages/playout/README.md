@@ -1,5 +1,7 @@
 # Frikanalen TV playout
 
+(This version is in the course of being deprecated. Please look at ../playout-ng in the playout-ng branch.)
+
 ## Trying it out
 
 The frikanalen playout requires an instance of CasparCG running and accessible on port 5250.
