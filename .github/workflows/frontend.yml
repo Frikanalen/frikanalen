@@ -36,7 +36,7 @@ jobs:
         with:
           repository: frikanalen/frontend
           tags: frikanalen/frontend:latest
-          path: packages/frontend
-          dockerfile: packages/frontend/Dockerfile
+          context: packages/frontend
+          file: packages/frontend/Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
