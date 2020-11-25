@@ -10,6 +10,7 @@ import WindowWidget from "components/WindowWidget";
 import config from "components/configs";
 import Video, { getCategories } from "components/API/Video";
 import ProfileFetcher from "components/API/User";
+import { UserContext } from "../../../components/UserContext";
 
 interface fkOrganizationJSON {
   id: number;
@@ -50,12 +51,11 @@ class VideoCreate extends Component<
 
   componentDidMount() {
     const { video, uploadingOrgID } = this.state;
-    console.log(typeof uploadingOrgID);
-
+    const { token } = this.context;
     getCategories().then((categories) => {
       this.setState({ possibleCategories: categories });
     });
-    ProfileFetcher().then((userProfile) => {
+    ProfileFetcher(token).then((userProfile) => {
       video.setOrganization(uploadingOrgID);
     });
   }
@@ -141,6 +141,8 @@ class VideoCreate extends Component<
     );
   }
 }
+
+VideoCreate.contextType = UserContext;
 
 export async function getServerSideProps(context) {
   const getOrgName = async (orgID: number): Promise<string> => {
