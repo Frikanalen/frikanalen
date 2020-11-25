@@ -7,18 +7,8 @@ import WindowWidget from "../../../components/WindowWidget";
 import config from "../../../components/configs";
 
 import VideoList, { getLatestVideos } from "components/VideoList";
+import { APIGET, fkOrgJSON } from "components/TS-API/API";
 
-interface fkOrganizationJSON {
-  id: number;
-  name: string;
-}
-
-const getOrgName = async (orgID: number): Promise<string> => {
-  const res = await fetch(`${config.api}organization/${orgID}`);
-  //console.log(`${config.api}organization/${orgID}`);
-  const resData: fkOrganizationJSON = await res.json();
-  return resData.name;
-};
 export default function OrgAdmin(props) {
   const router = useRouter();
   const { orgName, orgID, latestVideos } = props;
@@ -44,12 +34,13 @@ export default function OrgAdmin(props) {
 export async function getServerSideProps(context) {
   const orgIDString = context.query.orgID;
   const orgID = parseInt(orgIDString);
-  const orgName = await getOrgName(orgID);
+  const { name } = await APIGET<fkOrgJSON>(`organization/${orgID}`);
+
   const latestVideos = await getLatestVideos(orgID);
 
   return {
     props: {
-      orgName,
+      orgName: name,
       orgID,
       latestVideos,
     },

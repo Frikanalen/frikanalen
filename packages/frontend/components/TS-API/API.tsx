@@ -8,6 +8,10 @@ interface fkOrgRoleJSON {
   organization_name: string;
 }
 
+export interface fkVideoJSON {
+  id: number;
+}
+
 export interface fkVideo {}
 
 export interface fkScheduleJSON {
