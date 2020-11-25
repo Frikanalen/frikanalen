@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 from dateutil.parser import parse
 
 VIDEO_LAYER = '1-50'
+CHANNELBUG_LAYER = '1-100'
+
 API_URL = 'http://schedule-service/playout'
 LEGACY_URL = 'https://frikanalen.no/api/'
 FILE_BASE = 'https://file01.frikanalen.no/media/'
@@ -27,12 +29,12 @@ async def ScheduleLoader(api_url):
     for item in schedule_json['items']:
         logging.warning(f"{item}")
         logging.warning(f"{parse(item['startTime'])} og {parse(item['endTime'])}")
-        schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
-            parse(item['startTime']), parse(item['endTime'])))
-        #if item['type'] == 'video':
-        #elif item['type'] == 'graphics':
-        #    # I'm just passing by here but I think this is probably a bug
-        #    graphic = Graphic(item['url'], item['start_time'], item['end_time'])
+        if item['type'] == 'video':
+            schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
+                parse(item['startTime']), parse(item['endTime'])))
+        elif item['type'] == 'graphics':
+            graphic = Graphic(item['url'], VIDEO_LAYER, 
+                parse(item['startTime']), parse(item['endTime']))
 
     return schedule
 
@@ -254,6 +256,7 @@ class CasparPlayer():
         ''' This code assumes that there is only one channel.'''
         import re
         self.reader, self.writer = await asyncio.open_connection(CASPAR_HOST, 5250)
+        await CurrentPlayer.issue(f"PLAY {CHANNELBUG_LAYER} stills/screenbug")
         await self._query_framerate()
 
     async def _get_response(self):

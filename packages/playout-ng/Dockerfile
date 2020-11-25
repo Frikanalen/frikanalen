@@ -2,7 +2,7 @@
 # Python dependencies builder
 #
 # Full official Debian-based Python image
-FROM python:3-stretch AS builder
+FROM python:3-buster AS builder
 
 # Always set a working directory
 WORKDIR /app
@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # django app container
 #
 # Smaller official Debian-based Python image
-FROM python:3-slim-stretch
+FROM python:3-slim-buster
 
 # Extra python env
 ENV PYTHONDONTWRITEBYTECODE=1
