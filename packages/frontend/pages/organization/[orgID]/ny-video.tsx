@@ -79,7 +79,7 @@ class VideoCreate extends Component<
         }
       })
       .then((r) => {
-        this.onVideoCreated(this.state.video.ID);
+        if (typeof r !== "undefined") this.onVideoCreated(this.state.video.ID);
       });
   }
 
