@@ -31,7 +31,9 @@ export default class Video {
     if (typeof videoID === "undefined") {
       ID = this.ID;
     }
-    await this.loadJSON(await APIGET(`videos/${ID}`));
+    if (ID != null) {
+      await this.loadJSON(await APIGET(`videos/${ID}`));
+    }
   }
 
   async save(token) {

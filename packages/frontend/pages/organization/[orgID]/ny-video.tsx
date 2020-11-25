@@ -62,6 +62,9 @@ class VideoCreate extends Component<
     event.preventDefault();
     this.state.video
       .save(token)
+      .then((r) => {
+        this.onVideoCreated(this.state.video.ID);
+      })
       .catch((e) => {
         if (e.response.status == 400) {
           var errors = [];
@@ -77,9 +80,6 @@ class VideoCreate extends Component<
           console.log(e.response.status);
           console.log(e.response.data);
         }
-      })
-      .then((r) => {
-        if (typeof r !== "undefined") this.onVideoCreated(this.state.video.ID);
       });
   }
 
