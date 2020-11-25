@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playout-ng
+spec:
+  selector:
+    matchLabels:
+      app: playout-ng
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: playout-ng
+    spec:
+      containers:
+      - name: playout-ng
+        image: frikanalen/playout-ng:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Europe/Oslo
+          type: File

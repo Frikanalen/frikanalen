@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schedule-service
+spec:
+  selector:
+    matchLabels:
+      app: schedule-service
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: schedule-service
+    spec:
+      containers:
+      - name: schedule-service
+        image: frikanalen/schedule-service:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Europe/Oslo
+          type: File
