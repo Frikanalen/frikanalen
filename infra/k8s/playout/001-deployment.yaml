@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fk-playout
+  name: playout
 spec:
   selector:
     matchLabels:
-      app: fk-playout
+      app: playout
   minReadySeconds: 5
   template:
     metadata:
       labels:
-        app: fk-playout
+        app: playout
     spec:
       containers:
-      - name: fk-playout
-        image: toresbe/fk-playout:0.0.1
+      - name: playout
+        image: frikanalen/playout:latest
         imagePullPolicy: Always
         volumeMounts:
         - name: config-volume
@@ -25,7 +25,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: fk-playout-config
+          name: playout-config
       - name: tz-config
         hostPath:
           path: /usr/share/zoneinfo/Europe/Oslo

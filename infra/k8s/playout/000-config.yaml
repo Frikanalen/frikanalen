@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fk-playout-config
+  name: playout-config
   namespace: default
 data:
   config.yaml: |
@@ -9,6 +9,6 @@ data:
       scheme: file
     graphqlEndpoint: https://frikanalen.no/graphql
     playerClass: vision.players.casparcg_player:CasparCGPlayer
-    casparHost: 192.168.3.34
+    casparHost: 192.168.3.35
     useJukebox: true
     logFormat: json
