@@ -33,8 +33,8 @@ async def ScheduleLoader(api_url):
             schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
                 parse(item['startTime']), parse(item['endTime'])))
         elif item['type'] == 'graphics':
-            graphic = Graphic(item['url'], VIDEO_LAYER, 
-                parse(item['startTime']), parse(item['endTime']))
+            schedule.append(Graphic(item['url'], VIDEO_LAYER,
+                parse(item['startTime']), parse(item['endTime'])))
 
     return schedule
 
@@ -71,8 +71,10 @@ class Scheduler():
     async def _play_item(self, item):
         """ Awaits a scheduled event, but if a bulletin arrives from an external
         API (not yet implemented), it will return before its time. """
-        await item.sleep_until_time_to_prepare()
-        await self._prepare_item(item)
+        prepare_op = getattr(item, "prepare", None)
+        if callable(prepare_op):
+            await item.sleep_until_time_to_prepare()
+            await self._prepare_item(item)
         await item.sleep_until_time_to_play()
         logging.info("Playing item")
         await item.cue()
@@ -145,6 +147,17 @@ class PlannedItem(Item):
         self.endTime = endTime
         super().__init__(layer)
 
+    async def sleep_until_time_to_play(self):
+        now = datetime.now()
+        seconds_until_start = (self.startTime - now).total_seconds()
+        await asyncio.sleep(seconds_until_start)
+
+    def already_done(self):
+        if datetime.now() > self.endTime:
+            return True
+        else:
+            return False
+
     def _seconds_left(self):
         now = datetime.now()
         return (self.endTime - now).total_seconds()
@@ -165,10 +178,14 @@ class PrerecordedVideo(PlannedItem):
         self.files = VideoFiles(videoID)
         self.framerate = float(framerate/1000)
         self.metadata = None
+        if self.files['original'] is not None:
+            self.filename = FILE_BASE + self.files['original']
+        else:
+            self.filename = FILE_BASE + self.files['broadcast']
 
     async def prepare(self):
         try:
-            cmd_string = "LOADBG {} {}".format(self.layer, FILE_BASE + self.files['theora'])
+            cmd_string = "LOADBG {} {}".format(self.layer, self.filename)
             seconds_since_start = (datetime.now() - self.startTime).total_seconds()
             if seconds_since_start > 2.0:
                 cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
@@ -178,7 +195,7 @@ class PrerecordedVideo(PlannedItem):
 
     async def cue(self):
         try:
-            cmd_string = "PLAY {} {}".format(self.layer, FILE_BASE + self.files['theora'])
+            cmd_string = "PLAY {} {}".format(self.layer, self.filename)
             seconds_since_start = (datetime.now() - self.startTime).total_seconds()
             if seconds_since_start > 2.0:
                 cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
@@ -196,18 +213,6 @@ class PrerecordedVideo(PlannedItem):
         seconds_until_start = (self.startTime - now).total_seconds()
         await asyncio.sleep(seconds_until_start - 5)
 
-    async def sleep_until_time_to_play(self):
-        now = datetime.now()
-        seconds_until_start = (self.startTime - now).total_seconds()
-        print(seconds_until_start)
-        await asyncio.sleep(seconds_until_start)
-
-    def already_done(self):
-        if datetime.now() > self.endTime:
-            return True
-        else:
-            return False
-
     def __repr__(self):
         return '[ScheduledVideo [{}-{}]: Video {}]'.format(
                 self.startTime.strftime("%d %H:%M"),
@@ -221,7 +226,8 @@ class Graphic(PlannedItem):
 
     async def cue(self):
         try:
-            await CurrentPlayer.issue("PLAY {} [HTML] {}")
+            await CurrentPlayer.issue(f'CLEAR {self.layer}')
+            await CurrentPlayer.issue(f'PLAY {self.layer} [HTML] "{self.url}"')
             await self._completion()
         except asyncio.CancelledError:
             self.clear()
