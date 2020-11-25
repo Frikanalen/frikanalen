@@ -1,5 +1,4 @@
 import configs from "../components/configs";
-import Cookies from "js-cookie";
 import Layout from "../components/Layout";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";

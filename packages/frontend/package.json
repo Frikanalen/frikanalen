@@ -72,5 +72,8 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "resolutions": {
+    "chokidar": "^3.4.0"
   }
 }

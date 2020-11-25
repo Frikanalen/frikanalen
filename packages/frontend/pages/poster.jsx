@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import fetch from "isomorphic-unfetch";
 
-import Cookies from "js-cookie";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
