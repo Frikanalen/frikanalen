@@ -120,6 +120,11 @@ data:
         static_configs:
           - targets: ['localhost:9090']
           - targets: ['traefik.kube-system:8100']
+
+      - job_name: 'node'
+        scrape_interval: 1s
+        static_configs:
+          - targets: ['192.168.3.10:9100']
 kind: ConfigMap
 metadata:
   name: prometheus-config

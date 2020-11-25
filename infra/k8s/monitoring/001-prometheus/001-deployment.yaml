@@ -32,4 +32,4 @@ spec:
            name: prometheus-config
         - name: prometheus-db
           persistentVolumeClaim:
-           claimName: prometheus-db-claim
+           claimName: prometheus
