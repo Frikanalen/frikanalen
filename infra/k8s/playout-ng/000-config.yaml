@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: playout-config
+  name: playout-ng-config
   namespace: default
 data:
   config.yaml: |

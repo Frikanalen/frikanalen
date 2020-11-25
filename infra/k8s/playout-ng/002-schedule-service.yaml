@@ -16,11 +16,17 @@ spec:
       - name: schedule-service
         image: frikanalen/schedule-service:latest
         imagePullPolicy: Always
-        volumeMounts:
-        - name: tz-config
-          mountPath: /etc/localtime
-      volumes:
-      - name: tz-config
-        hostPath:
-          path: /usr/share/zoneinfo/Europe/Oslo
-          type: File
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: schedule-service
+spec:
+  type: ClusterIP
+  selector:
+    app: schedule-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+      name: web

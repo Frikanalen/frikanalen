@@ -14,6 +14,6 @@ FROM builder
 
 ADD . /srv/frikanalen/
 
-CMD ["flask", "run"]
+CMD ["flask", "run", "-h", "0.0.0.0", "-p", "80"]
 
 EXPOSE 5000
