@@ -6,7 +6,7 @@ import logging
 import requests
 
 from datetime import datetime, timedelta
-import dateparser
+from dateutil.parser import parse
 
 VIDEO_LAYER = '1-50'
 API_URL = 'http://schedule-service/playout'
@@ -25,8 +25,10 @@ async def ScheduleLoader(api_url):
     schedule = []
 
     for item in schedule_json['items']:
-        schedule.append(PrerecordedVideo(item['video']['ID'], VIDEO_LAYER, item['framerate'],
-            dateparser.parse(item['startTime']), dateparser.parse(item['endTime'])))
+        logging.warning(f"{item}")
+        logging.warning(f"{parse(item['startTime'])} og {parse(item['endTime'])}")
+        schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
+            parse(item['startTime']), parse(item['endTime'])))
         #if item['type'] == 'video':
         #elif item['type'] == 'graphics':
         #    # I'm just passing by here but I think this is probably a bug
