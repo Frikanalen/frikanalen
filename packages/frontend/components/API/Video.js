@@ -6,8 +6,8 @@ export async function getCategories() {
   return categories.results;
 }
 
-export function getUploadToken(videoID) {
-  return APIGET(`videos/${videoID}/upload_token`);
+export function getUploadToken(videoID, token) {
+  return APIGET(`videos/${videoID}/upload_token`, token);
 }
 
 export default class Video {
@@ -34,14 +34,18 @@ export default class Video {
     await this.loadJSON(await APIGET(`videos/${ID}`));
   }
 
-  async save() {
+  async save(token) {
     if (this.ID == null) {
-      const foo = await APIPOST("videos/", {
-        name: this.name,
-        header: this.header,
-        categories: this.categories,
-        organization: this.org.ID,
-      });
+      const foo = await APIPOST(
+        "videos/",
+        {
+          name: this.name,
+          header: this.header,
+          categories: this.categories,
+          organization: this.org.ID,
+        },
+        token
+      );
       this.ID = foo.id;
     }
   }

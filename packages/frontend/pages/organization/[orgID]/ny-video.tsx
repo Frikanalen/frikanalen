@@ -45,25 +45,23 @@ class VideoCreate extends Component<
       uploadingOrgID: orgID,
       uploadingOrgName: orgName,
     };
-
+    this.state.video.setOrganization(orgID);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { video, uploadingOrgID } = this.state;
     const { token } = this.context;
-    getCategories().then((categories) => {
-      this.setState({ possibleCategories: categories });
-    });
-    ProfileFetcher(token).then((userProfile) => {
-      video.setOrganization(uploadingOrgID);
-    });
+
+    const categories = await getCategories();
+    this.setState({ possibleCategories: categories });
   }
 
   handleSubmit(event) {
+    const { token } = this.context;
     event.preventDefault();
     this.state.video
-      .save()
+      .save(token)
       .catch((e) => {
         if (e.response.status == 400) {
           var errors = [];

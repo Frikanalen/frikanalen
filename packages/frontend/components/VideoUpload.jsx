@@ -5,6 +5,10 @@ import Col from "react-bootstrap/Col";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button";
 import { getUploadToken } from "./API/Video";
+
+import { UserContext } from "./UserContext";
+
+
 //let Resumable = require("resumablejs");
 //// TODO: Move Resumable into next/dynamic (I currently have no idea how to do this and my best guess didn't work)
 // TODO: Drag-and-drop support
@@ -76,8 +80,11 @@ class VideoUpload extends Component {
   }
 
   async componentDidMount() {
+    const { token } = this.context;
+
+    console.log("token:", token)
     // TODO: Error handling
-    this.token = await getUploadToken(this.videoID);
+    this.token = await getUploadToken(this.videoID, token);
     this.uploader = new plupload.Uploader({
       runtimes: "html5",
       browse_button: this.browseRef.current,
@@ -166,5 +173,6 @@ class VideoUpload extends Component {
     );
   }
 }
+VideoUpload.contextType = UserContext;
 
 export default VideoUpload;
