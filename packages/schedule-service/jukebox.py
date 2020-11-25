@@ -1,4 +1,4 @@
-from database import Database
+import psycopg2
 from datetime import datetime, timedelta
 
 class Gap():
@@ -10,9 +10,12 @@ class Gap():
     def duration(self):
         return self.end_time - self.start_time
 
+    def __repr__(self):
+        return f"Gap from {self.start_time} to {self.end_time}"
+
 def get_gaps(start_time, end_time):
-    db = Database()
-    cur = db.conn.cursor()
+    conn = psycopg2.connect("dbname=fkweb password=temporary host=10.244.2.228 user=fkschedule")
+    cur = conn.cursor()
 
     min_gap_duration = timedelta(minutes=5)
     cur.execute(
@@ -26,7 +29,7 @@ def random_video():
 
 def fill_gap(gap):
     new_gap = gap
-    new_gap.start_time += time_consumed
+    #new_gap.start_time += time_consumed
 
 def split_gaps(gap_list):
     return gap_list
@@ -40,6 +43,7 @@ def fill_today():
     end_time = start_time + timedelta(days=1, microseconds=-1)
 
     gaps = get_gaps(start_time, end_time)
+    print(gaps)
     gaps = split_gaps(gaps)
 
     for gap in gaps:

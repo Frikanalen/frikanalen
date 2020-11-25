@@ -44,6 +44,15 @@ class ScheduledVideo(ScheduleItem):
                 'type': 'video'
                 }
 
+class Graphics(ScheduleItem):
+    def __getstate__(self):
+        return {
+                'url': self.URL,
+                'startTime': self.start_time,
+                'endTime': self.end_time,
+                'type': 'graphics',
+                }
+
 class Schedule():
     def _build_conn_string(self):
         """ Placeholder function; TODO: get these from envs"""
