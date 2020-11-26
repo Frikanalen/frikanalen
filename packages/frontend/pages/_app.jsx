@@ -4,7 +4,7 @@ import Router from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shaka-player/dist/controls.css";
 import "shaka-player/dist/demo.css";
-import 'react-bootstrap-typeahead/css/Typeahead.css';
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import "components/main.sass";
 import PropTypes from "prop-types";
 import config from "components/configs";
