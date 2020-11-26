@@ -31,7 +31,7 @@ const VideoList: React.FC<{ videoList: VideoQueryJSON }> = ({ videoList }) => {
     if (typeof videosJSON === "undefined") return null;
 
     const VideoCard: React.FC<{ v: VideoJSON }> = ({ v }) => (
-      <Card style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
+      <Card key={v.id} style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
         <Link href={`/v/${v.id}`}>
           <Card.Img
             style={{ cursor: "pointer", objectFit: "contain", height: "140.625px", background: "black" }}
