@@ -1,4 +1,5 @@
 import psycopg2
+import pytz
 from datetime import datetime, timedelta
 
 class Organization():
@@ -63,7 +64,6 @@ class Schedule():
 
     def get_date(self, date):
         date_str = "%04d-%02d-%02d" % (date.year, date.month, date.day)
-        print(date_str)
         query = """
             SELECT
                 i.video_id,
@@ -72,13 +72,13 @@ class Schedule():
                 o.name as organization_name,
                 i.schedulereason,
                 v.framerate,
-                i.starttime,
-                (i.starttime + i.duration) as endtime
+                i.starttime at time zone 'Europe/Oslo',
+                (i.starttime at time zone 'Europe/Oslo' + i.duration) as endtime
             FROM fk_scheduleitem AS i
             JOIN fk_video AS v ON (video_id = v.id)
             JOIN fk_organization AS o ON (v.organization_id = o.id)
-            WHERE (date_trunc('day', i.starttime) = 
-                date_trunc('day', %s))
+            WHERE (date_trunc('day', i.starttime at time zone 'Europe/Oslo') =
+                date_trunc('day', %s at time zone 'Europe/Oslo'))
             ORDER BY i.starttime ASC;"""
         cur = self.conn.cursor()
         cur.execute(query, (date,))
@@ -99,6 +99,6 @@ class Schedule():
 
 if __name__=="__main__":
     s = Schedule()
-    print(s.get_date(datetime.now()))
+    print(s.get_date(datetime.now(tz=pytz.timezone('Europe/Oslo'))))
     
 

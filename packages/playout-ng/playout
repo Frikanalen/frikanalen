@@ -6,6 +6,7 @@ import logging
 import requests
 
 from datetime import datetime, timedelta
+import pytz
 from dateutil.parser import parse
 
 VIDEO_LAYER = '1-50'
@@ -16,6 +17,9 @@ API_URL = 'http://schedule-service/playout'
 LEGACY_URL = 'https://frikanalen.no/api/'
 FILE_BASE = ''
 CASPAR_HOST = '192.168.3.34'
+
+def localtime():
+    return datetime.now(tz=pytz.timezone('Europe/Oslo'))
 
 async def fetch(url):
     async with aiohttp.ClientSession() as session:
@@ -29,8 +33,8 @@ async def ScheduleLoader(api_url):
 
     for item in schedule_json['items']:
         logging.warning(f"{item}")
-        startTime = parse(item['startTime']).replace(tzinfo=None)
-        endTime = parse(item['endTime']).replace(tzinfo=None)
+        startTime = parse(item['startTime']).astimezone(pytz.timezone('Europe/Oslo'))
+        endTime = parse(item['endTime']).astimezone(pytz.timezone('Europe/Oslo'))
         logging.warning(f"{startTime} og {endTime}")
         if item['type'] == 'video':
             schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
@@ -81,7 +85,7 @@ class Scheduler():
         await item.sleep_until_time_to_play()
         logging.info("Playing item")
         await item.cue()
-        if self.schedule_age + self.schedule_refresh_rate > datetime.now(tz=None):
+        if self.schedule_age + self.schedule_refresh_rate > localtime():
             raise ScheduleExpiryException
 
     async def _prepare_item(self, item):
@@ -101,7 +105,7 @@ class Scheduler():
             tasks = ()
             try:
                 self.schedule = await ScheduleLoader(API_URL)
-                self.schedule_age = datetime.now(tz=None)
+                self.schedule_age = localtime()
             except Exception:
                 logging.error("Failed to load a schedule!")
                 raise
@@ -151,25 +155,22 @@ class PlannedItem(Item):
         super().__init__(layer)
 
     async def sleep_until_time_to_prepare(self):
-        now = datetime.now(tz=None)
-        seconds_until_start = (self.startTime - now).total_seconds()
+        seconds_until_start = (self.startTime - localtime()).total_seconds()
         await asyncio.sleep(seconds_until_start - 5)
 
     async def sleep_until_time_to_play(self):
-        now = datetime.now(tz=None)
-        seconds_until_start = (self.startTime - now).total_seconds()
+        seconds_until_start = (self.startTime - localtime()).total_seconds()
         await asyncio.sleep(seconds_until_start)
 
     def already_done(self):
         print(self.endTime)
-        if datetime.now(tz=None) > self.endTime:
+        if localtime() > self.endTime:
             return True
         else:
             return False
 
     def _seconds_left(self):
-        now = datetime.now(tz=None)
-        return (self.endTime - now).total_seconds()
+        return (self.endTime - localtime()).total_seconds()
 
     async def _completion(self):
         # blocks until the scheduled end of the programme
@@ -196,7 +197,7 @@ class PrerecordedVideo(PlannedItem):
     async def prepare(self):
         try:
             cmd_string = f'LOADBG {self.layer} "{self.filename}" "-filter:a aformat=sample_rates=48000"'
-            seconds_since_start = (datetime.now(tz=None) - self.startTime).total_seconds()
+            seconds_since_start = (localtime() - self.startTime).total_seconds()
             if seconds_since_start > 2.0:
                 cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
             self.has_been_prepared = True
@@ -211,7 +212,7 @@ class PrerecordedVideo(PlannedItem):
             else:
                 cmd_string = 'PLAY {} "{}" "-filter:a aformat=sample_rates=48000" MIX 50 1 LINEAR RIGHT'.format(self.layer, self.filename)
 
-                seconds_since_start = (datetime.now(tz=None) - self.startTime).total_seconds()
+                seconds_since_start = (localtime() - self.startTime).total_seconds()
                 if seconds_since_start > 2.0:
                     cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
 
