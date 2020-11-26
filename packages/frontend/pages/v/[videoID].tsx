@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 
 import Col from "react-bootstrap/Col";
@@ -39,7 +39,7 @@ function pendingSpinnerBox() {
 // straight on the video page after uploading.
 // TODO: Expose this in a better way in the Video class.
 function getStateFromVideo(video: fkVideoJSON) {
-  let videoState = "";
+  let videoState;
 
   if (!video.publish_on_web) {
     videoState = "unpublished";
@@ -49,7 +49,7 @@ function getStateFromVideo(video: fkVideoJSON) {
     videoState = "playable";
   } else if ("original" in video.files || "broadcast" in video.files) {
     setTimeout(() => {
-      APIGET<fkVideoJSON>(`videos/${videoID}`).then((v) => {
+      APIGET<fkVideoJSON>(`videos/${video.id}`).then((v) => {
         this.setState({
           videoState: getStateFromVideo(v),
         });
@@ -75,8 +75,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
+
 export default function VideoPage(props) {
-  let videoPage = null;
   const { videoJSON, latestVideos } = props;
   const [videoWidget, setVideoWidget] = useState(null);
   const [videoState, setVideoState] = useState(getStateFromVideo(videoJSON));

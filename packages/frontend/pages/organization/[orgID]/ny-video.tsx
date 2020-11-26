@@ -172,7 +172,7 @@ export default function AddVideo(props) {
           orgID={parseInt(orgID)}
           orgName={orgName}
           onVideoCreated={(videoID) => {
-            router.push("/v/[id]", `/v/${videoID}`);
+            router.push("/v/[videoID]", `/v/${videoID}`);
           }}
         />
       </WindowWidget>
