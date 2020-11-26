@@ -53,8 +53,9 @@ class VideoUpload extends Component {
 
   constructor(props) {
     super(props);
+    const { videoJSON } = props;
     this.browseRef = React.createRef();
-    this.videoID = props.videoID;
+    this.videoID = videoJSON.id;
     this.token = null;
     this.fileAdded = this.fileAdded.bind(this);
     this.uploadProgress = this.uploadProgress.bind(this);

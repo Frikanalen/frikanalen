@@ -10,6 +10,9 @@ interface fkOrgRoleJSON {
 
 export interface fkVideoJSON {
   id: number;
+  organization: fkOrgJSON;
+  publish_on_web: boolean;
+  files: [filetype: string, url: string][];
 }
 
 export interface fkVideo {}

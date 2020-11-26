@@ -70,7 +70,7 @@ class VideoCreate extends Component<
           var errors = [];
           for (const key in e.response.data) {
             errors.push(
-              <Alert variant="danger">
+              <Alert key={key} variant="danger">
                 <Alert.Heading>{key}</Alert.Heading>
               </Alert>
             );
@@ -84,11 +84,11 @@ class VideoCreate extends Component<
   }
 
   render() {
-    const { uploadingOrgName } = this.state;
+    const { errors, uploadingOrgName } = this.state;
     return (
       <div>
         <Form>
-          {this.state.errors}
+          {errors}
           <Form.Group>
             <Form.Label>På vegne av:</Form.Label>
             <Form.Control readOnly value={uploadingOrgName ? uploadingOrgName : "Laster organisasjon..."} />
