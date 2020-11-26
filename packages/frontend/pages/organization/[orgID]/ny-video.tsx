@@ -179,6 +179,7 @@ export default function AddVideo(props) {
           orgID={parseInt(orgID)}
           orgName={orgName}
           onVideoCreated={(videoID) => {
+            console.log("OnVideoCreated");
             router.push("/v/[videoID]", `/v/${videoID}`);
           }}
         />
