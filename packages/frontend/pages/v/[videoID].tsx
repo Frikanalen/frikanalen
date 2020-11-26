@@ -65,11 +65,20 @@ function getStateFromVideo(video: fkVideoJSON) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { videoID } = context.query;
-  const videoJSON = await APIGET<fkVideoJSON>(`videos/${videoID}`);
-  const latestVideos = await getLatestVideos(videoJSON.organization.id);
+  let videoJSON = null;
+  let latestVideos = null;
+  let error = null;
+  try {
+    videoJSON = await APIGET<fkVideoJSON>(`videos/${videoID}`);
+    latestVideos = await getLatestVideos(videoJSON.organization.id);
+  } catch (e) {
+    context.res.statusCode = 404;
+    error = "Not found!";
+  }
 
   return {
     props: {
+      error,
       videoJSON,
       latestVideos,
     },
@@ -77,7 +86,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function VideoPage(props) {
-  const { videoJSON, latestVideos } = props;
+  const { videoJSON, latestVideos, error } = props;
+
+  if (error) {
+    return (
+      <Layout>
+        <WindowWidget>
+          <h1>Ikke funnet!</h1>
+          <h2>Beklager. Vi fant ikke denne.</h2>
+        </WindowWidget>
+      </Layout>
+    );
+  }
+
   const [videoWidget, setVideoWidget] = useState(null);
   const [videoState, setVideoState] = useState(getStateFromVideo(videoJSON));
 
@@ -91,7 +112,13 @@ export default function VideoPage(props) {
         </video>
       );
     } else if (videoState === "nofile") {
-      setVideoWidget(<VideoUpload videoJSON={videoJSON} onUploadComplete={() => setVideoState("pending")} />);
+      setVideoWidget(
+        <VideoUpload
+          videoJSON={videoJSON}
+          onUploadComplete={() => setVideoState("pending")}
+          className={styles.videoUploadBox}
+        />
+      );
     } else if (videoState === "pending") {
       setVideoWidget(pendingSpinnerBox());
     } else if (videoState === "processing") {
@@ -117,7 +144,7 @@ export default function VideoPage(props) {
             <Col>
               <div className={styles.otherVideos}>
                 <h4>Nyeste videoer fra {videoJSON.organization.name}</h4>
-                <VideoList videoList={latestVideos} />
+                <VideoList videosJSON={latestVideos} />
               </div>
             </Col>
           </Row>

@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 import { getUploadToken } from "./API/Video";
 
 import { UserContext } from "./UserContext";
-
+import styles from "./VideoUpload.module.sass"
 
 //let Resumable = require("resumablejs");
 //// TODO: Move Resumable into next/dynamic (I currently have no idea how to do this and my best guess didn't work)
@@ -111,8 +111,8 @@ class VideoUpload extends Component {
 
   fileUploader = () => {
     return (
-      <div className="file-upload-container">
-        <Container className="file-upload">
+      <div className={styles.fileUploadContainer}>
+        <Container className={styles.fileUupload}>
           <Row>
             <Col>
               <div>Filnavn: {this.state.fileName}</div>
@@ -124,43 +124,22 @@ class VideoUpload extends Component {
             </Col>
           </Row>
         </Container>
-        <style jsx global>{`
-          .file-upload-container {
-            background-color: white;
-            padding: 15px;
-            border-radius: 5px;
-          }
-          .file-upload {
-            padding: 15px;
-            color: black;
-          }
-        `}</style>
       </div>
     );
   };
 
   fileSelector = () => (
-    <div className="file-selector-container">
-      <Container className={"file-selector"} fluid>
+    <div className={styles.fileSelectorContainer}>
+      <Container className={styles.fileSelector} fluid>
         <Row>
           <Col>
+            <h2>Videofil ikke lastet opp</h2>
+            <p>Vennligst last opp en fil</p>
             <Button ref={this.browseRef}>Velg fil...</Button>
           </Col>
         </Row>
       </Container>
-      <style jsx global>{`
-        .file-selector-container {
-          background-color: white;
-          padding: 15px;
-          border-radius: 5px;
-        }
-        .file-selector {
-          padding: 15px;
-          color: black;
-          border: 5px dashed #ccc;
-          border-radius: 5px;
-        }
-      `}</style>
+
     </div>
   );
 

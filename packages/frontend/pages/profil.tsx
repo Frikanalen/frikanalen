@@ -94,8 +94,8 @@ function OrganizationCard({ role }) {
   const [org, setOrg] = useState(null as fkOrgJSON);
 
   useEffect(() => {
-    APIGET<fkOrgJSON>(`organization/${role.orgID}`, token).then((o) => setOrg(o));
-  }, []);
+    APIGET<fkOrgJSON>(`organization/${role.orgID}`, token).then((res) => setOrg(res));
+  }, [role.orgID]);
 
   const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 

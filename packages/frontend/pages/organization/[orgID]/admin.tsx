@@ -20,7 +20,7 @@ export default function OrgAdmin(props) {
         <Card bg="light" className="text-dark">
           <Card.Title>Siste videoer</Card.Title>
           <Card.Body>
-            <VideoList videoList={latestVideos} />
+            <VideoList videosJSON={latestVideos} />
           </Card.Body>
         </Card>
         <Card body>

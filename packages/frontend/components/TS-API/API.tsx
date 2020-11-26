@@ -55,7 +55,9 @@ export async function APIGET<T>(endpoint: string, token = null, reloadCache = fa
 
   const response = await fetch(`${configs.api}${endpoint}`, { cache: cacheOptions, headers: authHeaders });
 
-  return await response.json();
+  if (response.ok) return await response.json();
+
+  throw Error(response.statusText);
 }
 
 export async function fkFetchOrg(orgID: number): Promise<fkOrg> {

@@ -77,7 +77,7 @@ export default function OrganizationPage(props: { orgData: fkOrg; latestVideos: 
         <Card bg="light" className="text-dark">
           <Card.Body>
             <Card.Title>Siste videoer</Card.Title>
-            <VideoList videoList={latestVideos} />
+            <VideoList videosJSON={latestVideos} />
           </Card.Body>
         </Card>
         <p>&nbsp;</p>

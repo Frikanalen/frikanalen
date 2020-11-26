@@ -63,6 +63,7 @@ class VideoCreate extends Component<
     this.state.video
       .save(token)
       .then((r) => {
+        console.log("redirecting to ", this.state.video.ID);
         this.onVideoCreated(this.state.video.ID);
       })
       .catch((e) => {
