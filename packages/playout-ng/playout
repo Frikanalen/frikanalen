@@ -9,11 +9,12 @@ from datetime import datetime, timedelta
 from dateutil.parser import parse
 
 VIDEO_LAYER = '1-50'
+GRAPHICS_LAYER = '1-60'
 CHANNELBUG_LAYER = '1-100'
 
 API_URL = 'http://schedule-service/playout'
 LEGACY_URL = 'https://frikanalen.no/api/'
-FILE_BASE = 'https://file01.frikanalen.no/media/'
+FILE_BASE = ''
 CASPAR_HOST = '192.168.3.34'
 
 async def fetch(url):
@@ -28,13 +29,15 @@ async def ScheduleLoader(api_url):
 
     for item in schedule_json['items']:
         logging.warning(f"{item}")
-        logging.warning(f"{parse(item['startTime'])} og {parse(item['endTime'])}")
+        startTime = parse(item['startTime']).replace(tzinfo=None)
+        endTime = parse(item['endTime']).replace(tzinfo=None)
+        logging.warning(f"{startTime} og {endTime}")
         if item['type'] == 'video':
             schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
-                parse(item['startTime']), parse(item['endTime'])))
+                startTime, endTime))
         elif item['type'] == 'graphics':
-            schedule.append(Graphic(item['url'], VIDEO_LAYER,
-                parse(item['startTime']), parse(item['endTime'])))
+            schedule.append(Graphic(item['url'], GRAPHICS_LAYER,
+                startTime, endTime))
 
     return schedule
 
@@ -78,7 +81,7 @@ class Scheduler():
         await item.sleep_until_time_to_play()
         logging.info("Playing item")
         await item.cue()
-        if self.schedule_age + self.schedule_refresh_rate > datetime.now():
+        if self.schedule_age + self.schedule_refresh_rate > datetime.now(tz=None):
             raise ScheduleExpiryException
 
     async def _prepare_item(self, item):
@@ -98,7 +101,7 @@ class Scheduler():
             tasks = ()
             try:
                 self.schedule = await ScheduleLoader(API_URL)
-                self.schedule_age = datetime.now()
+                self.schedule_age = datetime.now(tz=None)
             except Exception:
                 logging.error("Failed to load a schedule!")
                 raise
@@ -147,19 +150,25 @@ class PlannedItem(Item):
         self.endTime = endTime
         super().__init__(layer)
 
+    async def sleep_until_time_to_prepare(self):
+        now = datetime.now(tz=None)
+        seconds_until_start = (self.startTime - now).total_seconds()
+        await asyncio.sleep(seconds_until_start - 5)
+
     async def sleep_until_time_to_play(self):
-        now = datetime.now()
+        now = datetime.now(tz=None)
         seconds_until_start = (self.startTime - now).total_seconds()
         await asyncio.sleep(seconds_until_start)
 
     def already_done(self):
-        if datetime.now() > self.endTime:
+        print(self.endTime)
+        if datetime.now(tz=None) > self.endTime:
             return True
         else:
             return False
 
     def _seconds_left(self):
-        now = datetime.now()
+        now = datetime.now(tz=None)
         return (self.endTime - now).total_seconds()
 
     async def _completion(self):
@@ -178,6 +187,7 @@ class PrerecordedVideo(PlannedItem):
         self.files = VideoFiles(videoID)
         self.framerate = float(framerate/1000)
         self.metadata = None
+        self.has_been_prepared = False
         if self.files['original'] is not None:
             self.filename = FILE_BASE + self.files['original']
         else:
@@ -185,20 +195,25 @@ class PrerecordedVideo(PlannedItem):
 
     async def prepare(self):
         try:
-            cmd_string = "LOADBG {} {}".format(self.layer, self.filename)
-            seconds_since_start = (datetime.now() - self.startTime).total_seconds()
+            cmd_string = f'LOADBG {self.layer} "{self.filename}" "-filter:a aformat=sample_rates=48000"'
+            seconds_since_start = (datetime.now(tz=None) - self.startTime).total_seconds()
             if seconds_since_start > 2.0:
                 cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
+            self.has_been_prepared = True
             await CurrentPlayer.issue(cmd_string)
         except asyncio.CancelledError:
             pass
 
     async def cue(self):
         try:
-            cmd_string = "PLAY {} {}".format(self.layer, self.filename)
-            seconds_since_start = (datetime.now() - self.startTime).total_seconds()
-            if seconds_since_start > 2.0:
-                cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
+            if self.has_been_prepared:
+                cmd_string = f'PLAY {self.layer}'
+            else:
+                cmd_string = 'PLAY {} "{}" "-filter:a aformat=sample_rates=48000" MIX 50 1 LINEAR RIGHT'.format(self.layer, self.filename)
+
+                seconds_since_start = (datetime.now(tz=None) - self.startTime).total_seconds()
+                if seconds_since_start > 2.0:
+                    cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
 
             await CurrentPlayer.issue(cmd_string)
             logging.info("Awaiting completion...")
@@ -206,12 +221,7 @@ class PrerecordedVideo(PlannedItem):
             logging.info("Complete.")
         except asyncio.CancelledError:
             logging.info("Completion cancelled!.")
-            self.clear()
-
-    async def sleep_until_time_to_prepare(self):
-        now = datetime.now()
-        seconds_until_start = (self.startTime - now).total_seconds()
-        await asyncio.sleep(seconds_until_start - 5)
+            await self.clear()
 
     def __repr__(self):
         return '[ScheduledVideo [{}-{}]: Video {}]'.format(
@@ -222,15 +232,28 @@ class PrerecordedVideo(PlannedItem):
 class Graphic(PlannedItem):
     def __init__(self, url, layer, startTime, endTime):
         super().__init__(layer, startTime, endTime)
+        self.has_been_prepared = False
         self.url = url
 
     async def cue(self):
         try:
-            await CurrentPlayer.issue(f'CLEAR {self.layer}')
-            await CurrentPlayer.issue(f'PLAY {self.layer} [HTML] "{self.url}"')
+            if self.has_been_prepared:
+                await CurrentPlayer.issue(f'PLAY {self.layer}')
+            else:
+                await CurrentPlayer.issue(f'PLAY {self.layer} [HTML] "{self.url}"')
+
             await self._completion()
+            await self.clear()
+
         except asyncio.CancelledError:
-            self.clear()
+            await self.clear()
+
+    async def prepare(self):
+        try:
+            await CurrentPlayer.issue(f'LOADBG {self.layer} [HTML] "{self.url}"')
+            self.has_been_prepared = True
+        except asyncio.CancelledError:
+            pass
 
 class CasparPlayer():
     def __init__(self):
