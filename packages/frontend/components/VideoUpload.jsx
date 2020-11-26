@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 import { getUploadToken } from "./API/Video";
 
 import { UserContext } from "./UserContext";
-import styles from "./VideoUpload.module.sass"
+import styles from "./VideoUpload.module.sass";
 
 //let Resumable = require("resumablejs");
 //// TODO: Move Resumable into next/dynamic (I currently have no idea how to do this and my best guess didn't work)
@@ -83,7 +83,7 @@ class VideoUpload extends Component {
   async componentDidMount() {
     const { token } = this.context;
 
-    console.log("token:", token)
+    console.log("token:", token);
     // TODO: Error handling
     this.token = await getUploadToken(this.videoID, token);
     this.uploader = new plupload.Uploader({
@@ -139,7 +139,6 @@ class VideoUpload extends Component {
           </Col>
         </Row>
       </Container>
-
     </div>
   );
 

@@ -132,7 +132,13 @@ class VideoCreate extends Component<
               ))}
             </Form.Control>
           </Form.Group>
-          <Button onClick={this.handleSubmit} variant="primary" type="submit">
+          <Button
+            onClick={(e) => {
+              this.handleSubmit(e);
+            }}
+            variant="primary"
+            type="submit"
+          >
             Start
           </Button>
         </Form>
