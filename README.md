@@ -35,18 +35,20 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 
 ## Current development focus
  
-- Migrating the remaining bare-metal services to Kubernetes
-    - Ceph cluster up and running nicely, need to copy media from ZFS
-    - Media asset server pulling from Ceph
-    - Upload receiver and file mover/processer needs moving
-    - Docker container is very much needed for Open Broadcast Encoder
-    - CasparCG deployed as Docker container - not necessarily in k8s though
+- We are writing a new front-end
+    - Migrating functionality from legacy site: Almost completely done!!
+    - Still needs a user interface for organizations to add their shows to schedules
 - Filling airtime in a better way
     - New, far more maintainable playout written and deployed
     - Needs to add better instrumentalization, monitoring/alerting
-- We are writing a new front-end
-    - Migrating functionality from legacy site: Almost completely done
-    - Still needs schedule planner
+    - A better jukebox algorithm to prioritize fresher content and leave bigger gaps for graphics
+    - Expand broadcast graphics (in React frontend) to more than just a "next programme" clock (twitter feed?)
+- Migrating the remaining bare-metal services to Kubernetes
+    - Ceph cluster up and running nicely, need to migrate media from ZFS pool
+    - Media asset server serving from Ceph
+    - Upload receiver and file mover/processer migrating from systemd/SMB shares to k8s/Ceph
+    - Docker container is very much needed for Open Broadcast Encoder (curmudgeonly build process)
+    - CasparCG deployed as Docker container - not necessarily in k8s though
 
 License
 -------
