@@ -16,6 +16,12 @@ from scheduler import Schedule, Program
 from vision.configuration import configuration
 from database import schedulestore
 
+from twisted.logger._levels import LogLevel
+
+def panic_on_unhandled_exception(event):
+    if event.get("log_level") == LogLevel.critical:
+        print ("Stopping for: ", event)
+        reactor.stop()
 
 # TODO: Ident, loop, etc should be full program obects and not be
 # hardcoded in playout.py
@@ -227,7 +233,7 @@ class Playout(object):
                     program_start=clock.now(),
                     playback_duration=time_until_next-IDENT_LENGTH,
                     title="Pause screen",
-                    filename='[HTML]" "https://graphics.frikanalen.no/clock',
+                    filename='[HTML]" "https://frikanalen.no/graphics',
                     loop=True)
             logging.debug("on_idle invoking cue_program({})".format(program))
             self.cue_program(program)
@@ -250,5 +256,6 @@ def _get_class(cls):
 
 
 if __name__ == '__main__':
+    logging.addObserver(panic_on_unhandled_exception)
     start_test_player()
     reactor.run()

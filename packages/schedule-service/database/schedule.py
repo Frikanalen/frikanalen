@@ -57,13 +57,12 @@ class Graphics(ScheduleItem):
 class Schedule():
     def _build_conn_string(self):
         """ Placeholder function; TODO: get these from envs"""
-        return "dbname=fkweb password=temporary host=10.244.2.228 user=fkschedule"
+        return "dbname=fkweb password=temporary host=localhost user=fkschedule"
 
     def __init__(self):
         self.conn = psycopg2.connect(self._build_conn_string())
 
     def get_date(self, date):
-        date_str = "%04d-%02d-%02d" % (date.year, date.month, date.day)
         query = """
             SELECT
                 i.video_id,
@@ -72,33 +71,35 @@ class Schedule():
                 o.name as organization_name,
                 i.schedulereason,
                 v.framerate,
-                i.starttime at time zone 'Europe/Oslo',
-                (i.starttime at time zone 'Europe/Oslo' + i.duration) as endtime
+                i.starttime,
+                (i.starttime + i.duration) as endtime,
+                date_trunc('day', i.starttime) as perceived_start_date,
+                date_trunc('day', %s) as perceived_query_date
             FROM fk_scheduleitem AS i
             JOIN fk_video AS v ON (video_id = v.id)
             JOIN fk_organization AS o ON (v.organization_id = o.id)
-            WHERE (date_trunc('day', i.starttime at time zone 'Europe/Oslo') =
+            WHERE (date_trunc('day', i.starttime) =
                 date_trunc('day', %s at time zone 'Europe/Oslo'))
             ORDER BY i.starttime ASC;"""
         cur = self.conn.cursor()
-        cur.execute(query, (date,))
+        cur.execute(query, (date,date,))
         schedule_data = cur.fetchall()
         schedule = {}
         schedule['date'] = date
         schedule['items'] = []
         for item in schedule_data:
             new_item = ScheduledVideo()
+            new_item.CRID = "crid://frikanalen.no/%d" % (item[0],)
             new_item.video = Video(ID = item[0], name = item[1], framerate = item[5])
             new_item.organization = Organization(ID = item[2], name = item[3])
             new_item.reason = item[4]
             new_item.start_time = item[6]
             new_item.end_time = item[7]
-            new_item.CRID = "crid://frikanalen.no/%d" % (item[0],)
+            new_item.perceived_start_date = item[8]
+            new_item.perceived_start_date_queried = item[9]
             schedule['items'].append(new_item)
         return schedule
 
 if __name__=="__main__":
     s = Schedule()
     print(s.get_date(datetime.now(tz=pytz.timezone('Europe/Oslo'))))
-    
-

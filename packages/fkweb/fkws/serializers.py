@@ -178,9 +178,6 @@ class ScheduleitemVideoSerializer(serializers.ModelSerializer):
 
 class ScheduleitemSerializer(serializers.ModelSerializer):
     video = ScheduleitemVideoSerializer()
-    video_url = serializers.HyperlinkedRelatedField(
-        source="video", view_name="api-video-detail", required=False,
-        queryset=Video.objects.all())
     starttime = serializers.DateTimeField(default_timezone=pytz.timezone('Europe/Oslo'))
     endtime = serializers.DateTimeField(default_timezone=pytz.timezone('Europe/Oslo'), read_only=True)
 
@@ -188,7 +185,6 @@ class ScheduleitemSerializer(serializers.ModelSerializer):
         model = Scheduleitem
         fields = (
             "id",
-            "video_url",
             "video",
             "schedulereason",
             "starttime",

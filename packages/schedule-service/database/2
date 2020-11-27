@@ -1,0 +1,3 @@
+from .clock import hello
+
+clock.hello()
