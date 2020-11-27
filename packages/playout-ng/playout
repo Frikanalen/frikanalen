@@ -33,8 +33,8 @@ async def ScheduleLoader(api_url):
 
     for item in schedule_json['items']:
         logging.warning(f"{item}")
-        startTime = parse(item['startTime']).astimezone(pytz.timezone('Europe/Oslo'))
-        endTime = parse(item['endTime']).astimezone(pytz.timezone('Europe/Oslo'))
+        startTime = parse(item['startTime'])
+        endTime = parse(item['endTime'])
         logging.warning(f"{startTime} og {endTime}")
         if item['type'] == 'video':
             schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
