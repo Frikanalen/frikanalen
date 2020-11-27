@@ -53,8 +53,10 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
     
 ## Nice to have in the future:
 
-- It would be useful to have programmatically-generated test data for fkweb
-- It would be great to implement a transport stream analysis for Prometheus
+- It would be great to implement a transport stream analysis for Prometheus (so we can alert on irregularities)
+- It would be useful to have programmatically-generated test data for fkweb (so we can test and develop on realistic but anonymous data)
+- It would be very nice to be able to deploy our CRDs directly in the cloud (using some sort of templating?)
+- We should consider migrating to Istio - because it's, like, super neat
 
 License
 -------
