@@ -57,7 +57,7 @@ class Graphics(ScheduleItem):
 class Schedule():
     def _build_conn_string(self):
         """ Placeholder function; TODO: get these from envs"""
-        return "dbname=fkweb password=temporary host=localhost user=fkschedule"
+        return "dbname=fkweb password=temporary host=10.244.2.228 user=fkschedule"
 
     def __init__(self):
         self.conn = psycopg2.connect(self._build_conn_string())
