@@ -10,7 +10,7 @@ app = Flask(__name__)
 def playoutschedule():
     video_list = playout_schedule()
     return Response(\
-            jsonpickle.encode(add_graphics(video_list),unpicklable=False),
+            jsonpickle.encode(video_list,unpicklable=False),
             mimetype='application/json'
             )
 
