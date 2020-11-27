@@ -121,6 +121,14 @@ data:
           - targets: ['localhost:9090']
           - targets: ['traefik.kube-system:8100']
 
+      - job_name: 'kube-state-metrics'
+
+        scrape_interval: 1m
+
+        static_configs:
+          - targets: ['kube-state-metrics.kube-system:8080']
+
+
       - job_name: 'node'
         scrape_interval: 1s
         static_configs:
