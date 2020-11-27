@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: prometheus
   labels:
     app: prometheus
 spec:
   replicas: 1
+  serviceName: prometheus
   selector:
     matchLabels:
       app: prometheus

@@ -128,11 +128,17 @@ data:
         static_configs:
           - targets: ['kube-state-metrics.kube-system:8080']
 
-
       - job_name: 'node'
-        scrape_interval: 1s
+        scrape_interval: 10s
         static_configs:
-          - targets: ['192.168.3.10:9100']
+          - targets: ['obe-hd:9100']
+          - targets: ['simula.frikanalen.no:9100']
+          - targets: ['fw1:9100']
+          - targets: ['tx1:9100']
+          - targets: ['tx2:9100']
+          - targets: ['tx3:9100']
+          - targets: ['tx4:9100']
+
 kind: ConfigMap
 metadata:
   name: prometheus-config
