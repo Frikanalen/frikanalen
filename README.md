@@ -1,15 +1,16 @@
 Frikanalen
 ==========
 
-Tools and web for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
+All code used by the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
 
 [GitHub page](http://github.com/Frikanalen/) | [Project mailing list](http://lists.nuug.no/mailman/listinfo/frikanalen/)
 
 This repository is home to all the software used by Frikanalen. The main [packages](packages/) are:
 
-- [frontend](packages/frontend) - Our new frontend, under active development
-- [fkweb](packages/fkweb) - A Django site that serves as our API and legacy front-end
-- [playout](packages/playout) - The CasparCG controller that manages our channel
+- [frontend](packages/frontend) - Next.js\/React-based front-end, under active development
+- [fkweb](packages/fkweb) - Django-based back end API server
+- [playout](packages/playout) - Legacy playout (being phased out soon)
+- [playout-ng](packages/playout-ng) - New playout (currently running in beta)
 - [fkupload](packages/fkupload) - Upload backend (the frontend is in fkweb) taking files from users
 - [fkprocess](packages/fkprocess) - The processing backend for the files
 - [utils](packages/utils) - Small utilities, microservices and helpers, and things we find no other place for
@@ -21,9 +22,9 @@ This repository is home to all the software used by Frikanalen. The main [packag
     - [test-videos-generator](packages/utils/test-videos-generator) - generate test videos for local development
     - [transcode-obe-to-webm-stream](packages/utils/transcode-obe-to-webm-stream) - systemd wrapper for transcoding to WebM for legacy frontend
 
-Of note is also [our infrastructure Ansible setup](infra/).
+Of note is also [our infrastructure Ansible setup and Kubernetes CRDs](infra/).
 
-Some folders have a basic README file.
+Some folders have a basic README file of their own.
 
 ## Getting in touch / involved
 
@@ -49,6 +50,11 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
     - Upload receiver and file mover/processer migrating from systemd/SMB shares to k8s/Ceph
     - Docker container is very much needed for Open Broadcast Encoder (curmudgeonly build process)
     - CasparCG deployed as Docker container - not necessarily in k8s though
+    
+## Nice to have in the future:
+
+- It would be useful to have programmatically-generated test data for fkweb
+- It would be great to implement a transport stream analysis for Prometheus
 
 License
 -------
