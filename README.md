@@ -39,6 +39,8 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
     - Ceph cluster up and running nicely, need to copy media from ZFS
     - Media asset server pulling from Ceph
     - Upload receiver and file mover/processer needs moving
+    - Docker container is very much needed for Open Broadcast Encoder
+    - CasparCG deployed as Docker container - not necessarily in k8s though
 - Filling airtime in a better way
     - New, far more maintainable playout written and deployed
     - Needs to add better instrumentalization, monitoring/alerting
