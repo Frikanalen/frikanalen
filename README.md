@@ -16,7 +16,6 @@ This repository is home to all the software used by Frikanalen. The main [packag
     - [atem-control-service](packages/utils/atem-control-service) - Microservice to control our production switcher
     - [nagios-check-video-stream](packages/utils/nagios-check-video-stream) - Legacy checker for video stream (Prometheus rewrite in progress)
     - [obe-service](packages/utils/obe-service) - systemd wrapper for Open Broadcast Encoder
-    - [on-air-graphics](packages/utils/on-air-graphics) - clock, program schedule, etc for filling gaps between programmes
     - [prom-check-video-stream](packages/utils/prom-check-video-stream) - New checker for video stream (incomplete)
     - [stream-multicast](packages/utils/stream-multicast) - systemd wrapper for multicast stream
     - [test-videos-generator](packages/utils/test-videos-generator) - generate test videos for local development
@@ -35,32 +34,17 @@ If you're curious about the project, please get in touch on our IRC channel #fri
 Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/) and he can be reached [by mail](mailto:toresbe@gmail.com) as well.
 
 ## Current development focus
-
-- We are migrating to Kubernetes - most everything done there, but:
-    - ~~Our Django installation needs to move from a QEMU VM to Kubernetes~~
-    - Schedule generation needs rewriting/moving
+ 
+- Migrating the remaining bare-metal services to Kubernetes
+    - Ceph cluster up and running nicely, need to copy media from ZFS
+    - Media asset server pulling from Ceph
     - Upload receiver and file mover/processer needs moving
-- We are modernizing our playout code
-    - Instrumentalization, monitoring/alerting
-    - Intelligently filling idle air time [with graphics](packages/utils/on-air-graphics)
+- Filling airtime in a better way
+    - New, far more maintainable playout written and deployed
+    - Needs to add better instrumentalization, monitoring/alerting
 - We are writing a new front-end
-    - Migrating functionality from legacy site: Video archive, member sign-up, scheduling, ...
-    - ~~The current development is only tested in Chrome and needs cross-browser testing/CSS adjustment~~
-
-Running all tests
------------------
-You might need to install `sqlite3`, `python3` and `ffmpeg`.
-
-Install the Python requirements:
-
-    make env # sets up the python virtual env
-    make requirements
-
-Run the tests:
-
-    make test
-
-A small peak at our [Travis config file](.travis.yml) might help you as well.
+    - Migrating functionality from legacy site: Almost completely done
+    - Still needs schedule planner
 
 License
 -------
