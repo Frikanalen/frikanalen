@@ -56,10 +56,13 @@ function NextUp(props) {
           <img src="/images/frikanalen.png" style={{ margin: "30px", marginLeft: "51px" }} />
         </Row>
         <Row>
+          <div className="mt-3"></div>
+        </Row>
+        <Row>
           <Col style={{ flexGrow: 0 }}>
             <AnalogClock size="500" />
           </Col>
-          <Col>
+          <Col sm={{ size: "auto", offset: 1 }}>
             <h2>Neste program</h2>
             <h3>
               <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
@@ -68,6 +71,9 @@ function NextUp(props) {
             </h3>
             <h3>{scheduleJSON.results[currentProgramme].video.name}</h3>
           </Col>
+        </Row>
+        <Row>
+          <div className="mt-3"></div>
         </Row>
         <Row>
           <Col style={{ textAlign: "center", marginTop: "30px", fontSize: "21pt" }}>
