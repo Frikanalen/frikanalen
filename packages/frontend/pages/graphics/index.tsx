@@ -10,6 +10,7 @@ import "moment/locale/nb";
 
 const TrianglifiedDiv = dynamic(() => import("components/graphics/background.js"), { ssr: false });
 const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), { ssr: false });
+const TwitterTimeline = dynamic(() => import("components/graphics/twittertimeline.js"), { ssr: false });
 
 export async function getServerSideProps(context) {
   const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
@@ -61,6 +62,9 @@ function NextUp(props) {
         <Row>
           <Col style={{ flexGrow: 0 }}>
             <AnalogClock size="500" />
+          </Col>
+          <Col sm={{ size: "auto", offset: 1 }}>
+            <TwitterTimeline />
           </Col>
           <Col sm={{ size: "auto", offset: 1 }}>
             <h2>Neste program</h2>
