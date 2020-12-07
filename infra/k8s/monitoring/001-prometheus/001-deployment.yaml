@@ -21,8 +21,7 @@ spec:
         image: prom/prometheus
         volumeMounts:
           - name: config-volume
-            mountPath: /etc/prometheus/prometheus.yml
-            subPath: prometheus.yml
+            mountPath: /etc/prometheus/
           - name: prometheus-db
             mountPath: /prometheus/
         ports:
