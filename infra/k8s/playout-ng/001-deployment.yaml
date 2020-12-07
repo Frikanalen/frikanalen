@@ -1,12 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: playout-ng
 spec:
+  serviceName: playout-ng
   selector:
     matchLabels:
       app: playout-ng
-  minReadySeconds: 5
   template:
     metadata:
       labels:
