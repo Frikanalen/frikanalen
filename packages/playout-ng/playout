@@ -143,10 +143,6 @@ class Item():
 class ImpromptuItem(Item):
     def __init__(self, layer, startTime, endTime):
         super().__init__(layer)
-    """ This will be implemented in the future to enable live transmissions and such. """
-    async def _completion(self):
-        # blocks until the event end is trigged by an API`
-        pass
 
 class PlannedItem(Item):
     def __init__(self, layer, startTime, endTime):
@@ -196,10 +192,12 @@ class PrerecordedVideo(PlannedItem):
 
     async def prepare(self):
         try:
-            cmd_string = f'LOADBG {self.layer} "{self.filename}" "-filter:a aformat=sample_rates=48000"'
             seconds_since_start = (localtime() - self.startTime).total_seconds()
             if seconds_since_start > 2.0:
-                cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
+                self.has_been_prepared = False
+                return
+
+            cmd_string = f'LOADBG {self.layer} "{self.filename}" "-filter:a aformat=sample_rates=48000"'
             self.has_been_prepared = True
             await CurrentPlayer.issue(cmd_string)
         except asyncio.CancelledError:
@@ -217,11 +215,9 @@ class PrerecordedVideo(PlannedItem):
                     cmd_string += " SEEK {}".format(int(CurrentPlayer.frame_rate * seconds_since_start))
 
             await CurrentPlayer.issue(cmd_string)
-            logging.info("Awaiting completion...")
             await self._completion()
-            logging.info("Complete.")
+            await self.clear()
         except asyncio.CancelledError:
-            logging.info("Completion cancelled!.")
             await self.clear()
 
     def __repr__(self):
@@ -243,11 +239,20 @@ class Graphic(PlannedItem):
             else:
                 await CurrentPlayer.issue(f'PLAY {self.layer} [HTML] "{self.url}"')
 
+            # If we have time for it, do a nice and steady fade to black
+            # two seconds before the next programme, just like the old
+            # NRK clock used to do it! ^_^
+            if self._seconds_left() >= 5.0:
+                await asyncio.sleep(self._seconds_left() - 2.0)
+                await CurrentPlayer.issue(f'MIXER {self.layer} OPACITY 0 50 easeinsine')
+
             await self._completion()
             await self.clear()
+            await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
 
         except asyncio.CancelledError:
             await self.clear()
+            await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
 
     async def prepare(self):
         try:
@@ -337,6 +342,7 @@ class CasparPlayer():
         return returned_data
 
     async def issue(self, cmd):
+        """ Issues a command to CasparCG. Blocks until a response is received. """
         try:
             logging.debug("Issuing command to Caspar: %s", cmd)
             self.writer.write((cmd + "\r\n").encode())
