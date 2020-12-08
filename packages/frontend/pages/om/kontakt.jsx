@@ -11,7 +11,7 @@ export default function KontaktOss() {
           Leder Ola Tellesbø kan nås på <a href="mailto:post@frikanalen.no">post@frikanalen.no</a>
         </p>
         <p>
-          Teknisk leder Tore Sinding Bekkedal kan nås på <a href="mailto:toresbe@gmail.com">toresbe@gmail.com</a>
+          Teknisk leder Tore Sinding Bekkedal kan nås på <a href="mailto:toresbe@protonmail.com">toresbe@protonmail.com</a>
         </p>
       </WindowWidget>
     </Layout>
