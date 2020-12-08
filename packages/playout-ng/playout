@@ -185,10 +185,10 @@ class PrerecordedVideo(PlannedItem):
         self.framerate = float(framerate/1000)
         self.metadata = None
         self.has_been_prepared = False
-        if self.files['original'] is not None:
-            self.filename = FILE_BASE + self.files['original']
-        else:
+        if self.files['broadcast'] is not None:
             self.filename = FILE_BASE + self.files['broadcast']
+        else:
+            self.filename = FILE_BASE + self.files['original']
 
     async def prepare(self):
         try:
