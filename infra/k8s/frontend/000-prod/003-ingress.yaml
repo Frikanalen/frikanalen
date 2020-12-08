@@ -7,7 +7,6 @@ spec:
   redirectScheme:
     scheme: https
     permanent: true
-    port: 443
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -27,9 +26,7 @@ spec:
       scheme: http
       port: 3000
     middlewares:
-      redirect-to-https
-  tls:
-    certResolver: default
+      - name: redirect-to-https
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
