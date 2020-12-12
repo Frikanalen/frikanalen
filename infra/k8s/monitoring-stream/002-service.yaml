@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: monitoring-stream-ws
+spec:
+  type: ClusterIP
+  selector:
+    app: monitoring-stream-ws
+  ports:
+    - protocol: TCP
+      port: 8082
+      name: ws
+    - protocol: TCP
+      port: 8081
+      name: ts-http
