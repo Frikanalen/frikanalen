@@ -12,7 +12,9 @@ export default class MonitoringStream extends Component {
   render() {
     return (
       <div>
-        <div ref={this.el} style={{ height: "576px", width: "1024px" }}></div>
+        <div ref={this.el} style={{ width: "1024px", height: "576px", margin: "0 auto" }}>
+          &nbsp;
+        </div>
       </div>
     );
   }

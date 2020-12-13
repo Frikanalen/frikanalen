@@ -69,6 +69,16 @@ function ATEMPanel() {
       <div>
         <label>Programutgang:</label>
         <ButtonGroup>{inputs.map((index, name) => inputButton(index, name))}</ButtonGroup>
+      <style jsx>{`
+      label {
+        padding-right: 15px;
+      }
+      div {
+        background: black;
+        color: white;
+        padding: 10px;
+      }
+      `}</style>
       </div>
     );
   };
@@ -80,7 +90,7 @@ class Playout extends Component {
   render = () => {
     return (
       <Layout>
-        <Container>
+        <Container fluid>
           <Row>
             <h1>playout-styring</h1>
           </Row>
@@ -88,6 +98,8 @@ class Playout extends Component {
             <Col>
               <MonitoringStream />
             </Col>
+          </Row>
+          <Row>
             <Col>
               <ATEMPanel />
             </Col>
