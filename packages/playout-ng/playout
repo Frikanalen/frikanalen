@@ -265,6 +265,7 @@ class CasparPlayer():
     def __init__(self):
         self.reader = None
         self.writer = None
+        self.caspar_lock = asyncio.Lock()
 
     async def _query_framerate(self):
         channels = await self.issue('INFO')
@@ -343,13 +344,14 @@ class CasparPlayer():
 
     async def issue(self, cmd):
         """ Issues a command to CasparCG. Blocks until a response is received. """
-        try:
-            logging.debug("Issuing command to Caspar: %s", cmd)
-            self.writer.write((cmd + "\r\n").encode())
-            await self.writer.drain()
-            return await self._get_response()
-        except asyncio.TimeoutError:
-            raise
+        async with self.caspar_lock:
+            try:
+                logging.debug("Issuing command to Caspar: %s", cmd)
+                self.writer.write((cmd + "\r\n").encode())
+                await self.writer.drain()
+                return await self._get_response()
+            except asyncio.TimeoutError:
+                raise
 
 class Playout():
     async def run(self):
