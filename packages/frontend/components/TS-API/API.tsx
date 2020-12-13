@@ -87,6 +87,7 @@ interface fkUserJSON {
   first_name: string;
   last_name: string;
   email: string;
+  is_staff: boolean;
   phone_number: string;
   organization_roles: fkOrgRoleJSON[];
 }
@@ -103,6 +104,7 @@ export interface fkUser {
   firstName: string;
   lastName: string;
   msisdn: string;
+  isStaff: boolean;
   organizationRoles: fkOrgRole[];
 }
 
@@ -121,6 +123,7 @@ export async function getUserProfile(token): Promise<fkUser> {
 
   return {
     email: userJSON.email,
+    isStaff: userJSON.is_staff,
     firstName: userJSON.first_name,
     lastName: userJSON.last_name,
     msisdn: userJSON.phone_number,

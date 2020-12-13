@@ -119,7 +119,9 @@ class VideoUpload extends Component {
               <div>
                 Lastet opp: {humanFileSize(this.state.uploadProgressBytes)} / {humanFileSize(this.state.fileSize)}
               </div>
-              <Button ref={null} id="uploadStartButton" onClick={this.startUpload}>Start</Button>
+              <Button ref={null} id="uploadStartButton" onClick={this.startUpload}>
+                Start
+              </Button>
               <ProgressBar animated now={this.state.uploadProgressPercent} />
             </Col>
           </Row>
@@ -135,7 +137,9 @@ class VideoUpload extends Component {
           <Col>
             <h2>Videofil ikke lastet opp</h2>
             <p>Vennligst last opp en fil</p>
-            <Button id="browseButton" ref={this.browseRef}>Velg fil...</Button>
+            <Button id="browseButton" ref={this.browseRef}>
+              Velg fil...
+            </Button>
           </Col>
         </Row>
       </Container>

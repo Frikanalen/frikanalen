@@ -7,8 +7,6 @@ import "shaka-player/dist/demo.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import "components/main.sass";
 import PropTypes from "prop-types";
-import config from "components/configs";
-import fetch from "isomorphic-unfetch";
 
 import { getUserProfile } from "components/TS-API/API";
 import { UserContext } from "../components/UserContext";

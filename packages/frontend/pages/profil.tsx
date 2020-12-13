@@ -150,6 +150,22 @@ function OrganizationsCard() {
     </Col>
   );
 }
+
+function StaffMenu() {
+  return (
+    <WindowWidget invisible>
+      <Col>
+        <Card>
+          <Card.Body>
+            <Card.Title>Administratormeny</Card.Title>
+            <Button href="/playout">Styring</Button>
+          </Card.Body>
+        </Card>
+      </Col>
+    </WindowWidget>
+  );
+}
+
 export default function Profile() {
   const { profile } = useContext(UserContext);
 
@@ -159,12 +175,14 @@ export default function Profile() {
         <p>Du må være logget inn</p>
       </Layout>
     );
+
   return (
     <Layout>
       <WindowWidget invisible>
         <h2>Hei, {profile.firstName}!</h2>
         <UserCard />
       </WindowWidget>
+      {profile.isStaff ? <StaffMenu /> : null}
       <WindowWidget invisible>
         <OrganizationsCard />
       </WindowWidget>
