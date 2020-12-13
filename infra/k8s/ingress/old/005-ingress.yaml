@@ -9,7 +9,7 @@ spec:
   - match: Host(`traefik.admin.frikanalen.no`)
     kind: Rule
     middlewares: 
-      - name: basic-auth
+      - name: basic-admin-auth
     services:
       - name: api@internal
         kind: TraefikService

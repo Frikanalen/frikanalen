@@ -1,21 +1,3 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: basic-auth
-spec:
-  basicAuth:
-    secret: authsecret
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: scheme-redirect
-  namespace: kube-system
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
 ---
 #apiVersion: traefik.containo.us/v1alpha1
 #kind: IngressRoute

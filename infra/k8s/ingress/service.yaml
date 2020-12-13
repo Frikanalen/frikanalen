@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: traefik
+  name: traefik
+spec:
+  externalIPs:
+    - 192.168.3.100
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: web
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: websecure
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: admin
+    port: 8100
+    protocol: TCP
+    targetPort: 8100
+  selector:
+    app: traefik
+  type: LoadBalancer

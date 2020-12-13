@@ -8,12 +8,11 @@ data:
   traefik-config: |-
     [entryPoints]
       [entryPoints.web]
-      address = ":80"
-        [entryPoints.web.redirect]
-        regex = "^http://(.*)"
-        replacement = "https://$1"
+        address = ":80"
       [entryPoints.websecure]
-      address = ":443"
+        address = ":443"
+      [entryPoints.monitoring]
+        address = ":8081/udp"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -79,6 +78,9 @@ spec:
         - containerPort: 80
           name: web
           protocol: TCP
+        - containerPort: 8081
+          name: monitoring
+          protocol: UDP
         - containerPort: 443
           name: websecure
           protocol: TCP

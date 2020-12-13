@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: default
+  name: traefik-ingress-controller
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: default
+  name: traefik
+  labels:
+    app: traefik
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      containers:
+        - name: traefik
+          image: traefik:v2.3
+          args:
+            - --api.insecure
+            - --accesslog
+            - --entrypoints.web.address=:80
+            - --entrypoints.websecure.address=:443
+            - --entrypoints.admin.address=:8100
+            - --entrypoints.monitoring.address=:8081/udp
+            - --providers.kubernetescrd
+            - --certificatesresolvers.default.acme.tlschallenge
+            - --api.dashboard=true
+            - --metrics.prometheus
+            - --ping=true
+            - --log.level=INFO
+            - --certificatesresolvers.default.acme.email=toresbe@gmail.com
+            - --certificatesresolvers.default.acme.storage=/acme/acme.json
+          ports:
+            - name: web
+              containerPort: 80
+            - name: websecure
+              containerPort: 443
+            - name: monitoring
+              containerPort: 8081
+            - name: admin
+              containerPort: 8100
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /acme
+              subPath: ""
+      volumes:
+      - name: storage-volume
+        persistentVolumeClaim:
+          claimName: traefik-certstore

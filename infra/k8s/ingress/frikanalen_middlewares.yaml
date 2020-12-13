@@ -1,8 +1,25 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
+  name: basic-admin-auth
+spec:
+  basicAuth:
+    secret: basic-auth-secret
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
   name: fklan-ipwhitelist
 spec:
   ipWhiteList:
     sourceRange:
       - 192.168.3.0/24
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: scheme-redirect
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
