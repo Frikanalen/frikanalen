@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+dgram@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/dgram/-/dgram-1.0.1.tgz#37f3b200f8033a5ff759303089c81ce361b651c3"
+  integrity sha1-N/OyAPgDOl/3WTAwicgc42G2UcM=
+
 ws@^7.4.1:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.1.tgz#a333be02696bd0e54cea0434e21dcc8a9ac294bb"

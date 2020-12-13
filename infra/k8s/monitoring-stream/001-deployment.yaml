@@ -16,7 +16,7 @@ spec:
       - name: monitoring-stream-ws
         image: frikanalen/monitoring-stream-ws:latest
         ports:
-          - name: ts-http
+          - name: ts-udp
             containerPort: 8081
           - name: ws
             containerPort: 8082

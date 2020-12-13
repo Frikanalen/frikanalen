@@ -2,25 +2,6 @@
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: monitoring-ts-input
-  namespace: default
-spec:
-  entryPoints: 
-    - web
-  routes:
-  - match: Host(`monitoring.frikanalen.no`)
-    kind: Rule
-    services:
-    - kind: Service
-      name: monitoring-stream-ws
-      scheme: http
-      port: 8081
-  - middlewares:
-    - name: fklan-ipwhitelist
----
-kind: IngressRoute
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
   name: monitoring
   namespace: default
 spec:
