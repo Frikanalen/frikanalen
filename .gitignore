@@ -3,3 +3,4 @@ packages/fkweb/fkbeta/default.db
 /.idea
 env
 *.swp
+**/.DS_Store
