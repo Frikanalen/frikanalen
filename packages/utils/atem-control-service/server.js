@@ -37,6 +37,7 @@ class AtemControl {
             //this.myAtem.setMultiViewerSource({source:2, windowIndex: 2}, 0).then(res => console.log(res))
             //this.myAtem.setMultiViewerSource({source:3, windowIndex: 3}, 0).then(res => console.log(res))
             //this.myAtem.setInputSettings({shortName:"RX", longName:"RX"}, 4).then(res => console.log(res))
+            this.myAtem.setMultiViewerSource({source:1, windowIndex: 1}, 0).then(res => console.log(res))
             this.myAtem.setMultiViewerSource({source:3, windowIndex: 3}, 0).then(res => console.log(res))
             this.myAtem.setMultiViewerSource({source:4, windowIndex: 4}, 0).then(res => console.log(res))
             //this.myAtem.changeProgramInput(3)
