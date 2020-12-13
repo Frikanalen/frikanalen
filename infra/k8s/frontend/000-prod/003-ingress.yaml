@@ -1,13 +1,3 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: redirect-to-https
-  namespace: default
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
----
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
