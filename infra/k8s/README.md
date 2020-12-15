@@ -1,4 +1,7 @@
-# kubernetes_draft
-Some experiments with Frikanalen/Docker/Kubernetes
+# k8s
 
-This repository will be moved into a pull request for Frikanalen/frikanalen and subesequently deleted.
+This directory contains the CRDs which orchestrate the vast majority of Frikanalen's deployment.
+
+
+
+
