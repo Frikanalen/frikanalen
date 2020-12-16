@@ -1,2 +1,4 @@
+.idea/
+*.js
 *.swp
 node_modules/
