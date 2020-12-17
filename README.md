@@ -14,7 +14,7 @@ This repository is home to all the software used by Frikanalen. The main [packag
 - [fkupload](packages/fkupload) - Upload backend (the frontend is in fkweb) taking files from users
 - [fkprocess](packages/fkprocess) - The processing backend for the files
 - [utils](packages/utils) - Small utilities, microservices and helpers, and things we find no other place for
-    - [atem-control-service](packages/utils/atem-control-service) - Microservice to control our production switcher
+    - [atem-control](packages/utils/atem-control) - Node.js backend to control sound/vision mixer
     - [nagios-check-video-stream](packages/utils/nagios-check-video-stream) - Legacy checker for video stream (Prometheus rewrite in progress)
     - [obe-service](packages/utils/obe-service) - systemd wrapper for Open Broadcast Encoder
     - [prom-check-video-stream](packages/utils/prom-check-video-stream) - New checker for video stream (incomplete)

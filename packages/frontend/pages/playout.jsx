@@ -7,6 +7,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { UserContext } from "../components/UserContext";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import TextSlideGenerator from "../components/TextSlideGenerator";
 
 function ATEMPanel() {
   const { token } = useContext(UserContext);
@@ -86,28 +87,31 @@ function ATEMPanel() {
   return <ProgramBus />;
 }
 
-class Playout extends Component {
-  render = () => {
-    return (
-      <Layout>
-        <Container fluid>
-          <Row>
-            <h1>playout-styring</h1>
-          </Row>
-          <Row>
-            <Col>
-              <MonitoringStream />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <ATEMPanel />
-            </Col>
-          </Row>
-        </Container>
-      </Layout>
-    );
-  };
-}
+export default function Playout() {
+  const [show, setShow] = useState(false);
 
-export default Playout;
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <Layout>
+      <TextSlideGenerator show={show} onHide={()=>handleClose()} />
+      <Container fluid>
+        <Row>
+          <h1>playout-styring</h1>
+        </Row>
+        <Row>
+          <Col>
+            <MonitoringStream />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button onClick={handleShow}>Test</Button>
+            <ATEMPanel />
+          </Col>
+        </Row>
+      </Container>
+    </Layout>
+  );
+}

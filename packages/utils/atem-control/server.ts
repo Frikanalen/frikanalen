@@ -49,12 +49,10 @@ class AtemControl {
         this.app.use(bodyParser.json());
     }
 
-    async listen() {
+    async run() {
         if (ATEM_HOST === undefined)
             throw new Error("ATEM_HOST environment variable must be set!");
         this.myAtem.on('error', console.error)
-
-        await this.myAtem.connect(ATEM_HOST);
 
         this.myAtem.on('connected', async () => {
             await this.myAtem.setAudioMixerInputProps(1, {mixOption: 2});
@@ -63,7 +61,7 @@ class AtemControl {
             await this.myAtem.setAudioMixerInputProps(4, {mixOption: 2});
 
             this.app.listen(LISTEN_PORT, () => {
-                console.log(`Server listening on port ${LISTEN_PORT}...`);
+                console.log(`Server lisdtening on port ${LISTEN_PORT}...`);
             });
         })
 
@@ -93,21 +91,26 @@ class AtemControl {
                 }
             )
         });
+        console.error("asdfasdf");
 
         // FIXME: This should not be running through the atem control server at all!
         // TODO: move from buffer() to streams
         this.app.get('/poster/preview', async (req: expressRequest, res: expressResponse) => {
             const text = req.query.text;
             const heading = req.query.heading;
-
+            console.error("Generating poster: [", text, "] heading: [", heading, "].")
             const pngPosterRes = await fetch('http://stills-generator/getPoster.png',
                 {
                     headers: {'Content-Type': 'application/json'},
                     method: 'post',
                     body: JSON.stringify({text: text, heading: heading}),
                 })
-            if (!pngPosterRes.ok) throw new Error(`unexpected response from renderer ${pngPosterRes.statusText}`);
-            res.type('image/png').send(pngPosterRes)
+            if (!pngPosterRes.ok) {
+                res.status(500).send(`unexpected response from renderer ${pngPosterRes.statusText}`).end();
+                return;
+            }
+            const pixMap = await pngPosterRes.arrayBuffer()
+            res.type('image/png').send(new Buffer(pixMap))
         });
 
         this.app.post('/poster/upload', async (req: expressRequest, res: expressResponse) => {
@@ -134,9 +137,9 @@ class AtemControl {
             }
         });
 
-
+        await this.myAtem.connect(ATEM_HOST);
     }
 }
 
 let atem = new AtemControl();
-atem.listen();
+atem.run();

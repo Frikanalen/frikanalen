@@ -36,7 +36,7 @@
     "react-bootstrap": "^1.2.2",
     "react-bootstrap-typeahead": "^5.1.2",
     "react-dom": "^17.0.1",
-    "react-meta-tags": "^0.7.4",
+    "react-meta-tags": "^1.0.1",
     "react-moment": "^1.0.0",
     "resumablejs": "^1.1.0",
     "sass": "^1.29.0",
@@ -48,19 +48,19 @@
     "webrtc-adapter": "^7.6.0"
   },
   "devDependencies": {
-    "@types/react": "^16.9.56",
+    "@types/react": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
     "eslint": "^7.13.0",
     "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^6.13.0",
+    "eslint-config-prettier": "^7.0.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jsx-a11y": "^6.3.0",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4",
     "husky": "^4.3.0",
     "lint-staged": "^10.4.2",
-    "prettier": "2.1.2",
+    "prettier": "2.2.1",
     "typescript": "^4.0.5"
   },
   "prettier": {
