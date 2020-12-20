@@ -1,0 +1,2 @@
+#aiohttp[speedups]
+prometheus-client
