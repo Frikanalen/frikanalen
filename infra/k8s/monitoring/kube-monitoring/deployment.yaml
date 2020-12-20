@@ -16,7 +16,7 @@ spec:
         app: kube-state-metrics
     spec:
       containers:
-      - image: quay.io/coreos/kube-state-metrics:v2.0.0-alpha.3
+      - image: quay.io/coreos/kube-state-metrics:v2.0.0-beta
         livenessProbe:
           httpGet:
             path: /healthz
@@ -24,6 +24,8 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 5
         name: kube-state-metrics
+        args:
+          - '--resources=configmaps,cronjobs,daemonsets,deployments,endpoints,horizontalpodautoscalers,jobs,leases,limitranges,mutatingwebhookconfigurations,namespaces,networkpolicies,nodes,persistentvolumeclaims,persistentvolumes,poddisruptionbudgets,pods,replicasets,replicationcontrollers,resourcequotas,secrets,services,statefulsets,storageclasses,validatingwebhookconfigurations,volumeattachments'
         ports:
         - containerPort: 8080
           name: http-metrics
