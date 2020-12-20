@@ -291,6 +291,7 @@ class CasparPlayer():
     async def connect(self):
         ''' This code assumes that there is only one channel.'''
         import re
+        logging.info("Connecting to %s" % (CASPAR_HOST,))
         self.reader, self.writer = await asyncio.open_connection(CASPAR_HOST, 5250)
         await CurrentPlayer.issue(f"PLAY {CHANNELBUG_LAYER} stills/screenbug")
         await self._query_framerate()
