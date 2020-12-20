@@ -5,34 +5,6 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ---
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: prometheus-db
-  annotations:
-    pv.beta.kubernetes.io/gid: "1234"
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 5G
-  accessModes:
-    - ReadWriteOnce
-  local:
-    path: /data/prometheus/
-  storageClassName: local-storage
-  persistentVolumeReclaimPolicy: Retain
-  volumeMode: Filesystem
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - tx1
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

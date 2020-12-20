@@ -10,7 +10,12 @@ data:
       rules:
       - alert: PlayoutDown
         expr: absent(kube_statefulset_status_replicas_ready{namespace="default", statefulset="playout-ng"})
-        for: 1s
+        labels:
+          severity: page
+        annotations:
+          summary: Playout is down
+      - alert: PlayoutFrozen
+        expr: pgm_motion_state==0
         labels:
           severity: page
         annotations:
@@ -143,7 +148,7 @@ data:
 
         static_configs:
           - targets: ['localhost:9090']
-          - targets: ['traefik.kube-system:8100']
+          - targets: ['traefik:8100']
 
       - job_name: 'kube-state-metrics'
 
@@ -151,6 +156,11 @@ data:
 
         static_configs:
           - targets: ['kube-state-metrics.kube-system:8080']
+
+      - job_name: 'stream-status'
+        scrape_interval: 1s
+        static_configs:
+          - targets: ['frostguard:9001']
 
       - job_name: 'node'
         scrape_interval: 10s

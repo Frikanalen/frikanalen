@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: frostguard
+  labels:
+    app: frostguard
+spec:
+  replicas: 1
+  serviceName: frostguard
+  selector:
+    matchLabels:
+      app: frostguard
+  template:
+    metadata:
+      labels:
+        app: frostguard
+    spec:
+      containers:
+      - name: frostguard
+        image: frikanalen/frostguard
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9001
