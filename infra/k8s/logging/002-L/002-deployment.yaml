@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: logstash-deployment
-  namespace: kube-system
 spec:
   replicas: 1
   selector:
@@ -15,7 +14,7 @@ spec:
     spec:
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:6.3.0
+        image: docker.elastic.co/logstash/logstash:7.9.3
         ports:
         - containerPort: 5044
         volumeMounts:

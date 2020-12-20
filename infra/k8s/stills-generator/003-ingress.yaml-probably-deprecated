@@ -1,8 +1,7 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: cors
-  namespace: default
+  name: stills-generator-cors
 spec:
   headers:
     customResponseHeaders:
@@ -22,8 +21,7 @@ spec:
   - match: Host(`stills-generator.frikanalen.no`)
     kind: Rule
     middlewares:
-      - name: cors
-        namespace: default
+      - name: stills-generator-cors
     services:
     - kind: Service
       name: stills-generator

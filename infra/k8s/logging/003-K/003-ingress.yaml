@@ -1,38 +1,37 @@
----
-kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: kibana-logging-https-redir
-  namespace: kube-system
+ name: scheme-redirect-kibana
 spec:
-  entryPoints: 
-    - web
-  middlewares:
-    - name: scheme-redirect
+  entryPoints:
+  - web
   routes:
-  - match: Host(`kibana.frikanalen.no`) 
-    kind: Rule
+  - kind: Rule
+    match: Host(`kibana.frikanalen.no`)
     services:
     - kind: Service
       name: kibana-logging
-      scheme: http
       port: 5601
+      scheme: http
+    middlewares:
+      - name: scheme-redirect
 ---
-kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: kibana-logging-https
-  namespace: kube-system
+ name: kibana
 spec:
-  entryPoints: 
-    - websecure
+  entryPoints:
+  - websecure
   routes:
-  - match: Host(`kibana.frikanalen.no`) 
-    kind: Rule
+  - kind: Rule
+    match: Host(`kibana.frikanalen.no`)
     services:
     - kind: Service
       name: kibana-logging
-      scheme: http
       port: 5601
+      scheme: http
+    middlewares:
+    - name: basic-admin-auth 
   tls:
     certResolver: default

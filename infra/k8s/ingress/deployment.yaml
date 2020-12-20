@@ -5,7 +5,7 @@ metadata:
   name: traefik-ingress-controller
 
 ---
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   namespace: default
@@ -14,7 +14,7 @@ metadata:
     app: traefik
 
 spec:
-  replicas: 1
+  serviceName: playout-ng
   selector:
     matchLabels:
       app: traefik
@@ -38,6 +38,7 @@ spec:
             - --certificatesresolvers.default.acme.tlschallenge
             - --api.dashboard=true
             - --metrics.prometheus
+            - --metrics.prometheus.entryPoint=admin
             - --ping=true
             - --log.level=INFO
             - --certificatesresolvers.default.acme.email=toresbe@gmail.com

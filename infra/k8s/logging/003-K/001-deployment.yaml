@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kibana-logging
-  namespace: kube-system
   labels:
     k8s-app: kibana-logging
 spec:
@@ -17,9 +16,9 @@ spec:
     spec:
       containers:
       - name: kibana-logging
-        image: docker.elastic.co/kibana/kibana-oss:6.8.4
+        image: docker.elastic.co/kibana/kibana-oss:7.9.3
         env:
-          - name: ELASTICSEARCH_URL
+          - name: ELASTICSEARCH_HOSTS
             value: http://elasticsearch-logging:9200
         ports:
         - containerPort: 5601

@@ -26,7 +26,7 @@ spec:
         namespace: default
     services:
     - kind: Service
-      name: stills-upload
+      name: atem-control
       scheme: http
       port: 80
   tls:
