@@ -2,8 +2,28 @@
 
 import aiohttp
 import asyncio
-import logging
 import requests
+import logging
+from pythonjsonlogger import jsonlogger
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logHandler = logging.StreamHandler()
+class CustomJsonFormatter(jsonlogger.JsonFormatter):
+    def add_fields(self, log_record, record, message_dict):
+        super(CustomJsonFormatter, self).add_fields(log_record, record, message_dict)
+        if not log_record.get('timestamp'):
+            # this doesn't use record.created, so it is slightly off
+            now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+            log_record['timestamp'] = now
+        if log_record.get('level'):
+            log_record['level'] = log_record['level'].upper()
+        else:
+            log_record['level'] = record.levelname
+
+formatter = CustomJsonFormatter('%(timestamp)s %(level)s %(name)s:%(lineno)s %(message)s')
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
 
 from datetime import datetime, timedelta
 import pytz
@@ -32,10 +52,10 @@ async def ScheduleLoader(api_url):
     schedule = []
 
     for item in schedule_json['items']:
-        logging.warning(f"{item}")
+        logger.warning(f"{item}")
         startTime = parse(item['startTime'])
         endTime = parse(item['endTime'])
-        logging.warning(f"{startTime} og {endTime}")
+        logger.warning(f"{startTime} og {endTime}")
         if item['type'] == 'video':
             schedule.append(PrerecordedVideo(item['videoID'], VIDEO_LAYER, item['framerate'],
                 startTime, endTime))
@@ -67,7 +87,7 @@ class VideoFiles():
             return None
 
         if data['count'] > 1:
-            logging.warning("<1 video files returned for video %d type %s, returning 1"\
+            logger.warning("<1 video files returned for video %d type %s, returning 1"\
                     .format(self.videoID, file_type))
 
         return(data['results'][0]['filename'])
@@ -83,7 +103,7 @@ class Scheduler():
             await item.sleep_until_time_to_prepare()
             await self._prepare_item(item)
         await item.sleep_until_time_to_play()
-        logging.info("Playing item")
+        logger.info("Playing item")
         await item.cue()
         if self.schedule_age + self.schedule_refresh_rate > localtime():
             raise ScheduleExpiryException
@@ -92,10 +112,10 @@ class Scheduler():
         """ Loads or does whatever preparatory work needed."""
         prepare_op = getattr(item, "prepare", None)
         if callable(prepare_op):
-            logging.info("Preparing next item")
+            logger.info("Preparing next item")
             await prepare_op()
         else:
-            logging.info("Next item {} does not have a prepare() method".format(item))
+            logger.info("Next item {} does not have a prepare() method".format(item))
 
     async def _validate(self):
         pass
@@ -107,24 +127,24 @@ class Scheduler():
                 self.schedule = await ScheduleLoader(API_URL)
                 self.schedule_age = localtime()
             except Exception:
-                logging.error("Failed to load a schedule!")
+                logger.error("Failed to load a schedule!")
                 raise
             try:
                 await self._validate()
             except Exception:
-                logging.error("Failed to validate schedule!")
+                logger.error("Failed to validate schedule!")
                 raise
             for item in self.schedule:
                 if not item.already_done():
                     tasks = tasks + (await self.task_from_item(item),)
                 else:
-                    logging.debug(f"ScheduleItem {item} is in the past, skipping...")
+                    logger.debug(f"ScheduleItem {item} is in the past, skipping...")
             await asyncio.wait(tasks)
 
 
 
     async def task_from_item(self, item):
-        logging.info('Waiting for next cue: %s', item)
+        logger.info('Waiting for next cue: %s', item)
         task = asyncio.create_task(self._play_item(item))
         return task
 
@@ -173,9 +193,9 @@ class PlannedItem(Item):
         # or until task is cancelled; if the task is cancelled,
         # the CancelledError exception is implicitly raised
         # and must be handled by anything that awaits completion
-        logging.info(f"waiting for completion {self._seconds_left()} seconds left")
+        logger.info(f"waiting for completion {self._seconds_left()} seconds left")
         await asyncio.sleep(self._seconds_left())
-        logging.info(f"Finished waiting")
+        logger.info(f"Finished waiting")
 
 class PrerecordedVideo(PlannedItem):
     def __init__(self, videoID, layer, framerate, startTime, endTime):
@@ -272,7 +292,7 @@ class CasparPlayer():
         channel_mode = channels[0].split(' ')[1]
 
         if len(channels) > 1:
-            logging.warning(
+            logger.warning(
                         ('This code assumes only 1 CasparCG. It will base '
                         'calculations on the framerate of the first channel '
                         '(mode {}).').format(channel_mode)
@@ -286,12 +306,12 @@ class CasparPlayer():
         self.scan_lines, self.frame_rate = [int(x) for x in channel_mode.split(self.scan_mode[0])]
         self.frame_rate = float(self.frame_rate / 100)
 
-        logging.info('CasparCG mode: {}.{}'.format(channel_mode[:-2], channel_mode[-2:]))
+        logger.info('CasparCG mode: {}.{}'.format(channel_mode[:-2], channel_mode[-2:]))
 
     async def connect(self):
         ''' This code assumes that there is only one channel.'''
         import re
-        logging.info("Connecting to %s" % (CASPAR_HOST,))
+        logger.info("Connecting to %s" % (CASPAR_HOST,))
         self.reader, self.writer = await asyncio.open_connection(CASPAR_HOST, 5250)
         await CurrentPlayer.issue(f"PLAY {CHANNELBUG_LAYER} stills/screenbug")
         await self._query_framerate()
@@ -307,7 +327,7 @@ class CasparPlayer():
         while response[-2:] != b'\r\n':
             response += await self.reader.read(1)
 
-        logging.debug('CasparCG replied %s' % (response.decode().strip(),))
+        logger.debug('CasparCG replied %s' % (response.decode().strip(),))
 
         # From the AMCP spec:
         #
@@ -347,7 +367,7 @@ class CasparPlayer():
         """ Issues a command to CasparCG. Blocks until a response is received. """
         async with self.caspar_lock:
             try:
-                logging.debug("Issuing command to Caspar: %s", cmd)
+                logger.debug("Issuing command to Caspar: %s", cmd)
                 self.writer.write((cmd + "\r\n").encode())
                 await self.writer.drain()
                 return await self._get_response()
@@ -363,7 +383,7 @@ class Playout():
 CurrentPlayer = CasparPlayer()
 
 if __name__=='__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logger.info("Playout starting up...")
     loop = asyncio.get_event_loop()
     r = loop.run_until_complete(Playout().run())
     print(r)
