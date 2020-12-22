@@ -10,7 +10,7 @@ import Layout from "../components/Layout";
 import configs from "../components/configs";
 
 export default function Signupform() {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState<React.ReactNode>(null);
   const [givenName, setGivenName] = useState("");
   const [familyName, setFamilyName] = useState("");
   const [email, setEmail] = useState("");
@@ -59,7 +59,7 @@ export default function Signupform() {
   return (
     <Layout>
       <WindowWidget invisible>
-        <Card variant="primary" border="primary" className="loginCard">
+        <Card border="primary" className="loginCard">
           <Card.Body>
             <Card.Title>Registrer deg</Card.Title>
             <Card.Text>
@@ -130,7 +130,7 @@ export default function Signupform() {
                 <Form.Row>
                   <Col>
                     <Alert type="warning">{errorMessage}</Alert>
-                    <Button className="submit" variant="primary" type="submit" primary="yes">
+                    <Button className="submit" variant="primary" type="submit">
                       Submit
                     </Button>
                   </Col>

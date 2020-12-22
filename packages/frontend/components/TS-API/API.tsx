@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import configs from "../configs";
-import { UserContext } from "components/UserContext";
 
 interface fkOrgRoleJSON {
   role: string;
@@ -15,7 +14,11 @@ export interface fkVideoJSON {
   files: [filetype: string, url: string][];
 }
 
-export interface fkVideo {}
+export interface fkVideo {
+  id: number,
+  name: string,
+  organization: fkOrgJSON
+}
 
 export interface fkScheduleJSON {
   results: fkScheduleItem[];
@@ -47,7 +50,7 @@ export interface fkOrgJSON {
   description: string;
 }
 
-export async function APIGET<T>(endpoint: string, token = null, reloadCache = false): Promise<T> {
+export async function APIGET<T>(endpoint: string, token: string | null = null, reloadCache: boolean = false): Promise<T> {
   let authHeaders = {};
   let cacheOptions = "default" as RequestCache;
   if (token) authHeaders = { Authorization: `Token ${token}` };
@@ -77,7 +80,7 @@ export async function fkFetchOrg(orgID: number): Promise<fkOrg> {
   };
 }
 
-interface fkOrgRole {
+export interface fkOrgRole {
   role: string;
   orgID: number;
   orgName: string;
@@ -95,8 +98,8 @@ interface fkUserJSON {
 export type fkScheduleItem = {
   id: number;
   video: fkVideo;
-  start_time: Date;
-  end_time: Date;
+  starttime: string;
+  endtime: string;
 };
 
 export interface fkUser {
@@ -108,13 +111,11 @@ export interface fkUser {
   organizationRoles: fkOrgRole[];
 }
 
-export async function getUserProfile(token): Promise<fkUser> {
+export async function getUserProfile(token: string): Promise<fkUser> {
   const userJSON = await APIGET<fkUserJSON>("user", token, true);
 
-  let orgRoles = [];
-
-  userJSON.organization_roles.forEach((role) => {
-    orgRoles.push({
+  const orgRoles: fkOrgRole[] = userJSON.organization_roles.map((role) => {
+    return ({
       role: role.role,
       orgID: role.organization_id,
       orgName: role.organization_name,

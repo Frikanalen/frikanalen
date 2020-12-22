@@ -1,18 +1,18 @@
 import Link from "next/link";
-import { UserContext } from "./UserContext";
 import React, { useContext } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import {UserContext, UserContextState} from "./UserContext";
 
 const UserMenu = () => {
-  const user = useContext(UserContext);
+  const user = useContext<UserContextState>(UserContext);
   if (!user.isLoggedIn) {
     return <Nav.Link href="/login">Logg inn/registrer</Nav.Link>;
   } else {
     return (
       <div>
-        <NavDropdown className="userdropdown" title={user.profile?.email}>
+        <NavDropdown id="" className="userdropdown" title={user.profile?.email}>
           <Link href="/profil" passHref>
             <NavDropdown.Item>Brukerside</NavDropdown.Item>
           </Link>
@@ -49,7 +49,7 @@ export default function Header() {
           <Link href="/schedule" passHref>
             <Nav.Link>Sendeplan</Nav.Link>
           </Link>
-          <NavDropdown title="Om">
+          <NavDropdown id="" title="Om">
             <Link href="/om" passHref>
               <NavDropdown.Item>Om oss</NavDropdown.Item>
             </Link>

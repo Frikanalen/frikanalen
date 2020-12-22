@@ -7,11 +7,12 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { findRunningProgram } from "../../components/ScheduleInfo";
 import "moment/locale/nb";
+import {UserContextState} from "../../components/UserContext";
 
 const TrianglifiedDiv = dynamic(() => import("components/graphics/background.js"), { ssr: false });
 const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), { ssr: false });
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: UserContextState) {
   const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
 
   return {

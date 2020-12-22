@@ -6,7 +6,7 @@ import { APIGET, fkScheduleJSON, fkScheduleItem } from "components/TS-API/API";
 import { Col, Container, Row } from "react-bootstrap";
 import styles from "./ScheduleInfo.module.sass";
 
-export function findRunningProgram(schedule): number {
+export function findRunningProgram(schedule: fkScheduleItem[]): number {
   const now = new Date();
   // FIXME: This will render wrong if the user's browser is not
   // in the Europe/Oslo timezone
@@ -23,17 +23,22 @@ export function findRunningProgram(schedule): number {
       return parseInt(id);
     }
   }
+  return 0;
 }
 
-function as_HH_mm(datestr) {
+function as_HH_mm(datestr: string): string {
   let d = new Date(datestr);
   return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
 }
 
-export default class ScheduleInfo extends Component<
-  { initialSchedule: fkScheduleJSON },
-  { schedule: fkScheduleItem[] }
-> {
+interface ScheduleInfoProps {
+  initialSchedule: fkScheduleJSON
+
+}
+interface ScheduleInfoState {
+  schedule: fkScheduleItem[]
+}
+export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleInfoState> {
   async componentDidMount() {
     const json = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
     this.setState({
@@ -41,7 +46,7 @@ export default class ScheduleInfo extends Component<
     });
   }
 
-  constructor(props) {
+  constructor(props: ScheduleInfoProps) {
     super(props);
     const { initialSchedule } = props;
 
@@ -53,8 +58,10 @@ export default class ScheduleInfo extends Component<
   render() {
     const { schedule } = this.state;
     const currentItem = findRunningProgram(schedule);
-    const programme_row = (programme, DOMclass) => {
-      if (typeof programme === "undefined") return false;
+    const programme_row = (programme: fkScheduleItem | null, DOMclass: string) => {
+      if (programme == null) {
+        return <></>;
+      }
 
       return (
         <Container className={styles.programme + " " + DOMclass} fluid>

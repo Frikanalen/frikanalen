@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useContext, useState } from "react";
-import { APIGET, fkOrgJSON } from "components/TS-API/API";
+import {APIGET, fkOrgJSON, fkOrgRole} from "components/TS-API/API";
 
 import Alert from "react-bootstrap/Alert";
 import Card from "react-bootstrap/Card";
@@ -11,7 +11,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import WindowWidget from "../components/WindowWidget";
 
-import { UserContext } from "../components/UserContext";
+import {UserContext} from "../components/UserContext";
 import configs from "../components/configs";
 
 import { fkUser, getUserProfile } from "../components/TS-API/API";
@@ -19,7 +19,12 @@ import { fkUser, getUserProfile } from "../components/TS-API/API";
 import Layout from "../components/Layout";
 
 function UserProfile() {
-  const { profile, token, refresh } = useContext(UserContext);
+  const context = useContext(UserContext);
+  if (!context.isLoggedIn) {
+    return (<></>);
+  }
+
+  const { profile, token, refresh } = context;
   const [firstName, setFirstName] = useState(profile?.firstName);
   const [lastName, setLastName] = useState(profile?.lastName);
   const [MSISDN, setMSISDN] = useState(profile?.msisdn);
@@ -89,8 +94,13 @@ function UserCard() {
   );
 }
 
-function OrganizationCard({ role }) {
-  const { token } = useContext(UserContext);
+function OrganizationCard({ role }: { role: fkOrgRole }) {
+  const context = useContext(UserContext);
+  if (!context.isLoggedIn) {
+    return (<></>);
+  }
+
+  const { token } = context;
   const [org, setOrg] = useState(null as fkOrgJSON);
 
   useEffect(() => {
@@ -113,7 +123,12 @@ function OrganizationCard({ role }) {
 
 function OrganizationList() {
   let organizationList;
-  const { profile } = useContext(UserContext);
+  const context = useContext(UserContext);
+  if (!context.isLoggedIn) {
+    return (<></>);
+  }
+
+  const { profile } = context;
 
   if (profile.organizationRoles) {
     if (profile.organizationRoles.length) {
@@ -167,14 +182,16 @@ function StaffMenu() {
 }
 
 export default function Profile() {
-  const { profile } = useContext(UserContext);
-
-  if (profile == null)
+  const context = useContext(UserContext);
+  if (!context.isLoggedIn) {
     return (
-      <Layout>
-        <p>Du må være logget inn</p>
-      </Layout>
+        <Layout>
+          <p>Du må være logget inn</p>
+        </Layout>
     );
+  }
+
+  const { profile } = context;
 
   return (
     <Layout>
