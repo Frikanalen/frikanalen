@@ -8,7 +8,10 @@ import PropTypes from "prop-types";
 
 import Header from "./Header";
 
-const Layout = ({ children }) => (
+interface LayoutProps {
+    children?: React.ReactNode
+}
+const Layout = (props: LayoutProps) => (
   <Container fluid className="mainContainer">
     <MetaTags>
       <title>Frikanalen</title>
@@ -17,7 +20,7 @@ const Layout = ({ children }) => (
       <Header />
     </Row>
     <Row noGutters>
-      <Col className="mainColumn">{children}</Col>
+      <Col className="mainColumn">{props.children}</Col>
     </Row>
     <footer className="d-none d-lg-block fixed-bottom">
       <a href="https://frikanalen.no/api/">REST API</a>

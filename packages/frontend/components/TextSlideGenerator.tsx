@@ -6,12 +6,21 @@ import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import {UserContext} from "./UserContext";
 
-export default function TextSlideGenerator(props) {
-  const { token } = useContext(UserContext);
+interface Props {
+  show: boolean,
+  onHide: () => void
+}
+export default function TextSlideGenerator(props: Props) {
+  const context = useContext(UserContext);
+  if (!context.isLoggedIn) {
+    return (<></>);
+  }
+
+  const { token } = context;
   const { show, onHide } = props;
-  const [ posterText, setPosterText ] = useState()
-  const [ posterHeading, setPosterHeading ] = useState()
-  const [ statusMessage, setStatusMessage ] = useState(null)
+  const [ posterText, setPosterText ] = useState<string>('')
+  const [ posterHeading, setPosterHeading ] = useState<string>('')
+  const [ statusMessage, setStatusMessage ] = useState<string | null>(null)
   const [ imageURL, setImageURL] = useState("https://stills-generator.frikanalen.no/poster/preview?text=&heading=\",")
 
   const resetImageTimeout = () => {
@@ -20,7 +29,7 @@ export default function TextSlideGenerator(props) {
     setImageURL(stillsGeneratorBase + queryString);
   }
 
-  const uploadPoster = async(heading, text) => {
+  const uploadPoster = async(heading: string, text: string) => {
     setStatusMessage("Laster opp...");
     await fetch("https://stills-generator.frikanalen.no/poster/upload", {
       method: "post",
@@ -52,7 +61,7 @@ export default function TextSlideGenerator(props) {
           <Form.Group>
             <Form.Label>Tekst</Form.Label>
             <Form.Control
-              onChange={(event) => setPosterText(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setPosterText(event.currentTarget.value)}
               as="textarea"
               placeholder="tekst"
             />
