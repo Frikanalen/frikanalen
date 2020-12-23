@@ -11,8 +11,10 @@ export default function TwitterTimeline(props) {
         screenName: "Frikanalen",
       }}
       options={{
-        tweetLimit: "1",
-        chrome: "transparent, noheader, nofooter, noborders, noscrollbar",
+        tweetLimit: 1,
+        chrome: "noheader, nofooter, noborders, noscrollbar",
+        width: "600",
+        height: "400",
       }}
     />
   );
