@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { findRunningProgram } from "../../components/ScheduleInfo";
 import "moment/locale/nb";
-import {UserContextState} from "../../components/UserContext";
+import { UserContextState } from "../../components/UserContext";
 
 const TrianglifiedDiv = dynamic(() => import("components/graphics/background.js"), { ssr: false });
 const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), { ssr: false });
@@ -38,7 +38,7 @@ function Carousel({ children }) {
 }
 
 function CarouselPage({ duration, children }) {
-  return <div style={{ width: "100%", height: "100%" }}>{children}</div>;
+  return <div style={{ width: "90%", height: "90%", margin: "0 auto" }}>{children}</div>;
 }
 
 function ScheduleColumn(props) {
@@ -52,23 +52,71 @@ function ScheduleColumn(props) {
   console.log(scheduleJSON);
 
   return (
-    <Col sm={{ size: "auto", offset: 1 }}>
+    <div className="nextProgramme">
       <h2>Neste program</h2>
-      <h3>
-        <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
-        {": "}
-        {scheduleJSON.results[currentProgramme].video.organization.name}
-      </h3>
-      <h3>{scheduleJSON.results[currentProgramme].video.name}</h3>
-    </Col>
+      <div className="nextProgrammeSchedule">
+        <h3>
+          <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
+        </h3>
+        <div className="programmeText">
+          <h3>{scheduleJSON.results[currentProgramme].video.organization.name}</h3>
+          <h4>{scheduleJSON.results[currentProgramme].video.name}</h4>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .nextProgramme h2 {
+          font-family: Roboto;
+          font-weight: 900;
+          text-align: center;
+        }
+        .nextProgrammeSchedule {
+          display: flex;
+          flex-flow: row nowrap;
+        }
+        .programmeText {
+          background: white;
+          border-left: 5px solid black;
+          padding-left: 10px;
+          padding-top: 0;
+          margin-left: 10px;
+        }
+        .nextProgramme {
+          margin-top: 140px;
+
+          flex-grow: 1;
+        }
+      `}</style>
+    </div>
   );
 }
 
 function TwitterColumn(props) {
   return (
-    <Col sm={{ size: "auto", offset: 1 }}>
+    <Col>
       <TwitterTimeline />
     </Col>
+  );
+}
+
+function LogoClockRow(props) {
+  return (
+    <div className="logoClockRow">
+      <div>
+        <img src="/images/frikanalen.png" style={{ display: "block", margin: "30px", marginLeft: "50px" }} />
+      </div>
+      <AnalogClock size="500" />
+      <style jsx>{`
+        .logoClockRow {
+          flex: 0 0 500px;
+          display: flex;
+          height: 100%;
+          flex-flow: column nowrap;
+          justify-content: space-evenly;
+          align-items: center;
+        }
+      `}</style>
+    </div>
   );
 }
 
@@ -83,22 +131,11 @@ function InfoPanel(props) {
 
   return (
     <CarouselPage duration="1000">
-      <Container>
-        <Row>
-          <img src="/images/frikanalen.png" style={{ margin: "30px", marginLeft: "51px" }} />
-        </Row>
-        <Row>
-          <div className="mt-3"></div>
-        </Row>
-        <Row>
-          <Col style={{ flexGrow: 0 }}>
-            <AnalogClock size="500" />
-          </Col>
-          {style}
-        </Row>
-        <Row>
-          <div className="mt-3"></div>
-        </Row>
+      <div className="foo">
+        <LogoClockRow />
+        {style}
+      </div>
+      <Container fluid>
         <Row>
           <Col style={{ textAlign: "center", marginTop: "30px", fontSize: "21pt" }}>
             Alt innhold sendt på Frikanalen av medlemsorganisasjoner er på deres eget ansvar.
@@ -110,6 +147,15 @@ function InfoPanel(props) {
           </Col>
         </Row>
       </Container>
+      <style jsx>{`
+        .foo {
+          display: flex;
+          height: 570px;
+
+          justify-content: space-between;
+          width: 100%;
+        }
+      `}</style>
     </CarouselPage>
   );
 }
@@ -128,7 +174,12 @@ export default function Index(props) {
   console.log("props in landing function: ", props);
   return (
     <TrianglifiedDiv width="1280" height="720">
-      <InfoPanel scheduleJSON={scheduleJSON} />
+      <InfoPanel className="foo" scheduleJSON={scheduleJSON} />
+      <style jsx>{`
+        .foo {
+          background: red;
+        }
+      `}</style>
     </TrianglifiedDiv>
   );
   return (
