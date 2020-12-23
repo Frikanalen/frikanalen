@@ -38,7 +38,7 @@ function Carousel({ children }) {
 }
 
 function CarouselPage({ duration, children }) {
-  return <div style={{ width: "90%", height: "90%", margin: "0 auto" }}>{children}</div>;
+  return <div style={{ width: "90%", height: "90%", margin: "0 auto", paddingTop: "5%" }}>{children}</div>;
 }
 
 function ScheduleColumn(props) {
@@ -73,16 +73,21 @@ function ScheduleColumn(props) {
         .nextProgrammeSchedule {
           display: flex;
           flex-flow: row nowrap;
+          flex-grow: 1;
         }
         .programmeText {
-          background: white;
+          background: #ded;
+          color: #121;
           border-left: 5px solid black;
           padding-left: 10px;
           padding-top: 0;
           margin-left: 10px;
         }
         .nextProgramme {
-          margin-top: 140px;
+          padding-top: 50px;
+          display: flex;
+          flex-flow: column nowrap;
+          justify-content: space-around;
 
           flex-grow: 1;
         }
@@ -91,20 +96,32 @@ function ScheduleColumn(props) {
   );
 }
 
-function TwitterColumn(props) {
+function TwitterPage(props) {
   return (
-    <Col>
-      <TwitterTimeline />
-    </Col>
+    <CarouselPage duration="1000">
+      <div className="foo">
+        <div>
+          <LogoClockRow />
+        </div>
+        <TwitterTimeline />
+      </div>
+      <style jsx>{`
+        .foo {
+          display: flex;
+          height: 100%;
+          justify-content: space-evenly;
+          align-items: center;
+          width: 100%;
+        }
+      `}</style>
+    </CarouselPage>
   );
 }
 
 function LogoClockRow(props) {
   return (
     <div className="logoClockRow">
-      <div>
-        <img src="/images/frikanalen.png" style={{ display: "block", margin: "30px", marginLeft: "50px" }} />
-      </div>
+      <img src="/images/frikanalen.png" style={{ display: "block" }} />
       <AnalogClock size="500" />
       <style jsx>{`
         .logoClockRow {
@@ -112,7 +129,7 @@ function LogoClockRow(props) {
           display: flex;
           height: 100%;
           flex-flow: column nowrap;
-          justify-content: space-evenly;
+          justify-content: space-between;
           align-items: center;
         }
       `}</style>
@@ -120,20 +137,15 @@ function LogoClockRow(props) {
   );
 }
 
-function InfoPanel(props) {
+function SchedulePage(props) {
   const { scheduleJSON } = props;
   let style;
-  if (readPageStyle() === "twitter") {
-    style = <TwitterColumn />;
-  } else {
-    style = <ScheduleColumn scheduleJSON={scheduleJSON} />;
-  }
 
   return (
     <CarouselPage duration="1000">
       <div className="foo">
         <LogoClockRow />
-        {style}
+        <ScheduleColumn scheduleJSON={scheduleJSON} />
       </div>
       <Container fluid>
         <Row>
@@ -150,7 +162,7 @@ function InfoPanel(props) {
       <style jsx>{`
         .foo {
           display: flex;
-          height: 570px;
+          height: 530px;
 
           justify-content: space-between;
           width: 100%;
@@ -160,26 +172,18 @@ function InfoPanel(props) {
   );
 }
 
-function readPageStyle() {
-  const params = new URLSearchParams(location.search);
-  const style = params.get("style");
-  if (style === "twitter") {
-    return "twitter";
-  }
-  return "schedule";
-}
-
 export default function Index(props) {
+  var style;
   const { scheduleJSON } = props;
+  if (false) {
+    style = <TwitterPage />;
+  } else {
+    style = <SchedulePage scheduleJSON={scheduleJSON} />;
+  }
   console.log("props in landing function: ", props);
   return (
     <TrianglifiedDiv width="1280" height="720">
-      <InfoPanel className="foo" scheduleJSON={scheduleJSON} />
-      <style jsx>{`
-        .foo {
-          background: red;
-        }
-      `}</style>
+      {style}
     </TrianglifiedDiv>
   );
   return (
