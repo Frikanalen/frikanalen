@@ -11,6 +11,7 @@ import {UserContextState} from "../../components/UserContext";
 
 const TrianglifiedDiv = dynamic(() => import("components/graphics/background.js"), { ssr: false });
 const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), { ssr: false });
+const TwitterTimeline = dynamic(() => import("components/graphics/twittertimeline.js"), { ssr: false });
 
 export async function getServerSideProps(context: UserContextState) {
   const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
@@ -40,7 +41,7 @@ function CarouselPage({ duration, children }) {
   return <div style={{ width: "100%", height: "100%" }}>{children}</div>;
 }
 
-function NextUp(props) {
+function ScheduleColumn(props) {
   const { scheduleJSON } = props;
   const currentProgramme = findRunningProgram(scheduleJSON.results) + 1;
   console.log("props:");
@@ -51,24 +52,52 @@ function NextUp(props) {
   console.log(scheduleJSON);
 
   return (
+    <Col sm={{ size: "auto", offset: 1 }}>
+      <h2>Neste program</h2>
+      <h3>
+        <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
+        {": "}
+        {scheduleJSON.results[currentProgramme].video.organization.name}
+      </h3>
+      <h3>{scheduleJSON.results[currentProgramme].video.name}</h3>
+    </Col>
+  );
+}
+
+function TwitterColumn(props) {
+  return (
+    <Col sm={{ size: "auto", offset: 1 }}>
+      <TwitterTimeline />
+    </Col>
+  );
+}
+
+function InfoPanel(props) {
+  const { scheduleJSON } = props;
+  let style;
+  if (readPageStyle() === "twitter") {
+    style = <TwitterColumn />;
+  } else {
+    style = <ScheduleColumn scheduleJSON={scheduleJSON} />;
+  }
+
+  return (
     <CarouselPage duration="1000">
       <Container>
         <Row>
           <img src="/images/frikanalen.png" style={{ margin: "30px", marginLeft: "51px" }} />
         </Row>
         <Row>
+          <div className="mt-3"></div>
+        </Row>
+        <Row>
           <Col style={{ flexGrow: 0 }}>
             <AnalogClock size="500" />
           </Col>
-          <Col>
-            <h2>Neste program</h2>
-            <h3>
-              <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
-              {": "}
-              {scheduleJSON.results[currentProgramme].video.organization.name}
-            </h3>
-            <h3>{scheduleJSON.results[currentProgramme].video.name}</h3>
-          </Col>
+          {style}
+        </Row>
+        <Row>
+          <div className="mt-3"></div>
         </Row>
         <Row>
           <Col style={{ textAlign: "center", marginTop: "30px", fontSize: "21pt" }}>
@@ -85,12 +114,21 @@ function NextUp(props) {
   );
 }
 
+function readPageStyle() {
+  const params = new URLSearchParams(location.search);
+  const style = params.get("style");
+  if (style === "twitter") {
+    return "twitter";
+  }
+  return "schedule";
+}
+
 export default function Index(props) {
   const { scheduleJSON } = props;
   console.log("props in landing function: ", props);
   return (
     <TrianglifiedDiv width="1280" height="720">
-      <NextUp scheduleJSON={scheduleJSON} />
+      <InfoPanel scheduleJSON={scheduleJSON} />
     </TrianglifiedDiv>
   );
   return (
