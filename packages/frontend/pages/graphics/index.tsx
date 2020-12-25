@@ -53,43 +53,53 @@ function ScheduleColumn(props) {
 
   return (
     <div className="nextProgramme">
-      <h2>Neste program</h2>
       <div className="nextProgrammeSchedule">
-        <h3>
-          <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
-        </h3>
         <div className="programmeText">
-          <h3>{scheduleJSON.results[currentProgramme].video.organization.name}</h3>
+          <h3>
+            <span className="time">
+              <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
+            </span>
+            {scheduleJSON.results[currentProgramme].video.organization.name}
+          </h3>
           <h4>{scheduleJSON.results[currentProgramme].video.name}</h4>
         </div>
       </div>
 
       <style jsx>{`
-        .nextProgramme h2 {
-          font-family: Roboto;
-          font-weight: 900;
-          text-align: center;
+        .time {
+          padding-right: 30px;
         }
         .nextProgrammeSchedule {
           display: flex;
-          flex-flow: row nowrap;
-          flex-grow: 1;
+          flex-flow: column nowrap;
+          height: 100%;
+        }
+        .programmeText h4 {
+          font-family: Roboto;
+          font-weight: 700;
+          font-size: 27px;
+          padding-left: 30px;
+        }
+        .programmeText h3 {
+          font-family: Roboto;
+          font-weight: 900;
+          font-size: 37px;
         }
         .programmeText {
-          background: #ded;
-          color: #121;
-          border-left: 5px solid black;
           padding-left: 10px;
           padding-top: 0;
-          margin-left: 10px;
+          flex-grow: 1;
         }
         .nextProgramme {
-          padding-top: 50px;
-          display: flex;
-          flex-flow: column nowrap;
+          border-left: 5px solid #011f02;
+          color: #c6dec3;
+          background: rgba(0, 0, 0, 0.5);
+          background: linear-gradient(180deg, rgba(0, 10, 20, 0.8), rgba(0, 0, 0, 0.3));
+          padding-right: 100px;
+          margin-left: 100px;
           justify-content: space-around;
 
-          flex-grow: 1;
+          height: 100%;
         }
       `}</style>
     </div>
@@ -172,11 +182,108 @@ function SchedulePage(props) {
   );
 }
 
+function ClockAndWidget(props) {
+  const { children } = props;
+
+  //<h2 className="header">Neste program</h2>
+  return (
+    <div className="clockAndContainer">
+      <img src="/images/frikanalen.png" className="logo" />
+      <div className={"clock"}>
+        <AnalogClock size="500" />
+        <h3>neste program</h3>
+      </div>
+      <div className={"childElement"}>{children}</div>
+      <style jsx>{`
+        .clock > h3 {
+          font-family: Roboto;
+          font-weight: 900;
+          text-align: right;
+          color: #c6dec3;
+          font-size: 37px;
+          position: absolute;
+          top: 405px;
+          line-height: 90%;
+          margin: 0;
+          left: 234px;
+          width: 220px;
+        }
+        .logo {
+          position: absolute;
+          top: 550px;
+          left: 425px;
+
+          width: 400px;
+          padding: 10px;
+        }
+        .header {
+          position: absolute;
+          top: 60px;
+          left: 716px;
+          font-family: Roboto;
+          font-weight: 900;
+          text-align: center;
+        }
+        .clockAndContainer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 1280px;
+          height: 720px;
+        }
+        .clock {
+          mix-blend-mode: darken;
+          background: linear-gradient(135deg, rgba(50, 100, 110, 0.5), rgba(50, 50, 60, 0.7));
+          border-radius: 240px 0 0 240px;
+
+          /*
+              border-image-slice: 1;
+              border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+              border-width: 40px solid;
+              */
+          position: absolute;
+          top: 50px;
+          left: 60px;
+          padding: 40px;
+          padding-right: 20px;
+        }
+        .childElement {
+          position: absolute;
+          top: 50px;
+          left: 420px;
+          height: 540px;
+          width: 860px;
+        }
+      `}</style>
+    </div>
+  );
+}
+
 export default function Index(props) {
   var style;
   const { scheduleJSON } = props;
-  if (false) {
-    style = <TwitterPage />;
+  if (true) {
+    style = (
+      <ClockAndWidget>
+        <ScheduleColumn scheduleJSON={scheduleJSON} />
+        <div className="divsclaimer">
+          Alt innhold sendes på medlemmers eget ansvar.
+          <br />
+          Se frikanalen.no for kontakt- og redaktørinformasjon.
+          <style jsx>{`
+            .divsclaimer {
+              color: #555;
+              font-size: 12pt;
+              font-weight: 700;
+              font-family: Roboto;
+              padding-left: 400px;
+              padding-top: 0px;
+              margin: 10px;
+            }
+          `}</style>
+        </div>
+      </ClockAndWidget>
+    );
   } else {
     style = <SchedulePage scheduleJSON={scheduleJSON} />;
   }
