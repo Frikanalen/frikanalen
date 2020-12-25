@@ -35,9 +35,10 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          repository: frikanalen/frontend
           tags: frikanalen/frontend:latest
           context: packages/frontend
+          push: true
+          pull: true
           file: packages/frontend/Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
