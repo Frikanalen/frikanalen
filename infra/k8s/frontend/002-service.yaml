@@ -1,16 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: fk-frontend-prod
+  name: frontend
 spec:
   type: ClusterIP
   selector:
-    app: fk-frontend-prod
+    app: frontend
   ports:
-    # Three types of ports for a service
-    # nodePort - a static port assigned on each the node
-    # port - port exposed internally in the cluster
-    # targetPort - the container port to send requests to
     - protocol: TCP
       port: 3000
       name: web

@@ -1,7 +1,7 @@
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: frontend-http-redirect
+  name: scheme-redirect-frontend
   namespace: default
 spec:
   entryPoints: 
@@ -12,7 +12,7 @@ spec:
     kind: Rule
     services:
     - kind: Service
-      name: fk-frontend-prod
+      name: frontend
       scheme: http
       port: 3000
     middlewares:
@@ -21,7 +21,7 @@ spec:
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: frontend-https
+  name: frontend
   namespace: default
 spec:
   entryPoints: 
@@ -31,7 +31,7 @@ spec:
     kind: Rule
     services:
     - kind: Service
-      name: fk-frontend-prod
+      name: frontend
       scheme: http
       port: 3000
   tls:

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frontend-prod-config
+  name: frontend-envs
   namespace: default
 data:
   API_BASE_URL: "https://frikanalen.no/api/"

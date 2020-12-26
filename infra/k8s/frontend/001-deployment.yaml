@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fk-frontend-prod
+  name: frontend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fk-frontend-prod
+      app: frontend
   minReadySeconds: 5
   template:
     metadata:
       labels:
-        app: fk-frontend-prod
+        app: frontend
     spec:
       containers:
-      - name: fk-frontend-prod
+      - name: frontend
         image: frikanalen/frontend:latest
         imagePullPolicy: Always
         ports:
@@ -22,4 +22,4 @@ spec:
             containerPort: 3000
         envFrom:
           - configMapRef:
-              name: frontend-prod-config
+              name: frontend-envs
