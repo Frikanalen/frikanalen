@@ -8,6 +8,20 @@ metadata:
     k8s-app: filebeat
 data:
   filebeat.yml: |-
+    filebeat.autodiscover:
+      providers:
+      - type: kubernetes
+        templates:
+          - condition:
+              equals:
+                kubernetes.annotations.json_logs: "true"
+            config:
+              - type: container
+                paths:
+                  - /var/log/containers/*.log
+                processors:
+                  decode_json_fields:
+                    fields: ["message"]
     filebeat.inputs:
     - type: container
       paths:
@@ -64,14 +78,14 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat:8.0.0
+        image: docker.elastic.co/beats/filebeat:7.10.1
         args: [
           "-c", "/etc/filebeat.yml",
           "-e",
         ]
         env:
         - name: ELASTICSEARCH_HOST
-          value: elasticsearch
+          value: elasticsearch-logging.default
         - name: ELASTICSEARCH_PORT
           value: "9200"
         - name: ELASTICSEARCH_USERNAME

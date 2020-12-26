@@ -42,6 +42,22 @@ metadata:
     k8s-app: filebeat
 data:
   filebeat.yml: |-
+    filebeat.autodiscover:
+      providers:
+      - type: kubernetes
+        templates:
+          - condition:
+              equals:
+                kubernetes.annotations.json_logs: "true"
+            config:
+              - type: docker
+                containers.ids:
+                  - "*"
+                processors:
+                  decode_json_fields:
+                    fields: ["message", "level", "name", "lineno"]
+                    overwrite_keys: true
+
     filebeat.config:
       prospectors:
         # Mounted `filebeat-prospectors` configmap:

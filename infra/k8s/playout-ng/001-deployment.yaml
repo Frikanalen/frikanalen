@@ -9,6 +9,8 @@ spec:
       app: playout-ng
   template:
     metadata:
+      annotations:
+        json_logs: "true"
       labels:
         app: playout-ng
     spec:
