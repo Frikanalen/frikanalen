@@ -1,4 +1,4 @@
-project=frikanalen/frikanalen
+project=frikanalen/django-backend
 
 docker:
 	docker build -t ${project} .
