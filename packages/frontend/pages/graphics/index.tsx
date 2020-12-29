@@ -37,19 +37,39 @@ function Carousel({ children }) {
   return <div style={{ background: "#faa", width: "1280px", height: "720px" }}>{children[currentPage]}</div>;
 }
 
-function CarouselPage({ duration, children }) {
-  return <div style={{ width: "90%", height: "90%", margin: "0 auto", paddingTop: "5%" }}>{children}</div>;
+interface CarouselPageProps {
+  children?: React.ReactNode;
+  duration?: number;
+  title: string;
 }
 
-function ScheduleColumn(props) {
+const CarouselPage: React.FC<CarouselPageProps> = ({ children, title, duration }) => (
+  <div className="clockAndContainer">
+    <Clock title={title} />
+    <div className={"childElement"}>{children}</div>
+    <Footer />
+    <style jsx>{`
+      .clockAndContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1280px;
+        height: 720px;
+      }
+      .childElement {
+        position: absolute;
+        top: 50px;
+        left: 420px;
+        height: 540px;
+        width: 860px;
+      }
+    `}</style>
+  </div>
+);
+
+function NextUp(props) {
   const { scheduleJSON } = props;
   const currentProgramme = findRunningProgram(scheduleJSON.results) + 1;
-  console.log("props:");
-  console.log(props);
-  console.log("CurrentProgramme:");
-  console.log(currentProgramme);
-  console.log("scheduleJSON:");
-  console.log(scheduleJSON);
 
   return (
     <div className="nextProgramme">
@@ -94,7 +114,7 @@ function ScheduleColumn(props) {
           border-left: 5px solid #011f02;
           color: #c6dec3;
           background: rgba(0, 0, 0, 0.5);
-          background: linear-gradient(180deg, rgba(0, 10, 20, 0.8), rgba(0, 0, 0, 0.3));
+          background: linear-gradient(180deg, rgba(0, 10, 20, 0.7), rgba(0, 0, 0, 0.3));
           padding-right: 100px;
           margin-left: 100px;
           justify-content: space-around;
@@ -106,95 +126,22 @@ function ScheduleColumn(props) {
   );
 }
 
-function TwitterPage(props) {
+const Clock = ({ title }) => {
   return (
-    <CarouselPage duration="1000">
-      <div className="foo">
-        <div>
-          <LogoClockRow />
-        </div>
-        <TwitterTimeline />
-      </div>
-      <style jsx>{`
-        .foo {
-          display: flex;
-          height: 100%;
-          justify-content: space-evenly;
-          align-items: center;
-          width: 100%;
-        }
-      `}</style>
-    </CarouselPage>
-  );
-}
-
-function LogoClockRow(props) {
-  return (
-    <div className="logoClockRow">
-      <img src="/images/frikanalen.png" style={{ display: "block" }} />
+    <div className="clock">
       <AnalogClock size="500" />
+      <h3>{title}</h3>
       <style jsx>{`
-        .logoClockRow {
-          flex: 0 0 500px;
-          display: flex;
-          height: 100%;
-          flex-flow: column nowrap;
-          justify-content: space-between;
-          align-items: center;
+        .clock {
+          mix-blend-mode: darken;
+          background: linear-gradient(135deg, rgba(50, 100, 110, 0.5), rgba(50, 50, 60, 0.7));
+          border-radius: 240px 0 0 240px;
+          position: absolute;
+          top: 50px;
+          left: 60px;
+          padding: 40px;
+          padding-right: 20px;
         }
-      `}</style>
-    </div>
-  );
-}
-
-function SchedulePage(props) {
-  const { scheduleJSON } = props;
-  let style;
-
-  return (
-    <CarouselPage duration="1000">
-      <div className="foo">
-        <LogoClockRow />
-        <ScheduleColumn scheduleJSON={scheduleJSON} />
-      </div>
-      <Container fluid>
-        <Row>
-          <Col style={{ textAlign: "center", marginTop: "30px", fontSize: "21pt" }}>
-            Alt innhold sendt på Frikanalen av medlemsorganisasjoner er på deres eget ansvar.
-            <br />
-            <br />
-            <span style={{ textAlign: "center", marginTop: "30px", fontSize: "17pt" }}>
-              Se frikanalen.no for kontakt- og redaktørinformasjon.
-            </span>
-          </Col>
-        </Row>
-      </Container>
-      <style jsx>{`
-        .foo {
-          display: flex;
-          height: 530px;
-
-          justify-content: space-between;
-          width: 100%;
-        }
-      `}</style>
-    </CarouselPage>
-  );
-}
-
-function ClockAndWidget(props) {
-  const { children } = props;
-
-  //<h2 className="header">Neste program</h2>
-  return (
-    <div className="clockAndContainer">
-      <img src="/images/frikanalen.png" className="logo" />
-      <div className={"clock"}>
-        <AnalogClock size="500" />
-        <h3>neste program</h3>
-      </div>
-      <div className={"childElement"}>{children}</div>
-      <style jsx>{`
         .clock > h3 {
           font-family: Roboto;
           font-weight: 900;
@@ -208,99 +155,55 @@ function ClockAndWidget(props) {
           left: 234px;
           width: 220px;
         }
-        .logo {
-          position: absolute;
-          top: 550px;
-          left: 425px;
-
-          width: 400px;
-          padding: 10px;
-        }
-        .header {
-          position: absolute;
-          top: 60px;
-          left: 716px;
-          font-family: Roboto;
-          font-weight: 900;
-          text-align: center;
-        }
-        .clockAndContainer {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 1280px;
-          height: 720px;
-        }
-        .clock {
-          mix-blend-mode: darken;
-          background: linear-gradient(135deg, rgba(50, 100, 110, 0.5), rgba(50, 50, 60, 0.7));
-          border-radius: 240px 0 0 240px;
-
-          /*
-              border-image-slice: 1;
-              border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
-              border-width: 40px solid;
-              */
-          position: absolute;
-          top: 50px;
-          left: 60px;
-          padding: 40px;
-          padding-right: 20px;
-        }
-        .childElement {
-          position: absolute;
-          top: 50px;
-          left: 420px;
-          height: 540px;
-          width: 860px;
-        }
       `}</style>
     </div>
   );
-}
+};
+
+const Footer = () => (
+  <>
+    <img src="/logo.svg" className="logo" />
+    <div className="divsclaimer">
+      <span>Alt innhold sendes på medlemmers eget ansvar.</span>
+      <br />
+      Se frikanalen.no for kontakt- og redaktørinformasjon.
+    </div>
+    <style jsx>{`
+      .divsclaimer {
+        color: #555;
+        font-size: 12pt;
+        font-weight: 700;
+        font-family: Roboto;
+        padding-left: 260px;
+        padding-top: 20px;
+        margin: 10px;
+        letter-spacing: 0.02em;
+        position: absolute;
+        top: 600px;
+        left: 660px;
+        padding: 10px;
+      }
+      .divsclaimer span {
+        letter-spacing: 0.07em;
+      }
+      .logo {
+        position: absolute;
+        top: 588px;
+        left: 275px;
+        width: 400px;
+        padding: 10px;
+      }
+    `}</style>
+  </>
+);
 
 export default function Index(props) {
-  var style;
   const { scheduleJSON } = props;
-  if (true) {
-    style = (
-      <ClockAndWidget>
-        <ScheduleColumn scheduleJSON={scheduleJSON} />
-        <div className="divsclaimer">
-          Alt innhold sendes på medlemmers eget ansvar.
-          <br />
-          Se frikanalen.no for kontakt- og redaktørinformasjon.
-          <style jsx>{`
-            .divsclaimer {
-              color: #555;
-              font-size: 12pt;
-              font-weight: 700;
-              font-family: Roboto;
-              padding-left: 400px;
-              padding-top: 0px;
-              margin: 10px;
-            }
-          `}</style>
-        </div>
-      </ClockAndWidget>
-    );
-  } else {
-    style = <SchedulePage scheduleJSON={scheduleJSON} />;
-  }
-  console.log("props in landing function: ", props);
   return (
     <TrianglifiedDiv width="1280" height="720">
-      {style}
+      <CarouselPage title="neste program">
+        <NextUp scheduleJSON={scheduleJSON} />
+      </CarouselPage>
     </TrianglifiedDiv>
-  );
-  return (
-    <Carousel>
-      <CarouselPage duration="2">
-        <h1>Page 1</h1>
-      </CarouselPage>
-      <CarouselPage duration="1">
-        <h2>Page 2</h2>
-      </CarouselPage>
-    </Carousel>
   );
 }

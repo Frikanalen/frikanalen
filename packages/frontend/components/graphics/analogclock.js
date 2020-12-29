@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 let ctx;
 
 export default function AnalogClock(props) {
+  const { className } = props;
   const drawCentralSpot = () => {
     ctx.save();
     const dimen = 12;
@@ -22,7 +23,7 @@ export default function AnalogClock(props) {
     ctx.save();
     for (let step = 0; step < 12; step++) {
       const width = 8;
-      const height = 40;
+      const height = 50;
       const distance = 200;
       ctx.rotate(Math.PI / 6);
       roundRect(ctx, -width / 2, distance, width, height, 2);

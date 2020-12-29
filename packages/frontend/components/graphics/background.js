@@ -19,5 +19,23 @@ export default function TrianglifiedDiv(props) {
     setDataURL("url(" + pattern.toCanvas().toDataURL() + ")");
   }, []);
 
-  return <div style={{ width: `${width}px`, height: `${height}px`, background: dataURL }}>{children}</div>;
+  return (
+    <div
+      className="mainPresentationSurfaceOuter"
+      style={{ width: `${width}px`, height: `${height}px`, backgroundSize: "cover", background: dataURL }}
+    >
+      <div className="mainPresentationSurfaceInner" style={{ width: `${width}px`, height: `${height}px` }}>
+        {children}
+      </div>
+      <style jsx>{`
+        .mainPresentationSurfaceOuter {
+          transform: rotate(180deg);
+          background-size: cover !important;
+        }
+        .mainPresentationSurfaceInner {
+          transform: rotate(180deg);
+        }
+      `}</style>
+    </div>
+  );
 }
