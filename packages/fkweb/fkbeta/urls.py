@@ -10,6 +10,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 import agenda.urls
 import fkvod.urls
 import fkws.urls
+import news.urls
 from fk.views import register
 from fkbeta.views import Frontpage
 from fkvod.views import csp_report
@@ -32,6 +33,7 @@ urlpatterns = [
 urlpatterns += agenda.urls.urlpatterns
 urlpatterns += fkvod.urls.urlpatterns
 urlpatterns += fkws.urls.urlpatterns
+urlpatterns += [url(r'^api/news/', include(('news.urls', "news",)))]
 
 # Only used with DEBUG. Serves static content right from source
 urlpatterns += staticfiles_urlpatterns()

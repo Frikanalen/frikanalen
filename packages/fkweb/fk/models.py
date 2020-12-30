@@ -468,7 +468,7 @@ class Scheduleitem(models.Model):
     @staticmethod
     @receiver([post_save, post_delete])
     def _clear_cache(**kwargs):
-        logger.warning('[Scheduleitem] cache flush')
+        #logger.warning('[Scheduleitem] cache flush')
         caches['schedule'].clear()
 
     def __str__(self):
