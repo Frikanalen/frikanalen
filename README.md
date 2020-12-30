@@ -38,7 +38,7 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
  
 - We are writing a new front-end
     - Migrating functionality from legacy site: Almost completely done!!
-    - Still needs a user interface for organizations to add their shows to schedules
+    - Still needs a user interface for organizations to add their shows to schedules ([#216](https://github.com/Frikanalen/frikanalen/issues/216))
 - Filling airtime in a better way
     - New, far more maintainable playout written and deployed
     - Needs to add better instrumentalization, monitoring/alerting
