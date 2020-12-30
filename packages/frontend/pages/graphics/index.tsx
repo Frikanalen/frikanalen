@@ -1,5 +1,5 @@
 import React, { createRef, useState } from "react";
-import { APIGET, fkScheduleJSON } from "components/TS-API/API";
+import { APIGET, fkScheduleJSON, fkBulletin } from "components/TS-API/API";
 import Moment from "react-moment";
 import dynamic from "next/dynamic";
 import Container from "react-bootstrap/Container";
@@ -15,10 +15,16 @@ const TwitterTimeline = dynamic(() => import("components/graphics/twittertimelin
 
 export async function getServerSideProps(context: UserContextState) {
   const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
+  // We don't use this yet so best to silently ignore errors
+  var bulletinsJSON = null;
+  try {
+    bulletinsJSON = await APIGET<fkBulletin>(`news/bulletins/`);
+  } catch {}
 
   return {
     props: {
       scheduleJSON,
+      bulletinsJSON,
     },
   };
 }
@@ -61,7 +67,16 @@ const CarouselPage: React.FC<CarouselPageProps> = ({ children, title, duration }
         top: 50px;
         left: 420px;
         height: 540px;
-        width: 860px;
+        width: 760px;
+        border-left: 5px solid #011f02;
+        color: #c6dec3;
+        background: rgba(0, 0, 0, 0.5);
+        background: linear-gradient(180deg, rgba(0, 10, 20, 0.7), rgba(0, 0, 0, 0.3));
+        padding-right: 100px;
+        padding-left: 10px;
+        margin-left: 100px;
+        padding-top: 0;
+        justify-content: space-around;
       }
     `}</style>
   </div>
@@ -72,54 +87,30 @@ function NextUp(props) {
   const currentProgramme = findRunningProgram(scheduleJSON.results) + 1;
 
   return (
-    <div className="nextProgramme">
-      <div className="nextProgrammeSchedule">
-        <div className="programmeText">
-          <h3>
-            <span className="time">
-              <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
-            </span>
-            {scheduleJSON.results[currentProgramme].video.organization.name}
-          </h3>
-          <h4>{scheduleJSON.results[currentProgramme].video.name}</h4>
-        </div>
-      </div>
+    <div>
+      <h3>
+        <span className="time">
+          <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
+        </span>
+        {scheduleJSON.results[currentProgramme].video.organization.name}
+      </h3>
+      <h4>{scheduleJSON.results[currentProgramme].video.name}</h4>
 
       <style jsx>{`
         .time {
           padding-right: 30px;
         }
-        .nextProgrammeSchedule {
-          display: flex;
-          flex-flow: column nowrap;
-          height: 100%;
-        }
-        .programmeText h4 {
+        /* TODO: Move into sass module applied to all CarouselPages */
+        h4 {
           font-family: Roboto;
           font-weight: 700;
           font-size: 27px;
           padding-left: 30px;
         }
-        .programmeText h3 {
+        h3 {
           font-family: Roboto;
           font-weight: 900;
           font-size: 37px;
-        }
-        .programmeText {
-          padding-left: 10px;
-          padding-top: 0;
-          flex-grow: 1;
-        }
-        .nextProgramme {
-          border-left: 5px solid #011f02;
-          color: #c6dec3;
-          background: rgba(0, 0, 0, 0.5);
-          background: linear-gradient(180deg, rgba(0, 10, 20, 0.7), rgba(0, 0, 0, 0.3));
-          padding-right: 100px;
-          margin-left: 100px;
-          justify-content: space-around;
-
-          height: 100%;
         }
       `}</style>
     </div>
@@ -143,6 +134,7 @@ const Clock = ({ title }) => {
           padding-right: 20px;
         }
         .clock > h3 {
+          white-space: pre;
           font-family: Roboto;
           font-weight: 900;
           text-align: right;
@@ -197,11 +189,35 @@ const Footer = () => (
   </>
 );
 
+const Bulletin = ({ bulletinJSON }) => {
+  return (
+    <div>
+      <h3>{bulletinJSON.heading}</h3>
+      <p>{bulletinJSON.text}</p>
+      <style jsx>{`
+        p {
+          white-space: pre;
+          line-height: 1.5em;
+          font-family: Roboto;
+          font-weight: 700;
+          font-size: 27px;
+          padding-left: 15px;
+        }
+        h3 {
+          font-family: Roboto;
+          font-weight: 900;
+          font-size: 37px;
+        }
+      `}</style>
+    </div>
+  );
+};
+
 export default function Index(props) {
-  const { scheduleJSON } = props;
+  const { scheduleJSON, bulletinsJSON } = props;
   return (
     <TrianglifiedDiv width="1280" height="720">
-      <CarouselPage title="neste program">
+      <CarouselPage title={"neste\nprogram"}>
         <NextUp scheduleJSON={scheduleJSON} />
       </CarouselPage>
     </TrianglifiedDiv>

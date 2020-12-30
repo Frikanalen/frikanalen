@@ -1,6 +1,12 @@
 import { useContext } from "react";
 import configs from "../configs";
 
+export interface fkBulletin {
+  id: number;
+  heading: string;
+  text: string;
+}
+
 interface fkOrgRoleJSON {
   role: string;
   organization_id: number;
@@ -15,9 +21,9 @@ export interface fkVideoJSON {
 }
 
 export interface fkVideo {
-  id: number,
-  name: string,
-  organization: fkOrgJSON
+  id: number;
+  name: string;
+  organization: fkOrgJSON;
 }
 
 export interface fkScheduleJSON {
@@ -50,7 +56,11 @@ export interface fkOrgJSON {
   description: string;
 }
 
-export async function APIGET<T>(endpoint: string, token: string | null = null, reloadCache: boolean = false): Promise<T> {
+export async function APIGET<T>(
+  endpoint: string,
+  token: string | null = null,
+  reloadCache: boolean = false
+): Promise<T> {
   let authHeaders = {};
   let cacheOptions = "default" as RequestCache;
   if (token) authHeaders = { Authorization: `Token ${token}` };
@@ -115,11 +125,11 @@ export async function getUserProfile(token: string): Promise<fkUser> {
   const userJSON = await APIGET<fkUserJSON>("user", token, true);
 
   const orgRoles: fkOrgRole[] = userJSON.organization_roles.map((role) => {
-    return ({
+    return {
       role: role.role,
       orgID: role.organization_id,
       orgName: role.organization_name,
-    });
+    };
   });
 
   return {
