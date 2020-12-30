@@ -37,11 +37,11 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 ## Current development focus
  
 - We are writing a new front-end
-    - Migrating functionality from legacy site: Almost completely done!!
+    - Migrating functionality from legacy site: Almost completely done!
     - Still needs a user interface for organizations to add their shows to schedules ([#216](https://github.com/Frikanalen/frikanalen/issues/216))
 - Filling airtime in a better way
     - New, far more maintainable playout written and deployed
-    - Needs to add better instrumentalization, monitoring/alerting
+    - Needs to add better instrumentalization, monitoring/alerting (final output is checked for motion, and alerts are sent on pod failure)
     - A better jukebox algorithm to prioritize fresher content and leave bigger gaps for graphics
     - Expand broadcast graphics (in React frontend) to more than just a "next programme" clock (twitter feed?)
 - Migrating the remaining bare-metal services to Kubernetes
@@ -49,13 +49,12 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
     - Media asset server serving from Ceph
     - Upload receiver and file mover/processer migrating from systemd/SMB shares to k8s/Ceph
     - Docker container is very much needed for Open Broadcast Encoder (curmudgeonly build process)
-    - CasparCG deployed as Docker container - not necessarily in k8s though
+    - CasparCG deployed as Docker container - not necessarily in k8s though (stability test running now)
     
 ## Nice to have in the future:
 
-- It would be great to implement a transport stream analysis for Prometheus (so we can alert on irregularities)
 - It would be useful to have programmatically-generated test data for fkweb (so we can test and develop on realistic but anonymous data)
-- It would be very nice to be able to deploy our CRDs directly in the cloud (using some sort of templating?)
+- It would be very nice to be able to deploy our CRDs directly in the cloud to spin up a full developer instance (using some sort of templating?)
 - We should consider migrating to Istio - because it's, like, super neat
 
 License
