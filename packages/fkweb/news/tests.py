@@ -41,6 +41,7 @@ class TestArticleList(TestCase):
         self.assertEqual(len(response.data), 50)
         self.assertIsInstance(response.data[0].get('heading', None), str)
         self.assertIsInstance(response.data[0].get('text', None), str)
+        self.assertIsInstance(response.data[0].get('id', None), int)
 
 class TestUnauthCannotEdit(TestCase):
     def setUp(self):

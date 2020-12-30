@@ -3,5 +3,5 @@ from rest_framework import serializers
 
 class BulletinSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        fields = ('heading', 'text', 'created')
+        fields = ('id', 'heading', 'text', 'created')
         model = Bulletin
