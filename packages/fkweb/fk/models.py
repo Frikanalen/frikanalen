@@ -410,9 +410,9 @@ class ScheduleitemManager(models.Manager):
         if not date:
             date = timezone.now().astimezone(pytz.timezone('Europe/Oslo')).date()
         elif hasattr(date, 'date'):
+            date.replace(tzinfo=timezone.get_current_timezone())
             date = date.date()
         startdt = datetime.datetime.combine(date, datetime.time(0, tzinfo=pytz.timezone('Europe/Oslo')))
-        print(startdt)
         enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
             startdt, enddt = self.expand_to_surrounding(startdt, enddt)

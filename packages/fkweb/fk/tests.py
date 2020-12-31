@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.test import TestCase
 from django.utils import timezone
 
+from dateutil import parser
+
 from fk.models import Scheduleitem
 from fk.templatetags import vod
 
@@ -195,7 +197,8 @@ def create_scheduleitem(starttime=None):
 
 def parse_to_datetime(dt_str):
     dt = datetime.datetime.strptime(dt_str, '%Y-%m-%d %H:%M')
-    return timezone.make_aware(dt, timezone.get_current_timezone())
+    tz = dt.replace(tzinfo=timezone.get_current_timezone())
+    return tz
 
 
 class APITest(TestCase):
@@ -236,9 +239,8 @@ class APITest(TestCase):
             ['tech video', 'dummy video'],
             [v['video']['name'] for v in r.data['results']])
         self.assertEqual(
-            ['http://testserver/api/videos/1',
-             'http://testserver/api/videos/2'],
-            [v['video_id'] for v in r.data['results']])
+            [1, 2],
+            [v['video']['id'] for v in r.data['results']])
         self.assertEqual(
             ['00:00:10.010000', '00:01:00'],
             [v['video']['duration'] for v in r.data['results']])
