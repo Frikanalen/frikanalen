@@ -44,7 +44,8 @@ from fkws.permissions import IsOrganizationEditorOrReadOnly
 from fkws.permissions import IsStaffOrReadOnly
 from fkws.serializers import AsRunSerializer
 from fkws.serializers import CategorySerializer
-from fkws.serializers import ScheduleitemSerializer
+from fkws.serializers import ScheduleitemReadSerializer
+from fkws.serializers import ScheduleitemModifySerializer
 from fkws.serializers import TokenSerializer
 from fkws.serializers import VideoFileSerializer
 from fkws.serializers import VideoSerializer
@@ -184,9 +185,13 @@ class ScheduleitemList(generics.ListCreateAPIView):
                  descending order.  I.e. `?ordering=-starttime`.
     """
     queryset = Scheduleitem.objects.all()
-    serializer_class = ScheduleitemSerializer
     pagination_class = Pagination
     permission_classes = (IsInOrganizationOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ScheduleitemModifySerializer
+        return ScheduleitemReadSerializer
 
     def parse_YYYYMMDD_or_today(self, inputDate):
         try:
@@ -259,7 +264,7 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     Schedule item details
     """
     queryset = Scheduleitem.objects.all()
-    serializer_class = ScheduleitemSerializer
+    serializer_class = ScheduleitemModifySerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
 
 
