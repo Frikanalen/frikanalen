@@ -211,14 +211,14 @@ ProgramEvent = function() {
         return duration_to_moment(self.duration())
     });
 
-    self.video = ko.computed(function() {
+    self.video_id = ko.computed(
+        read: function() {
         if (self.video())
             return self.video().id
         else
             return null;
-    }, write: (v) => {
-        self.video = v
-    });
+        }
+    );
 
     self.video_name = ko.computed(function() {
         if (self.video())
@@ -354,10 +354,10 @@ PlannerViewModel = function() {
         var jsData = ko.toJS(event);
         console.log(jsData);
         delete jsData.video
-        if (jsData.video)
-            jsData.video = jsData.video
+        if (jsData.video_id)
+            jsData.video_id = jsData.video_id
         else
-            jsData.video = "";
+            jsData.video_id = "";
         delete jsData.edit_url
         delete jsData.video_name
         delete jsData.pause_duration
