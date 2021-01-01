@@ -21,6 +21,7 @@ from django_filters import rest_framework as djfilters
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import serializers
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
@@ -37,6 +38,7 @@ from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
 from fk.models import Organization
+
 
 from fkws.permissions import IsInOrganizationOrDisallow
 from fkws.permissions import IsInOrganizationOrReadOnly
@@ -188,8 +190,12 @@ class ScheduleitemList(generics.ListCreateAPIView):
     pagination_class = Pagination
     permission_classes = (IsInOrganizationOrReadOnly,)
 
+    # Permit session-based login for backwards compat with old frontend
+    # Remove when new planner works!
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method in ['POST', 'PUT']:
             return ScheduleitemModifySerializer
         return ScheduleitemReadSerializer
 
@@ -264,8 +270,15 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     Schedule item details
     """
     queryset = Scheduleitem.objects.all()
-    serializer_class = ScheduleitemModifySerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PUT']:
+            return ScheduleitemModifySerializer
+        return ScheduleitemReadSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
+    # Permit session-based login for backwards compat with old frontend
+    # Remove when new planner works!
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
 
 
 class VideoFilter(djfilters.FilterSet):
@@ -355,7 +368,7 @@ class VideoList(generics.ListCreateAPIView):
     ]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
             return VideoCreateSerializer
         return VideoSerializer
 

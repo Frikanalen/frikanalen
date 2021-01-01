@@ -212,7 +212,7 @@ ProgramEvent = function() {
     });
 
     self.video_id = ko.computed(
-        read: function() {
+        function() {
         if (self.video())
             return self.video().id
         else
@@ -354,10 +354,10 @@ PlannerViewModel = function() {
         var jsData = ko.toJS(event);
         console.log(jsData);
         delete jsData.video
-        if (jsData.video_id)
-            jsData.video_id = jsData.video_id
-        else
-            jsData.video_id = "";
+        if (!jsData.video_id)
+            jsData.video = "";
+        else 
+            jsData.video = jsData.video_id;
         delete jsData.edit_url
         delete jsData.video_name
         delete jsData.pause_duration
@@ -365,7 +365,9 @@ PlannerViewModel = function() {
         delete jsData.display_editing_date
         delete jsData.endtime
         delete jsData.event_type
+        console.log(jsData);
         jsonData = ko.toJSON(jsData)
+        console.log(jsonData);
         url = "/api/scheduleitems/"
         if (jsData.id) {
             url = url + jsData.id;
