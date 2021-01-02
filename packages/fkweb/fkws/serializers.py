@@ -35,7 +35,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
             try:
                 return obj.editor.phone_number.as_international
             except:
-                print("could not present", obj.editor.phone_number)
                 return ''
         return None
 

@@ -8,30 +8,22 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 import agenda.urls
-import fkvod.urls
 import fkws.urls
 import news.urls
-from fk.views import register
 from fkbeta.views import Frontpage
-from fkvod.views import csp_report
 
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^$', Frontpage.as_view(), name='frontpage'),
-    url(r'^csp-report$', csp_report, name='vod-csp-report'),
 
-    url(r'^register/$', register, name='register'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
 
-    url(r'^create/', include('create.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('fk.urls')),
 ]
 
 urlpatterns += agenda.urls.urlpatterns
-urlpatterns += fkvod.urls.urlpatterns
 urlpatterns += fkws.urls.urlpatterns
 urlpatterns += [url(r'^api/news/', include(('news.urls', "news",)))]
 

@@ -30,8 +30,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-import fkvod.search
-
 from fk.models import AsRun
 from fk.models import Category
 from fk.models import Scheduleitem
@@ -246,12 +244,14 @@ class ScheduleitemList(generics.ListCreateAPIView):
             cache_res = cache.get(cache_key)
 
             if cache_res:
-                logger.warning('[Scheduleitem] cache hit')
+                #logger.warning('[Scheduleitem] cache hit')
                 return cache_res
             else:
-                logger.warning('[Scheduleitem] cache miss, cache_key=%s', cache_key)
+                #logger.warning('[Scheduleitem] cache miss, cache_key=%s', cache_key)
+                pass
         else:
-            logger.warning('[Scheduleitem] not caching')
+            pass
+            #logger.warning('[Scheduleitem] not caching')
 
         res = super().get(request, *args, **kwargs)
         res.accepted_renderer = request.accepted_renderer
@@ -260,7 +260,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
         res.render()
 
         if cacheable and res.status_code == 200:
-            logger.warning('[Scheduleitem] cache store, cache_key=%s', cache_key)
+            #logger.warning('[Scheduleitem] cache store, cache_key=%s', cache_key)
             cache.set(cache_key, res, None)
 
         return res
@@ -499,7 +499,7 @@ class UserCreate(generics.CreateAPIView):
 
 
 @method_decorator(never_cache, name='dispatch')
-class UserDetail(generics.RetrieveUpdateAPIView):
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     User details - used to manage your own user
     """

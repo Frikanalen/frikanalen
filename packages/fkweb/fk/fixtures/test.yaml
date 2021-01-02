@@ -30,18 +30,21 @@
     fkmember: true
     name: NUUG
     members: [1]
+    editor: 1
 - model: fk.organization
   pk: 2
   fields:
     fkmember: false
     name: Dummy org
     members: [2]
+    editor: 2
 - model: fk.organization
   pk: 3
   fields:
     fkmember: false
     name: Dummy org 2
     members: []
+    editor: 2
 
 - model: fk.video
   pk: 1

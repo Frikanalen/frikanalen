@@ -9,22 +9,119 @@ from rest_framework.test import APIClient
 from rest_framework.test import force_authenticate
 from requests.auth import HTTPBasicAuth
 
+from .views import UserDetail
+from .views import UserCreate
+
+import base64
 import datetime
 
 from fk.models import VideoFile, Scheduleitem
 
-class RefactoredPermissionsTest(APITestCase):
-    # TODO: Replace with dynamic setup 
-    fixtures = ['test.yaml']
+class UserProfileTests(APITestCase):
+    factory = APIRequestFactory()
+    email = 'profile_test_user@fake.com'
+    password = 'test'
+
+    def _basic_auth_credentials(self):
+        credentials = base64.b64encode(f'{self.email}:{self.password}'.encode('utf-8'))
+        return 'Basic {}'.format(credentials.decode('utf-8'))
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+                email = self.email,
+                password = self.password,
+                date_of_birth = '1900-01-01'
+                )
+        first_name = 'Firstname before change'
+        last_name = 'Lastname before change'
+        phone_number = '+1 800 USA-RAIL'
+        self.user.save()
+
+    def tearDown(self):
+        if self.user.id is not None:
+            self.user.delete()
 
     def test_user_can_get_token(self):
         client = APIClient()
-        client.force_authenticate(get_user_model().objects.get(email='nuug_user@fake.com'))
+
+        client.credentials(HTTP_AUTHORIZATION=self._basic_auth_credentials())
         response = client.get(reverse('api-token-auth'))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(list(response.data.keys()), ['created', 'key', 'user'])
         self.assertEqual(len(response.data['key']), 40)
+
+    def test_user_get_profile(self):
+        req = self.factory.get(reverse('api-user-detail'))
+        force_authenticate(req, user=self.user)
+        res = UserDetail.as_view()(req)
+        self.assertEqual(200, res.status_code)
+        self.assertEqual(res.data['email'], self.user.email)
+        self.assertEqual(res.data['first_name'], self.user.first_name)
+        self.assertEqual(res.data['last_name'], self.user.last_name)
+        self.assertEqual(res.data['phone_number'], self.user.phone_number)
+
+    def test_user_update_profile(self):
+        req = self.factory.put(
+            reverse('api-user-detail'), {
+                'first_name': 'Firstname',
+                'last_name':  'Lastname',
+                'date_of_birth':  '2000-12-15',
+                'phone_number': '+47 22 22 55 55'
+            })
+        force_authenticate(req, user=self.user)
+        res = UserDetail.as_view()(req)
+        self.assertEqual(200, res.status_code)
+        self.assertEqual('Firstname', self.user.first_name)
+        self.assertEqual('Lastname', self.user.last_name)
+        self.assertEqual('+47 22 22 55 55', self.user.phone_number)
+        self.assertEqual(datetime.date(2000, 12, 15), self.user.date_of_birth)
+        self.assertEqual('profile_test_user@fake.com', self.user.email)
+
+    def test_user_can_delete(self):
+        req = self.factory.delete(
+            reverse('api-user-detail'), {
+                'id': self.user.id
+                }
+            )
+        force_authenticate(req, user=self.user)
+        res = UserDetail.as_view()(req)
+        self.assertEqual(status.HTTP_204_NO_CONTENT, res.status_code)
+        self.assertEqual(self.user.id, None)
+
+class UserRegistrationTests(APITestCase):
+    factory = APIRequestFactory()
+
+    def test_valid_registration(self):
+        fields = {
+                'email': 'foo@bar.com',
+                'first_name': 'Firstname',
+                'last_name': 'Lastname',
+                'password': 'Test',
+                'date_of_birth': datetime.date(1920, 1, 1)
+                }
+        req = self.factory.post(
+            reverse('api-user-create'), fields
+            )
+        res = UserCreate.as_view()(req)
+        self.assertEqual(status.HTTP_201_CREATED, res.status_code)
+        user = get_user_model().objects.get(email=fields['email'])
+        for k,v in fields.items():
+            if k in ('password', 'date_of_birth'): continue
+            self.assertEqual(res.data[k], getattr(user, k))
+
+    def test_registration_missing_mandatory_fields(self):
+        fields = {
+                'email': 'foo@bar.com',
+                'first_name': 'Firstname',
+                'last_name': 'Lastname',
+                'password': 'Test',
+                }
+        req = self.factory.post(
+            reverse('api-user-create'), fields
+            )
+        res = UserCreate.as_view()(req)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, res.status_code)
 
 ## Code above has been refactored, code below... here be monsters
 
@@ -46,7 +143,7 @@ class PermissionsTest(APITestCase):
             ('videos', status.HTTP_200_OK),
             ('organization', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_401_UNAUTHORIZED),
-            ('user', status.HTTP_401_UNAUTHORIZED),
+            ('user', status.HTTP_403_FORBIDDEN),
             ('user/register', status.HTTP_405_METHOD_NOT_ALLOWED),
         ]
         self._helper_test_reading_all_pages_from_root(pages)
@@ -139,8 +236,9 @@ class PermissionsTest(APITestCase):
         """
         videos = [1, 2, 3, 4]
         for id in videos:
+            self.client.logout()
             r = self.client.get(reverse('api-video-upload-token-detail', args=(id,),))
-            self.assertEqual(status.HTTP_401_UNAUTHORIZED, r.status_code)
+            self.assertEqual(status.HTTP_403_FORBIDDEN, r.status_code)
             self.assertEqual({'detail': 'Authentication credentials '
                                         'were not provided.'},
                               r.data)
@@ -177,11 +275,12 @@ class PermissionsTest(APITestCase):
             results.append((list_page, r.status_code, r.data))
         error_msg = {'detail': 'Authentication credentials were not provided.'}
         self.assertEqual(
-            [(p, status.HTTP_401_UNAUTHORIZED, error_msg)
+            [(p, status.HTTP_403_FORBIDDEN, error_msg)
                 for p in list_pages],
             results)
 
     def test_anonymous_cannot_edit(self):
+        self.maxDiff=None
         detail_pages = ('api-video-detail', 'api-videofile-detail',
                         'api-scheduleitem-detail', 'asrun-detail')
         results = []
@@ -190,7 +289,7 @@ class PermissionsTest(APITestCase):
             results.append((detail_page, r.status_code, r.data))
         error_msg = {'detail': 'Authentication credentials were not provided.'}
         self.assertEqual(
-            [(p, status.HTTP_401_UNAUTHORIZED, error_msg)
+            [(p, status.HTTP_403_FORBIDDEN, error_msg)
              for p in detail_pages],
             results)
 

@@ -32,18 +32,6 @@ def register(request):
     return render(request, "registration/register.html", { 'form': form })
 
 
-def user_profile(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
-    if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
-        if user_form.is_valid():
-            user_form.save()
-    else:
-        user_form = UserForm(instance=request.user)
-    return render(request, "fk/profile.html", {'user_form': user_form })
-
-
 def member_organizations_list(request):
     members = Organization.objects.filter(fkmember=True).order_by('name')
     return render(

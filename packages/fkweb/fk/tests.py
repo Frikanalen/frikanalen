@@ -6,59 +6,36 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import TestCase
 from django.utils import timezone
+from rest_framework.test import APITestCase
+from rest_framework.test import APIRequestFactory
+from rest_framework.test import force_authenticate
 
 from dateutil import parser
 
 from fk.models import Scheduleitem
 from fk.templatetags import vod
 
-class UserRegistrationTest(TestCase):
-    fixtures = ['test.yaml']
-
+class UserRegistrationTest(APITestCase):
+    profile_before_change = {
+            'email': 'new_user@fake.com',
+            'date_of_birth': '1900-01-01',
+            'first_name': 'Firstname before test',
+            'last_name': 'Lastname before test',
+            'msisdn': '+1 800 USA-RAIL',
+            }
     def setUp(self):
-        self.client.login(email='staff_user@fake.com', password='test')
+        self.user = get_user_model().objects.create_user(
+                email=self.profile_before_change['email'],
+                password='test',
+                date_of_birth=self.profile_before_change['date_of_birth'],
+                )
+        self.user.save()
 
-    def test_user_profile_update(self):
-        r = self.client.get(reverse('profile'))
-        self.assertEqual(200, r.status_code)
-        r = self.client.post(
-            reverse('profile'), {
-                'first_name': 'Firstname',
-                'last_name':  'Lastname',
-                'country':    'Norway'
-            })
-        u = get_user_model().objects.get(email='staff_user@fake.com')
-        self.assertEqual('Firstname', u.first_name)
-        self.assertEqual('Lastname', u.last_name)
-        self.assertEqual('staff_user@fake.com', u.email)
-        # Uncomment when https://github.com/Frikanalen/frikanalen/issues/77 is fixed
-        #self.assertEqual('Norway', u.userprofile.country)
+    def tearDown(self):
+        self.user.delete()
 
 class WebPageTest(TestCase):
     fixtures = ['test.yaml']
-
-    def test_video_listing(self):
-        r = self.client.get('/video/')
-        self.assertEqual(['dummy video', 'tech video'],
-                         [v.name for v in r.context['videos']])
-        self.assertContains(r, 'dummy video', count=1)
-        self.assertContains(r, 'tech video', count=1)
-        self.assertContains(r, 'class="video_container"', count=2)
-
-    def test_video_detail(self):
-        r = self.client.get('/video/1/')
-        self.assertContains(
-            r, 'First broadcast: <i>Jan. 1, 2015, 10 a.m.</i>', count=1)
-        self.assertContains(r, '<h1>Video not available</h1>', count=1)
-        self.assertContains(r, '<a href="/organization/1/">NUUG</a>', count=1)
-
-    def test_video_guide(self):
-        sched = Scheduleitem.objects.get(video__name='tech video')
-        sched.starttime = timezone.now()
-        sched.save()
-        r = self.client.get('/guide/')
-        self.assertContains(r, '<li class="event"', count=1)
-        self.assertContains(r, 'tech video', count=1)
 
     def test_xmltv(self):
         r = self.client.get('/xmltv/2015/01/01')
