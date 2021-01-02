@@ -9,6 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 import agenda.urls
 import fkws.urls
+import fkvod.urls
 import news.urls
 from fkbeta.views import Frontpage
 
@@ -21,10 +22,12 @@ urlpatterns = [
     url(r'^logout/$', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
 
     url(r'^admin/', admin.site.urls),
+    url(r'^', include('fk.urls')),
 ]
 
 urlpatterns += agenda.urls.urlpatterns
 urlpatterns += fkws.urls.urlpatterns
+urlpatterns += fkvod.urls.urlpatterns
 urlpatterns += [url(r'^api/news/', include(('news.urls', "news",)))]
 
 # Only used with DEBUG. Serves static content right from source
