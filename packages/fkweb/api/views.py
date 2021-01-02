@@ -38,22 +38,22 @@ from fk.models import VideoFile
 from fk.models import Organization
 
 
-from fkws.permissions import IsInOrganizationOrDisallow
-from fkws.permissions import IsInOrganizationOrReadOnly
-from fkws.permissions import IsOrganizationEditorOrReadOnly
-from fkws.permissions import IsStaffOrReadOnly
-from fkws.serializers import AsRunSerializer
-from fkws.serializers import CategorySerializer
-from fkws.serializers import ScheduleitemReadSerializer
-from fkws.serializers import ScheduleitemModifySerializer
-from fkws.serializers import TokenSerializer
-from fkws.serializers import VideoFileSerializer
-from fkws.serializers import VideoSerializer
-from fkws.serializers import VideoCreateSerializer
-from fkws.serializers import VideoUploadTokenSerializer
-from fkws.serializers import UserSerializer
-from fkws.serializers import OrganizationSerializer
-from fkws.serializers import NewUserSerializer
+from api.permissions import IsInOrganizationOrDisallow
+from api.permissions import IsInOrganizationOrReadOnly
+from api.permissions import IsOrganizationEditorOrReadOnly
+from api.permissions import IsStaffOrReadOnly
+from api.serializers import AsRunSerializer
+from api.serializers import CategorySerializer
+from api.serializers import ScheduleitemReadSerializer
+from api.serializers import ScheduleitemModifySerializer
+from api.serializers import TokenSerializer
+from api.serializers import VideoFileSerializer
+from api.serializers import VideoSerializer
+from api.serializers import VideoCreateSerializer
+from api.serializers import VideoUploadTokenSerializer
+from api.serializers import UserSerializer
+from api.serializers import OrganizationSerializer
+from api.serializers import NewUserSerializer
 
 
 @api_view(['GET'])

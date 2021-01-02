@@ -1,6 +1,6 @@
 from .models import Bulletin
 from .serializers import BulletinSerializer
-from fkws.permissions import IsStaffOrReadOnly
+from api.permissions import IsStaffOrReadOnly
 from django.shortcuts import render
 
 from rest_framework import viewsets

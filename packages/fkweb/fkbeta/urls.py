@@ -8,7 +8,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 import agenda.urls
-import fkws.urls
+import api.urls
 import news.urls
 from fkbeta.views import Frontpage
 
@@ -24,7 +24,7 @@ urlpatterns = [
 ]
 
 urlpatterns += agenda.urls.urlpatterns
-urlpatterns += fkws.urls.urlpatterns
+urlpatterns += api.urls.urlpatterns
 urlpatterns += [url(r'^api/news/', include(('news.urls', "news",)))]
 
 # Only used with DEBUG. Serves static content right from source

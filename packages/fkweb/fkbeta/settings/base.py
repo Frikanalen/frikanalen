@@ -248,7 +248,7 @@ LOCAL_APPS = (
     'fkbeta',
     'agenda',
     'fk',
-    'fkws',
+    'api',
     'news',
 )
 
