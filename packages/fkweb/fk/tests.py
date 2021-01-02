@@ -6,33 +6,12 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import TestCase
 from django.utils import timezone
-from rest_framework.test import APITestCase
-from rest_framework.test import APIRequestFactory
-from rest_framework.test import force_authenticate
 
 from dateutil import parser
 
 from fk.models import Scheduleitem
 from fk.templatetags import vod
 
-class UserRegistrationTest(APITestCase):
-    profile_before_change = {
-            'email': 'new_user@fake.com',
-            'date_of_birth': '1900-01-01',
-            'first_name': 'Firstname before test',
-            'last_name': 'Lastname before test',
-            'msisdn': '+1 800 USA-RAIL',
-            }
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(
-                email=self.profile_before_change['email'],
-                password='test',
-                date_of_birth=self.profile_before_change['date_of_birth'],
-                )
-        self.user.save()
-
-    def tearDown(self):
-        self.user.delete()
 
 class WebPageTest(TestCase):
     fixtures = ['test.yaml']
