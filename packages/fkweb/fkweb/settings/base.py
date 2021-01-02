@@ -205,7 +205,7 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csp.middleware.CSPMiddleware',
-    'fkbeta.middleware.api_utc_middleware',
+    'fkweb.middleware.api_utc_middleware',
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -245,7 +245,7 @@ THIRD_PARTY_APPS = (
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
-    'fkbeta',
+    'fkweb',
     'agenda',
     'fk',
     'api',

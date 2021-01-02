@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class FrikanalenAppConfig(AppConfig):
-    name = 'fkbeta'
+    name = 'fkweb'
 
     def ready(self):
         # Register the signal receivers
