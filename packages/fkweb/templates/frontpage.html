@@ -2,67 +2,13 @@
 
 {% block heading-title %}{% endblock %}
 
-{% block style %}
-  <style>
-  #live {
-    background-color: black;
-  }
-  #live h1 {
-    text-align: center;
-    color: white;
-    font-size: 12px;
-    padding: 5px 0 3px;
-    margin: 0;
-  }
-  video {
-    max-height: 65vh;
-    max-width: 100%;
-  }
-  #twitter {
-    margin: 20px auto;
-    max-width: 520px;
-  }
-
-  .ontv {
-    margin: 10px auto;
-    max-width: 600px;
-    padding: 10px;
-    line-height: 1.4;
-  }
-  .ontv-head {
-    font-size: 130%;
-  }
-  .ontv-video {
-    font-size: 150%;
-  }
-  #current {
-    background-color: #eda;
-  }
-  #previous {
-    background-color: #f4e5e5;
-    font-size: 75%;
-    opacity: 0.75;
-  }
-  #next {
-    background-color: #e8f4e3;
-    font-size: 75%;
-  }
-  </style>
-{% endblock style %}
-
 {% block content %}
 <div id="mainbox">
-  {% include "scheditem_ontv.html" with scheditem=prev_scheditem type="previous" %}
-  {% include "scheditem_ontv.html" with scheditem=curr_scheditem type="current" %}
-  {% include "scheditem_ontv.html" with scheditem=next_scheditem type="next" %}
 
   <div id=live>
-    <h1>{% trans "Frikanalen broadcast" %}</h1>
-    <video width=1024 height=576 controls src="http://icecast.frikanalen.no/frikanalen.webm"></video>
-  </div>
-  <div id=twitter>
-    <a class="twitter-timeline" href="https://twitter.com/Frikanalen" data-widget-id="389487927782162432">{% trans "Tweets by @Frikanalen" %}</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+      <h1>Frikanalens gamle nettsted</h1>
+      <p>Velkommen til vår gamle nettside. All funksjonalitet er fjernet herfra unntatt sendeplansprogrammering, i påvente av implementasjon av det på den nye frontend..</p>
+      
   </div>
 </div>
 {% endblock content %}
