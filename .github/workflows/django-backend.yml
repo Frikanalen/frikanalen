@@ -1,4 +1,4 @@
-name: Build Django backend service
+name: Django API service
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
       - 'packages/fkweb/**'
 jobs:
   build:
-    name: Build and push Docker images
+    name: Build and push docker package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master
@@ -21,3 +21,19 @@ jobs:
           tag_with_ref: true
           path: packages/fkweb
           dockerfile: packages/fkweb/Dockerfile
+  test:
+    name: Unit test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-prod.txt
+      - name: Run tests
+        run: python manage.py test
