@@ -9,24 +9,9 @@ from rest_framework.test import APIClient
 from rest_framework.test import force_authenticate
 from requests.auth import HTTPBasicAuth
 
-import datetime
-
 from fk.models import VideoFile, Scheduleitem
 
-class RefactoredPermissionsTest(APITestCase):
-    # TODO: Replace with dynamic setup 
-    fixtures = ['test.yaml']
-
-    def test_user_can_get_token(self):
-        client = APIClient()
-        client.force_authenticate(get_user_model().objects.get(email='nuug_user@fake.com'))
-        response = client.get(reverse('api-token-auth'))
-
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(list(response.data.keys()), ['created', 'key', 'user'])
-        self.assertEqual(len(response.data['key']), 40)
-
-## Code above has been refactored, code below... here be monsters
+import datetime
 
 class PermissionsTest(APITestCase):
     fixtures = ['test.yaml']
@@ -46,7 +31,7 @@ class PermissionsTest(APITestCase):
             ('videos', status.HTTP_200_OK),
             ('organization', status.HTTP_200_OK),
             ('obtain-token', status.HTTP_401_UNAUTHORIZED),
-            ('user', status.HTTP_401_UNAUTHORIZED),
+            ('user', status.HTTP_403_FORBIDDEN),
             ('user/register', status.HTTP_405_METHOD_NOT_ALLOWED),
         ]
         self._helper_test_reading_all_pages_from_root(pages)
@@ -139,8 +124,9 @@ class PermissionsTest(APITestCase):
         """
         videos = [1, 2, 3, 4]
         for id in videos:
+            self.client.logout()
             r = self.client.get(reverse('api-video-upload-token-detail', args=(id,),))
-            self.assertEqual(status.HTTP_401_UNAUTHORIZED, r.status_code)
+            self.assertEqual(status.HTTP_403_FORBIDDEN, r.status_code)
             self.assertEqual({'detail': 'Authentication credentials '
                                         'were not provided.'},
                               r.data)
@@ -177,11 +163,12 @@ class PermissionsTest(APITestCase):
             results.append((list_page, r.status_code, r.data))
         error_msg = {'detail': 'Authentication credentials were not provided.'}
         self.assertEqual(
-            [(p, status.HTTP_401_UNAUTHORIZED, error_msg)
+            [(p, status.HTTP_403_FORBIDDEN, error_msg)
                 for p in list_pages],
             results)
 
     def test_anonymous_cannot_edit(self):
+        self.maxDiff=None
         detail_pages = ('api-video-detail', 'api-videofile-detail',
                         'api-scheduleitem-detail', 'asrun-detail')
         results = []
@@ -190,7 +177,7 @@ class PermissionsTest(APITestCase):
             results.append((detail_page, r.status_code, r.data))
         error_msg = {'detail': 'Authentication credentials were not provided.'}
         self.assertEqual(
-            [(p, status.HTTP_401_UNAUTHORIZED, error_msg)
+            [(p, status.HTTP_403_FORBIDDEN, error_msg)
              for p in detail_pages],
             results)
 

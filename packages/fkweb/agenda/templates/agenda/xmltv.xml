@@ -1,4 +1,4 @@
-<tv generator-info-name="fkbeta.agenda.xmltv">
+<tv generator-info-name="fkweb.agenda.xmltv">
   <channel id="{{ channel_id }}">
     {% for channel_display_name in channel_display_names %}
       <display-name>{{ channel_display_name }}</display-name>

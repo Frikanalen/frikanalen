@@ -402,7 +402,7 @@ class Video(models.Model):
         return vodfiles
 
     def get_absolute_url(self):
-        return reverse('vod-video-detail', kwargs={'video_id': self.id})
+        return f'/video/{self.id}/'
 
 
 class ScheduleitemManager(models.Manager):

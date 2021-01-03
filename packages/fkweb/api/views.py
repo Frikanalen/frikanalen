@@ -30,8 +30,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-import fkvod.search
-
 from fk.models import AsRun
 from fk.models import Category
 from fk.models import Scheduleitem
@@ -40,22 +38,22 @@ from fk.models import VideoFile
 from fk.models import Organization
 
 
-from fkws.permissions import IsInOrganizationOrDisallow
-from fkws.permissions import IsInOrganizationOrReadOnly
-from fkws.permissions import IsOrganizationEditorOrReadOnly
-from fkws.permissions import IsStaffOrReadOnly
-from fkws.serializers import AsRunSerializer
-from fkws.serializers import CategorySerializer
-from fkws.serializers import ScheduleitemReadSerializer
-from fkws.serializers import ScheduleitemModifySerializer
-from fkws.serializers import TokenSerializer
-from fkws.serializers import VideoFileSerializer
-from fkws.serializers import VideoSerializer
-from fkws.serializers import VideoCreateSerializer
-from fkws.serializers import VideoUploadTokenSerializer
-from fkws.serializers import UserSerializer
-from fkws.serializers import OrganizationSerializer
-from fkws.serializers import NewUserSerializer
+from api.permissions import IsInOrganizationOrDisallow
+from api.permissions import IsInOrganizationOrReadOnly
+from api.permissions import IsOrganizationEditorOrReadOnly
+from api.permissions import IsStaffOrReadOnly
+from api.serializers import AsRunSerializer
+from api.serializers import CategorySerializer
+from api.serializers import ScheduleitemReadSerializer
+from api.serializers import ScheduleitemModifySerializer
+from api.serializers import TokenSerializer
+from api.serializers import VideoFileSerializer
+from api.serializers import VideoSerializer
+from api.serializers import VideoCreateSerializer
+from api.serializers import VideoUploadTokenSerializer
+from api.serializers import UserSerializer
+from api.serializers import OrganizationSerializer
+from api.serializers import NewUserSerializer
 
 
 @api_view(['GET'])
@@ -246,12 +244,14 @@ class ScheduleitemList(generics.ListCreateAPIView):
             cache_res = cache.get(cache_key)
 
             if cache_res:
-                logger.warning('[Scheduleitem] cache hit')
+                #logger.warning('[Scheduleitem] cache hit')
                 return cache_res
             else:
-                logger.warning('[Scheduleitem] cache miss, cache_key=%s', cache_key)
+                #logger.warning('[Scheduleitem] cache miss, cache_key=%s', cache_key)
+                pass
         else:
-            logger.warning('[Scheduleitem] not caching')
+            pass
+            #logger.warning('[Scheduleitem] not caching')
 
         res = super().get(request, *args, **kwargs)
         res.accepted_renderer = request.accepted_renderer
@@ -260,7 +260,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
         res.render()
 
         if cacheable and res.status_code == 200:
-            logger.warning('[Scheduleitem] cache store, cache_key=%s', cache_key)
+            #logger.warning('[Scheduleitem] cache store, cache_key=%s', cache_key)
             cache.set(cache_key, res, None)
 
         return res
@@ -499,7 +499,7 @@ class UserCreate(generics.CreateAPIView):
 
 
 @method_decorator(never_cache, name='dispatch')
-class UserDetail(generics.RetrieveUpdateAPIView):
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     User details - used to manage your own user
     """
