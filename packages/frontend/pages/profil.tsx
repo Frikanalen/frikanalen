@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useContext, useState } from "react";
-import { APIGET, fkOrgJSON, fkOrgRole, fkOrgJSONSchema } from "components/TS-API/API";
+import { APIGET, fkOrg, fkOrgRole, fkOrgSchema } from "components/TS-API/API";
 
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
@@ -97,13 +97,13 @@ function OrganizationCard({ role }: { role: fkOrgRole }) {
   }
 
   const { token } = context;
-  const [org, setOrg] = useState(null as fkOrgJSON);
+  const [org, setOrg] = useState(null as fkOrg);
 
   useEffect(() => {
-    APIGET<fkOrgJSON>({
+    APIGET<fkOrg>({
       endpoint: `organization/${role.orgID}`,
       token: token,
-      validator: fkOrgJSONSchema.parse,
+      validator: fkOrgSchema.parse,
     }).then((res) => setOrg(res));
   }, [role.orgID]);
 

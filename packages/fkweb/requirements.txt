@@ -11,3 +11,4 @@ Markdown == 3.2.2
 python-dateutil == 2.8.1
 python-memcached == 1.59
 requests == 2.24.0
+djangorestframework-camel-case == 1.2.0

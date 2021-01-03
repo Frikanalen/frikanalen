@@ -4,7 +4,7 @@ import WindowWidget from "../../../components/WindowWidget";
 import { Container, Row, Col, Button, Alert, Form } from "react-bootstrap";
 import { getLatestVideos } from "../../../components/VideoList";
 import { useRouter } from "next/router";
-import { APIGET, fkOrgJSON, fkVideoJSON } from "../../../components/TS-API/API";
+import { APIGET, fkOrg, fkVideo } from "../../../components/TS-API/API";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import {
   eachDayOfInterval,
@@ -27,7 +27,7 @@ import config from "components/configs";
 export async function getServerSideProps(context) {
   const orgIDString = context.query.orgID;
   const orgID = parseInt(orgIDString);
-  const { name } = await APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` });
+  const { name } = await APIGET<fkOrg>({ endpoint: `organization/${orgID}` });
 
   return {
     props: {
@@ -87,7 +87,7 @@ function ScheduleItem(props) {
 
   if (videoJSON == null) {
     const { orgID } = useRouter().query;
-    APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` }).then((n) => setOrgName(n.name));
+    APIGET<fkOrg>({ endpoint: `organization/${orgID}` }).then((n) => setOrgName(n.name));
   }
 
   const handleSubmit = (event) => {

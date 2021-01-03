@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import dynamic from "next/dynamic";
-import { APIGET, fkVideoJSON } from "../../components/TS-API/API";
+import { APIGET, fkVideo, fkVideoSchema } from "../../components/TS-API/API";
 
 import Layout from "../../components/Layout";
 
@@ -38,10 +38,10 @@ function pendingSpinnerBox() {
 // will sleep five seconds before checking again, because the user lands
 // straight on the video page after uploading.
 // TODO: Expose this in a better way in the Video class.
-function getStateFromVideo(video: fkVideoJSON) {
+function getStateFromVideo(video: fkVideo) {
   let videoState;
 
-  if (!video.publish_on_web) {
+  if (!video.publishOnWeb) {
     videoState = "unpublished";
   } else if ("theora" in video.files) {
     // If there is only an original/broadcast file, we can surmise that
@@ -49,7 +49,7 @@ function getStateFromVideo(video: fkVideoJSON) {
     videoState = "playable";
   } else if ("original" in video.files || "broadcast" in video.files) {
     setTimeout(() => {
-      APIGET<fkVideoJSON>({ endpoint: `videos/${video.id}` }).then((v) => {
+      APIGET<fkVideo>({ endpoint: `videos/${video.id}` }).then((v) => {
         this.setState({
           videoState: getStateFromVideo(v),
         });
@@ -69,9 +69,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let latestVideos = null;
   let error = null;
   try {
-    videoJSON = await APIGET<fkVideoJSON>({ endpoint: `videos/${videoID}` });
+    videoJSON = await APIGET<fkVideo>({
+      endpoint: `videos/${videoID}`,
+      validator: fkVideoSchema.parse,
+    });
     latestVideos = await getLatestVideos(videoJSON.organization.id);
   } catch (e) {
+    console.log(e);
     context.res.statusCode = 404;
     error = "Not found!";
   }

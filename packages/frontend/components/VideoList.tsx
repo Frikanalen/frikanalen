@@ -6,34 +6,23 @@ import Link from "next/link";
 import Moment from "react-moment";
 import moment from "moment";
 import "moment/locale/nb";
-
-interface VideoJSON {
-  description: string;
-  name: string;
-  id: number;
-  large_thumbnail_url: string;
-  created_time: string;
-}
-
-interface VideoQueryJSON {
-  count: number;
-  results: VideoJSON[];
-}
+import { APIGET, fkVideo, fkVideoQuery, fkVideoQuerySchema } from "./TS-API/API";
 
 export async function getLatestVideos(orgID: number) {
-  const response = await fetch(`${configs.api}videos/?organization=${orgID}&page_size=10`);
-  const latestVideos = await response.json();
-  return latestVideos;
+  return await APIGET<fkVideoQuery>({
+    endpoint: `videos/?organization=${orgID}&page_size=10`,
+    validator: fkVideoQuerySchema.parse,
+  });
 }
 
-const VideoList: React.FC<{ videosJSON: VideoQueryJSON }> = ({ videosJSON }) => {
-  const VideoCard: React.FC<{ v: VideoJSON }> = ({ v }) => (
+const VideoList: React.FC<{ videosJSON: fkVideoQuery }> = ({ videosJSON }) => {
+  const VideoCard: React.FC<{ v: fkVideo }> = ({ v }) => (
     <Card key={v.id} style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
       <Link href={`/v/${v.id}`}>
         <Card.Img
           style={{ cursor: "pointer", objectFit: "contain", height: "140.625px", background: "black" }}
           variant="top"
-          src={v.large_thumbnail_url}
+          src={v.largeThumbnailUrl}
         />
       </Link>
       <Card.Body>
@@ -42,7 +31,7 @@ const VideoList: React.FC<{ videosJSON: VideoQueryJSON }> = ({ videosJSON }) => 
       <Card.Footer>
         Lastet opp{" "}
         <Moment locale="nb" format="Do MMMM YYYY">
-          {v.created_time}
+          {v.createdTime}
         </Moment>
       </Card.Footer>
     </Card>

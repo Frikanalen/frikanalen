@@ -7,7 +7,7 @@ import WindowWidget from "../../../components/WindowWidget";
 import config from "../../../components/configs";
 
 import VideoList, { getLatestVideos } from "components/VideoList";
-import { APIGET, fkOrgJSON } from "components/TS-API/API";
+import { APIGET, fkOrg } from "components/TS-API/API";
 
 export default function OrgAdmin(props) {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function OrgAdmin(props) {
 export async function getServerSideProps(context) {
   const orgIDString = context.query.orgID;
   const orgID = parseInt(orgIDString);
-  const { name } = await APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` });
+  const { name } = await APIGET<fkOrg>({ endpoint: `organization/${orgID}` });
 
   const latestVideos = await getLatestVideos(orgID);
 

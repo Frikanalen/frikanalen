@@ -8,66 +8,76 @@ export interface fkBulletin {
   text: string;
 }
 
-interface fkOrgRoleJSON {
-  role: string;
-  organization_id: number;
-  organization_name: string;
-}
-
-export interface fkVideoFiles {
-  large_thumb: string;
-  theora: string;
-}
-
-export interface fkVideoJSON {
-  id: number;
-  organization: fkOrgJSON;
-  publish_on_web: boolean;
-  files: fkVideoFiles;
-}
-
-function fkVideoJSONValidator(data: any) {
-  return data as fkVideo;
-}
-
-export interface fkVideo {
-  id: number;
-  name: string;
-  organization: fkOrgJSON;
-}
-
-export interface fkScheduleJSON {
-  results: fkScheduleItem[];
-}
-
-export interface fkOrg {
-  orgID: number;
-  orgName: string;
-  orgDescription: string;
-  postalAddress: string;
-  streetAddress: string;
-  editorID: number;
-  editorName: string;
-  editorEmail: string;
-  editorMSISDN: string;
-  isMember: boolean;
-}
-
-export const fkOrgJSONSchema = z.object({
+export const fkOrgSchema = z.object({
   id: z.number(),
   name: z.string(),
-  postal_address: z.string(),
-  street_address: z.string(),
-  editor_id: z.number(),
-  editor_name: z.string(),
-  editor_email: z.string(),
-  editor_msisdn: z.string(),
+  postalAddress: z.string().nullable(),
+  streetAddress: z.string().nullable(),
+  editorId: z.number(),
+  editorName: z.string(),
+  editorEmail: z.string(),
+  editorMsisdn: z.string(),
   homepage: z.string().nullable(),
   fkmember: z.boolean(),
   description: z.string(),
 });
 
-export type fkOrgJSON = z.infer<typeof fkOrgJSONSchema>;
+export type fkOrg = z.infer<typeof fkOrgSchema>;
+
+export const fkVideoFilesSchema = z.object({
+  largeThumb: z.string().optional(),
+  broadcast: z.string().optional(),
+  original: z.string().optional(),
+  theora: z.string().optional(),
+});
+
+export type fkVideo = z.infer<typeof fkVideoSchema>;
+export const fkVideoSchema = z.object({
+  name: z.string(),
+  id: z.number(),
+  organization: fkOrgSchema,
+  files: fkVideoFilesSchema,
+  description: z.string().nullable(),
+  header: z.string(),
+  creator: z.string(),
+  duration: z.string(),
+  categories: z.array(z.string()),
+  framerate: z.number(),
+  properImport: z.boolean(),
+  hasTonoRecords: z.boolean(),
+  publishOnWeb: z.boolean(),
+  isFiller: z.boolean(),
+  refUrl: z.string(),
+  createdTime: z.string(),
+  updatedTime: z.string(),
+  uploadedTime: z.string(),
+  ogvUrl: z.string(),
+  largeThumbnailUrl: z.string(),
+});
+
+export const fkVideoQuerySchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
+  results: fkVideoSchema.array(),
+});
+
+export type fkVideoQuery = z.infer<typeof fkVideoQuerySchema>;
+
+export const fkScheduleItemSchema = z.object({
+  id: z.number(),
+  video: fkVideoSchema,
+  starttime: z.string(),
+  endtime: z.string(),
+});
+
+export type fkScheduleItem = z.infer<typeof fkScheduleItemSchema>;
+
+export const fkScheduleSchema = z.object({
+  results: z.array(fkScheduleItemSchema),
+});
+
+export type fkSchedule = z.infer<typeof fkScheduleSchema>;
 
 export interface APIGETOptions<T> {
   endpoint: string;
@@ -81,7 +91,6 @@ export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
   let cacheOptions: RequestCache = "default";
   if (opts.token != undefined) authHeaders = { Authorization: `Token ${opts.token}` };
   if (opts.reloadCache != undefined) cacheOptions = "reload";
-
   const response = await fetch(`${configs.api}${opts.endpoint}`, { cache: cacheOptions, headers: authHeaders });
 
   if (!response.ok) {
@@ -93,75 +102,51 @@ export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
   if (opts.validator != undefined) {
     return opts.validator(responseJSON);
   } else {
+    console.log("Warning: Used APIGET without validator.");
     return responseJSON as T;
   }
 }
 
-export async function fkFetchOrg(orgID: number): Promise<fkOrg> {
-  const o = await APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` });
+export const fkOrgRoleSchema = z.object({
+  role: z.string(),
+  orgID: z.number(),
+  orgName: z.string(),
+});
 
-  return {
-    orgID: o.id,
-    orgName: o.name,
-    orgDescription: o.description,
-    postalAddress: o.postal_address,
-    streetAddress: o.street_address,
-    isMember: o.fkmember,
-    editorID: o.editor_id,
-    editorName: o.editor_name,
-    editorEmail: o.editor_email,
-    editorMSISDN: o.editor_msisdn,
-  };
-}
+export type fkOrgRole = z.infer<typeof fkOrgRoleSchema>;
 
-export interface fkOrgRole {
-  role: string;
-  orgID: number;
-  orgName: string;
-}
+export const fkUserSchema = z.object({
+  email: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  msisdn: z.string(),
+  isStaff: z.boolean(),
+  organizationRoles: z.array(fkOrgRoleSchema),
+});
 
-interface fkUserJSON {
-  first_name: string;
-  last_name: string;
-  email: string;
-  is_staff: boolean;
-  phone_number: string;
-  organization_roles: fkOrgRoleJSON[];
-}
-
-export type fkScheduleItem = {
-  id: number;
-  video: fkVideo;
-  starttime: string;
-  endtime: string;
-};
-
-export interface fkUser {
-  readonly email: string;
-  firstName: string;
-  lastName: string;
-  msisdn: string;
-  isStaff: boolean;
-  organizationRoles: fkOrgRole[];
-}
+export type fkUser = z.infer<typeof fkUserSchema>;
 
 export async function getUserProfile(token: string): Promise<fkUser> {
-  const userJSON = await APIGET<fkUserJSON>({ endpoint: "user", token: token, reloadCache: true });
+  const userJSON = await APIGET<fkUser>({ endpoint: "user", token: token, reloadCache: true });
 
-  const orgRoles: fkOrgRole[] = userJSON.organization_roles.map((role) => {
+  const orgRoles: fkOrgRole[] = userJSON.organizationRoles.map((role) => {
     return {
       role: role.role,
-      orgID: role.organization_id,
-      orgName: role.organization_name,
+      orgID: role.orgID,
+      orgName: role.orgName,
     };
   });
 
   return {
     email: userJSON.email,
-    isStaff: userJSON.is_staff,
-    firstName: userJSON.first_name,
-    lastName: userJSON.last_name,
-    msisdn: userJSON.phone_number,
+    isStaff: userJSON.isStaff,
+    firstName: userJSON.firstName,
+    lastName: userJSON.lastName,
+    msisdn: userJSON.msisdn,
     organizationRoles: orgRoles,
   };
+}
+
+export async function getOrg(orgID: number): Promise<fkOrg> {
+  return await APIGET<fkOrg>({ endpoint: `organization/${orgID}`, validator: fkOrgSchema.parse });
 }

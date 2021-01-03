@@ -8,7 +8,7 @@ import ScheduleInfo from "../components/ScheduleInfo";
 import dynamic from "next/dynamic";
 
 import configs from "../components/configs";
-import { APIGET, fkScheduleJSON } from "../components/TS-API/API";
+import { APIGET, fkSchedule } from "../components/TS-API/API";
 
 const ShakaPlayer = dynamic(() => import("../components/ShakaPlayer"), { ssr: false });
 
@@ -88,7 +88,7 @@ export default function index(props) {
   );
 }
 export async function getServerSideProps(context) {
-  const scheduleJSON = await APIGET<fkScheduleJSON>({ endpoint: `scheduleitems/?days=1` });
+  const scheduleJSON = await APIGET<fkSchedule>({ endpoint: `scheduleitems/?days=1` });
   return {
     props: {
       scheduleJSON: scheduleJSON,

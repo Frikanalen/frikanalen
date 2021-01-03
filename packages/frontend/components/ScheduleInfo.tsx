@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import configs from "./configs";
 import { find } from "domutils";
 import Link from "next/link";
-import { APIGET, fkScheduleJSON, fkScheduleItem } from "components/TS-API/API";
+import { APIGET, fkSchedule, fkScheduleItem } from "components/TS-API/API";
 import { Col, Container, Row } from "react-bootstrap";
 import styles from "./ScheduleInfo.module.sass";
 
@@ -32,14 +32,14 @@ function as_HH_mm(datestr: string): string {
 }
 
 interface ScheduleInfoProps {
-  initialSchedule: fkScheduleJSON;
+  initialSchedule: fkSchedule;
 }
 interface ScheduleInfoState {
   schedule: fkScheduleItem[];
 }
 export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleInfoState> {
   async componentDidMount() {
-    const json = await APIGET<fkScheduleJSON>({ endpoint: `scheduleitems/?days=1` });
+    const json = await APIGET<fkSchedule>({ endpoint: `scheduleitems/?days=1` });
     this.setState({
       schedule: json.results,
     });

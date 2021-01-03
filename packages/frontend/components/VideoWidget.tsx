@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { APIGET, fkVideoJSON } from "./TS-API/API";
+import { APIGET, fkVideo } from "./TS-API/API";
 import Spinner from "react-bootstrap/Spinner";
 import dynamic from "next/dynamic";
 const VideoUpload = dynamic(() => import("./VideoUpload"), {
@@ -7,13 +7,13 @@ const VideoUpload = dynamic(() => import("./VideoUpload"), {
 });
 
 export interface VideoWidgetProps {
-  video: fkVideoJSON;
+  video: fkVideo;
 }
 
 export const VideoPlayer = ({ video }: VideoWidgetProps) => {
   return (
     <div className="videoPlayer">
-      <video poster={video.files.large_thumb} controls>
+      <video poster={video.files.largeThumb} controls>
         <source src={video.files.theora} type="video/ogg" />
       </video>
       <style jsx>{`

@@ -6,14 +6,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
-import { fkFetchOrg, fkOrg } from "components/TS-API/API";
+import { getOrg, fkOrg } from "components/TS-API/API";
 import VideoList, { getLatestVideos } from "components/VideoList";
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 
 export async function getServerSideProps(context: any) {
   const { orgID } = context.query;
-  const orgData = await fkFetchOrg(orgID);
+  const orgData = await getOrg(orgID);
+
   const latestVideos = await getLatestVideos(orgID);
 
   return {
@@ -28,8 +29,8 @@ function OrganizationData(props) {
   const { orgData } = props;
   return (
     <div>
-      <h1>{orgData.orgName}</h1>
-      <p style={{ whiteSpace: "pre-line" }}>{orgData.orgDescription}</p>
+      <h1>{orgData.name}</h1>
+      <p style={{ whiteSpace: "pre-line" }}>{orgData.description}</p>
     </div>
   );
 }
@@ -47,7 +48,7 @@ function OrganizationContactInfo(props: { orgData: fkOrg }) {
             <br />
             <a href={`mailto:${orgData.editorEmail}`}>{orgData.editorEmail}</a>
             <br />
-            <a href={`tel:${orgData.editorMSISDN}`}>{orgData.editorMSISDN}</a>
+            <a href={`tel:${orgData.editorMsisdn}`}>{orgData.editorMsisdn}</a>
           </p>
         </Card.Body>
       </Card>

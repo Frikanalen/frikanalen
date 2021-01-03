@@ -1,5 +1,5 @@
 import React, { createRef, useState } from "react";
-import { APIGET, fkScheduleJSON, fkBulletin } from "components/TS-API/API";
+import { APIGET, fkSchedule, fkBulletin } from "components/TS-API/API";
 import Moment from "react-moment";
 import dynamic from "next/dynamic";
 import Container from "react-bootstrap/Container";
@@ -14,7 +14,7 @@ const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), 
 const TwitterTimeline = dynamic(() => import("components/graphics/twittertimeline.js"), { ssr: false });
 
 export async function getServerSideProps(context: UserContextState) {
-  const scheduleJSON = await APIGET<fkScheduleJSON>({ endpoint: `scheduleitems/?days=1` });
+  const scheduleJSON = await APIGET<fkSchedule>({ endpoint: `scheduleitems/?days=1` });
   // We don't use this yet so best to silently ignore errors
   var bulletinsJSON = null;
   try {
