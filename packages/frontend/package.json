@@ -13,12 +13,15 @@
     "dev": "NEXT_PUBLIC_ENV=development next",
     "staging": "NEXT_PUBLIC_ENV=staging next",
     "build": "next build",
-    "start": "NEXT_PUBLIC_ENV=production next start"
+    "start": "NEXT_PUBLIC_ENV=production next start",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "keywords": [],
   "author": "Tore Sinding Bekkedal",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@babel/core": "^7.12.10",
     "@cycjimmy/jsmpeg-player": "^5.0.1",
     "axios": "^0.21.0",
     "base-64": "^1.0.0",
@@ -49,9 +52,14 @@
     "webrtc-adapter": "^7.6.0"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.1.11",
+    "@storybook/addon-essentials": "^6.1.11",
+    "@storybook/addon-links": "^6.1.11",
+    "@storybook/react": "^6.1.11",
     "@types/react": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
+    "babel-loader": "^8.2.2",
     "eslint": "^7.13.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.0.0",
