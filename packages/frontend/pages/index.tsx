@@ -88,7 +88,7 @@ export default function index(props) {
   );
 }
 export async function getServerSideProps(context) {
-  const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
+  const scheduleJSON = await APIGET<fkScheduleJSON>({ endpoint: `scheduleitems/?days=1` });
   return {
     props: {
       scheduleJSON: scheduleJSON,

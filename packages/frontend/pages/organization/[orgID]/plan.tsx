@@ -27,7 +27,7 @@ import config from "components/configs";
 export async function getServerSideProps(context) {
   const orgIDString = context.query.orgID;
   const orgID = parseInt(orgIDString);
-  const { name } = await APIGET<fkOrgJSON>(`organization/${orgID}`);
+  const { name } = await APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` });
 
   return {
     props: {
@@ -87,7 +87,7 @@ function ScheduleItem(props) {
 
   if (videoJSON == null) {
     const { orgID } = useRouter().query;
-    APIGET<fkOrgJSON>(`organization/${orgID}`).then((n) => setOrgName(n.name));
+    APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` }).then((n) => setOrgName(n.name));
   }
 
   const handleSubmit = (event) => {

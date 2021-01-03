@@ -1,27 +1,23 @@
 import React, { Component, useEffect, useContext, useState } from "react";
-import {APIGET, fkOrgJSON, fkOrgRole} from "components/TS-API/API";
+import { APIGET, fkOrgJSON, fkOrgRole, fkOrgJSONSchema } from "components/TS-API/API";
 
-import Alert from "react-bootstrap/Alert";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import WindowWidget from "../components/WindowWidget";
 
-import {UserContext} from "../components/UserContext";
+import { UserContext } from "../components/UserContext";
 import configs from "../components/configs";
-
-import { fkUser, getUserProfile } from "../components/TS-API/API";
 
 import Layout from "../components/Layout";
 
 function UserProfile() {
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
-    return (<></>);
+    return <></>;
   }
 
   const { profile, token, refresh } = context;
@@ -97,14 +93,18 @@ function UserCard() {
 function OrganizationCard({ role }: { role: fkOrgRole }) {
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
-    return (<></>);
+    return <></>;
   }
 
   const { token } = context;
   const [org, setOrg] = useState(null as fkOrgJSON);
 
   useEffect(() => {
-    APIGET<fkOrgJSON>(`organization/${role.orgID}`, token).then((res) => setOrg(res));
+    APIGET<fkOrgJSON>({
+      endpoint: `organization/${role.orgID}`,
+      token: token,
+      validator: fkOrgJSONSchema.parse,
+    }).then((res) => setOrg(res));
   }, [role.orgID]);
 
   const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
@@ -125,7 +125,7 @@ function OrganizationList() {
   let organizationList;
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
-    return (<></>);
+    return <></>;
   }
 
   const { profile } = context;
@@ -185,9 +185,9 @@ export default function Profile() {
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
     return (
-        <Layout>
-          <p>Du må være logget inn</p>
-        </Layout>
+      <Layout>
+        <p>Du må være logget inn</p>
+      </Layout>
     );
   }
 

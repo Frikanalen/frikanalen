@@ -34,7 +34,7 @@ export default function OrgAdmin(props) {
 export async function getServerSideProps(context) {
   const orgIDString = context.query.orgID;
   const orgID = parseInt(orgIDString);
-  const { name } = await APIGET<fkOrgJSON>(`organization/${orgID}`);
+  const { name } = await APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` });
 
   const latestVideos = await getLatestVideos(orgID);
 

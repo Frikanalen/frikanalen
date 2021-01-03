@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import configs from "../configs";
+import * as z from "zod";
 
 export interface fkBulletin {
   id: number;
@@ -25,6 +26,10 @@ export interface fkVideoJSON {
   files: fkVideoFiles;
 }
 
+function fkVideoJSONValidator(data: any) {
+  return data as fkVideo;
+}
+
 export interface fkVideo {
   id: number;
   name: string;
@@ -48,38 +53,52 @@ export interface fkOrg {
   isMember: boolean;
 }
 
-export interface fkOrgJSON {
-  id: number;
-  name: string;
-  postal_address: string;
-  street_address: string;
-  editor_id: number;
-  editor_name: string;
-  editor_email: string;
-  editor_msisdn: string;
-  fkmember: boolean;
-  description: string;
+export const fkOrgJSONSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  postal_address: z.string(),
+  street_address: z.string(),
+  editor_id: z.number(),
+  editor_name: z.string(),
+  editor_email: z.string(),
+  editor_msisdn: z.string(),
+  homepage: z.string().nullable(),
+  fkmember: z.boolean(),
+  description: z.string(),
+});
+
+export type fkOrgJSON = z.infer<typeof fkOrgJSONSchema>;
+
+export interface APIGETOptions<T> {
+  endpoint: string;
+  validator?: (data: any) => T;
+  token?: string;
+  reloadCache?: boolean;
 }
 
-export async function APIGET<T>(
-  endpoint: string,
-  token: string | null = null,
-  reloadCache: boolean = false
-): Promise<T> {
+export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
   let authHeaders = {};
-  let cacheOptions = "default" as RequestCache;
-  if (token) authHeaders = { Authorization: `Token ${token}` };
-  if (reloadCache) cacheOptions = "reload" as RequestCache;
+  let cacheOptions: RequestCache = "default";
+  if (opts.token != undefined) authHeaders = { Authorization: `Token ${opts.token}` };
+  if (opts.reloadCache != undefined) cacheOptions = "reload";
 
-  const response = await fetch(`${configs.api}${endpoint}`, { cache: cacheOptions, headers: authHeaders });
+  const response = await fetch(`${configs.api}${opts.endpoint}`, { cache: cacheOptions, headers: authHeaders });
 
-  if (response.ok) return await response.json();
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
 
-  throw Error(response.statusText);
+  const responseJSON = await response.json();
+
+  if (opts.validator != undefined) {
+    return opts.validator(responseJSON);
+  } else {
+    return responseJSON as T;
+  }
 }
 
 export async function fkFetchOrg(orgID: number): Promise<fkOrg> {
-  const o = await APIGET<fkOrgJSON>(`organization/${orgID}`);
+  const o = await APIGET<fkOrgJSON>({ endpoint: `organization/${orgID}` });
 
   return {
     orgID: o.id,
@@ -127,7 +146,7 @@ export interface fkUser {
 }
 
 export async function getUserProfile(token: string): Promise<fkUser> {
-  const userJSON = await APIGET<fkUserJSON>("user", token, true);
+  const userJSON = await APIGET<fkUserJSON>({ endpoint: "user", token: token, reloadCache: true });
 
   const orgRoles: fkOrgRole[] = userJSON.organization_roles.map((role) => {
     return {

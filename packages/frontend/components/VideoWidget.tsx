@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { APIGET, fkVideoJSON } from "./TS-API/API";
 import Spinner from "react-bootstrap/Spinner";
 import dynamic from "next/dynamic";
@@ -53,6 +53,8 @@ export const VideoSpinner = (props: VideoWidgetProps) => {
 };
 
 export const VideoWidget = ({ video }: VideoWidgetProps) => {
+  const [videoState, setVideoState] = useState(null);
+
   if (video == undefined) return null;
 
   if (typeof video?.files == "object" && Object.keys(video.files).length) {

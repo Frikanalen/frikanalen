@@ -32,15 +32,14 @@ function as_HH_mm(datestr: string): string {
 }
 
 interface ScheduleInfoProps {
-  initialSchedule: fkScheduleJSON
-
+  initialSchedule: fkScheduleJSON;
 }
 interface ScheduleInfoState {
-  schedule: fkScheduleItem[]
+  schedule: fkScheduleItem[];
 }
 export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleInfoState> {
   async componentDidMount() {
-    const json = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
+    const json = await APIGET<fkScheduleJSON>({ endpoint: `scheduleitems/?days=1` });
     this.setState({
       schedule: json.results,
     });

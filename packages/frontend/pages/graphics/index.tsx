@@ -14,11 +14,11 @@ const AnalogClock = dynamic(() => import("components/graphics/analogclock.js"), 
 const TwitterTimeline = dynamic(() => import("components/graphics/twittertimeline.js"), { ssr: false });
 
 export async function getServerSideProps(context: UserContextState) {
-  const scheduleJSON = await APIGET<fkScheduleJSON>(`scheduleitems/?days=1`);
+  const scheduleJSON = await APIGET<fkScheduleJSON>({ endpoint: `scheduleitems/?days=1` });
   // We don't use this yet so best to silently ignore errors
   var bulletinsJSON = null;
   try {
-    bulletinsJSON = await APIGET<fkBulletin>(`news/bulletins/`);
+    bulletinsJSON = await APIGET<fkBulletin>({ endpoint: `news/bulletins/` });
   } catch {}
 
   return {

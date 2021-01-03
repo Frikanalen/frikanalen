@@ -49,7 +49,7 @@ function getStateFromVideo(video: fkVideoJSON) {
     videoState = "playable";
   } else if ("original" in video.files || "broadcast" in video.files) {
     setTimeout(() => {
-      APIGET<fkVideoJSON>(`videos/${video.id}`).then((v) => {
+      APIGET<fkVideoJSON>({ endpoint: `videos/${video.id}` }).then((v) => {
         this.setState({
           videoState: getStateFromVideo(v),
         });
@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let latestVideos = null;
   let error = null;
   try {
-    videoJSON = await APIGET<fkVideoJSON>(`videos/${videoID}`);
+    videoJSON = await APIGET<fkVideoJSON>({ endpoint: `videos/${videoID}` });
     latestVideos = await getLatestVideos(videoJSON.organization.id);
   } catch (e) {
     context.res.statusCode = 404;
