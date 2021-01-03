@@ -13,11 +13,16 @@ interface fkOrgRoleJSON {
   organization_name: string;
 }
 
+export interface fkVideoFiles {
+  large_thumb: string;
+  theora: string;
+}
+
 export interface fkVideoJSON {
   id: number;
   organization: fkOrgJSON;
   publish_on_web: boolean;
-  files: [filetype: string, url: string][];
+  files: fkVideoFiles;
 }
 
 export interface fkVideo {

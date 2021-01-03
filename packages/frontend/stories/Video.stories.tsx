@@ -8,7 +8,7 @@ export default {
   title: "Frikanalen/VideoWidget",
   component: VideoWidget,
   argTypes: {
-    fkVideoJSON: { control: "object" },
+    video: { control: "object" },
   },
 } as Meta;
 
@@ -27,7 +27,7 @@ const Template: Story<VideoWidgetProps> = (args) => (
 
 export const VOD = Template.bind({});
 VOD.args = {
-  fkVideoJSON: {
+  video: {
     id: 626503,
     name: "Test fra iPhone",
     header: "Denne kan gjerne slettes",
