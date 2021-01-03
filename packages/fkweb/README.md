@@ -1,6 +1,7 @@
 fkweb
 =====
 
+![Unit tests](https://github.com/Frikanalen/frikanalen/workflows/Unit%20test%20Django%20API%20service/badge.svg)
 ![Build fkweb](https://github.com/Frikanalen/frikanalen/workflows/Build%20Django%20backend%20service/badge.svg)
 
 Backend API for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
