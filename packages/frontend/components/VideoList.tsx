@@ -31,7 +31,7 @@ const VideoList: React.FC<{ videosJSON: fkVideoQuery }> = ({ videosJSON }) => {
       <Card.Footer>
         Lastet opp{" "}
         <Moment locale="nb" format="Do MMMM YYYY">
-          {v.createdTime}
+          {v.createdTime || ""}
         </Moment>
       </Card.Footer>
     </Card>

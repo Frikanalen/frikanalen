@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import configs from "./configs";
-import { find } from "domutils";
 import Link from "next/link";
 import { APIGET, fkSchedule, fkScheduleItem } from "components/TS-API/API";
 import { Col, Container, Row } from "react-bootstrap";

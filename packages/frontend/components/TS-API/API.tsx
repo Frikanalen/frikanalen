@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import configs from "../configs";
 import * as z from "zod";
 
@@ -7,6 +6,13 @@ export interface fkBulletin {
   heading: string;
   text: string;
 }
+
+export const fkCategorySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
+export type fkCategory = z.infer<typeof fkCategorySchema>;
 
 export const fkOrgSchema = z.object({
   id: z.number(),
@@ -25,35 +31,38 @@ export const fkOrgSchema = z.object({
 export type fkOrg = z.infer<typeof fkOrgSchema>;
 
 export const fkVideoFilesSchema = z.object({
+  smallThumb: z.string().optional(),
   largeThumb: z.string().optional(),
   broadcast: z.string().optional(),
   original: z.string().optional(),
   theora: z.string().optional(),
+  vc1: z.string().optional(),
+  srt: z.string().optional(),
 });
 
 export type fkVideo = z.infer<typeof fkVideoSchema>;
-export const fkVideoSchema = z.object({
-  name: z.string(),
-  id: z.number(),
-  organization: fkOrgSchema,
-  files: fkVideoFilesSchema,
-  description: z.string().nullable(),
-  header: z.string(),
-  creator: z.string(),
-  duration: z.string(),
-  categories: z.array(z.string()),
-  framerate: z.number(),
-  properImport: z.boolean(),
-  hasTonoRecords: z.boolean(),
-  publishOnWeb: z.boolean(),
-  isFiller: z.boolean(),
-  refUrl: z.string(),
-  createdTime: z.string(),
-  updatedTime: z.string(),
-  uploadedTime: z.string(),
-  ogvUrl: z.string(),
-  largeThumbnailUrl: z.string(),
-});
+export const fkVideoSchema = z
+  .object({
+    name: z.string(),
+    id: z.number(),
+    organization: fkOrgSchema,
+    files: fkVideoFilesSchema,
+    description: z.string().nullable(),
+    header: z.string().nullable(),
+    creator: z.string(),
+    duration: z.string(),
+    categories: z.array(z.string()),
+    framerate: z.number(),
+    properImport: z.boolean(),
+    hasTonoRecords: z.boolean(),
+    publishOnWeb: z.boolean(),
+    isFiller: z.boolean(),
+    refUrl: z.string(),
+    createdTime: z.string().nullable(),
+    updatedTime: z.string(),
+    uploadedTime: z.string().nullable(),
+  })
+  .nonstrict();
 
 export const fkVideoQuerySchema = z.object({
   count: z.number(),

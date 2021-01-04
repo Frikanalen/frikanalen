@@ -16,7 +16,7 @@ export default function Signupform() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function signup(e) {
+  async function signup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     try {
@@ -38,7 +38,7 @@ export default function Signupform() {
       const returnedErrors = Object.keys(requestException.response.data);
 
       const errorList = returnedErrors.map((key) =>
-        requestException.response.data[key].map((i) => (
+        requestException.response.data[key].map((i: string) => (
           <p>
             <em>{fieldNames[key]}</em>:{i}
           </p>
@@ -48,7 +48,7 @@ export default function Signupform() {
       setErrorMessage(
         <Alert variant="warning">
           <Alert.Heading>Beklager, det oppstod en feil!</Alert.Heading>
-          <code>{e.message}</code>
+          <code>{err.message}</code>
 
           {errorList}
         </Alert>

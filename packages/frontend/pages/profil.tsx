@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { APIGET, fkOrg, fkOrgRole, fkOrgSchema } from "components/TS-API/API";
 
 import Card from "react-bootstrap/Card";
@@ -25,9 +25,9 @@ function UserProfile() {
   const [lastName, setLastName] = useState(profile?.lastName);
   const [MSISDN, setMSISDN] = useState(profile?.msisdn);
 
-  const submitProfile = (e) => {
+  const submitProfile = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    fetch(`${configs.api}user`, {
+    await fetch(`${configs.api}user`, {
       method: "put",
       headers: {
         Authorization: `Token ${token}`,
@@ -97,7 +97,7 @@ function OrganizationCard({ role }: { role: fkOrgRole }) {
   }
 
   const { token } = context;
-  const [org, setOrg] = useState(null as fkOrg);
+  const [org, setOrg] = useState<fkOrg>();
 
   useEffect(() => {
     APIGET<fkOrg>({

@@ -2157,6 +2157,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-bootstrap-typeahead@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@types/react-bootstrap-typeahead/-/react-bootstrap-typeahead-5.1.1.tgz#4e2d1ca129b3f8d18e455660afc5f2405e5cf1cd"
+  integrity sha512-yRaU+6jArJT/ZFAploxn/45QT38zMyknYVG57lzaXC2cQ3TUZTHOD2qtjNJwr3uMlSBD8hYu6qOEB5SrULmrBA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-color@^3.0.1":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-3.0.4.tgz#c63daf012ad067ac0127bdd86725f079d02082bd"

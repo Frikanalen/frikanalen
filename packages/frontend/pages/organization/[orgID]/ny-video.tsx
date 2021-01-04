@@ -11,10 +11,17 @@ import config from "components/configs";
 import Video, { getCategories } from "components/API/Video";
 import ProfileFetcher from "components/API/User";
 import { UserContext } from "../../../components/UserContext";
+import { fkCategory } from "../../../components/TS-API/API";
+import { GetServerSideProps } from "next";
 
 interface fkOrganizationJSON {
   id: number;
   name: string;
+}
+interface VideoCreateProps {
+  orgID: number;
+  orgName: string;
+  onVideoCreated: any;
 }
 
 class VideoCreate extends Component<
@@ -33,11 +40,11 @@ class VideoCreate extends Component<
 > {
   onVideoCreated;
 
-  constructor(props) {
+  constructor(props: VideoCreateProps) {
     super(props);
-    const { orgID, orgName } = props;
+    const { orgID, orgName, onVideoCreated } = props;
 
-    this.onVideoCreated = props.onVideoCreated;
+    this.onVideoCreated = onVideoCreated;
     this.state = {
       errors: null,
       video: new Video(),
@@ -57,7 +64,7 @@ class VideoCreate extends Component<
     this.setState({ possibleCategories: categories });
   }
 
-  handleSubmit(event) {
+  handleSubmit(event: React.MouseEvent<HTMLElement>) {
     const { token } = this.context;
     event.preventDefault();
     this.state.video
@@ -125,7 +132,7 @@ class VideoCreate extends Component<
               }}
               multiple
             >
-              {this.state.possibleCategories.map((cat) => (
+              {this.state.possibleCategories.map((cat: fkCategory) => (
                 <option key={cat.id} value={cat.name}>
                   {cat.name}
                 </option>
@@ -149,7 +156,10 @@ class VideoCreate extends Component<
 
 VideoCreate.contextType = UserContext;
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  if (typeof context.query.orgID != "string") throw new Error("Organization ID cannot be array");
+  const orgID = parseInt(context.query.orgID);
+
   const getOrgName = async (orgID: number): Promise<string> => {
     const res = await fetch(`${config.api}organization/${orgID}`);
     console.log(`${config.api}organization/${orgID}`);
@@ -157,28 +167,30 @@ export async function getServerSideProps(context) {
     return resData.name;
   };
 
-  const { orgID } = context.query;
   const orgName = await getOrgName(orgID);
 
   return {
     props: { orgName },
   };
+};
+
+interface AddVideoProps {
+  orgName: string;
 }
 
-export default function AddVideo(props) {
+export default function AddVideo(props: AddVideoProps) {
   const router = useRouter();
-  const { orgID } = router.query;
-  if (typeof orgID !== "string") return <p>invalid organization</p>;
-
+  if (typeof router.query.orgID !== "string") throw new Error("invalid organization");
+  const orgID = parseInt(router.query.orgID);
   const { orgName } = props;
 
   return (
     <Layout>
       <WindowWidget>
         <VideoCreate
-          orgID={parseInt(orgID)}
+          orgID={orgID}
           orgName={orgName}
-          onVideoCreated={(videoID) => {
+          onVideoCreated={(videoID: number) => {
             console.log("OnVideoCreated");
             router.push("/v/[videoID]", `/v/${videoID}`);
           }}

@@ -1,20 +1,17 @@
-import Alert from "react-bootstrap/Alert";
-import configs from "components/configs";
-import Link from "next/link";
-
 import React from "react";
-import PropTypes from "prop-types";
 import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
 import { getOrg, fkOrg } from "components/TS-API/API";
 import VideoList, { getLatestVideos } from "components/VideoList";
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
+import { GetServerSideProps } from "next";
 
-export async function getServerSideProps(context: any) {
-  const { orgID } = context.query;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  if (typeof context.query.orgID != "string") throw new Error("orgID must be string, not array");
+  const orgID = parseInt(context.query.orgID);
+
   const orgData = await getOrg(orgID);
-
   const latestVideos = await getLatestVideos(orgID);
 
   return {
@@ -23,9 +20,9 @@ export async function getServerSideProps(context: any) {
       latestVideos,
     },
   };
-}
+};
 
-function OrganizationData(props) {
+function OrganizationData(props: { orgData: fkOrg }) {
   const { orgData } = props;
   return (
     <div>

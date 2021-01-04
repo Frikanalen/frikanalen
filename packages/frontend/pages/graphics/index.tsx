@@ -1,4 +1,4 @@
-import React, { createRef, useState } from "react";
+import React, { createRef, ReactElement, useState } from "react";
 import { APIGET, fkSchedule, fkBulletin } from "components/TS-API/API";
 import Moment from "react-moment";
 import dynamic from "next/dynamic";
@@ -29,27 +29,17 @@ export async function getServerSideProps(context: UserContextState) {
   };
 }
 
-function Carousel({ children }) {
-  const [currentPage, setCurrentPage] = useState(0);
-  const currentPageDuration = parseInt(children[currentPage].props.duration);
-  setTimeout(() => {
-    if (1 + currentPage == children.length) {
-      setCurrentPage(0);
-      return;
-    }
-    setCurrentPage(currentPage + 1);
-  }, currentPageDuration * 1000);
-
-  return <div style={{ background: "#faa", width: "1280px", height: "720px" }}>{children[currentPage]}</div>;
+interface CarouselProps {
+  children: ReactElement<CarouselPageProps>[];
 }
 
 interface CarouselPageProps {
   children?: React.ReactNode;
-  duration?: number;
+  duration: number;
   title: string;
 }
 
-const CarouselPage: React.FC<CarouselPageProps> = ({ children, title, duration }) => (
+const CarouselPage: React.FC<CarouselPageProps> = ({ children, title, duration }: CarouselPageProps) => (
   <div className="clockAndContainer">
     <Clock title={title} />
     <div className={"childElement"}>{children}</div>
@@ -82,8 +72,29 @@ const CarouselPage: React.FC<CarouselPageProps> = ({ children, title, duration }
   </div>
 );
 
-function NextUp(props) {
-  const { scheduleJSON } = props;
+function Carousel({ children }: CarouselProps) {
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const currentChild: ReactElement<CarouselPageProps> = children[currentPage];
+  const currentPageDuration: number = currentChild?.props?.duration || 1000;
+
+  setTimeout(() => {
+    if (1 + currentPage == children.length) {
+      setCurrentPage(0);
+      return;
+    }
+    setCurrentPage(currentPage + 1);
+  }, currentPageDuration * 1000);
+
+  return <div style={{ background: "#faa", width: "1280px", height: "720px" }}>{children[currentPage]}</div>;
+}
+
+interface NextUpProps {
+  scheduleJSON: fkSchedule;
+}
+
+function NextUp({ scheduleJSON }: NextUpProps) {
+  //
   const currentProgramme = findRunningProgram(scheduleJSON.results) + 1;
 
   return (
@@ -117,7 +128,11 @@ function NextUp(props) {
   );
 }
 
-const Clock = ({ title }) => {
+interface ClockProps {
+  title: string;
+}
+
+const Clock = ({ title }: ClockProps) => {
   return (
     <div className="clock">
       <AnalogClock size="500" />
@@ -189,7 +204,11 @@ const Footer = () => (
   </>
 );
 
-const Bulletin = ({ bulletinJSON }) => {
+interface BulletinProps {
+  bulletinJSON: fkBulletin;
+}
+
+const Bulletin = ({ bulletinJSON }: BulletinProps) => {
   return (
     <div>
       <h3>{bulletinJSON.heading}</h3>
@@ -213,11 +232,15 @@ const Bulletin = ({ bulletinJSON }) => {
   );
 };
 
-export default function Index(props) {
-  const { scheduleJSON, bulletinsJSON } = props;
+interface IndexProps {
+  scheduleJSON: fkSchedule;
+  bulletinsJSON: fkBulletin;
+}
+
+export default function Index({ scheduleJSON, bulletinsJSON }: IndexProps) {
   return (
     <TrianglifiedDiv width="1280" height="720">
-      <CarouselPage title={"neste\nprogram"}>
+      <CarouselPage duration={1000000} title={"neste\nprogram"}>
         <NextUp scheduleJSON={scheduleJSON} />
       </CarouselPage>
     </TrianglifiedDiv>

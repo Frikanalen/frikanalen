@@ -53,7 +53,7 @@ export const VideoSpinner = (props: VideoWidgetProps) => {
 };
 
 export const VideoWidget = ({ video }: VideoWidgetProps) => {
-  const [videoState, setVideoState] = useState(null);
+  const [videoState, setVideoState] = useState<string>("");
 
   if (video == undefined) return null;
 

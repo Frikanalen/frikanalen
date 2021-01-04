@@ -1,10 +1,12 @@
+export {};
+/*
 import React, { useEffect, useState } from "react";
+
 import Layout from "../../../components/Layout";
 import WindowWidget from "../../../components/WindowWidget";
 import { Container, Row, Col, Button, Alert, Form } from "react-bootstrap";
-import { getLatestVideos } from "../../../components/VideoList";
 import { useRouter } from "next/router";
-import { APIGET, fkOrg, fkVideo } from "../../../components/TS-API/API";
+import {APIGET, fkOrg, fkSchedule, fkScheduleItem, fkVideo} from "../../../components/TS-API/API";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import {
   eachDayOfInterval,
@@ -23,10 +25,11 @@ import configs from "../../../components/configs";
 import moment from "moment";
 import styles from "./plan.module.sass";
 import config from "components/configs";
+import {GetServerSideProps} from "next";
 
-export async function getServerSideProps(context) {
-  const orgIDString = context.query.orgID;
-  const orgID = parseInt(orgIDString);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  if(typeof context.query.orgID != 'string') throw new Error("Invalid org ID!");
+  const orgID = parseInt(context.query.orgID);
   const { name } = await APIGET<fkOrg>({ endpoint: `organization/${orgID}` });
 
   return {
@@ -37,7 +40,8 @@ export async function getServerSideProps(context) {
   };
 }
 
-function VideoSearchBox(props) {
+// FIXME: These type definitions are too loose
+function VideoSearchBox(props: { initialVideo: any, orgID: number, onVideoChange: any }) {
   const { initialVideo, orgID, onVideoChange } = props;
   const [originalVideo, setOriginalVideo] = useState(initialVideo);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,20 +72,21 @@ function VideoSearchBox(props) {
   );
 }
 
-function ScheduleItem(props) {
-  const { initialData } = props;
+function ScheduleItem(props: {scheduleData: fkScheduleItem}) {
+  const { scheduleData } = props;
 
-  const [editMode, setEditMode] = useState(initialData == null ? true : false);
-  const [itemID, setItemID] = useState(initialData?.id);
-  const [startTime, setStartTime] = useState(initialData?.starttime);
-  const [endTime, setEndTime] = useState(initialData?.endtime);
-  const [videoJSON, setVideoJSON] = useState(initialData?.video);
-  const [orgName, setOrgName] = useState(initialData?.video?.organization?.name);
-  const [orgID, setOrgID] = useState(initialData?.video?.organization?.id);
+  const [editMode, setEditMode] = useState(scheduleData == null ? true : false);
+  const [itemID, setItemID] = useState(scheduleData?.id);
+  const [startTime, setStartTime] = useState(scheduleData.starttime);
+  const [endTime, setEndTime] = useState(scheduleData.endtime);
+  const [videoJSON, setVideoJSON] = useState(scheduleData.video);
+  const [orgName, setOrgName] = useState(scheduleData?.video?.organization?.name);
+  const [orgID, setOrgID] = useState(scheduleData?.video?.organization?.id);
 
   useEffect(() => {
     if (videoJSON) {
-      setEndTime(moment(startTime).add(videoJSON.duration));
+      const startTimeMoment: moment.Moment = moment(startTime).add(videoJSON.duration);
+      setEndTime(startTimeMoment.format());
     }
   }, [videoJSON, startTime]);
 
@@ -90,7 +95,7 @@ function ScheduleItem(props) {
     APIGET<fkOrg>({ endpoint: `organization/${orgID}` }).then((n) => setOrgName(n.name));
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.MouseEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
   };
@@ -106,7 +111,7 @@ function ScheduleItem(props) {
                   type="time"
                   onChange={(e) => {
                     let [hours, minutes] = e.target.value.split(":").map(Number);
-                    setStartTime(moment(startTime).set({ hour: hours, minute: minutes }));
+                    setStartTime(moment(startTime).set({ hour: hours, minute: minutes }).format());
                   }}
                   value={moment(startTime).format("HH:mm")}
                 />
@@ -153,9 +158,9 @@ function ScheduleItem(props) {
     );
 }
 
-function Schedule(props) {
+function Schedule(props: {scheduleDate: Date}) {
   const { scheduleDate } = props;
-  const [scheduleData, setScheduleData] = useState(null);
+  const [scheduleData, setScheduleData] = useState(new fkSchedule);
 
   const loadSchedule = useEffect(() => {
     const YYYYMMDD = moment(scheduleDate).format("YYYYMMDD");
@@ -170,10 +175,8 @@ function Schedule(props) {
 
   return (
     <Container fluid>
-      <ScheduleItem initialData={null} />
-      {scheduleData.map((i) => (
-        <ScheduleItem initialData={i} />
-      ))}
+      {//<ScheduleItem scheduleData={null} />}
+      {scheduleData.map((i) => (<ScheduleItem scheduleData={i} />))}
     </Container>
   );
 }
@@ -277,3 +280,4 @@ export default function Plan(props) {
     </Layout>
   );
 }
+ */

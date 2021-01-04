@@ -6,15 +6,14 @@ import Layout from "../components/Layout";
 import WindowWidget from "../components/WindowWidget";
 import ScheduleInfo from "../components/ScheduleInfo";
 import dynamic from "next/dynamic";
-
-import configs from "../components/configs";
 import { APIGET, fkSchedule } from "../components/TS-API/API";
+import { GetServerSideProps } from "next";
 
 const ShakaPlayer = dynamic(() => import("../components/ShakaPlayer"), { ssr: false });
 
 const BetaDisclaimer = () => (
   <WindowWidget nomargin>
-    <Container fluid className="betaBisclaimer">
+    <Container fluid className="betaDisclaimer">
       <Row className="iconRow">
         <Col md="auto" className="iconBox">
           <svg
@@ -67,8 +66,12 @@ const BetaDisclaimer = () => (
     </Container>
   </WindowWidget>
 );
-export default function index(props) {
-  const { scheduleJSON } = props;
+
+interface IndexProps {
+  scheduleJSON: fkSchedule;
+}
+
+export default function Index({ scheduleJSON }: IndexProps) {
   return (
     <Layout>
       <Container>
@@ -87,11 +90,12 @@ export default function index(props) {
     </Layout>
   );
 }
-export async function getServerSideProps(context) {
+
+export const getServerSideProps: GetServerSideProps = async () => {
   const scheduleJSON = await APIGET<fkSchedule>({ endpoint: `scheduleitems/?days=1` });
   return {
     props: {
       scheduleJSON: scheduleJSON,
     },
   };
-}
+};
