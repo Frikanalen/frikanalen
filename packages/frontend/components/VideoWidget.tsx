@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import { APIGET, fkVideo } from "./TS-API/API";
+import { fkVideo } from "./TS-API/API";
 import Spinner from "react-bootstrap/Spinner";
 import dynamic from "next/dynamic";
 const VideoUpload = dynamic(() => import("./VideoUpload"), {
   ssr: false,
 });
-
-export interface VideoWidgetProps {
-  video: fkVideo;
-}
 
 export const VideoPlayer = ({ video }: VideoWidgetProps) => {
   return (
@@ -26,7 +22,11 @@ export const VideoPlayer = ({ video }: VideoWidgetProps) => {
   );
 };
 
-export const VideoSpinner = (props: VideoWidgetProps) => {
+export interface VideoWidgetProps {
+  video: fkVideo;
+}
+
+export const VideoSpinner = () => {
   return (
     <div className="videoSpinner">
       <div className="processingMessage">
@@ -52,18 +52,22 @@ export const VideoSpinner = (props: VideoWidgetProps) => {
   );
 };
 
-export const VideoWidget = ({ video }: VideoWidgetProps) => {
+export const VideoWidget: React.FunctionComponent<VideoWidgetProps> = ({ video }) => {
   const [videoState, setVideoState] = useState<string>("");
-
-  if (video == undefined) return null;
 
   if (typeof video?.files == "object" && Object.keys(video.files).length) {
     if ("theora" in video.files) {
       return <VideoPlayer video={video} />;
     } else if ("original" in video.files || "broadcast" in video.files) {
-      return <VideoSpinner video={video} />;
+      return <VideoSpinner />;
     }
   } else {
-    return <VideoUpload videoJSON={video} onUploadComplete={() => setVideoState("pending")} />; // className={styles.videoUploadBox}
+    if (video) {
+      return <VideoUpload videoJSON={video} onUploadComplete={() => setVideoState("pending")} />; // className={styles.videoUploadBox}
+    }
   }
+
+  return null;
 };
+
+export default VideoWidget;

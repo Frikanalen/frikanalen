@@ -103,9 +103,9 @@ function NextUp({ scheduleJSON }: NextUpProps) {
         <span className="time">
           <Moment format={"LT"}>{scheduleJSON.results[currentProgramme].starttime}</Moment>
         </span>
-        {scheduleJSON.results[currentProgramme].video.organization.name}
+        {scheduleJSON.results[currentProgramme].video?.organization.name || ""}
       </h3>
-      <h4>{scheduleJSON.results[currentProgramme].video.name}</h4>
+      <h4>{scheduleJSON.results[currentProgramme].video?.name || ""}</h4>
 
       <style jsx>{`
         .time {

@@ -23,32 +23,38 @@ export default function Signupform() {
       await axios.post(`${configs.api}user/register`, {
         email,
         password,
-        first_name: givenName,
-        last_name: familyName,
-        date_of_birth: "2020-07-24",
+        firstName: givenName,
+        lastName: familyName,
+        dateOfBirth: "2020-07-24",
       });
     } catch (requestException) {
-      const fieldNames = {
-        first_name: "Fornavn",
-        last_name: "Etternavn",
+      const returnedErrors = Object.keys(requestException.response.data);
+      interface Dictionary<T> {
+        [Key: string]: T;
+      }
+      const fieldNames: Dictionary<string> = {
+        firstName: "Fornavn",
+        lastName: "Etternavn",
         password: "Passord",
         email: "E-post",
       };
-
-      const returnedErrors = Object.keys(requestException.response.data);
-
       const errorList = returnedErrors.map((key) =>
-        requestException.response.data[key].map((i: string) => (
-          <p>
-            <em>{fieldNames[key]}</em>:{i}
-          </p>
-        ))
+        requestException.response.data[key].map((i: string) => {
+          let errorMessage: string = key;
+
+          if (key in fieldNames) errorMessage = fieldNames[key];
+          return (
+            <p>
+              <em>{errorMessage}</em>:{i}
+            </p>
+          );
+        })
       );
 
       setErrorMessage(
         <Alert variant="warning">
           <Alert.Heading>Beklager, det oppstod en feil!</Alert.Heading>
-          <code>{err.message}</code>
+          <code>{requestException.message}</code>
 
           {errorList}
         </Alert>

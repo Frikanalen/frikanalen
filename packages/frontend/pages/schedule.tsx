@@ -1,23 +1,25 @@
-import React, { Component, useState, useEffect, useRef } from "react";
-
-import fetch from "isomorphic-unfetch";
+import React, { useState, useEffect, useRef } from "react";
 import Moment from "react-moment";
 import moment from "moment";
 import "moment/locale/nb";
 import WindowWidget from "../components/WindowWidget";
-import configs from "../components/configs";
 import Layout from "../components/Layout";
+import { APIGET, fkSchedule, fkScheduleItem, fkScheduleSchema } from "../components/TS-API/API";
+import { GetServerSideProps } from "next";
 
-async function scheduleForDate(date) {
-  const res = await fetch(`${configs.api}scheduleitems/?days=1&date=${moment(date).format("YYYYMMDD")}`);
-  const json = await res.json();
-  return json.results;
+async function scheduleForDate(date: moment.Moment) {
+  const queryString = `scheduleitems/?days=1&date=${moment(date).format("YYYYMMDD")}`;
+  return await APIGET<fkSchedule>({
+    endpoint: queryString,
+    validator: fkScheduleSchema.parse,
+  });
 }
 
-export async function getServerSideProps(context) {
-  const res = await fetch(`${configs.api}scheduleitems/?days=1`);
-  const json = await res.json();
-  const scheduleJSON = json.results;
+export const getServerSideProps: GetServerSideProps = async () => {
+  const scheduleJSON = await APIGET<fkSchedule>({
+    endpoint: `scheduleitems/?days=1`,
+    validator: fkScheduleSchema.parse,
+  });
   const date = moment().toJSON();
   return {
     props: {
@@ -25,9 +27,9 @@ export async function getServerSideProps(context) {
       date,
     },
   };
-}
+};
 
-function ScheduleItem(item) {
+function ScheduleItem(item: fkScheduleItem) {
   if (item.video === null) {
     return null;
   }
@@ -87,7 +89,12 @@ function ScheduleItem(item) {
   );
 }
 
-export default function Schedule(props) {
+interface ScheduleProps {
+  date: moment.Moment;
+  scheduleJSON: fkSchedule;
+}
+
+export default function Schedule(props: ScheduleProps) {
   const [date, setDate] = useState(props.date);
   const [scheduleJSON, setScheduleJSON] = useState(props.scheduleJSON);
   const firstUpdate = useRef(true);
@@ -123,7 +130,7 @@ export default function Schedule(props) {
             navigate_next
           </h1>
         </div>
-        <div className="programmes">{scheduleJSON.map((x) => ScheduleItem(x))}</div>
+        <div className="programmes">{scheduleJSON.results.map((x: fkScheduleItem) => ScheduleItem(x))}</div>
         <style jsx>
           {`
                 .programmes {

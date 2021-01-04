@@ -57,7 +57,21 @@ export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleI
     const currentItem = findRunningProgram(schedule);
     const programme_row = (programme: fkScheduleItem | null, DOMclass: string) => {
       if (programme == null) {
-        return <></>;
+        return null;
+      }
+
+      let video = {
+        name: "No video",
+        id: 0,
+      };
+      let organization = {
+        name: "No organization",
+        id: 0,
+      };
+
+      if (programme.video) {
+        video = programme.video;
+        organization = programme.video.organization;
       }
 
       return (
@@ -68,15 +82,15 @@ export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleI
               <span className={styles.endTime}>–{as_HH_mm(programme.endtime)}</span>
             </Col>
             <Col>
-              <Link href={`/organization/${programme.video.organization.id}`}>
-                <a className={styles.organization}>{programme.video.organization.name}</a>
+              <Link href={`/organization/${organization.id}`}>
+                <a className={styles.organization}>{organization.name}</a>
               </Link>
             </Col>
           </Row>
           <Row>
             <Col>
               <span className="name">
-                <a href={"v/" + programme.video.id}>{programme.video.name}</a>
+                <a href={"v/" + video.id}>{video.name}</a>
               </span>
             </Col>
           </Row>

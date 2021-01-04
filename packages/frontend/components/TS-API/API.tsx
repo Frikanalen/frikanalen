@@ -41,6 +41,7 @@ export const fkVideoFilesSchema = z.object({
 });
 
 export type fkVideo = z.infer<typeof fkVideoSchema>;
+
 export const fkVideoSchema = z
   .object({
     name: z.string(),
@@ -73,9 +74,24 @@ export const fkVideoQuerySchema = z.object({
 
 export type fkVideoQuery = z.infer<typeof fkVideoQuerySchema>;
 
+export const fkScheduleVideoSchema = z
+  .object({
+    name: z.string(),
+    id: z.number(),
+    organization: fkOrgSchema,
+    description: z.string().nullable(),
+    header: z.string().nullable(),
+    creator: z.string(),
+    duration: z.string(),
+    categories: z.array(z.string()),
+  })
+  .nonstrict();
+
 export const fkScheduleItemSchema = z.object({
   id: z.number(),
-  video: fkVideoSchema,
+  schedulereason: z.number(),
+  duration: z.string(), // FIXME: Backend bug
+  video: fkScheduleVideoSchema.nullable(),
   starttime: z.string(),
   endtime: z.string(),
 });
@@ -83,6 +99,9 @@ export const fkScheduleItemSchema = z.object({
 export type fkScheduleItem = z.infer<typeof fkScheduleItemSchema>;
 
 export const fkScheduleSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
   results: z.array(fkScheduleItemSchema),
 });
 

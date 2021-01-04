@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Router from "next/router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shaka-player/dist/controls.css";

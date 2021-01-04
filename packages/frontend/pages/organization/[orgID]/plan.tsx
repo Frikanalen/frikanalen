@@ -1,4 +1,8 @@
-export {};
+import React from "react";
+
+const foo = () => <p>Not in use</p>;
+export default foo;
+
 /*
 import React, { useEffect, useState } from "react";
 

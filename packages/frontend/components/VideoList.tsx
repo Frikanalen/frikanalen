@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
-import configs from "./configs";
 import Link from "next/link";
 import Moment from "react-moment";
-import moment from "moment";
 import "moment/locale/nb";
 import { APIGET, fkVideo, fkVideoQuery, fkVideoQuerySchema } from "./TS-API/API";
 
-export async function getLatestVideos(orgID: number) {
+export async function getLatestVideos(orgID: number): Promise<fkVideoQuery> {
   return await APIGET<fkVideoQuery>({
     endpoint: `videos/?organization=${orgID}&page_size=10`,
     validator: fkVideoQuerySchema.parse,

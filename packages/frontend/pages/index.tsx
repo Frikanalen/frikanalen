@@ -6,7 +6,7 @@ import Layout from "../components/Layout";
 import WindowWidget from "../components/WindowWidget";
 import ScheduleInfo from "../components/ScheduleInfo";
 import dynamic from "next/dynamic";
-import { APIGET, fkSchedule } from "../components/TS-API/API";
+import { APIGET, fkSchedule, fkScheduleSchema } from "../components/TS-API/API";
 import { GetServerSideProps } from "next";
 
 const ShakaPlayer = dynamic(() => import("../components/ShakaPlayer"), { ssr: false });
@@ -92,7 +92,10 @@ export default function Index({ scheduleJSON }: IndexProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const scheduleJSON = await APIGET<fkSchedule>({ endpoint: `scheduleitems/?days=1` });
+  const scheduleJSON = await APIGET<fkSchedule>({
+    endpoint: `scheduleitems/?days=1`,
+    validator: fkScheduleSchema.parse,
+  });
   return {
     props: {
       scheduleJSON: scheduleJSON,
