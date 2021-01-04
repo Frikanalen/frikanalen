@@ -130,15 +130,15 @@ export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
   if (opts.validator != undefined) {
     return opts.validator(responseJSON);
   } else {
-    console.log("Warning: Used APIGET without validator.");
+    console.log(`Warning: Used APIGET without validator to fetch ${opts.endpoint}`);
     return responseJSON as T;
   }
 }
 
 export const fkOrgRoleSchema = z.object({
   role: z.string(),
-  orgID: z.number(),
-  orgName: z.string(),
+  organizationId: z.number(),
+  organizationName: z.string(),
 });
 
 export type fkOrgRole = z.infer<typeof fkOrgRoleSchema>;
@@ -147,32 +147,23 @@ export const fkUserSchema = z.object({
   email: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  msisdn: z.string(),
+  phoneNumber: z.string(),
   isStaff: z.boolean(),
+  dateJoined: z.string(),
+  id: z.number(),
+  dateOfBirth: z.string(),
   organizationRoles: z.array(fkOrgRoleSchema),
 });
 
 export type fkUser = z.infer<typeof fkUserSchema>;
 
 export async function getUserProfile(token: string): Promise<fkUser> {
-  const userJSON = await APIGET<fkUser>({ endpoint: "user", token: token, reloadCache: true });
-
-  const orgRoles: fkOrgRole[] = userJSON.organizationRoles.map((role) => {
-    return {
-      role: role.role,
-      orgID: role.orgID,
-      orgName: role.orgName,
-    };
+  return await APIGET<fkUser>({
+    endpoint: "user",
+    token: token,
+    reloadCache: true,
+    validator: fkUserSchema.parse,
   });
-
-  return {
-    email: userJSON.email,
-    isStaff: userJSON.isStaff,
-    firstName: userJSON.firstName,
-    lastName: userJSON.lastName,
-    msisdn: userJSON.msisdn,
-    organizationRoles: orgRoles,
-  };
 }
 
 export async function getOrg(orgID: number): Promise<fkOrg> {

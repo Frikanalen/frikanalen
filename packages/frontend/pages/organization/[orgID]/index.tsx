@@ -8,7 +8,10 @@ import CardDeck from "react-bootstrap/CardDeck";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (typeof context.query.orgID != "string") throw new Error("orgID must be string, not array");
+  if (typeof context.query.orgID != "string" || isNaN(parseInt(context.query.orgID))) {
+    throw new Error(`Invalid organization ID "${context.query.orgID}"`);
+  }
+
   const orgID = parseInt(context.query.orgID);
 
   const orgData = await getOrg(orgID);

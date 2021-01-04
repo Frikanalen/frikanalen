@@ -23,10 +23,11 @@ function UserProfile() {
   const { profile, token, refresh } = context;
   const [firstName, setFirstName] = useState(profile?.firstName);
   const [lastName, setLastName] = useState(profile?.lastName);
-  const [MSISDN, setMSISDN] = useState(profile?.msisdn);
+  const [MSISDN, setMSISDN] = useState(profile?.phoneNumber);
 
   const submitProfile = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+
     await fetch(`${configs.api}user`, {
       method: "put",
       headers: {
@@ -34,9 +35,9 @@ function UserProfile() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        last_name: lastName,
-        first_name: firstName,
-        phone_number: MSISDN,
+        lastName: lastName,
+        firstName: firstName,
+        phoneNumber: MSISDN,
       }),
     });
     refresh();
@@ -100,12 +101,14 @@ function OrganizationCard({ role }: { role: fkOrgRole }) {
   const [org, setOrg] = useState<fkOrg>();
 
   useEffect(() => {
-    APIGET<fkOrg>({
-      endpoint: `organization/${role.orgID}`,
-      token: token,
-      validator: fkOrgSchema.parse,
-    }).then((res) => setOrg(res));
-  }, [role.orgID]);
+    if (role.organizationId) {
+      APIGET<fkOrg>({
+        endpoint: `organization/${role.organizationId}`,
+        token: token,
+        validator: fkOrgSchema.parse,
+      }).then((res) => setOrg(res));
+    }
+  }, [role.organizationId]);
 
   const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 

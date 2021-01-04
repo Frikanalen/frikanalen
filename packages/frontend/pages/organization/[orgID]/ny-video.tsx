@@ -9,9 +9,8 @@ import WindowWidget from "components/WindowWidget";
 
 import config from "components/configs";
 import Video, { getCategories } from "components/API/Video";
-import ProfileFetcher from "components/API/User";
 import { UserContext } from "../../../components/UserContext";
-import { fkCategory } from "../../../components/TS-API/API";
+import { fkCategory, fkOrg, getOrg } from "../../../components/TS-API/API";
 import { GetServerSideProps } from "next";
 
 interface fkOrganizationJSON {
@@ -74,16 +73,22 @@ class VideoCreate extends Component<
         this.onVideoCreated(this.state.video.ID);
       })
       .catch((e) => {
-        if (e.response.status == 400) {
-          var errors = [];
-          for (const key in e.response.data) {
-            errors.push(
-              <Alert key={key} variant="danger">
-                <Alert.Heading>{key}</Alert.Heading>
-              </Alert>
-            );
+        console.log(e);
+
+        if ("response" in e) {
+          if (e.response.status == 400) {
+            var errors = [];
+            for (const key in e.response.data) {
+              errors.push(
+                <Alert key={key} variant="danger">
+                  <Alert.Heading>{key}</Alert.Heading>
+                </Alert>
+              );
+            }
+            this.setState({ errors: errors });
+          } else {
+            console.log(e);
           }
-          this.setState({ errors: errors });
         } else {
           console.log(e.response.status);
           console.log(e.response.data);
@@ -157,42 +162,34 @@ class VideoCreate extends Component<
 VideoCreate.contextType = UserContext;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (typeof context.query.orgID != "string") throw new Error("Organization ID cannot be array");
-  const orgID = parseInt(context.query.orgID);
+  if (typeof context.query.orgID != "string" || isNaN(parseInt(context.query.orgID))) {
+    throw new Error(`Invalid organization ID "${context.query.orgID}"`);
+  }
 
-  const getOrgName = async (orgID: number): Promise<string> => {
-    const res = await fetch(`${config.api}organization/${orgID}`);
-    console.log(`${config.api}organization/${orgID}`);
-    const resData: fkOrganizationJSON = await res.json();
-    return resData.name;
-  };
-
-  const orgName = await getOrgName(orgID);
+  const org = await getOrg(parseInt(context.query.orgID));
 
   return {
-    props: { orgName },
+    props: {
+      org,
+    },
   };
 };
 
 interface AddVideoProps {
-  orgName: string;
+  org: fkOrg;
 }
 
-export default function AddVideo(props: AddVideoProps) {
+export default function AddVideo({ org }: AddVideoProps) {
   const router = useRouter();
-  if (typeof router.query.orgID !== "string") throw new Error("invalid organization");
-  const orgID = parseInt(router.query.orgID);
-  const { orgName } = props;
 
   return (
     <Layout>
       <WindowWidget>
         <VideoCreate
-          orgID={orgID}
-          orgName={orgName}
+          orgID={org.id}
+          orgName={org.name}
           onVideoCreated={(videoID: number) => {
-            console.log("OnVideoCreated");
-            router.push("/v/[videoID]", `/v/${videoID}`);
+            router.push("/video/[videoID]", `/video/${videoID}`);
           }}
         />
       </WindowWidget>

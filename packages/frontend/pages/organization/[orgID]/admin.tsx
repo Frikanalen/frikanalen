@@ -6,7 +6,7 @@ import Layout from "../../../components/Layout";
 import WindowWidget from "../../../components/WindowWidget";
 
 import VideoList, { getLatestVideos } from "components/VideoList";
-import { APIGET, fkOrg, fkVideoQuery } from "components/TS-API/API";
+import { APIGET, fkOrg, fkOrgSchema, fkVideoQuery } from "components/TS-API/API";
 import { GetServerSideProps } from "next";
 
 interface OrgAdminProps {
@@ -37,17 +37,21 @@ export default function OrgAdmin({ orgName, orgID, latestVideos }: OrgAdminProps
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (typeof context.query.orgID != "string") throw new Error("Nice try! But I need it to be a string.");
-
+  if (typeof context.query.orgID != "string" || isNaN(parseInt(context.query.orgID))) {
+    throw new Error(`Invalid organization ID "${context.query.orgID}"`);
+  }
   const orgID = parseInt(context.query.orgID);
-  const { name } = await APIGET<fkOrg>({ endpoint: `organization/${orgID}` });
+  const { name } = await APIGET<fkOrg>({
+    endpoint: `organization/${orgID}`,
+    validator: fkOrgSchema.parse,
+  });
 
   const latestVideos = await getLatestVideos(orgID);
 
   return {
     props: {
-      orgName: name,
-      orgID,
+      organizationName: name,
+      orgID: orgID,
       latestVideos,
     },
   };

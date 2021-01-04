@@ -49,7 +49,7 @@ function ScheduleItem(item: fkScheduleItem) {
         <a href={`/organization/${item.video.organization.id}`}>{item.video.organization.name}</a>
       </span>
       <div className="title">
-        <a href={`/v/${item.video.id}`}>{item.video.name}</a>
+        <a href={`/video/${item.video.id}`}>{item.video.name}</a>
       </div>
       <style jsx>
         {`
