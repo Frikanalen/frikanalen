@@ -1,6 +1,6 @@
 # Frikanalen TV playout
 
-(This version is in the course of being deprecated. Please look at [../playout-ng](../playout-ng)
+(This version is in the course of being deprecated and will be deleted real soon now. Please look at [../playout-ng](../playout-ng))
 
 ## Trying it out
 
