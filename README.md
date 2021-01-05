@@ -39,11 +39,13 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 - We are writing a new front-end
     - Migrating functionality from legacy site: Almost completely done!
     - Still needs a user interface for organizations to add their shows to schedules ([#216](https://github.com/Frikanalen/frikanalen/issues/216))
+    - This was the author's first React project, and there are still places where that shows.
+    - Remaining: Complete translation to strict Typescript, get to 0 eslint errors
 - Filling airtime in a better way
-    - New, far more maintainable playout written and deployed
+    - New, far more maintainable playout has been written and deployed, running stably
     - Needs to add better instrumentalization, monitoring/alerting (final output is checked for motion, and alerts are sent on pod failure)
-    - A better jukebox algorithm to prioritize fresher content and leave bigger gaps for graphics
-    - Expand broadcast graphics (in React frontend) to more than just a "next programme" clock (twitter feed?)
+    - A better jukebox algorithm to prioritize fresher content and leave bigger gaps for graphics ([see also](https://github.com/Frikanalen/frikanalen/blob/master/packages/fkweb/README.md#non-http-entry-points)
+    - Expand broadcast graphics (in React frontend) to more than just a "next programme" clock (News bulletin is mostly done)
 - Migrating the remaining bare-metal services to Kubernetes
     - Ceph cluster up and running nicely, need to migrate media from ZFS pool
     - Media asset server serving from Ceph
