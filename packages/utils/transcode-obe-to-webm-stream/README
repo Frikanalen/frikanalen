@@ -1,3 +1,0 @@
-This service will copy from cubemap to a web server for the web-facing stream.
-fk-stream-webm.service goes into /etc/systemd/system/ (remember to set the ICECAST variable in this file)
-fk-stream-webm goes into /usr/bin
