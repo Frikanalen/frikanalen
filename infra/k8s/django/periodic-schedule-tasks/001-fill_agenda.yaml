@@ -18,7 +18,7 @@ spec:
               - '2'
             env:
               - name: DJANGO_SETTINGS_MODULE
-                value: fkbeta.settings.production
+                value: fkweb.settings.production
             envFrom:
             - secretRef:
                 name: postgres-secret-django
