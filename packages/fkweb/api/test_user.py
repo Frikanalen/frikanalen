@@ -24,7 +24,7 @@ class UserRegistrationTests(APITestCase):
                 'date_of_birth': datetime.date(1920, 1, 1)
                 }
         req = self.factory.post(
-            reverse('api-user-create'), fields
+            reverse('api-user-create'), fields, format='json'
             )
         res = UserCreate.as_view()(req)
         self.assertEqual(status.HTTP_201_CREATED, res.status_code)
@@ -41,7 +41,7 @@ class UserRegistrationTests(APITestCase):
                 'password': 'Test',
                 }
         req = self.factory.post(
-            reverse('api-user-create'), fields
+            reverse('api-user-create'), fields, format='json'
             )
         res = UserCreate.as_view()(req)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, res.status_code)
@@ -93,11 +93,11 @@ class UserProfileTests(APITestCase):
     def test_user_update_profile(self):
         req = self.factory.put(
             reverse('api-user-detail'), {
-                'first_name': 'Firstname',
-                'last_name':  'Lastname',
-                'date_of_birth':  '2000-12-15',
-                'phone_number': '+47 22 22 55 55'
-            })
+                'firstName': 'Firstname',
+                'lastName':  'Lastname',
+                'dateOfBirth':  '2000-12-15',
+                'phoneNumber': '+47 22 22 55 55'
+            }, format='json')
         force_authenticate(req, user=self.user)
         res = UserDetail.as_view()(req)
         self.assertEqual(200, res.status_code)
@@ -111,8 +111,8 @@ class UserProfileTests(APITestCase):
         req = self.factory.delete(
             reverse('api-user-detail'), {
                 'id': self.user.id
-                }
-            )
+                },
+            format='json')
         force_authenticate(req, user=self.user)
         res = UserDetail.as_view()(req)
         self.assertEqual(status.HTTP_204_NO_CONTENT, res.status_code)

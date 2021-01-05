@@ -192,7 +192,7 @@ class PermissionsTest(APITestCase):
                 'last_name':  'Lastname',
                 'date_of_birth': date_of_birth,
                 'email': 'this_should_be_immutable@fake.com',
-            })
+            }, format='json')
         self.assertEqual(200, r.status_code)
         # This will fail if email wasn't immutable, it should probably
         # return something else than 200 if I try to patch read-only
@@ -217,9 +217,9 @@ class PermissionsTest(APITestCase):
             (
                 reverse('api-video-list'),
                 {'name': 'created test video', 'duration': '01:2.3',
-                    'organization': 1}, # FIXME: Don't hardcode the org this way
+                    'organization': 1, 'categories': ['My Cat']}, # FIXME: Don't hardcode the org this way
                 {'id': 5, 'name': 'created test video',
-                    'duration': '00:01:02.300000', 'categories': [],
+                    'duration': '00:01:02.300000', 'categories': ['My Cat'],
                     'organization': 1, 'creator': 'nuug_user@fake.com'},
                 status.HTTP_201_CREATED,
             ),
@@ -234,7 +234,7 @@ class PermissionsTest(APITestCase):
             ),
             (
                 reverse('asrun-list'),
-                {'video': 2, 'played_at': '2015-01-01 11:00:00Z'},
+                {'video': 2, 'playedAt': '2015-01-01 11:00:00Z'},
                 {'detail': 'You do not have permission to '
                            'perform this action.'},
                 status.HTTP_403_FORBIDDEN,
@@ -271,12 +271,11 @@ class PermissionsTest(APITestCase):
         self._helper_test_add_things(tests)
 
     def _helper_test_add_things(self, tests):
-        for test in tests:
+        for test_num, test in enumerate(tests):
             (url, obj, response_obj, exp_status) = test
-            r = self.client.post(url, obj)
+            r = self.client.post(url, obj, format='json')
             self.assertEqual(exp_status, r.status_code,
-                             "Expected status {} but got {} (for {})"
-                             .format(exp_status, r.status_code, url))
+                    f"Test {test_num}/{len(tests)}: Expected status {exp_status} but got {r.status_code} (for {url})")
             self.assertEqual(response_obj,
                              {k: r.data[k] for k in list(response_obj.keys())})
 
@@ -289,9 +288,9 @@ class PermissionsTest(APITestCase):
         ]
         for url_name, obj, attr in thing_tests:
             r = self.client.patch(
-                reverse(url_name, args=[obj.id]), {attr: 'test fn'})
-            self.assertEqual('test fn', r.data[attr])
+                reverse(url_name, args=[obj.id]), {attr: 'test fn'}, format='json')
             self.assertEqual(status.HTTP_200_OK, r.status_code)
+            self.assertEqual('test fn', r.data[attr])
 
     def test_staff_user_can_edit_nonowned_things(self):
         self._user_auth('staff_user@fake.com')
@@ -302,9 +301,10 @@ class PermissionsTest(APITestCase):
         ]
         for url_name, obj, attr in thing_tests:
             r = self.client.patch(
-                reverse(url_name, args=[obj.id]), {attr: 'test fn'})
-            self.assertEqual('test fn', r.data[attr])
+                reverse(url_name, args=[obj.id]), {attr: 'test fn'},
+                format='json')
             self.assertEqual(status.HTTP_200_OK, r.status_code)
+            self.assertEqual('test fn', r.data[attr])
 
     def test_nuug_user_cannot_edit_nonowned_things(self):
         self._user_auth('nuug_user@fake.com')
@@ -436,11 +436,11 @@ class UserRegistrationTest(APITestCase):
         }
 
     def test_creating_new_user(self):
-        r = self.client.post(reverse('api-user-create'), self.users['valid'])
+        r = self.client.post(reverse('api-user-create'), self.users['valid'], format='json')
         self.assertEqual(status.HTTP_201_CREATED, r.status_code)
 
     def test_logging_in_new_user(self):
-        r = self.client.post(reverse('api-user-create'), self.users['valid'])
+        r = self.client.post(reverse('api-user-create'), self.users['valid'], format='json')
         self.assertEqual(status.HTTP_201_CREATED, r.status_code)
         login_successful = self.client.login(
                 email=self.users['valid']['email'],
@@ -449,21 +449,21 @@ class UserRegistrationTest(APITestCase):
         self.assertEqual(login_successful, True)
 
     def test_duplicate_user_fails(self):
-        r = self.client.post(reverse('api-user-create'), self.users['valid'])
+        r = self.client.post(reverse('api-user-create'), self.users['valid'], format='json')
         self.assertEqual(status.HTTP_201_CREATED, r.status_code)
 
-        r = self.client.post(reverse('api-user-create'), self.users['valid'])
+        r = self.client.post(reverse('api-user-create'), self.users['valid'], format='json')
         self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
 
     def test_invalid_email_fails(self):
-        r = self.client.post(reverse('api-user-create'), self.users['invalid_email'])
+        r = self.client.post(reverse('api-user-create'), self.users['invalid_email'], format='json')
         self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
 
     def test_fails_without_mandatory_fields(self):
         for missing_mandatory_field in ['email', 'first_name', 'last_name', 'date_of_birth']:
             user_missing_field = dict(self.users['valid'])
             del user_missing_field[missing_mandatory_field]
-            r = self.client.post(reverse('api-user-create'), user_missing_field)
+            r = self.client.post(reverse('api-user-create'), user_missing_field, format='json')
             self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
 
 class ScheduleitemTest(APITestCase):
@@ -486,7 +486,8 @@ class ScheduleitemTest(APITestCase):
                 {'video': 2,
                  'starttime': given_time,
                  'duration': '58.312',
-                 'schedulereason': Scheduleitem.REASON_LEGACY})
+                 'schedulereason': Scheduleitem.REASON_LEGACY},
+                format='json')
             self.assertEqual(status.HTTP_201_CREATED, r.status_code)
             self.assertEqual(returned_time, r.data['starttime'])
             self.assertEqual('00:00:58.312000', r.data['duration'])
@@ -506,10 +507,11 @@ class ScheduleitemTest(APITestCase):
                 {'video_id': '/api/videos/2',
                  'starttime': starttime,
                  'duration': '00:00:58.312',
-                 'schedulereason': Scheduleitem.REASON_LEGACY})
+                 'schedulereason': Scheduleitem.REASON_LEGACY},
+                format='json')
+            self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
             self.assertEqual("Conflict with '2015-01-01 %s'." % conflict,
                              r.data['duration'][0])
-            self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
 
     def test_schedule_item_can_update(self):
         times = [
@@ -523,7 +525,7 @@ class ScheduleitemTest(APITestCase):
             changes.update({'schedulereason': Scheduleitem.REASON_LEGACY})
             r = self.client.patch(
                 reverse('api-scheduleitem-detail', args=[schedule_pk]),
-                changes)
+                changes, format='json')
             self.assertEqual(status.HTTP_200_OK, r.status_code)
             for k, v in list(changes.items()):
                 if k == 'starttime':
@@ -542,5 +544,5 @@ class ScheduleitemTest(APITestCase):
         for schedule_pk, changes in times:
             r = self.client.patch(
                 reverse('api-scheduleitem-detail', args=[schedule_pk]),
-                changes)
+                changes, format='json')
             self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
