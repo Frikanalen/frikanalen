@@ -171,10 +171,10 @@ def get_loudness(filepath):
         integrated_lufs = re.findall(r'<integrated lufs="([\d.-]+)"', output)[-1]
         truepeak_lufs = re.findall(r'<true-peak tpfs="([\d.-]+|-inf)"', output)[-1]
         data = {
-            'integrated_lufs': float(integrated_lufs),
+            'integratedLufs': float(integrated_lufs),
         }
         if '-inf' != truepeak_lufs:
-           data['truepeak_lufs'] = float(truepeak_lufs)
+           data['truepeakLufs'] = float(truepeak_lufs)
         return data
     except (IndexError, ValueError, FileNotFoundError) as e:
         return None
@@ -282,7 +282,7 @@ def measure_loudness(watch_dir, move_to_dir):
     for fsname in ('original', 'broadcast', 'theora'):
         params = {
             'format__fsname': fsname,
-            'integrated_lufs__isnull': True,
+            'integratedLufs__isnull': True,
             'page_size': pagesize,
             'order': '-video'
         }
@@ -354,10 +354,10 @@ def handle_file(watch_dir, move_to_dir, id):
 def _handle_file(id, filepath, metadata, reprocess=False):
     _update_video(id, {
         'duration': metadata['pretty_duration'],
-        'uploaded_time': datetime.utcnow().isoformat(),
+        'uploadedTime': datetime.utcnow().isoformat(),
     })
     generate_videos(id, filepath, metadata, reprocess=reprocess)
-    _update_video(id, { 'proper_import': True })
+    _update_video(id, { 'properImport': True })
 
 def update_existing_file(id, to_dir, force):
     logging.info("Trying to update existing file id: %d in folder %s",
