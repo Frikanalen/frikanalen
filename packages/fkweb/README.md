@@ -6,6 +6,19 @@ fkweb
 
 Backend API for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
 
+Non-HTTP entry points
+---------------------
+
+In addition to the HTTP API, the following commands are executed periodically as Kubernetes cron jobs in our cluster:
+
+    $ ./manage.py fill_next_weeks_agenda
+
+This job will fill the next week's schedule with videos as defined by the WeeklySlot model. This will generally be entries like "Fill Mondays 12-13 with the latest videos from NUUG".
+
+    $ ./manage.py fill_agenda_with_jukebox
+    
+This job will fill the remaining unpopulated areas with videos as randomly selected from the set of all videos marked with is_filler=True.
+
 Creating a local development environment
 ----------------------------------------
 
