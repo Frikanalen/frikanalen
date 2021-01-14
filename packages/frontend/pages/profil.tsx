@@ -196,6 +196,8 @@ export default function Profile() {
 
   const { profile } = context;
 
+  if (profile == null) return null;
+
   return (
     <Layout>
       <WindowWidget invisible>
