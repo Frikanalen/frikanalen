@@ -42,24 +42,14 @@ class VideoUpload extends Component {
     });
   }
 
-  startUpload() {
-    console.log("beginning upload");
-    this.uploader.setOption("multipart_params", {
-      upload_token: this.token["upload_token"],
-      video_id: this.videoID,
-    });
-    this.uploader.start();
-  }
 
   constructor(props) {
     super(props);
     const { videoJSON } = props;
-    this.browseRef = React.createRef();
     this.videoID = videoJSON.id;
     this.token = null;
     this.fileAdded = this.fileAdded.bind(this);
     this.uploadProgress = this.uploadProgress.bind(this);
-    this.startUpload = this.startUpload.bind(this);
     this.uploadComplete = props.onUploadComplete;
     this.state = {
       fileName: null,
@@ -86,12 +76,17 @@ class VideoUpload extends Component {
     console.log("token:", token);
     // TODO: Error handling
     this.token = await getUploadToken(this.videoID, token);
+    console.log(this.token)
     this.uploader = new plupload.Uploader({
-      runtimes: "html5",
-      browse_button: this.browseRef.current,
+      runtimes: "html5" ,
+      browse_button: document.getElementById('browseButton'),
       chunk_size: "1m",
-      url: this.token["upload_url"],
+      url: this.token["uploadUrl"],
       multi_selection: false,
+      multipart_params: {
+        upload_token: this.token["uploadToken"],
+        video_id: this.videoID,
+      },
       init: {
         FilesAdded: this.fileAdded,
         UploadProgress: this.uploadProgress,
@@ -99,14 +94,7 @@ class VideoUpload extends Component {
       },
     });
     this.uploader.init();
-    //this.r = new Resumable({
-    //  target: token["upload_url"],
-    //  query: { upload_token: token["upload_token"] },
-    //  testMethod: "HEAD",
-    //});
-    //this.r.on("FileAdded", this.fileAdded);
-    //this.r.on("FileError", this.uploadError);
-    //this.r.assignBrowse(this.browseRef.current);
+
   }
 
   fileUploader = () => {
@@ -119,7 +107,8 @@ class VideoUpload extends Component {
               <div>
                 Lastet opp: {humanFileSize(this.state.uploadProgressBytes)} / {humanFileSize(this.state.fileSize)}
               </div>
-              <Button ref={null} id="uploadStartButton" onClick={this.startUpload}>
+              <Button id="browseButton" style={{display: 'none'}}/>
+              <Button id="uploadStartButton" onClick={() => this.uploader.start()}>
                 Start
               </Button>
               <ProgressBar animated now={this.state.uploadProgressPercent} />
@@ -137,7 +126,7 @@ class VideoUpload extends Component {
           <Col>
             <h2>Videofil ikke lastet opp</h2>
             <p>Vennligst last opp en fil</p>
-            <Button id="browseButton" ref={this.browseRef}>
+            <Button id="browseButton">
               Velg fil...
             </Button>
           </Col>
@@ -147,13 +136,24 @@ class VideoUpload extends Component {
   );
 
   render() {
-    return (
-      <Container fluid>
-        <Row>
-          <Col>{this.state.fileName ? this.fileUploader() : this.fileSelector()}</Col>
-        </Row>
-      </Container>
-    );
+    if (this.state.fileName) {
+      return (
+          <Container fluid>
+            <Row>
+              <Col>{this.fileUploader()}</Col>
+            </Row>
+          </Container>
+      );
+    } else {
+      return (
+          <Container fluid>
+            <Row>
+              <Col>{this.fileSelector()}</Col>
+            </Row>
+          </Container>
+      );
+    }
+
   }
 }
 VideoUpload.contextType = UserContext;

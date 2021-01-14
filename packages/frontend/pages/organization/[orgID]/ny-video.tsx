@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
-import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Layout from "components/Layout";
@@ -34,20 +33,24 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
 
     const newVideo: fkVideoPartial = {
       id: 0,
-      header: "",
-      name: "",
+      header: videoHeader,
+      name: videoName,
       description: "",
-      organization: org,
+      organization: org.id,
       categories: videoCategories,
     };
 
-    const newVideoResponse = APIPOST<fkVideoPartial>({
-      endpoint: `videos/`,
-      object: newVideo,
+    APIPOST<fkVideoPartial>({
+      endpoint: "videos/",
+      payload: newVideo,
       token: token,
-    }).then((newVideoResponse) => {
-      router.push("/video/[videoID]", `/video/${newVideoResponse.id}`);
-    });
+    })
+      .then((newVideoResponse) => {
+        router.push("/video/[videoID]", `/video/${newVideoResponse.id}`);
+      })
+      .catch((e) => {
+        setErrors(e.value);
+      });
   };
 
   return (

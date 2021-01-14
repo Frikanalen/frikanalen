@@ -151,7 +151,7 @@ export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
 
 export interface APIPOSTOptions<T> {
   endpoint: string;
-  object: T;
+  payload: T;
   token?: string;
   reloadCache?: boolean;
 }
@@ -165,7 +165,7 @@ export async function APIPOST<T>(opts: APIPOSTOptions<T>): Promise<T> {
   const response = await fetch(`${configs.api}${opts.endpoint}`, {
     method: "POST",
     headers: headers,
-    body: JSON.stringify(opts.object),
+    body: JSON.stringify(opts.payload),
   });
 
   if (!response.ok) {
