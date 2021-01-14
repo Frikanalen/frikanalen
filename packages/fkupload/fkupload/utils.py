@@ -28,9 +28,9 @@ def _get_video_token(video_id):
     print(data)
     if response.status_code != 200:
         raise UploadError('Upstream gave %d' % response.status_code)
-    if 'upload_token' not in data or not data['upload_token']:
+    if 'uploadToken' not in data or not data['uploadToken']:
         raise UploadError('Auth fail for video')
-    return data['upload_token']
+    return data['uploadToken']
 
 
 def handle_upload(forms, files, dest):
