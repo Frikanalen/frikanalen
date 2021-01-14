@@ -10,9 +10,20 @@ export interface fkBulletin {
 export const fkCategorySchema = z.object({
   id: z.number(),
   name: z.string(),
+  desc: z.string(),
+  videocount: z.number(),
 });
 
 export type fkCategory = z.infer<typeof fkCategorySchema>;
+
+export const fkCategoryQuerySchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
+  results: fkCategorySchema.array(),
+});
+
+export type fkCategoryQuery = z.infer<typeof fkCategoryQuerySchema>;
 
 export const fkOrgSchema = z.object({
   id: z.number(),
@@ -46,7 +57,7 @@ export const fkVideoSchema = z
   .object({
     name: z.string(),
     id: z.number(),
-    organization: fkOrgSchema,
+    organization: z.union([z.number(), fkOrgSchema]),
     files: fkVideoFilesSchema,
     description: z.string().nullable(),
     header: z.string().nullable(),
@@ -64,6 +75,9 @@ export const fkVideoSchema = z
     uploadedTime: z.string().nullable(),
   })
   .nonstrict();
+
+export const fkVideoPartialSchema = fkVideoSchema.partial();
+export type fkVideoPartial = z.infer<typeof fkVideoPartialSchema>;
 
 export const fkVideoQuerySchema = z.object({
   count: z.number(),
@@ -135,6 +149,34 @@ export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
   }
 }
 
+export interface APIPOSTOptions<T> {
+  endpoint: string;
+  object: T;
+  token?: string;
+  reloadCache?: boolean;
+}
+
+export async function APIPOST<T>(opts: APIPOSTOptions<T>): Promise<T> {
+  let headers: Headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  let cacheOptions: RequestCache = "default";
+  if (opts.token != undefined) headers.append("Authorization", `Token ${opts.token}`);
+
+  const response = await fetch(`${configs.api}${opts.endpoint}`, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(opts.object),
+  });
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  const responseJSON = await response.json();
+
+  return responseJSON as T;
+}
+
 export const fkOrgRoleSchema = z.object({
   role: z.string(),
   organizationId: z.number(),
@@ -168,4 +210,16 @@ export async function getUserProfile(token: string): Promise<fkUser> {
 
 export async function getOrg(orgID: number): Promise<fkOrg> {
   return await APIGET<fkOrg>({ endpoint: `organization/${orgID}`, validator: fkOrgSchema.parse });
+}
+
+export async function getCategories(): Promise<fkCategory[]> {
+  const categories = await APIGET<fkCategoryQuery>({
+    endpoint: "categories/",
+    validator: fkCategoryQuerySchema.parse,
+  });
+  return categories.results;
+}
+
+export function getUploadToken(videoID: number, token: string): Promise<string> {
+  return APIGET<string>({ endpoint: `videos/${videoID}/upload_token`, token: token });
 }

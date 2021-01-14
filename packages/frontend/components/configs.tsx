@@ -1,6 +1,6 @@
 interface Config {
-  api: string,
-  atem: string
+  api: string;
+  atem: string;
 }
 
 const configs: { [key: string]: Config } = {

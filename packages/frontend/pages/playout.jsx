@@ -70,16 +70,16 @@ function ATEMPanel() {
       <div>
         <label>Programutgang:</label>
         <ButtonGroup>{inputs.map((index, name) => inputButton(index, name))}</ButtonGroup>
-      <style jsx>{`
-      label {
-        padding-right: 15px;
-      }
-      div {
-        background: black;
-        color: white;
-        padding: 10px;
-      }
-      `}</style>
+        <style jsx>{`
+          label {
+            padding-right: 15px;
+          }
+          div {
+            background: black;
+            color: white;
+            padding: 10px;
+          }
+        `}</style>
       </div>
     );
   };
@@ -95,7 +95,7 @@ export default function Playout() {
 
   return (
     <Layout>
-      <TextSlideGenerator show={show} onHide={()=>handleClose()} />
+      <TextSlideGenerator show={show} onHide={() => handleClose()} />
       <Container fluid>
         <Row>
           <h1>playout-styring</h1>

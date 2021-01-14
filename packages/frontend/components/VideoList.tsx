@@ -4,9 +4,16 @@ import CardDeck from "react-bootstrap/CardDeck";
 import Link from "next/link";
 import Moment from "react-moment";
 import "moment/locale/nb";
-import { APIGET, fkVideo, fkVideoQuery, fkVideoQuerySchema } from "./TS-API/API";
+import { APIGET, fkOrg, fkVideo, fkVideoQuery, fkVideoQuerySchema } from "./TS-API/API";
 
-export async function getLatestVideos(orgID: number): Promise<fkVideoQuery> {
+export async function getLatestVideos(organization: number | fkOrg): Promise<fkVideoQuery> {
+  let orgID: number;
+
+  if (typeof organization == "number") {
+    orgID = organization;
+  } else {
+    orgID = organization.id;
+  }
   return await APIGET<fkVideoQuery>({
     endpoint: `videos/?organization=${orgID}&page_size=10`,
     validator: fkVideoQuerySchema.parse,
@@ -16,7 +23,7 @@ export async function getLatestVideos(orgID: number): Promise<fkVideoQuery> {
 const VideoList: React.FC<{ videosJSON: fkVideoQuery }> = ({ videosJSON }) => {
   const VideoCard: React.FC<{ v: fkVideo }> = ({ v }) => (
     <Card key={v.id} style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
-      <Link href={`/video/${v.id}`}>
+      <Link href={`/video/${v.id}`} as={`/video/${v.id}`}>
         <Card.Img
           style={{ cursor: "pointer", objectFit: "contain", height: "140.625px", background: "black" }}
           variant="top"
@@ -24,7 +31,9 @@ const VideoList: React.FC<{ videosJSON: fkVideoQuery }> = ({ videosJSON }) => {
         />
       </Link>
       <Card.Body>
-        <Link href={`/video/${v.id}`}>{v.name}</Link>
+        <Link href={`/video/${v.id}`} as={`/video/${v.id}`}>
+          {v.name}
+        </Link>
       </Card.Body>
       <Card.Footer>
         Lastet opp{" "}

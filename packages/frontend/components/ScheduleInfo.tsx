@@ -90,7 +90,7 @@ export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleI
           <Row>
             <Col>
               <span className="name">
-                <a href={"v/" + video.id}>{video.name}</a>
+                <a href={"video/" + video.id}>{video.name}</a>
               </span>
             </Col>
           </Row>

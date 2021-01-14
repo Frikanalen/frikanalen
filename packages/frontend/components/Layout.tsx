@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import Header from "./Header";
 
 interface LayoutProps {
-    children?: React.ReactNode
+  children?: React.ReactNode;
 }
 const Layout = (props: LayoutProps) => (
   <Container fluid className="mainContainer">

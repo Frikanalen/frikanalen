@@ -29,8 +29,10 @@ export default function LoginForm() {
       const data = await r.json();
       user.login(data.key);
       Router.push("/profil");
+    } else if (r.status == 401) {
+      setErrorMessage(<Alert variant="danger">Ugyldig brukernavn eller passord</Alert>);
     } else {
-      setErrorMessage(<Alert variant="danger">{authenticate}</Alert>);
+      setErrorMessage(<Alert variant="danger">Teknisk feil, vennligst prøv igjen senere</Alert>);
     }
   }
 

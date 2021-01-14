@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import {UserContext, UserContextState} from "./UserContext";
+import { UserContext, UserContextState } from "./UserContext";
 
 const UserMenu = () => {
   const user = useContext<UserContextState>(UserContext);

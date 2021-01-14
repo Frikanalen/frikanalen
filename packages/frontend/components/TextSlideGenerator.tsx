@@ -1,35 +1,35 @@
-import React, {Component, useContext, useEffect, useState} from "react";
+import React, { Component, useContext, useEffect, useState } from "react";
 import fetch from "isomorphic-unfetch";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
-import {UserContext} from "./UserContext";
+import { UserContext } from "./UserContext";
 
 interface Props {
-  show: boolean,
-  onHide: () => void
+  show: boolean;
+  onHide: () => void;
 }
 export default function TextSlideGenerator(props: Props) {
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
-    return (<></>);
+    return <></>;
   }
 
   const { token } = context;
   const { show, onHide } = props;
-  const [ posterText, setPosterText ] = useState<string>('')
-  const [ posterHeading, setPosterHeading ] = useState<string>('')
-  const [ statusMessage, setStatusMessage ] = useState<string | null>(null)
-  const [ imageURL, setImageURL] = useState("https://stills-generator.frikanalen.no/poster/preview?text=&heading=\",")
+  const [posterText, setPosterText] = useState<string>("");
+  const [posterHeading, setPosterHeading] = useState<string>("");
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [imageURL, setImageURL] = useState('https://stills-generator.frikanalen.no/poster/preview?text=&heading=",');
 
   const resetImageTimeout = () => {
     const stillsGeneratorBase = "https://stills-generator.frikanalen.no/poster/";
     const queryString = `preview/?text=${encodeURI(posterText)}&heading=${encodeURI(posterHeading)}`;
     setImageURL(stillsGeneratorBase + queryString);
-  }
+  };
 
-  const uploadPoster = async(heading: string, text: string) => {
+  const uploadPoster = async (heading: string, text: string) => {
     setStatusMessage("Laster opp...");
     await fetch("https://stills-generator.frikanalen.no/poster/upload", {
       method: "post",
@@ -43,7 +43,7 @@ export default function TextSlideGenerator(props: Props) {
       }),
     });
     setStatusMessage(null);
-  }
+  };
 
   useEffect(() => resetImageTimeout, [posterText, posterHeading]);
 
@@ -71,12 +71,13 @@ export default function TextSlideGenerator(props: Props) {
       </Modal.Body>
       <Modal.Footer>
         {statusMessage}
-        <Button variant="secondary" onClick={onHide}>Lukk</Button>
+        <Button variant="secondary" onClick={onHide}>
+          Lukk
+        </Button>
         <Button variant="primary" onClick={() => uploadPoster(posterHeading, posterText)}>
           Last opp
         </Button>
       </Modal.Footer>
     </Modal>
   );
-
 }

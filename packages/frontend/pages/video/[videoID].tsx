@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       endpoint: `videos/${videoID}`,
       validator: fkVideoSchema.parse,
     });
-    latestVideos = await getLatestVideos(videoJSON.organization.id);
+    latestVideos = await getLatestVideos(videoJSON.organization);
   } catch (e) {
     console.log(e);
     context.res.statusCode = 404;
@@ -57,6 +57,8 @@ export default function VideoPage({ videoJSON, latestVideos, error }: VideoPageP
       </Layout>
     );
   }
+
+  if (typeof videoJSON.organization == "number") throw new Error("Organization is integer; should be fkOrg");
 
   return (
     <Layout>

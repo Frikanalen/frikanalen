@@ -1,117 +1,70 @@
-import React, { Component } from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
-
 import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
-
-import config from "components/configs";
-import Video, { getCategories } from "components/API/Video";
 import { UserContext } from "../../../components/UserContext";
-import { fkCategory, fkOrg, getOrg } from "../../../components/TS-API/API";
+import { getCategories, fkCategory, fkOrg, getOrg, fkVideoPartial, APIPOST } from "../../../components/TS-API/API";
 import { GetServerSideProps } from "next";
 
-interface fkOrganizationJSON {
-  id: number;
-  name: string;
-}
 interface VideoCreateProps {
-  orgID: number;
-  orgName: string;
-  onVideoCreated: any;
+  org: fkOrg;
+  possibleCategories: fkCategory[];
 }
 
-class VideoCreate extends Component<
-  {
-    orgID: number;
-    orgName: string;
-    onVideoCreated: any;
-  },
-  {
-    video: Video;
-    errors: any;
-    possibleCategories: any;
-    uploadingOrgID: number;
-    uploadingOrgName: string;
-  }
-> {
-  onVideoCreated;
+export default function VideoCreate({ org, possibleCategories }: VideoCreateProps) {
+  const context = useContext(UserContext);
 
-  constructor(props: VideoCreateProps) {
-    super(props);
-    const { orgID, orgName, onVideoCreated } = props;
+  const router = useRouter();
 
-    this.onVideoCreated = onVideoCreated;
-    this.state = {
-      errors: null,
-      video: new Video(),
-      possibleCategories: [],
-      uploadingOrgID: orgID,
-      uploadingOrgName: orgName,
-    };
-    this.state.video.setOrganization(orgID);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  const [categories, setCategories] = useState<fkCategory[]>([]);
+  const [errors, setErrors] = useState<React.ReactNode>(null);
+  const [videoName, setVideoName] = useState<string>("");
+  const [videoHeader, setVideoHeader] = useState<string>("");
+  const [videoCategories, setVideoCategories] = useState<string[]>();
 
-  async componentDidMount() {
-    const { video, uploadingOrgID } = this.state;
-    const { token } = this.context;
+  if (!context.isLoggedIn) return null;
 
-    const categories = await getCategories();
-    this.setState({ possibleCategories: categories });
-  }
+  const { token } = context;
 
-  handleSubmit(event: React.MouseEvent<HTMLElement>) {
-    const { token } = this.context;
+  const handleSubmit = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    this.state.video
-      .save(token)
-      .then((r) => {
-        console.log("redirecting to ", this.state.video.ID);
-        this.onVideoCreated(this.state.video.ID);
-      })
-      .catch((e) => {
-        console.log(e);
 
-        if ("response" in e) {
-          if (e.response.status == 400) {
-            var errors = [];
-            for (const key in e.response.data) {
-              errors.push(
-                <Alert key={key} variant="danger">
-                  <Alert.Heading>{key}</Alert.Heading>
-                </Alert>
-              );
-            }
-            this.setState({ errors: errors });
-          } else {
-            console.log(e);
-          }
-        } else {
-          console.log(e.response.status);
-          console.log(e.response.data);
-        }
-      });
-  }
+    const newVideo: fkVideoPartial = {
+      id: 0,
+      header: "",
+      name: "",
+      description: "",
+      organization: org,
+      categories: videoCategories,
+    };
 
-  render() {
-    const { errors, uploadingOrgName } = this.state;
-    return (
-      <div>
+    const newVideoResponse = APIPOST<fkVideoPartial>({
+      endpoint: `videos/`,
+      object: newVideo,
+      token: token,
+    }).then((newVideoResponse) => {
+      router.push("/video/[videoID]", `/video/${newVideoResponse.id}`);
+    });
+  };
+
+  return (
+    <Layout>
+      <WindowWidget>
         <Form>
           {errors}
           <Form.Group>
             <Form.Label>På vegne av:</Form.Label>
-            <Form.Control readOnly value={uploadingOrgName ? uploadingOrgName : "Laster organisasjon..."} />
+            <Form.Control readOnly value={org.name} />
           </Form.Group>
           <Form.Group>
             <Form.Label>Navn:</Form.Label>
             <Form.Control
               type="text"
-              onChange={(e) => this.state.video.setName(e.target.value)}
-              value={this.state.video.name}
+              onChange={(e) => setVideoName(e.target.value)}
+              value={videoName}
               placeholder="Kort videonavn"
             />
           </Form.Group>
@@ -119,8 +72,8 @@ class VideoCreate extends Component<
             <Form.Label>Ingress:</Form.Label>
             <Form.Control
               type="text"
-              value={this.state.video.header}
-              onChange={(e) => this.state.video.setHeader(e.target.value)}
+              value={videoHeader}
+              onChange={(e) => setVideoHeader(e.target.value)}
               placeholder="En relativt kortfattet beskrivelse"
             />
           </Form.Group>
@@ -133,33 +86,25 @@ class VideoCreate extends Component<
                 for (let i = 0; i < e.target.selectedOptions.length; i++) {
                   selectedCategories.push(e.target.selectedOptions[i].value);
                 }
-                this.state.video.setCategories(selectedCategories);
+                setVideoCategories(selectedCategories);
               }}
               multiple
             >
-              {this.state.possibleCategories.map((cat: fkCategory) => (
+              {possibleCategories.map((cat: fkCategory) => (
                 <option key={cat.id} value={cat.name}>
                   {cat.name}
                 </option>
               ))}
             </Form.Control>
           </Form.Group>
-          <Button
-            onClick={(e) => {
-              this.handleSubmit(e);
-            }}
-            variant="primary"
-            type="submit"
-          >
+          <Button onClick={(e) => handleSubmit(e)} variant="primary" type="submit">
             Start
           </Button>
         </Form>
-      </div>
-    );
-  }
+      </WindowWidget>
+    </Layout>
+  );
 }
-
-VideoCreate.contextType = UserContext;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   if (typeof context.query.orgID != "string" || isNaN(parseInt(context.query.orgID))) {
@@ -167,32 +112,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const org = await getOrg(parseInt(context.query.orgID));
+  const possibleCategories = await getCategories();
 
   return {
     props: {
       org,
+      possibleCategories,
     },
   };
 };
-
-interface AddVideoProps {
-  org: fkOrg;
-}
-
-export default function AddVideo({ org }: AddVideoProps) {
-  const router = useRouter();
-
-  return (
-    <Layout>
-      <WindowWidget>
-        <VideoCreate
-          orgID={org.id}
-          orgName={org.name}
-          onVideoCreated={(videoID: number) => {
-            router.push("/video/[videoID]", `/video/${videoID}`);
-          }}
-        />
-      </WindowWidget>
-    </Layout>
-  );
-}

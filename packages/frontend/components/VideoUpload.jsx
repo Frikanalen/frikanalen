@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button";
-import { getUploadToken } from "./API/Video";
+import { getUploadToken } from "./TS-API/API";
 
 import { UserContext } from "./UserContext";
 import styles from "./VideoUpload.module.sass";
