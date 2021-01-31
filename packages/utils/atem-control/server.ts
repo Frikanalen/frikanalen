@@ -31,7 +31,7 @@ async function check_if_staff(authHeader: string | undefined) {
     )
     if (res.ok) {
         let json = await res.json()
-        return !!json.is_staff
+        return !!json.isStaff
     } else {
         console.error("User is not staff");
         return false;
