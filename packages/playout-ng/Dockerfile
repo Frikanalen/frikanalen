@@ -26,8 +26,6 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 ########
-# django app container
-#
 # Smaller official Debian-based Python image
 FROM python:3-slim-buster
 

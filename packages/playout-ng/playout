@@ -34,6 +34,7 @@ GRAPHICS_LAYER = '1-60'
 CHANNELBUG_LAYER = '1-100'
 
 API_URL = 'http://schedule-service/playout'
+LEGACY_URL = 'https://frikanalen.no/api/'
 FILE_BASE = ''
 CASPAR_HOST = '192.168.3.34'
 
