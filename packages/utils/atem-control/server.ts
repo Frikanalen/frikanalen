@@ -1,3 +1,4 @@
+// vim: set ft=typescript:
 // Forgive me. This was my first Node project ever. It's starting to get back into shape.
 // Tidying-up PRs _very_ welcome.
 
@@ -19,6 +20,7 @@ async function check_if_staff(authHeader: string | undefined) {
         // Remove token from string
         authHeader = authHeader.slice(6, authHeader.length);
     } else {
+        console.error("Refusing to authenticate without authorization header");
         return false;
     }
 
@@ -31,6 +33,7 @@ async function check_if_staff(authHeader: string | undefined) {
         let json = await res.json()
         return !!json.is_staff
     } else {
+        console.error("User is not staff");
         return false;
     }
 }
