@@ -36,7 +36,7 @@ CHANNELBUG_LAYER = '1-100'
 API_URL = 'http://schedule-service/playout'
 LEGACY_URL = 'https://frikanalen.no/api/'
 FILE_BASE = ''
-CASPAR_HOST = '192.168.3.34'
+CASPAR_HOST = '192.168.3.35'
 
 def localtime():
     return datetime.now(tz=pytz.timezone('Europe/Oslo'))
