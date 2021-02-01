@@ -12,7 +12,7 @@ spec:
       name: elasticsearch-logging
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: csi-rbd-sc
+      storageClassName: rook-ceph-block
       accessModes:
         - ReadWriteOnce
       resources:
@@ -30,7 +30,7 @@ spec:
     spec:
       serviceAccountName: elasticsearch-logging
       containers:
-      - image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+      - image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
         name: elasticsearch-logging
         ports:
         - containerPort: 9200

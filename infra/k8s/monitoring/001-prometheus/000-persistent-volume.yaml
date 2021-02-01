@@ -1,24 +1,3 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-storage
-provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    app: prometheus
-  name: prometheus-db-claim
-spec:
-  storageClassName: local-storage
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5G
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -30,4 +9,4 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: csi-rbd-sc
+  storageClassName: rook-ceph-block

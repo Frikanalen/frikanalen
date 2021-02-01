@@ -6,8 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  volumeMode: Filesystem
   resources:
     requests:
       storage: 100Mi
-  storageClassName: csi-rbd-sc
+  storageClassName: rook-ceph-block

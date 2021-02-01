@@ -1,0 +1,38 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: scheme-redirect-rook-ceph-dash
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`ceph.frikanalen.no`)
+    priority: 100
+    kind: Rule
+    services:
+    - kind: Service
+      name: rook-ceph-mgr-dashboard
+      namespace: rook-ceph
+      scheme: http
+      port: 8083
+    middlewares:
+      - name: scheme-redirect
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: rook-ceph-dash
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`ceph.frikanalen.no`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: rook-ceph-mgr-dashboard
+      namespace: rook-ceph
+      scheme: http
+      port: 8083
+  tls:
+    certResolver: default

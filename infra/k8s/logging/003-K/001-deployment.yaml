@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kibana-logging
-        image: docker.elastic.co/kibana/kibana-oss:7.9.3
+        image: docker.elastic.co/kibana/kibana-oss:7.10.2
         env:
           - name: ELASTICSEARCH_HOSTS
             value: http://elasticsearch-logging:9200
