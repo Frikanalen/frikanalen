@@ -1,0 +1,34 @@
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStore
+metadata:
+  name: media-store
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    failureDomain: host
+    replicated:
+      size: 3
+  dataPool:
+    failureDomain: host
+    erasureCoded:
+      dataChunks: 2
+      codingChunks: 1
+  preservePoolsOnDelete: true
+  gateway:
+    type: s3
+    port: 80
+    instances: 1
+  healthCheck:
+    bucket:
+      disabled: false
+      interval: 60s
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: media-bucket
+provisioner: rook-ceph.ceph.rook.io/bucket
+reclaimPolicy: Delete
+parameters:
+  objectStoreName: media-store
+  objectStoreNamespace: rook-ceph

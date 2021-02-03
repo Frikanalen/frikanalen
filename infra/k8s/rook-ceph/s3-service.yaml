@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rook-ceph-rgw
+    ceph_daemon_id: media-store
+    ceph_daemon_type: rgw
+    rgw: media-store
+    rook_cluster: rook-ceph
+    rook_object_store: media-store
+  name: rook-s3-service
+  namespace: rook-ceph
+spec:
+  externalIPs:
+  - 192.168.3.100
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: web
+    nodePort: 30460
+    port: 8085
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: rook-ceph-rgw
+    ceph_daemon_id: media-store
+    rgw: media-store
+    rook_cluster: rook-ceph
+    rook_object_store: media-store
+  sessionAffinity: None
+  type: LoadBalancer
