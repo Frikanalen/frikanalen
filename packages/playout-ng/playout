@@ -35,7 +35,7 @@ CHANNELBUG_LAYER = '1-100'
 
 API_URL = 'http://schedule-service/playout'
 LEGACY_URL = 'https://frikanalen.no/api/'
-FILE_BASE = ''
+FILE_BASE = u''
 CASPAR_HOST = '192.168.3.35'
 
 def localtime():
@@ -90,6 +90,7 @@ class VideoFiles():
             logger.warning("<1 video files returned for video %d type %s, returning 1"\
                     .format(self.videoID, file_type))
 
+        print(type(data['results'][0]['filename']), data['results'][0]['filename'])
         return(data['results'][0]['filename'])
 
 class Scheduler():
@@ -228,7 +229,7 @@ class PrerecordedVideo(PlannedItem):
             if self.has_been_prepared:
                 cmd_string = f'PLAY {self.layer}'
             else:
-                cmd_string = 'PLAY {} "{}" "-filter:a aformat=sample_rates=48000" MIX 50 1 LINEAR RIGHT'.format(self.layer, self.filename)
+                cmd_string = f'PLAY {self.layer} "{self.filename}" "-filter:a aformat=sample_rates=48000" MIX 50 1 LINEAR RIGHT'
 
                 seconds_since_start = (localtime() - self.startTime).total_seconds()
                 if seconds_since_start > 2.0:
@@ -238,6 +239,7 @@ class PrerecordedVideo(PlannedItem):
             await self._completion()
             await self.clear()
         except asyncio.CancelledError:
+            logger.warning('asyncio.CancelledError, clearing layer...')
             await self.clear()
 
     def __repr__(self):
@@ -367,8 +369,8 @@ class CasparPlayer():
         """ Issues a command to CasparCG. Blocks until a response is received. """
         async with self.caspar_lock:
             try:
-                logger.debug("Issuing command to Caspar: %s", cmd)
-                self.writer.write((cmd + "\r\n").encode())
+                logger.debug("Issuing command to Caspar: %s", cmd.encode('utf-8'))
+                self.writer.write((cmd + "\r\n").encode('utf-8'))
                 await self.writer.drain()
                 return await self._get_response()
             except asyncio.TimeoutError:
