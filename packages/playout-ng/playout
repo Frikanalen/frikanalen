@@ -139,12 +139,12 @@ class Scheduler():
                     tasks = tasks + (await self.task_from_item(item),)
                 else:
                     logger.debug(f"ScheduleItem {item} is in the past, skipping...")
+
+            logger.info("Waiting for tasks...")
             await asyncio.wait(tasks)
 
-
-
     async def task_from_item(self, item):
-        logger.info('Waiting for next cue: %s', item)
+        logger.info('Adding cue to task list: %s', item)
         task = asyncio.create_task(self._play_item(item))
         return task
 
