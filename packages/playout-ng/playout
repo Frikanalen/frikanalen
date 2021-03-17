@@ -90,7 +90,6 @@ class VideoFiles():
             logger.warning("<1 video files returned for video %d type %s, returning 1"\
                     .format(self.videoID, file_type))
 
-        print(type(data['results'][0]['filename']), data['results'][0]['filename'])
         return(data['results'][0]['filename'])
 
 class Scheduler():
@@ -155,6 +154,9 @@ class Item():
 
     prepare = None
 
+    async def stop(self):
+        await CurrentPlayer.issue("STOP {}".format(self.layer))
+
     async def clear(self):
         await CurrentPlayer.issue("CLEAR {}".format(self.layer))
 
@@ -180,7 +182,6 @@ class PlannedItem(Item):
         await asyncio.sleep(seconds_until_start)
 
     def already_done(self):
-        print(self.endTime)
         if localtime() > self.endTime:
             return True
         else:
@@ -237,10 +238,13 @@ class PrerecordedVideo(PlannedItem):
 
             await CurrentPlayer.issue(cmd_string)
             await self._completion()
-            await self.clear()
+            print ("I would have cleared here if it weren't for debugging")
+            await CurrentPlayer.issue(f'STOP {self.layer}')
+            #await self.clear()
         except asyncio.CancelledError:
             logger.warning('asyncio.CancelledError, clearing layer...')
-            await self.clear()
+            print ("I would have cleared here if it weren't for debugging")
+            #await self.clear()
 
     def __repr__(self):
         return '[ScheduledVideo [{}-{}]: Video {}]'.format(
