@@ -12,19 +12,23 @@ data:
         port => 5044
       }
     }
+
     filter {
-      grok {
-          match => { "message" => "%{COMBINEDAPACHELOG}" }
-      }
-      date {
-        match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
-      }
-      geoip {
-          source => "clientip"
-        }
-      }
-      output {
-        elasticsearch {
-          hosts => ["elasticsearch-logging:9200"]
+      #grok {
+      #    match => { "message" => "%{COMBINEDAPACHELOG}" }
+      #}
+
+      #date {
+      #  match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+      #}
+
+      #geoip {
+      #    source => "clientip"
+      #}
+    }
+
+    output {
+      elasticsearch {
+        hosts => ["elasticsearch-logging:9200"]
       }
     }

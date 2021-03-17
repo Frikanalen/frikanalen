@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: logstash
-        image: docker.elastic.co/logstash/logstash:7.9.3
+        image: docker.elastic.co/logstash/logstash:7.11.2
         ports:
         - containerPort: 5044
         volumeMounts:
