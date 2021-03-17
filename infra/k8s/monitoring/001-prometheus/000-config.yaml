@@ -163,12 +163,12 @@ data:
           - targets: ['frostguard:9001']
 
       - job_name: 'ceph'
-        scrape_interval: 20s
+        scrape_interval: 30s
         static_configs:
           - targets: ['rook-ceph-mgr.rook-ceph:9283']
 
       - job_name: 'node'
-        scrape_interval: 10s
+        scrape_interval: 1m
         static_configs:
           - targets: ['obe-hd:9100']
           - targets: ['simula.frikanalen.no:9100']
