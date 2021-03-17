@@ -16,4 +16,5 @@ parameters:
   pool: replicapool
 provisioner: rook-ceph.rbd.csi.ceph.com
 reclaimPolicy: Delete
+allowVolumeExpansion: true
 volumeBindingMode: Immediate
