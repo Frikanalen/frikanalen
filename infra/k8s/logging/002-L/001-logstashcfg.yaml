@@ -14,17 +14,17 @@ data:
     }
 
     filter {
-      #grok {
-      #    match => { "message" => "%{COMBINEDAPACHELOG}" }
-      #}
+      grok {
+          match => { "message" => "%{COMBINEDAPACHELOG}" }
+      }
 
-      #date {
-      #  match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
-      #}
+      date {
+        match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+      }
 
-      #geoip {
-      #    source => "clientip"
-      #}
+      geoip {
+          source => "clientip"
+      }
     }
 
     output {
