@@ -1,0 +1,7 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kiloview
+spec:
+  type: ExternalName
+  externalName: 192.168.3.168

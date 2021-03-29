@@ -1,0 +1,38 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: scheme-redirect-kiloview
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`kiloview.frikanalen.no`)
+    priority: 100
+    kind: Rule
+    services:
+    - kind: Service
+      name: kiloview
+      scheme: http
+      port: 80
+    middlewares:
+      - name: scheme-redirect
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: kiloview
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`kiloview.frikanalen.no`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: kiloview
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
