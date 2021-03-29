@@ -10,6 +10,8 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        co.elastic.logs/module: postgresql
       labels:
         service: postgres
     spec:
