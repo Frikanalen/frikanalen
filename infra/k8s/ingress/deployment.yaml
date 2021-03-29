@@ -20,6 +20,8 @@ spec:
       app: traefik
   template:
     metadata:
+      annotations:
+        co.elastic.logs/module: traefik
       labels:
         app: traefik
     spec:
