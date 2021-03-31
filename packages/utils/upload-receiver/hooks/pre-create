@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
+""" This script is called by tusd as the user initiates an upload. It confirms
+that the upload_token is correct for a given video_id. """
 
 import json
-import requests
-import sys
 import os
+import sys
+
+import requests
+
+class TokenValidationException(Exception):
+    pass
 
 FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
 FK_TOKEN = os.environ.get('FK_TOKEN')
 
-
 def get_token(video_id):
+    """ Obtain the upload token for a given video_id."""
     response = requests.get(
         '%s/videos/%d/upload_token.json' % (FK_API, video_id),
         headers={'Authorization': 'Token %s' % FK_TOKEN}
@@ -17,31 +23,40 @@ def get_token(video_id):
     data = response.json()
     if response.status_code != 200:
         refuse(f'Querying API for video {video_id} returned %d' % response.status_code)
-    if 'upload_token' not in data or not data['upload_token']:
+    if 'uploadToken' not in data or not data['uploadToken']:
         refuse('There is no upload token set in database for this video')
-    return data['upload_token']
+    return data['uploadToken']
 
 def refuse(string):
+    """ Reject an incoming request. The output given to stdout will be returned
+    as part of the error message which is presently displayed on the front end.
+    The output given to standard error is logged by the upload receiver. """
+    print(string)
     print(f'[pre_create hook] {string}', file=sys.stderr)
     sys.exit(1)
 
-if __name__=='__main__':
+def validate_request():
     request = json.load(sys.stdin)
-    headers = request['HTTPRequest']['Header']
+    metadata = request['Upload']['MetaData']
 
     try:
-        upload_token = headers['Uploadtoken'][0]
+        upload_token = metadata['uploadToken']
     except KeyError:
-        refuse('Upload token header not set!')
+        raise TokenValidationException('Upload token header not set!')
 
     try:
-        video_id = int(headers['Videoid'][0])
+        video_id = int(metadata['videoID'])
     except KeyError:
-        refuse('Video ID header not set!')
+        raise TokenValidationException('Video ID header not set!')
     except ValueError:
-        refuse('Video ID header could not be converted to int!')
+        raise TokenValidationException('Video ID header could not be converted to int!')
 
     good_token = get_token(video_id)
-    print(good_token)
     if upload_token != good_token:
-        refuse('Your upload token "%s" is incorrect' % upload_token)
+        raise TokenValidationException(f'Your upload token {upload_token} is incorrect')
+
+if __name__=='__main__':
+    try:
+        validate_request()
+    except TokenValidationException as e:
+        refuse(e)

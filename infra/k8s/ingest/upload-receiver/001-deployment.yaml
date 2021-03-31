@@ -9,8 +9,8 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 1Ti
-  storageClassName: csi-rbd-sc
+      storage: 100Gi
+  storageClassName: rook-ceph-block
 ---
 kind: Service
 apiVersion: v1
@@ -51,14 +51,26 @@ spec:
           - name: web
             containerPort: 1080
         env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: upload-receiver
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: upload-receiver
+                key: AWS_SECRET_ACCESS_KEY
+          - name: AWS_REGION
+            valueFrom:
+              secretKeyRef:
+                name: upload-receiver
+                key: AWS_REGION
           - name: FK_TOKEN
             valueFrom:
               secretKeyRef:
-                name: upload-receiver-token
+                name: upload-receiver
                 key: FK_TOKEN
-                #envFrom:
-                #  - configMapRef:
-                #      name: upload-receiver-config
       volumes:
         - name: upload-directory
           persistentVolumeClaim:
