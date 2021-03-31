@@ -59,7 +59,7 @@ export const VideoWidget: React.FunctionComponent<VideoWidgetProps> = ({ video }
 
   if (typeof video?.files == "object" && Object.keys(video.files).length) {
     if ("cloudflareId" in video.files) {
-      return <Stream controls src={video.files.cloudflareId} />;
+      return <Stream controls src={video.files.cloudflareId || ""} />;
     } else if ("theora" in video.files) {
       return <VideoPlayer video={video} />;
     } else if ("original" in video.files || "broadcast" in video.files) {
