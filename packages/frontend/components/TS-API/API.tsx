@@ -44,6 +44,7 @@ export type fkOrg = z.infer<typeof fkOrgSchema>;
 export const fkVideoFilesSchema = z.object({
   smallThumb: z.string().optional(),
   largeThumb: z.string().optional(),
+  cloudflareId: z.string().optional(),
   broadcast: z.string().optional(),
   original: z.string().optional(),
   theora: z.string().optional(),
@@ -199,6 +200,13 @@ export const fkUserSchema = z.object({
 
 export type fkUser = z.infer<typeof fkUserSchema>;
 
+export const fkUploadTokenSchema = z.object({
+  uploadToken: z.string(),
+  uploadUrl: z.string(),
+});
+
+export type fkUploadToken = z.infer<typeof fkUploadTokenSchema>;
+
 export async function getUserProfile(token: string): Promise<fkUser> {
   return await APIGET<fkUser>({
     endpoint: "user",
@@ -220,6 +228,10 @@ export async function getCategories(): Promise<fkCategory[]> {
   return categories.results;
 }
 
-export function getUploadToken(videoID: number, token: string): Promise<string> {
-  return APIGET<string>({ endpoint: `videos/${videoID}/upload_token`, token: token });
+export function getUploadToken(videoID: number, token: string): Promise<fkUploadToken> {
+  return APIGET<fkUploadToken>({
+    endpoint: `videos/${videoID}/upload_token`,
+    token: token,
+    validator: fkUploadTokenSchema.parse,
+  });
 }
