@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { fkVideo } from "./TS-API/API";
 import Spinner from "react-bootstrap/Spinner";
 import dynamic from "next/dynamic";
+import { Stream } from "@cloudflare/stream-react";
+
 const VideoUpload = dynamic(() => import("./VideoUpload"), {
   ssr: false,
 });
@@ -56,7 +58,9 @@ export const VideoWidget: React.FunctionComponent<VideoWidgetProps> = ({ video }
   const [videoState, setVideoState] = useState<string>("");
 
   if (typeof video?.files == "object" && Object.keys(video.files).length) {
-    if ("theora" in video.files) {
+    if ("cloudflareId" in video.files) {
+      return <Stream controls src={video.files.cloudflareId} />;
+    } else if ("theora" in video.files) {
       return <VideoPlayer video={video} />;
     } else if ("original" in video.files || "broadcast" in video.files) {
       return <VideoSpinner />;

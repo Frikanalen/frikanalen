@@ -22,10 +22,12 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@babel/core": "^7.12.10",
+    "@cloudflare/stream-react": "^0.3.0",
     "@cycjimmy/jsmpeg-player": "^5.0.1",
     "axios": "^0.21.0",
     "base-64": "^1.0.0",
     "bootstrap": "^4.5.0",
+    "bs-custom-file-input": "^1.3.4",
     "date-fns": "^2.16.1",
     "isomorphic-unfetch": "^3.0.0",
     "js-cookie": "^2.2.1",
@@ -48,6 +50,7 @@
     "shaka-player": "^3.0.6",
     "shaka-player-react": "^1.0.1",
     "swr": "^0.3.8-beta.2",
+    "tus-js-client": "^2.2.0",
     "video.js": "^7.10.2",
     "webrtc-adapter": "^7.6.0",
     "zod": "^1.11.11"
