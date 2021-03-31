@@ -103,12 +103,10 @@ a probable future improvement will be to insert a validation step between video 
 
 The following consumers are planned:
 
-#### forward_to_legacy
+#### copy-to-legacy
 
-*Not yet implemented.*
-
-To ensure a smooth transition, the first of these consumer groups is "forward_to_legacy".
-forward_to_legacy will simply copy the file to file01 using scp, and move it into place.
+To ensure a smooth transition, the first of these consumer groups is "copy-to-legacy".
+copy-to-legacy will simply copy the file to file01 using scp, and move it into place.
 Essentially spoofing the old upload receiver, it renames follows its interface by creating a directory with a name given by "video_id",
 dumping the object into a file with the original filename as given by "orig_filename",
 and moving this tree into /srv/fkupload/finished_uploads, eg. as "639157/Ep341.mp4".
