@@ -3,16 +3,15 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button";
 import { getUploadToken } from "./TS-API/API";
+import bsCustomFileInput from 'bs-custom-file-input'
 
 import { UserContext } from "./UserContext";
 import styles from "./VideoUpload.module.sass";
+import { Upload } from 'tus-js-client';
 
-//let Resumable = require("resumablejs");
-//// TODO: Move Resumable into next/dynamic (I currently have no idea how to do this and my best guess didn't work)
-// TODO: Drag-and-drop support
-import plupload from "plupload";
 function humanFileSize(bytes, si = true, dp = 1) {
   const thresh = si ? 1000 : 1024;
 
@@ -21,8 +20,8 @@ function humanFileSize(bytes, si = true, dp = 1) {
   }
 
   const units = si
-    ? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-    : ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+      ? ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+      : ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
   let u = -1;
   const r = 10 ** dp;
 
@@ -33,127 +32,147 @@ function humanFileSize(bytes, si = true, dp = 1) {
 
   return bytes.toFixed(dp) + " " + units[u];
 }
+
 class VideoUpload extends Component {
-  fileAdded(uploaderInstance, event) {
-    console.log();
-    this.setState({
-      fileName: event[0].name,
-      fileSize: event[0].size,
-    });
-  }
-
-
   constructor(props) {
     super(props);
-    const { videoJSON } = props;
+
+    const {videoJSON} = props;
     this.videoID = videoJSON.id;
-    this.token = null;
-    this.fileAdded = this.fileAdded.bind(this);
-    this.uploadProgress = this.uploadProgress.bind(this);
+
+    this.startUpload = this.startUpload.bind(this)
     this.uploadComplete = props.onUploadComplete;
+
     this.state = {
-      fileName: null,
-      fileSize: null,
-      uploadProgressPercent: null,
-      uploadProgressBytes: 0,
-    };
+      uploadToken: null,
+      uploadedBytes: 0,
+      totalBytes: 0,
+      file: null,
+      error: null,
+      status: null,
+      uploadUrl: null,
+    }
   }
 
-  uploadProgress(up, event) {
-    this.setState({
-      uploadProgressPercent: event.percent,
-      uploadProgressBytes: event.loaded,
+  async componentDidMount() {
+    const {token} = this.context;
+    getUploadToken(this.videoID, token).then(uploadToken => {
+      this.setState({uploadToken: uploadToken.uploadToken})
     });
+    bsCustomFileInput.init()
+  }
+
+  startUpload() {
+    const {file} = this.state
+
+    if (!file) return
+
+    const upload = new Upload(file, {
+      endpoint: 'https://frikanalen.no/api/videos/upload/',
+      retryDelays: [0, 1000], //, 3000, 5000],
+      metadata: {
+        origFileName: this.state.file.name,
+        videoID: this.videoID,
+        uploadToken: this.state.uploadToken,
+      },
+      onError: (error) => {
+        console.log(error)
+        this.setState({
+          error: `upload failed:\n${error}`,
+        })
+      },
+      onProgress: (uploadedBytes, totalBytes) => {
+        this.setState({
+          totalBytes,
+          uploadedBytes,
+        })
+      },
+      onSuccess: () => {
+        console.log("huzzah")
+        this.uploadComplete();},
+    })
+
+    upload.start()
+
+    this.setState({
+      status: null,
+      uploadedBytes: 0,
+      totalBytes: 0,
+      uploadUrl: null,
+    })
   }
 
   uploadError(file, message) {
     console.log(message);
   }
 
-  async componentDidMount() {
-    const { token } = this.context;
-
-    console.log("token:", token);
-    // TODO: Error handling
-    this.token = await getUploadToken(this.videoID, token);
-    console.log(this.token)
-    this.uploader = new plupload.Uploader({
-      runtimes: "html5" ,
-      browse_button: document.getElementById('browseButton'),
-      chunk_size: "1m",
-      url: this.token["uploadUrl"],
-      multi_selection: false,
-      multipart_params: {
-        upload_token: this.token["uploadToken"],
-        video_id: this.videoID,
-      },
-      init: {
-        FilesAdded: this.fileAdded,
-        UploadProgress: this.uploadProgress,
-        UploadComplete: this.uploadComplete,
-      },
-    });
-    this.uploader.init();
-
-  }
-
   fileUploader = () => {
-    return (
-      <div className={styles.fileUploadContainer}>
-        <Container className={styles.fileUupload}>
-          <Row>
-            <Col>
-              <div>Filnavn: {this.state.fileName}</div>
-              <div>
-                Lastet opp: {humanFileSize(this.state.uploadProgressBytes)} / {humanFileSize(this.state.fileSize)}
+    const errorField = () => (
+        <div>
+          <h2>Beklager!</h2>
+          <p>Det har oppstått en feil. Vennligst ta kontakt med oss, og vis denne meldingen:</p>
+          <code>
+            {this.state.error}
+          </code>
+        </div>
+    )
+
+    const uploadButton = () => {
+      return (
+          <div>
+            {this.state.error ? errorField() : null}
+            <div>
+              {this.state.status}
+            </div>
+            <div style={{display: 'flex', alignItems: 'baseline'}}>
+              <div style={{flexGrow: '1', }}>
+                Lastet opp: {humanFileSize(this.state.uploadedBytes)} / {humanFileSize(this.state.totalBytes)}
               </div>
-              <Button id="browseButton" style={{display: 'none'}}/>
-              <Button id="uploadStartButton" onClick={() => this.uploader.start()}>
-                Start
-              </Button>
-              <ProgressBar animated now={this.state.uploadProgressPercent} />
-            </Col>
-          </Row>
-        </Container>
-      </div>
+              <div>
+                <Button id="uploadStartButton" onClick={() => this.startUpload()}>
+                  Start
+                </Button>
+              </div>
+            </div>
+            <ProgressBar animated now={100 * (this.state.uploadedBytes * 1.0 / this.state.totalBytes)}/>
+          </div>
+      )
+    }
+    return (
+        <div className={styles.fileUploadContainer}>
+          <Container className={styles.fileUupload}>
+            <Row>
+              <Col>
+                <h2>Videofil ikke lastet opp</h2>
+                <div className={"custom-file"}>
+                  <input id="inputGroupFile01" type="file" className="custom-file-input"
+                         onChange={event => {
+                           this.setState(
+                               {
+                                 file: event.target.files[0],
+                                 totalBytes: event.target.files[0].size
+                               }
+                               )
+                         }}
+                  />
+                  <label className="custom-file-label" htmlFor="inputGroupFile01">Vennligst velg en fil...</label>
+                </div>
+                {this.state.file ? uploadButton() : null}
+              </Col>
+            </Row>
+          </Container>
+        </div>
     );
   };
 
-  fileSelector = () => (
-    <div className={styles.fileSelectorContainer}>
-      <Container className={styles.fileSelector} fluid>
-        <Row>
-          <Col>
-            <h2>Videofil ikke lastet opp</h2>
-            <p>Vennligst last opp en fil</p>
-            <Button id="browseButton">
-              Velg fil...
-            </Button>
-          </Col>
-        </Row>
-      </Container>
-    </div>
-  );
-
   render() {
-    if (this.state.fileName) {
-      return (
-          <Container fluid>
-            <Row>
-              <Col>{this.fileUploader()}</Col>
-            </Row>
-          </Container>
-      );
-    } else {
-      return (
-          <Container fluid>
-            <Row>
-              <Col>{this.fileSelector()}</Col>
-            </Row>
-          </Container>
-      );
-    }
-
+    return (
+        <Container fluid>
+          <Row>
+            <Col>{this.fileUploader()}</Col>
+          </Row>
+        </Container>
+    )
   }
 }
 VideoUpload.contextType = UserContext;
