@@ -43,6 +43,7 @@ export type fkOrg = z.infer<typeof fkOrgSchema>;
 
 export const fkVideoFilesSchema = z.object({
   smallThumb: z.string().optional(),
+  medThumb: z.string().optional(),
   largeThumb: z.string().optional(),
   cloudflareId: z.string().optional(),
   broadcast: z.string().optional(),
