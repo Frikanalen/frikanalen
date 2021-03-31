@@ -58,6 +58,13 @@
       }
    },
    {
+      "model": "fk.fileformat",
+      "pk": 9,
+      "fields": {
+         "fsname": "cloudflare_id"
+      }
+   },
+   {
       "model": "fk.category",
       "pk": 119,
       "fields": {
