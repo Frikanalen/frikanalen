@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload-processor-copy-to-legacy
+spec:
+  selector:
+    matchLabels:
+      app: upload-processor-copy-to-legacy
+  template:
+    metadata:
+      labels:
+        app: upload-processor-copy-to-legacy
+      
+      #annotations:
+      #  co.elastic.logs/json.add_error_key: "true"
+      #  co.elastic.logs/json.overwrite_keys: "true"
+      #  co.elastic.logs/json.keys_under_root: "true"
+    spec:
+      containers:
+      - name: upload-processor-copy-to-legacy
+        image: frikanalen/upload-processor-copy-to-legacy:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: secrets-volume
+          mountPath: /app/secrets
+      volumes:
+      - name: config-volume
+        configMap:
+          name: upload-processors
+      - name: secrets-volume
+        secret:
+          secretName: upload-processors
+          defaultMode: 0400

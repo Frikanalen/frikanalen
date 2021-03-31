@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: upload-processors
+  namespace: default
+data:
+  s3_endpoint_url: |
+    http://192.168.3.36:8085
+  ssh_public_key: |
+    ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFo77IG5gzHH9T9/3/B8oqimEoXn6iVWbRqokar3/HkToe7/mGvJUDQrUtnOD6k5ZLXCrFNNRCDzquOEynVgOe4= fkupload@file01 ssh key

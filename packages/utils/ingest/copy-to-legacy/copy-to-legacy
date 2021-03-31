@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+
+import json
+import os
+from pathlib import Path
+import boto3
+from kafka import KafkaConsumer, TopicPartition
+from paramiko import SSHClient
+from paramiko.client import AutoAddPolicy
+
+def upload_video(video_id, s3key, orig_filename):
+    """ Creates a temporary directory on file01, copies the file, and moves it
+    into the move_and_process watchfolder. """
+    client = SSHClient()
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(AutoAddPolicy)
+    client.connect('file01', username='fkupload', key_filename="secrets/ssh_private_key")
+    s3 = boto3.resource('s3',
+        endpoint_url=Path('config/s3_endpoint_url').read_text().strip(),
+        aws_access_key_id=Path('secrets/AWS_ACCESS_KEY_ID').read_text().strip(),
+        aws_secret_access_key=Path('secrets/AWS_SECRET_ACCESS_KEY').read_text().strip())
+    legacy_temp_directory = f'/srv/fkupload/adaptor_incoming/{video_id}'
+    legacy_temp_filename = os.path.join(legacy_temp_directory, orig_filename)
+    legacy_watchfolder = f'/srv/fkupload/finished_uploads/{video_id}'
+
+    sftp = client.open_sftp()
+
+    try:
+        sftp.mkdir(legacy_temp_directory)
+    except OSError as e:
+        print("Target directory already exists!", e)
+        # Fixme: Find a better way to handle an existing directory
+
+    with sftp.file(legacy_temp_filename, 'wb') as legacy_temp_file:
+        s3.Object('incoming', s3key).download_fileobj(legacy_temp_file)
+
+    print(f"mv {legacy_temp_directory} {legacy_watchfolder}")
+    sftp.posix_rename(legacy_temp_directory, legacy_watchfolder)
+
+consumer = KafkaConsumer(
+        bootstrap_servers='kafka-service.kafka:9092',
+        auto_offset_reset='earliest',
+        value_deserializer=lambda x: json.loads(x),
+        enable_auto_commit=False,
+        group_id="legacy-uploader",
+        )
+
+topics = ["new-video-uploaded"]
+assignments = []
+
+for topic in topics:
+    partitions = consumer.partitions_for_topic(topic)
+    for p in partitions:
+        assignments.append(TopicPartition(topic, p))
+consumer.assign(assignments)
+print("Connected to Kafka. Waiting for events...")
+
+for msg in consumer:
+    if isinstance(msg.value, dict) and msg.value.get('version', None) == '1':
+        upload_video(msg.value['video_id'], msg.value['s3_key'], msg.value['orig_filename'])
+        consumer.commit()
