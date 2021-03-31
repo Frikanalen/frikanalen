@@ -24,6 +24,8 @@
     "@babel/core": "^7.12.10",
     "@cloudflare/stream-react": "^0.3.0",
     "@cycjimmy/jsmpeg-player": "^5.0.1",
+    "@sentry/react": "^6.2.4",
+    "@sentry/tracing": "^6.2.4",
     "axios": "^0.21.0",
     "base-64": "^1.0.0",
     "bootstrap": "^4.5.0",
