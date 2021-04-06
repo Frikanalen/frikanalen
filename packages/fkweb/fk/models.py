@@ -154,6 +154,9 @@ class Organization(models.Model):
 
 
 class FileFormat(models.Model):
+    """ Deprecated. Replaced by VideoAsset
+    Still used by the old move_and_process system. Will be removed when
+    that is replaced by the new ingress system. """
     id = models.AutoField(primary_key=True)
     description = models.TextField(
         unique=True, max_length=255, null=True, blank=True)
@@ -174,8 +177,10 @@ class FileFormat(models.Model):
     def __str__(self):
         return self.fsname
 
-
 class VideoFile(models.Model):
+    """ Deprecated. Replaced by VideoAsset.
+    Still used by the old move_and_process system. Will be removed when
+    that is replaced by the new ingress system. """
     id = models.AutoField(primary_key=True)
     # uploader = models.ForeignKey(User) # Not migrated
     video = models.ForeignKey("Video", on_delete=models.CASCADE)
@@ -403,6 +408,12 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         return f'/video/{self.id}/'
+
+class VideoAsset(models.Model):
+    """ This replaces VideoFile and FileFormat in the long run. """
+    video = models.ForeignKey(Video, related_name='assets', on_delete=models.CASCADE)
+    asset_type = models.CharField(max_length=50)
+    location = models.CharField(max_length=200)
 
 
 class ScheduleitemManager(models.Manager):

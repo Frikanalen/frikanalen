@@ -34,6 +34,7 @@ from fk.models import AsRun
 from fk.models import Category
 from fk.models import Scheduleitem
 from fk.models import Video
+from fk.models import VideoAsset
 from fk.models import VideoFile
 from fk.models import Organization
 
@@ -48,6 +49,7 @@ from api.serializers import ScheduleitemReadSerializer
 from api.serializers import ScheduleitemModifySerializer
 from api.serializers import TokenSerializer
 from api.serializers import VideoFileSerializer
+from api.serializers import VideoAssetSerializer
 from api.serializers import VideoSerializer
 from api.serializers import VideoCreateSerializer
 from api.serializers import VideoUploadTokenSerializer
@@ -509,3 +511,95 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+class VideoViewSet(viewsets.ModelViewSet):
+    """
+    List of videos
+
+    Query parameters
+    ----------------
+
+    `q` - Free search query.
+
+    `page_size` - How many items per page. If set to 0 it will list
+                  all items.  Default is 50 items.
+
+    `ordering` - Order results by specified field.  Prepend a minus for
+                 descending order.  I.e. `?ordering=-id`.
+
+    `creator__email` - the email of the video's creator
+
+    `framerate` - the framerate in hz * 1000
+
+    `has_tono_records` - if the tono flag is set (true/false)
+
+    `is_filler` - if this is a filler video (true/false)
+
+    `name` - the exact name/title of the video
+
+    `name__icontains` - substring is part of name/title of the video
+
+    `organization` - Frikanalen ID of organization behind video
+
+    `played_count_web` - the number of times this video was played on the web
+
+    `played_count_web__gt` - greater than
+
+    `played_count_web__gte` - greater than or equal
+
+    `played_count_web__lt`  - less than
+
+    `played_count_web__lte` - less than or equal
+
+    `publish_on_web` - if this video is published ont the web (true/false)
+
+    `proper_import` - if the uploaded video was properly imported (true/false)
+
+    `ref_url` - the exact reference url
+
+    `ref_url__startswith` - the reference url start with this string
+
+    `ref_url__icontains` - the reference url contain this string
+
+    """
+    pagination_class = Pagination
+    filter_class = VideoFilter
+    permission_classes = (IsInOrganizationOrReadOnly,)
+    ordering_fields = [
+        f.column for f in Video._meta.fields
+        if f.column in VideoSerializer.Meta().fields
+    ]
+
+    def get_serializer_class(self):
+        if self.request.method in ['POST', 'PUT', 'PATCH']:
+            return VideoCreateSerializer
+        return VideoSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        self.get_queryset = lambda: Video.objects.all()
+        instance = self.get_object()
+        serializer = VideoSerializer(instance)
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        # Can filtering on proper_import be done using a different
+        # queryset and VideoFilter?
+        proper_import = self.request.query_params.get('proper_import')
+        if proper_import and 'false' == proper_import:
+            queryset = Video.objects.filter(proper_import=False)
+        else:
+            queryset = Video.objects.filter(proper_import=True)
+
+        search_query = self.request.query_params.get('q')
+        if search_query:
+            queryset = fkvod.search.search_videos(queryset,
+                                                  query=search_query)
+        return queryset
+
+
+class VideoAssetViewSet(viewsets.ModelViewSet):
+    lookup_field = 'asset_type'
+    permission_classes = (IsInOrganizationOrReadOnly,)
+    serializer_class = VideoAssetSerializer
+    def get_queryset(self):
+        return VideoAsset.objects.filter(video=self.kwargs['video_pk'])

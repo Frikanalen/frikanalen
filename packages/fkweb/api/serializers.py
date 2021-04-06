@@ -14,6 +14,7 @@ from fk.models import Category
 from fk.models import Organization
 from fk.models import Scheduleitem
 from fk.models import Video
+from fk.models import VideoAsset
 from fk.models import User
 from fk.models import VideoFile
 
@@ -74,6 +75,24 @@ class VideoFileSerializer(serializers.ModelSerializer):
             )
 
 
+class VideoAssetSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        video = Video.objects.get(pk=self.context["view"].kwargs["video_pk"])
+        validated_data["video"] = video
+        return VideoAsset.objects.create(**validated_data)
+
+    class Meta:
+        model = VideoAsset
+        fields = (
+                'asset_type',
+                'location'
+                )
+
+class VideoAssetFieldSerializer(serializers.RelatedField):
+
+    def to_representation(self, assets):
+        return({asset.asset_type: asset.location for asset in assets.all()})
+
 class VideoSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
     creator = serializers.SlugRelatedField(
@@ -82,6 +101,7 @@ class VideoSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(
         slug_field='name', many=True, queryset=Category.objects.all())
     files = serializers.SerializerMethodField()
+    assets = VideoAssetFieldSerializer(read_only=True)
 
     def get_files(self, video):
         file_list = {}
@@ -93,6 +113,7 @@ class VideoSerializer(serializers.ModelSerializer):
         model = Video
         fields = (
             "id",
+            "assets",
             "name",
             "header",
             "description",
@@ -115,7 +136,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "large_thumbnail_url",
             )
         read_only_fields = (
-            "framerate", "created_time", "updated_time", "files")
+            "framerate", "created_time", "updated_time", "files", "assets")
 
     def validate(self, data):
         is_creation = not self.instance
