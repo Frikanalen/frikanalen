@@ -61,6 +61,7 @@ export const fkVideoSchema = z
     id: z.number(),
     organization: z.union([z.number(), fkOrgSchema]),
     files: fkVideoFilesSchema,
+    assets: z.record(z.string()),
     description: z.string().nullable(),
     header: z.string().nullable(),
     creator: z.string(),
