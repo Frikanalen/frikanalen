@@ -16,7 +16,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.dispatch import receiver
 from django.urls import reverse
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save
+from django.db.models.signals import pre_delete
+from django.db.models.signals import post_delete
 from django.utils import timezone
 from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
@@ -415,6 +417,14 @@ class VideoAsset(models.Model):
     asset_type = models.CharField(max_length=50)
     location = models.CharField(max_length=200)
 
+class DeletedVideoAsset(models.Model):
+    video_id = models.IntegerField()
+    asset_type = models.CharField(max_length=50)
+    location = models.CharField(max_length=200)
+
+@receiver(pre_delete, sender=VideoAsset)
+def put_asset_in_recycle_bin(sender, instance, **kwargs):
+    DeletedVideoAsset.objects.create(video_id=instance.video_id, asset_type=instance.asset_type, location=instance.location)
 
 class ScheduleitemManager(models.Manager):
     def by_day(self, date=None, days=1, surrounding=False):
