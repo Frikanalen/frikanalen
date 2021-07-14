@@ -19,6 +19,9 @@ spec:
       containers:
       - name: playout-ng
         image: frikanalen/playout-ng:latest
+        env:
+          - name: CASPAR_HOST
+            value: tx2
         imagePullPolicy: Always
         volumeMounts:
         - name: tz-config

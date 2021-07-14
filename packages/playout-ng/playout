@@ -28,6 +28,7 @@ logger.addHandler(logHandler)
 from datetime import datetime, timedelta
 import pytz
 from dateutil.parser import parse
+import os
 
 VIDEO_LAYER = '1-50'
 GRAPHICS_LAYER = '1-60'
@@ -36,7 +37,7 @@ CHANNELBUG_LAYER = '1-100'
 API_URL = 'http://schedule-service/playout'
 LEGACY_URL = 'https://frikanalen.no/api/'
 FILE_BASE = u''
-CASPAR_HOST = '192.168.3.35'
+CASPAR_HOST = os.environ['CASPAR_HOST']
 
 def localtime():
     return datetime.now(tz=pytz.timezone('Europe/Oslo'))
@@ -389,7 +390,7 @@ class Playout():
 CurrentPlayer = CasparPlayer()
 
 if __name__=='__main__':
-    logger.info("Playout starting up...")
+    logger.info(f"Playout starting, connecting to {CASPAR_HOST}...")
     loop = asyncio.get_event_loop()
     r = loop.run_until_complete(Playout().run())
     print(r)
