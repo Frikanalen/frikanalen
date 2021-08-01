@@ -25,20 +25,14 @@ spec:
             - name: TZ
               value: Europe/Oslo
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_DB
+              value: fkweb
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_USER
+              value: fkweb
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_PASSWORD
+                  name: backend-secrets
+                  key: DATABASE_PASS
           volumeMounts:
             - mountPath: "/var/lib/postgresql/data"
               name: postgres-data

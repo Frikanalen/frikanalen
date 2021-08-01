@@ -1,0 +1,67 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-static
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`fk.dev.local`) && PathPrefix(`/static`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-xmltv
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`fk.dev.local`) && PathPrefix(`/xmltv`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-api
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`fk.dev.local`) && PathPrefix(`/api`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`fk.dev.local`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: frontend
+      scheme: http
+      port: 3000

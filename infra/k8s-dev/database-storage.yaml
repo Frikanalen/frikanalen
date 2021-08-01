@@ -1,0 +1,43 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: postgres-data
+provisioner: microk8s.io/hostpath
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-data
+  namespace: database
+  annotations:
+    pv.beta.kubernetes.io/gid: "1234"
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: postgres-data
+  hostPath:
+    path: "/opt/volume/nginx"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: postgres
+  name: postgres-data
+  namespace: database
+spec:
+  storageClassName: postgres-data
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5G

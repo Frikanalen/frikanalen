@@ -18,9 +18,15 @@ spec:
         env:
           - name: DJANGO_SETTINGS_MODULE
             value: fkweb.settings.production
+          - name: DATABASE_HOST
+            value: postgres.database
+          - name: DATABASE_USER
+            value: fkweb
+          - name: DATABASE_NAME
+            value: fkweb
         envFrom:
         - secretRef:
-            name: postgres-secret-django
+            name: backend-secrets
         ports:
           - name: web
             containerPort: 8080

@@ -23,3 +23,25 @@ spec:
         envFrom:
           - configMapRef:
               name: frontend-envs
+        readinessProbe:
+          httpGet:
+            path: /api/healthz
+            port: http
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/healthz
+            port: http
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      name: web

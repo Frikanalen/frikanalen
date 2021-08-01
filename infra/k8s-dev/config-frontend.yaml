@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-envs
+  namespace: default
+data:
+  API_BASE_URL: "http://fk.local:8080/api/"
+  GRAPHQL_URL: "http://fk.local:8080/graphql"
