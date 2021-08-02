@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: traefik-ingress-controller
+  namespace: traefik
+spec:
+  selector:
+    matchLabels:
+      k8s-app: traefik-ingress-lb
+      name: traefik-ingress-lb
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: traefik-ingress-lb
+        name: traefik-ingress-lb
+    spec:
+      containers:
+      - args:
+        - --api.insecure=true
+        - --providers.kubernetesCRD
+        - --log=true
+        - --log.level=INFO
+        - --accesslog=true
+        - --accesslog.filepath=/dev/stdout
+        - --accesslog.format=json
+        - --entrypoints.web.address=:80
+        - --entrypoints.websecure.address=:8443
+        name: traefik-ingress-lb
+        image: traefik:2.3
+        ports:
+        - containerPort: 80
+          hostPort: 80
+          name: http
+          protocol: TCP
+      hostNetwork: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress
+  namespace: traefik
+spec:
+  selector:
+    name: traefik-ingress-lb
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: traefik-web-ui
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 8443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-ingress-service
+  namespace: traefik
+spec:
+  ports:
+  - name: web
+    nodePort: 32657
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-web-ui
+  namespace: traefik
+spec:
+  selector:
+    k8s-app: traefik-ingress-lb
+  ports:
+  - name: web
+    port: 8080
+    targetPort: 8080

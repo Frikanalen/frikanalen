@@ -9,7 +9,7 @@ data:
     }
 
     server {
-        listen 80;
+        listen 8002;
         server_name _;
         location /static {
             alias /usr/share/nginx/html;

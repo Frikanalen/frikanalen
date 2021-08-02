@@ -12,5 +12,5 @@ spec:
     # port - port exposed internally in the cluster
     # targetPort - the container port to send requests to
     - protocol: TCP
-      port: 80
-      name: web
+      port: 8002
+      name: django-web

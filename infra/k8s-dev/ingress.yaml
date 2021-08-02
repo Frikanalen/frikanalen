@@ -10,10 +10,10 @@ spec:
   - match: Host(`fk.dev.local`) && PathPrefix(`/static`)
     kind: Rule
     services:
-    - kind: Service
-      name: django
+    - name: django
+      kind: Service
       scheme: http
-      port: 80
+      port: 8002
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -27,10 +27,10 @@ spec:
   - match: Host(`fk.dev.local`) && PathPrefix(`/xmltv`)
     kind: Rule
     services:
-    - kind: Service
-      name: django
+    - name: django
+      kind: Service
       scheme: http
-      port: 80
+      port: 8002
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -44,10 +44,10 @@ spec:
   - match: Host(`fk.dev.local`) && PathPrefix(`/api`)
     kind: Rule
     services:
-    - kind: Service
-      name: django
+    - name: django
+      kind: Service
       scheme: http
-      port: 80
+      port: 8002
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -61,7 +61,7 @@ spec:
   - match: Host(`fk.dev.local`)
     kind: Rule
     services:
-    - kind: Service
-      name: frontend
+    - name: frontend
+      kind: Service
       scheme: http
       port: 3000

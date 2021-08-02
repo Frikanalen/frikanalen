@@ -25,13 +25,13 @@ spec:
               name: frontend-envs
         readinessProbe:
           httpGet:
-            path: /api/healthz
-            port: http
+            path: /healthz
+            port: 3000
           initialDelaySeconds: 10
         livenessProbe:
           httpGet:
-            path: /api/healthz
-            port: http
+            path: /healthz
+            port: 3000
 ---
 kind: Service
 apiVersion: v1
