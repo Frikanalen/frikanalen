@@ -1388,13 +1388,19 @@
             }
             return Rt(r);
           };
-        (h.prototype.temp = h.prototype.kelvin = h.prototype.temperature = function () {
-          return jt(this._rgb);
-        }),
-          (p.temp = p.kelvin = p.temperature = function () {
-            for (var e = [], t = arguments.length; t--; ) e[t] = arguments[t];
-            return new (Function.prototype.bind.apply(h, [null].concat(e, ["temp"])))();
-          }),
+        (h.prototype.temp =
+          h.prototype.kelvin =
+          h.prototype.temperature =
+            function () {
+              return jt(this._rgb);
+            }),
+          (p.temp =
+            p.kelvin =
+            p.temperature =
+              function () {
+                for (var e = [], t = arguments.length; t--; ) e[t] = arguments[t];
+                return new (Function.prototype.bind.apply(h, [null].concat(e, ["temp"])))();
+              }),
           (c.format.temp = c.format.kelvin = c.format.temperature = Gt);
         var Bt = i.type;
         (h.prototype.alpha = function (e, t) {
@@ -1470,11 +1476,12 @@
               zt[f](e, t, r).alpha(e.alpha() + r * (t.alpha() - e.alpha()))
             );
           };
-        (h.prototype.mix = h.prototype.interpolate = function (e, t) {
-          void 0 === t && (t = 0.5);
-          for (var r = [], n = arguments.length - 2; n-- > 0; ) r[n] = arguments[n + 2];
-          return qt.apply(void 0, [this, e, t].concat(r));
-        }),
+        (h.prototype.mix = h.prototype.interpolate =
+          function (e, t) {
+            void 0 === t && (t = 0.5);
+            for (var r = [], n = arguments.length - 2; n-- > 0; ) r[n] = arguments[n + 2];
+            return qt.apply(void 0, [this, e, t].concat(r));
+          }),
           (h.prototype.premultiply = function (e) {
             void 0 === e && (e = !1);
             var t = this._rgb,
@@ -2829,22 +2836,28 @@
       return (((e = (e + Math.imul(e ^ (e >>> 7), 61 | e)) ^ e) ^ (e >>> 14)) >>> 0) / 4294967296;
     };
   }
-  const k = (e = 0.5) => ({ xPercent: t, yPercent: r, xScale: n, yScale: a, opts: f }) =>
-    d.mix(n(t), a(r), e, f.colorSpace);
+  const k =
+    (e = 0.5) =>
+    ({ xPercent: t, yPercent: r, xScale: n, yScale: a, opts: f }) =>
+      d.mix(n(t), a(r), e, f.colorSpace);
   var _ = Object.freeze({
     __proto__: null,
     interpolateLinear: k,
-    sparkle: (e = 0.15) => ({ xPercent: t, yPercent: r, xScale: n, yScale: a, opts: f, random: o }) => {
-      const i = () => (o() - 0.5) * e,
-        c = n(t + i()),
-        l = a(r + i());
-      return d.mix(c, l, 0.5, f.colorSpace);
-    },
-    shadows: (e = 0.8) => ({ xPercent: t, yPercent: r, xScale: n, yScale: a, opts: f, random: o }) => {
-      const i = n(t),
-        c = a(r);
-      return d.mix(i, c, 0.5, f.colorSpace).darken(e * o());
-    },
+    sparkle:
+      (e = 0.15) =>
+      ({ xPercent: t, yPercent: r, xScale: n, yScale: a, opts: f, random: o }) => {
+        const i = () => (o() - 0.5) * e,
+          c = n(t + i()),
+          l = a(r + i());
+        return d.mix(c, l, 0.5, f.colorSpace);
+      },
+    shadows:
+      (e = 0.8) =>
+      ({ xPercent: t, yPercent: r, xScale: n, yScale: a, opts: f, random: o }) => {
+        const i = n(t),
+          c = a(r);
+        return d.mix(i, c, 0.5, f.colorSpace).darken(e * o());
+      },
   });
   const M = {
     width: 600,

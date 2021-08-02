@@ -5,27 +5,25 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { UserContext, UserContextState } from "./UserContext";
 
-const UserMenu = () => {
+const UserDropdown = () => {
   const user = useContext<UserContextState>(UserContext);
-  if (!user.isLoggedIn) {
-    return <Nav.Link href="/login">Logg inn/registrer</Nav.Link>;
-  } else {
-    return (
-      <div>
-        <NavDropdown id="" className="userdropdown" title={user.profile?.email}>
-          <Link href="/profil" passHref>
-            <NavDropdown.Item>Brukerside</NavDropdown.Item>
-          </Link>
-          <NavDropdown.Item onClick={user.logout}>Logg ut</NavDropdown.Item>
-        </NavDropdown>
-        <style jsx global>{`
-          .userdropdown > a {
-            color: #eee !important;
-          }
-        `}</style>
-      </div>
-    );
-  }
+  if (!user.isLoggedIn) return <Nav.Link href="/login">Logg inn/registrer</Nav.Link>;
+
+  return (
+    <>
+      <NavDropdown id="" className="userdropdown justify-content-end" title={user.profile?.email}>
+        <Link href="/profil" passHref>
+          <NavDropdown.Item>Brukerside</NavDropdown.Item>
+        </Link>
+        <NavDropdown.Item onClick={user.logout}>Logg ut</NavDropdown.Item>
+      </NavDropdown>
+      <style jsx global>{`
+        .userdropdown > a {
+          color: #eee !important;
+        }
+      `}</style>
+    </>
+  );
 };
 
 export default function Header() {
@@ -42,7 +40,7 @@ export default function Header() {
         </Navbar.Brand>
       </Navbar>
       <Navbar bg="dark" variant="dark">
-        <Nav className="mr-auto">
+        <Nav className="me-auto">
           <Link href="/" passHref>
             <Nav.Link>Direkte</Nav.Link>
           </Link>
@@ -64,8 +62,8 @@ export default function Header() {
             </Link>
           </NavDropdown>
         </Nav>
-        <Nav className="ml-auto">
-          <UserMenu />
+        <Nav>
+          <UserDropdown />
         </Nav>
       </Navbar>
     </header>

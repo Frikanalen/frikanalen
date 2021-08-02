@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { useRouter } from "next/router";
-import Layout from "../../../components/Layout";
-import WindowWidget from "../../../components/WindowWidget";
-
+import { GetServerSideProps } from "next";
 import VideoList, { getLatestVideos } from "components/VideoList";
 import { APIGET, fkOrg, fkOrgSchema, fkVideoQuery } from "components/TS-API/API";
-import { GetServerSideProps } from "next";
+import Layout from "../../../components/Layout";
+import WindowWidget from "../../../components/WindowWidget";
 
 interface OrgAdminProps {
   orgName: string;
@@ -37,10 +36,10 @@ export default function OrgAdmin({ orgName, orgID, latestVideos }: OrgAdminProps
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (typeof context.query.orgID != "string" || isNaN(parseInt(context.query.orgID))) {
-    throw new Error(`Invalid organization ID "${context.query.orgID}"`);
+  if (typeof context.query.orgID !== "string" || Number.isNaN(parseInt(context.query.orgID, 10))) {
+    throw new Error("Invalid organization ID");
   }
-  const orgID = parseInt(context.query.orgID);
+  const orgID = parseInt(context.query.orgID, 10);
   const { name } = await APIGET<fkOrg>({
     endpoint: `organization/${orgID}`,
     validator: fkOrgSchema.parse,
@@ -51,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       organizationName: name,
-      orgID: orgID,
+      orgID,
       latestVideos,
     },
   };

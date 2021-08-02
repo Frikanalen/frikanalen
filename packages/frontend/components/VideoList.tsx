@@ -9,54 +9,63 @@ import { APIGET, fkOrg, fkVideo, fkVideoQuery, fkVideoQuerySchema } from "./TS-A
 export async function getLatestVideos(organization: number | fkOrg): Promise<fkVideoQuery> {
   let orgID: number;
 
-  if (typeof organization == "number") {
+  if (typeof organization === "number") {
     orgID = organization;
   } else {
     orgID = organization.id;
   }
-  return await APIGET<fkVideoQuery>({
+
+  return APIGET<fkVideoQuery>({
     endpoint: `videos/?organization=${orgID}&page_size=10`,
     validator: fkVideoQuerySchema.parse,
   });
 }
 
-const VideoList: React.FC<{ videosJSON: fkVideoQuery }> = ({ videosJSON }) => {
-  const VideoCard: React.FC<{ v: fkVideo }> = ({ v }) => (
-    <Card key={v.id} style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
-      <Link href={`/video/${v.id}`} as={`/video/${v.id}`}>
-        <Card.Img
-          style={{ cursor: "pointer", objectFit: "contain", height: "140.625px", background: "black" }}
-          variant="top"
-          src={v.largeThumbnailUrl}
-        />
+interface VideoComponent {
+  video: fkVideo;
+}
+
+const VideoCard = ({ video }: VideoComponent): JSX.Element => (
+  <Card key={video.id} style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
+    <Link href={`/video/${video.id}`} as={`/video/${video.id}`}>
+      <Card.Img
+        style={{ cursor: "pointer", objectFit: "contain", height: "140.625px", background: "black" }}
+        variant="top"
+        src={video.files.largeThumb}
+      />
+    </Link>
+    <Card.Body>
+      <Link href={`/video/${video.id}`} as={`/video/${video.id}`}>
+        {video.name}
       </Link>
-      <Card.Body>
-        <Link href={`/video/${v.id}`} as={`/video/${v.id}`}>
-          {v.name}
-        </Link>
-      </Card.Body>
-      <Card.Footer>
-        Lastet opp{" "}
-        <Moment locale="nb" format="Do MMMM YYYY">
-          {v.createdTime || ""}
-        </Moment>
-      </Card.Footer>
-    </Card>
-  );
-  if (videosJSON.count) {
+    </Card.Body>
+    <Card.Footer>
+      Lastet opp{" "}
+      <Moment locale="nb" format="Do MMMM YYYY">
+        {video.createdTime || ""}
+      </Moment>
+    </Card.Footer>
+  </Card>
+);
+
+interface VideoListProps {
+  videosJSON: fkVideoQuery;
+}
+
+const VideoList = ({ videosJSON }: VideoListProps): JSX.Element => {
+  if (videosJSON.count)
     return (
       <CardDeck style={{ marginBottom: "10px", overflowX: "scroll", flexWrap: "nowrap" }}>
-        {videosJSON.results.map((v) => VideoCard({ v }))}
+        {videosJSON.results.map((video) => VideoCard({ video }))}
       </CardDeck>
     );
-  } else {
-    return (
-      <Card body style={{ marginBottom: "10px" }} className={"text-dark"}>
-        Ingen videoer!
-        <br />
-      </Card>
-    );
-  }
+
+  return (
+    <Card body style={{ marginBottom: "10px" }} className="text-dark">
+      Ingen videoer!
+      <br />
+    </Card>
+  );
 };
 
 export default VideoList;

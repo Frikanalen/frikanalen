@@ -23,12 +23,8 @@ export default function Blimed() {
         <p>
           Slik går du frem:
           <ul>
-            <li>
-              <a>Opprett en bruker på denne nettsiden</a>
-            </li>
-            <li>
-              <a>Fra din brukerprofil, opprett en ny organisasjon</a>
-            </li>
+            <li>Opprett en bruker på denne nettsiden</li>
+            <li>Fra din brukerprofil, opprett en ny organisasjon</li>
           </ul>
         </p>
         <h3>Som frivillig</h3>

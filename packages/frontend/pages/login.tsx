@@ -1,39 +1,27 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, FormEvent } from "react";
 import Router from "next/router";
 
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
+
 import WindowWidget from "../components/WindowWidget";
 import Layout from "../components/Layout";
-import config from "../components/configs";
-import base64 from "base-64";
-import { UserContext } from "../components/UserContext";
+
+import {UserContext, UserContextState} from "../components/UserContext";
+import { getUserToken } from "../components/TS-API/API";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const user = useContext(UserContext);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const user: UserContextState = useContext(UserContext);
 
-  async function authenticate(e) {
+  async function authenticate(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const r = await fetch(`${config.api}obtain-token`, {
-      headers: {
-        Authorization: "Basic " + base64.encode(email + ":" + password),
-      },
-    });
-
-    if (r.status == 200) {
-      const data = await r.json();
-      user.login(data.key);
-      Router.push("/profil");
-    } else if (r.status == 401) {
-      setErrorMessage(<Alert variant="danger">Ugyldig brukernavn eller passord</Alert>);
-    } else {
-      setErrorMessage(<Alert variant="danger">Teknisk feil, vennligst prøv igjen senere</Alert>);
-    }
+    if(!user.isReady) throw new Error("Tried to login on uninitialized user context")
+    if (user.login) user.login(await getUserToken(email, password));
+    await Router.push("/profil");
   }
 
   // if there is a user ID set
@@ -42,7 +30,7 @@ export default function LoginForm() {
   return (
     <Layout>
       <WindowWidget invisible>
-        <Card variant="primary" border="primary" className="loginCard">
+        <Card border="primary" className="loginCard">
           <Card.Body>
             <Card.Title>Logg inn</Card.Title>
             {errorMessage}

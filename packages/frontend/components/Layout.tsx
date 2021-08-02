@@ -4,14 +4,13 @@ import MetaTags from "react-meta-tags";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import PropTypes from "prop-types";
 
 import Header from "./Header";
 
 interface LayoutProps {
   children?: React.ReactNode;
 }
-const Layout = (props: LayoutProps) => (
+const Layout = ({ children }: LayoutProps) => (
   <Container fluid className="mainContainer">
     <MetaTags>
       <title>Frikanalen</title>
@@ -20,7 +19,7 @@ const Layout = (props: LayoutProps) => (
       <Header />
     </Row>
     <Row noGutters>
-      <Col className="mainColumn">{props.children}</Col>
+      <Col className="mainColumn">{children}</Col>
     </Row>
     <footer className="d-none d-lg-block fixed-bottom">
       <a href="https://frikanalen.no/api/">REST API</a>
@@ -39,10 +38,6 @@ const Layout = (props: LayoutProps) => (
     </style>
   </Container>
 );
-
-Layout.propTypes = {
-  children: PropTypes.node,
-};
 
 Layout.defaultProps = {
   children: null,

@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     videoJSON = await APIGET<fkVideo>({
-      endpoint: `videos/${videoID}`,
+      endpoint: `videos/${videoID as string}`,
       validator: fkVideoSchema.parse,
     });
     latestVideos = await getLatestVideos(videoJSON.organization);

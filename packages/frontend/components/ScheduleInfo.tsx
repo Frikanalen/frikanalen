@@ -8,7 +8,8 @@ export function findRunningProgram(schedule: fkScheduleItem[]): number {
   const now = new Date();
   // FIXME: This will render wrong if the user's browser is not
   // in the Europe/Oslo timezone
-  for (const id in schedule) {
+
+  for (const id of schedule.keys()) {
     const startTime = new Date(Date.parse(schedule[id].starttime));
     const endTime = new Date(Date.parse(schedule[id].endtime));
 
@@ -18,15 +19,17 @@ export function findRunningProgram(schedule: fkScheduleItem[]): number {
       setTimeout(() => {
         findRunningProgram(schedule);
       }, endTime.getTime() - now.getTime() + 1000);
-      return parseInt(id);
+      return id;
     }
   }
   return 0;
 }
 
 function as_HH_mm(datestr: string): string {
-  let d = new Date(datestr);
-  return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  const d = new Date(datestr);
+  const paddedHours = (`0${d.getHours()}`).slice(-2)
+  const paddedMinutes = (`0${d.getMinutes()}`).slice(-2)
+  return `${paddedHours}:${paddedMinutes}`
 }
 
 interface ScheduleInfoProps {
@@ -55,7 +58,7 @@ export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleI
   render() {
     const { schedule } = this.state;
     const currentItem = findRunningProgram(schedule);
-    const programme_row = (programme: fkScheduleItem | null, DOMclass: string) => {
+    const programmeRow = (programme: fkScheduleItem | null, DOMclass: string) => {
       if (programme == null) {
         return null;
       }
@@ -90,7 +93,7 @@ export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleI
           <Row>
             <Col>
               <span className="name">
-                <a href={"video/" + video.id}>{video.name}</a>
+                <a href={`video/${video.id}`}>{video.name}</a>
               </span>
             </Col>
           </Row>
@@ -100,9 +103,9 @@ export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleI
 
     return (
       <div className={"onRightNow"}>
-        {currentItem != 0 ? programme_row(schedule[currentItem - 1], "previous") : null}
-        {programme_row(schedule[currentItem], styles.current)}
-        {currentItem != schedule.length ? programme_row(schedule[currentItem + 1], "next") : false}
+        {currentItem != 0 ? programmeRow(schedule[currentItem - 1], "previous") : null}
+        {programmeRow(schedule[currentItem], styles.current)}
+        {currentItem != schedule.length ? programmeRow(schedule[currentItem + 1], "next") : false}
         <style jsx>{`
           .onRightNow {
             color: white;

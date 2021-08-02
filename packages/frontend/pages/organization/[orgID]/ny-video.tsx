@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { GetServerSideProps } from "next";
 import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
 import { UserContext } from "../../../components/UserContext";
 import { getCategories, fkCategory, fkOrg, getOrg, fkVideoPartial, APIPOST } from "../../../components/TS-API/API";
-import { GetServerSideProps } from "next";
 
 interface VideoCreateProps {
   org: fkOrg;
@@ -43,13 +43,15 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
     APIPOST<fkVideoPartial>({
       endpoint: "videos/",
       payload: newVideo,
-      token: token,
+      token,
     })
-      .then((newVideoResponse) => {
-        router.push("/video/[videoID]", `/video/${newVideoResponse.id}`);
+      .then(async (newVideoResponse) => {
+        if (typeof newVideoResponse.id !== "number") throw new Error("Invalid video ID!");
+
+        await router.push("/video/[videoID]", `/video/${newVideoResponse.id}`);
       })
-      .catch((e) => {
-        setErrors(e.value);
+      .catch((reason: Error) => {
+        setErrors(reason);
       });
   };
 
@@ -85,8 +87,8 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
             <Form.Control
               as="select"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                var selectedCategories = [];
-                for (let i = 0; i < e.target.selectedOptions.length; i++) {
+                const selectedCategories = [];
+                for (let i = 0; i < e.target.selectedOptions.length; i += 1) {
                   selectedCategories.push(e.target.selectedOptions[i].value);
                 }
                 setVideoCategories(selectedCategories);
@@ -110,11 +112,11 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (typeof context.query.orgID != "string" || isNaN(parseInt(context.query.orgID))) {
-    throw new Error(`Invalid organization ID "${context.query.orgID}"`);
+  if (typeof context.query.orgID !== "string" || Number.isNaN(parseInt(context.query.orgID, 10))) {
+    throw new Error(`Invalid organization ID!`);
   }
 
-  const org = await getOrg(parseInt(context.query.orgID));
+  const org = await getOrg(parseInt(context.query.orgID, 10));
   const possibleCategories = await getCategories();
 
   return {

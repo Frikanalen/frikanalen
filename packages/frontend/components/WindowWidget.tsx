@@ -8,7 +8,7 @@ interface WindowWidgetProps {
   children?: React.ReactNode;
 }
 
-export default function WindowWidget({ nomargin, invisible, children }: WindowWidgetProps) {
+export default function WindowWidget({ nomargin, invisible, children }: WindowWidgetProps): JSX.Element {
   const containerStyle = nomargin ? styles.BareWindowWidget : "";
   const backgroundStyle = invisible ? styles.InvisibleWindowWidget : "";
 
@@ -18,3 +18,9 @@ export default function WindowWidget({ nomargin, invisible, children }: WindowWi
     </Container>
   );
 }
+
+WindowWidget.defaultProps = {
+  invisible: false,
+  nomargin: false,
+  children: [],
+};

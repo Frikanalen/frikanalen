@@ -2,18 +2,47 @@ env:
   browser: true
   es2021: true
 extends:
-  - airbnb
+#  - airbnb-typescript
   - 'plugin:react/recommended'
   - 'prettier'
-  - 'prettier/react'
   - 'plugin:@typescript-eslint/recommended'
   - "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  - "next"
 parserOptions:
+  project: './tsconfig.json'
   ecmaFeatures:
     jsx: true
   ecmaVersion: 12
   sourceType: module
+  failOnError: false
+  emitWarning: true
 plugins:
   - react
   - '@typescript-eslint'
-rules: {}
+rules:
+  "@typescript-eslint/naming-convention":
+    - error
+    - selector: variable
+      format:
+        - camelCase
+        - PascalCase
+  react/static-property-placement:
+    - "warn"
+    - "property assignment"
+    - contextType: "static public field"
+      contextTypes: "static public field"
+  no-use-before-define: "off"
+  react/prop-types: "off"
+  "@typescript-eslint/no-use-before-define": [ "error" ]
+  "react/jsx-filename-extension":
+    - 2
+    - "extensions":
+      - ".jsx"
+      - ".tsx"
+overrides:
+  - files:
+    - '*.ts'
+    - '*.tsx'
+ignorePatterns:
+  - '*.js'
+  - '*.jsx'

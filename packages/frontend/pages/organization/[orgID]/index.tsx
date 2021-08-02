@@ -1,18 +1,18 @@
 import React from "react";
 import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
-import { getOrg, fkOrg } from "components/TS-API/API";
+import { getOrg, fkOrg, fkVideoQuery } from "components/TS-API/API";
 import VideoList, { getLatestVideos } from "components/VideoList";
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (typeof context.query.orgID != "string" || isNaN(parseInt(context.query.orgID))) {
-    throw new Error(`Invalid organization ID "${context.query.orgID}"`);
+  if (typeof context.query.orgID !== "string" || Number.isNaN(parseInt(context.query.orgID, 10))) {
+    throw new Error(`Invalid organization ID`);
   }
 
-  const orgID = parseInt(context.query.orgID);
+  const orgID = parseInt(context.query.orgID, 10);
 
   const orgData = await getOrg(orgID);
   const latestVideos = await getLatestVideos(orgID);
@@ -68,9 +68,12 @@ function OrganizationContactInfo(props: { orgData: fkOrg }) {
   );
 }
 
-export default function OrganizationPage(props: { orgData: fkOrg; latestVideos: any }) {
-  const { orgData, latestVideos } = props;
+interface OrganizationPageProps {
+  orgData: fkOrg;
+  latestVideos: fkVideoQuery;
+}
 
+export default function OrganizationPage({ orgData, latestVideos }: OrganizationPageProps) {
   return (
     <Layout>
       <WindowWidget>

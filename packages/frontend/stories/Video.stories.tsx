@@ -64,9 +64,6 @@ VOD.args = {
     createdTime: "2020-09-24T18:27:31.218942Z",
     updatedTime: "2020-09-24T18:29:22.265773Z",
     uploadedTime: "2020-09-24T18:29:19.354196Z",
-    ogvUrl: "https://upload.frikanalen.no/media/626503/theora/trim.0F62C9AE-673F-4E2A-994F-A08975669B10.ogv",
-    largeThumbnailUrl:
-      "https://upload.frikanalen.no/media/626503/large_thumb/trim.0F62C9AE-673F-4E2A-994F-A08975669B10.jpg",
   },
 };
 

@@ -1,33 +1,32 @@
-import React, { Component, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import fetch from "isomorphic-unfetch";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
-import { UserContext } from "./UserContext";
+import {UserContext, UserContextLoggedInState, UserContextUnauthState} from "./UserContext";
 
 interface Props {
   show: boolean;
   onHide: () => void;
 }
-export default function TextSlideGenerator(props: Props) {
+export default function TextSlideGenerator(props: Props): JSX.Element {
   const context = useContext(UserContext);
-  if (!context.isLoggedIn) {
-    return <></>;
-  }
 
-  const { token } = context;
+
   const { show, onHide } = props;
   const [posterText, setPosterText] = useState<string>("");
   const [posterHeading, setPosterHeading] = useState<string>("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [imageURL, setImageURL] = useState('https://stills-generator.frikanalen.no/poster/preview?text=&heading=",');
 
+
   const resetImageTimeout = () => {
     const stillsGeneratorBase = "https://stills-generator.frikanalen.no/poster/";
     const queryString = `preview/?text=${encodeURI(posterText)}&heading=${encodeURI(posterHeading)}`;
     setImageURL(stillsGeneratorBase + queryString);
   };
+  const { token } = context as UserContextLoggedInState;
 
   const uploadPoster = async (heading: string, text: string) => {
     setStatusMessage("Laster opp...");
@@ -38,14 +37,15 @@ export default function TextSlideGenerator(props: Props) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        text: text,
-        heading: heading,
+        text,
+        heading,
       }),
     });
     setStatusMessage(null);
   };
-
-  useEffect(() => resetImageTimeout, [posterText, posterHeading]);
+  if (!context.isLoggedIn) {
+    return <></>;
+  }
 
   return (
     <Modal className="text-dark" show={show} onHide={onHide}>

@@ -1,13 +1,14 @@
 import React from "react";
+import dynamic from "next/dynamic";
+import { GetServerSideProps } from "next";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Layout from "../components/Layout";
 import WindowWidget from "../components/WindowWidget";
 import ScheduleInfo from "../components/ScheduleInfo";
-import dynamic from "next/dynamic";
+
 import { APIGET, fkSchedule, fkScheduleSchema } from "../components/TS-API/API";
-import { GetServerSideProps } from "next";
 
 const ShakaPlayer = dynamic(() => import("../components/ShakaPlayer"), { ssr: false });
 
@@ -98,7 +99,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   });
   return {
     props: {
-      scheduleJSON: scheduleJSON,
+      scheduleJSON,
     },
   };
 };

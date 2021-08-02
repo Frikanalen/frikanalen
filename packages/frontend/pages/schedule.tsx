@@ -103,7 +103,8 @@ export default function Schedule(props: ScheduleProps) {
       firstUpdate.current = false;
       return;
     }
-    scheduleForDate(date).then((s) => setScheduleJSON(s));
+    // FIXME: Do error handling here
+    scheduleForDate(date).then((s) => setScheduleJSON(s)).catch((reason)=>{console.log(reason)});
   }, [date]);
 
   return (

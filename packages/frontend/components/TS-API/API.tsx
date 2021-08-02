@@ -1,5 +1,6 @@
-import configs from "../configs";
 import * as z from "zod";
+import base64 from "base-64";
+import configs from "../configs";
 
 export interface fkBulletin {
   id: number;
@@ -125,7 +126,7 @@ export type fkSchedule = z.infer<typeof fkScheduleSchema>;
 
 export interface APIGETOptions<T> {
   endpoint: string;
-  validator?: (data: any) => T;
+  validator?: (data: T) => T;
   token?: string;
   reloadCache?: boolean;
 }
@@ -133,22 +134,20 @@ export interface APIGETOptions<T> {
 export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
   let authHeaders = {};
   let cacheOptions: RequestCache = "default";
-  if (opts.token != undefined) authHeaders = { Authorization: `Token ${opts.token}` };
-  if (opts.reloadCache != undefined) cacheOptions = "reload";
+  if (opts.token !== undefined) authHeaders = { Authorization: `Token ${opts.token}` };
+  if (opts.reloadCache !== undefined) cacheOptions = "reload";
   const response = await fetch(`${configs.api}${opts.endpoint}`, { cache: cacheOptions, headers: authHeaders });
 
   if (!response.ok) {
     throw new Error(response.statusText);
   }
 
-  const responseJSON = await response.json();
+  const responseJSON = (await response.json()) as T;
 
-  if (opts.validator != undefined) {
-    return opts.validator(responseJSON);
-  } else {
-    console.log(`Warning: Used APIGET without validator to fetch ${opts.endpoint}`);
-    return responseJSON as T;
-  }
+  if (opts.validator !== undefined) return opts.validator(responseJSON);
+
+  console.log(`Warning: Used APIGET without validator to fetch ${opts.endpoint}`);
+  return responseJSON;
 }
 
 export interface APIPOSTOptions<T> {
@@ -159,14 +158,14 @@ export interface APIPOSTOptions<T> {
 }
 
 export async function APIPOST<T>(opts: APIPOSTOptions<T>): Promise<T> {
-  let headers: Headers = new Headers();
+  const headers: Headers = new Headers();
   headers.set("Content-Type", "application/json");
-  let cacheOptions: RequestCache = "default";
-  if (opts.token != undefined) headers.append("Authorization", `Token ${opts.token}`);
+
+  if (opts.token !== undefined) headers.append("Authorization", `Token ${opts.token}`);
 
   const response = await fetch(`${configs.api}${opts.endpoint}`, {
     method: "POST",
-    headers: headers,
+    headers,
     body: JSON.stringify(opts.payload),
   });
 
@@ -174,9 +173,7 @@ export async function APIPOST<T>(opts: APIPOSTOptions<T>): Promise<T> {
     throw new Error(response.statusText);
   }
 
-  const responseJSON = await response.json();
-
-  return responseJSON as T;
+  return response.json() as Promise<T>;
 }
 
 export const fkOrgRoleSchema = z.object({
@@ -209,16 +206,16 @@ export const fkUploadTokenSchema = z.object({
 export type fkUploadToken = z.infer<typeof fkUploadTokenSchema>;
 
 export async function getUserProfile(token: string): Promise<fkUser> {
-  return await APIGET<fkUser>({
+  return APIGET<fkUser>({
     endpoint: "user",
-    token: token,
+    token,
     reloadCache: true,
     validator: fkUserSchema.parse,
   });
 }
 
 export async function getOrg(orgID: number): Promise<fkOrg> {
-  return await APIGET<fkOrg>({ endpoint: `organization/${orgID}`, validator: fkOrgSchema.parse });
+  return APIGET<fkOrg>({ endpoint: `organization/${orgID}`, validator: fkOrgSchema.parse });
 }
 
 export async function getCategories(): Promise<fkCategory[]> {
@@ -232,7 +229,27 @@ export async function getCategories(): Promise<fkCategory[]> {
 export function getUploadToken(videoID: number, token: string): Promise<fkUploadToken> {
   return APIGET<fkUploadToken>({
     endpoint: `videos/${videoID}/upload_token`,
-    token: token,
+    token,
     validator: fkUploadTokenSchema.parse,
   });
 }
+
+export const getUserToken = async (email: string, password: string): Promise<string> => {
+  const authToken = base64.encode(`${email}:${password}`);
+  const r = await fetch(`${configs.api}obtain-token`, {
+    headers: {
+      Authorization: `"Basic ${authToken}`,
+    },
+  });
+
+  if (r.ok) {
+    const retData = (await r.json()) as { key: string };
+    return retData.key;
+  }
+
+  if (r.status === 401) {
+    throw new Error("Ugyldig brukernavn eller passord");
+  } else {
+    throw new Error("Teknisk feil, vennligst prøv igjen senere");
+  }
+};

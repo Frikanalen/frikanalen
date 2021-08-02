@@ -9,22 +9,27 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import WindowWidget from "../components/WindowWidget";
 
-import { UserContext } from "../components/UserContext";
+import {UserContext, UserContextLoggedInState} from "../components/UserContext";
 import configs from "../components/configs";
 
 import Layout from "../components/Layout";
 
 function UserProfile() {
   const context = useContext(UserContext);
-  if (!context.isLoggedIn) {
-    return <></>;
-  }
 
-  const { profile, token, refresh } = context;
+  const { profile, token, refresh } = context as UserContextLoggedInState;
+
   const [firstName, setFirstName] = useState(profile?.firstName);
   const [lastName, setLastName] = useState(profile?.lastName);
   const [MSISDN, setMSISDN] = useState(profile?.phoneNumber);
 
+  if (!context.isLoggedIn) {
+    return <></>;
+  }
+
+  if (!profile) {
+    return <p>Kan ikke fortsette; brukerprofil udefinert.</p>;
+  }
   const submitProfile = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
@@ -35,12 +40,12 @@ function UserProfile() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        lastName: lastName,
-        firstName: firstName,
+        lastName,
+        firstName,
         phoneNumber: MSISDN,
       }),
     });
-    refresh();
+    if (token) refresh(token);
   };
 
   return (
@@ -93,11 +98,8 @@ function UserCard() {
 
 function OrganizationCard({ role }: { role: fkOrgRole }) {
   const context = useContext(UserContext);
-  if (!context.isLoggedIn) {
-    return <></>;
-  }
 
-  const { token } = context;
+  const { token } = context as UserContextLoggedInState;
   const [org, setOrg] = useState<fkOrg>();
 
   useEffect(() => {
@@ -106,9 +108,12 @@ function OrganizationCard({ role }: { role: fkOrgRole }) {
         endpoint: `organization/${role.organizationId}`,
         token: token,
         validator: fkOrgSchema.parse,
-      }).then((res) => setOrg(res));
+      }).then((res) => setOrg(res)).catch(e => console.log(e));
     }
   }, [role.organizationId]);
+  if (!context.isLoggedIn) {
+    return <></>;
+  }
 
   const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 
@@ -133,7 +138,7 @@ function OrganizationList() {
 
   const { profile } = context;
 
-  if (profile.organizationRoles) {
+  if (profile && profile.organizationRoles) {
     if (profile.organizationRoles.length) {
       organizationList = profile.organizationRoles.map((role, idx) => (
         <Col key={idx}>
