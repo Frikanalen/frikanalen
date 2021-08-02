@@ -4,5 +4,4 @@ metadata:
   name: frontend-envs
   namespace: default
 data:
-  API_BASE_URL: "http://fk.local:8080/api/"
-  GRAPHQL_URL: "http://fk.local:8080/graphql"
+  NEXT_PUBLIC_ENV: "devcluster"

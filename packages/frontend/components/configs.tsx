@@ -12,6 +12,10 @@ const configs: { [key: string]: Config } = {
     api: "https://frikanalen.no/api/",
     atem: "https://frikanalen.no/playout/atem/program",
   },
+  devcluster: {
+    api: "http://fk.dev.local/api/",
+    atem: "https://frikanalen.no/playout/atem/program",
+  },
   production: {
     api: "https://frikanalen.no/api/",
     atem: "https://frikanalen.no/playout/atem/program",

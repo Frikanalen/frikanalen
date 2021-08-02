@@ -10,8 +10,6 @@ COPY . .
 
 FROM builder
 
-ENV NEXT_PUBLIC_ENV production
-
 RUN yarn build
 
 CMD yarn run start

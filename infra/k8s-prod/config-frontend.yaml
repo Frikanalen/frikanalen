@@ -4,5 +4,4 @@ metadata:
   name: frontend-envs
   namespace: default
 data:
-  API_BASE_URL: "https://frikanalen.no/api/"
-  GRAPHQL_URL: "https://frikanalen.no/graphql"
+  NEXT_PUBLIC_ENV: "production"
