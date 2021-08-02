@@ -6,6 +6,16 @@ fkweb
 
 Backend API for the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
 
+## Configuration
+
+The backend is configured using environment variables.
+
+* ALLOWED_HOSTS - comma-separated list of permitted domains
+* DATABASE_USER - postgres username
+* DATABASE_NAME - postgres db name
+* DATABASE_PASS - postgres password
+* SMTP_SERVER - smtp server for outgoing email
+
 Non-HTTP entry points
 ---------------------
 

@@ -24,11 +24,15 @@ spec:
             value: fkweb
           - name: DATABASE_NAME
             value: fkweb
+          - name: ALLOWED_HOST
+            value: frikanalen.no
+          - name: SMTP_SERVER
+            value: smtp.uio.no
         envFrom:
         - secretRef:
             name: backend-secrets
         ports:
-          - name: web
+          - name: django-web
             containerPort: 8080
         volumeMounts:
         - mountPath: /srv/collected_staticfiles
@@ -46,8 +50,8 @@ spec:
         - mountPath: /usr/share/nginx/html
           name: static-files
         ports:
-          - name: web
-            containerPort: 80
+          - name: django-web
+            containerPort: 8002
       volumes:
       - name: static-files
         emptyDir: {}

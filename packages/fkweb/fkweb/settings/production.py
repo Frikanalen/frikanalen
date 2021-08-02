@@ -20,17 +20,14 @@ def get_env_setting(setting):
 
 ########## HOST CONFIGURATION
 # See: https://docs.djangoproject.com/en/1.5/releases/1.5/#allowed-hosts-required-in-production
-ALLOWED_HOSTS = [
-    'forrige.frikanalen.no',
-    'frikanalen.no',
-]
+ALLOWED_HOSTS = get_env_setting('ALLOWED_HOSTS').split(',')
 DEFAULT_FROM_EMAIL = 'Frikanalen <noreply@frikanalen.no>'
 
 ########## END HOST CONFIGURATION
 
 ########## EMAIL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_HOST = 'smtp.uio.no'
+EMAIL_HOST = get_env_setting('SMTP_SERVER')
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_SUBJECT_PREFIX = '[%s] ' % SITE_NAME
