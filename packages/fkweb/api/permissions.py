@@ -58,12 +58,14 @@ class IsInOrganizationOrDisallow(permissions.IsAuthenticatedOrReadOnly):
         # We expect either the object to have an organization directly
         # or have a video field with an organization.
         try:
-            organization_id = obj.organization_id
+            organization = obj.organization
         except AttributeError:
-            organization_id = obj.video.organization_id
+            organization = obj.video.organization
         # User must be part of organization to do changes
         return (
-            request.user.organization_set.filter(id=organization_id).exists())
+            organization.editor == request.user or
+            organization in request.user.organization_set.all()
+            )
 
 
 class IsInOrganizationOrReadOnly(IsInOrganizationOrDisallow):
