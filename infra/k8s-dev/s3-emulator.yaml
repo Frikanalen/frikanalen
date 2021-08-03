@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-ninja
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3-ninja
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: s3-ninja
+    spec:
+      containers:
+      - name: s3-ninja
+        image: scireum/s3-ninja:7.1.2
+        ports:
+          - name: web
+            containerPort: 9000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: s3-ninja
+spec:
+  type: ClusterIP
+  selector:
+    app: s3-ninja
+  ports:
+    - protocol: TCP
+      port: 9000
+      name: web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3-backend
+spec:
+  type: ExternalName
+  externalName: "s3-ninja.default"
