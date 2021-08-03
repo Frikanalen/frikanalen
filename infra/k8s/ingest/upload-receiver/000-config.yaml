@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: frontend-prod-config
-  namespace: default
-data:
-  API_BASE_URL: "https://frikanalen.no/api/"
-  GRAPHQL_URL: "https://frikanalen.no/graphql"

@@ -10,6 +10,8 @@ spec:
   minReadySeconds: 5
   template:
     metadata:
+      annotations:
+        linkerd.io/inject: enabled
       labels:
         app: frontend
     spec:

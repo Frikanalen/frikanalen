@@ -35,10 +35,16 @@ spec:
       port: 9000
       name: web
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
   name: s3-backend
 spec:
-  type: ExternalName
-  externalName: "s3-ninja.default"
+  type: ClusterIP
+  selector:
+    app: s3-ninja
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web
+      targetPort: 9000

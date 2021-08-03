@@ -1,3 +1,33 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: linkerd-dashboard-host-override
+  namespace: linkerd
+spec:
+  headers:
+    customRequestHeaders:
+      Host: "localhost"
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: linkerd-dashboard
+  namespace: linkerd
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`admin.fk.dev.local`)
+    kind: Rule
+    middlewares:
+      - name: linkerd-dashboard-host-override
+        namespace: linkerd
+    services:
+    - name: linkerd-web
+      kind: Service
+      scheme: http
+      port: 8084
+---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
@@ -55,7 +85,7 @@ metadata:
   name: frontend
   namespace: default
 spec:
-  entryPoints: 
+  entryPoints:
     - web
   routes:
   - match: Host(`fk.dev.local`)
@@ -65,3 +95,20 @@ spec:
       kind: Service
       scheme: http
       port: 3000
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: upload-receiver
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`fk.dev.local`) && (PathPrefix(`/api/videos/upload`))
+    kind: Rule
+    services:
+    - kind: Service
+      name: upload-receiver
+      scheme: http
+      port: 1080

@@ -1,0 +1,36 @@
+kind: ConfigMap
+metadata:
+  labels:
+    k8s-app: kube-dns
+  name: coredns
+  namespace: kube-system
+apiVersion: v1
+data:
+  Corefile: |
+      .:53 {
+          errors
+          health {
+            lameduck 5s
+          }
+        ready
+      
+        rewrite name fk.dev.local ingress.traefik.svc.cluster.local
+      
+        log . {
+          class error
+        }
+
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+      
+        prometheus :9153
+
+        forward . 8.8.8.8 8.8.4.4 
+        cache 30
+        loop
+      
+        reload
+        loadbalance
+      }
