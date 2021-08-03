@@ -51,18 +51,22 @@ $k apply -f $BASEPATH/django/000-nginx-config.yaml
 $k apply -f $BASEPATH/django/001-deployment.yaml
 $k apply -f $BASEPATH/django/002-service.yaml
 
-
 echo "Waiting for Django to come up"
 sleep 20
+
+echo "Creating upload superuser"
+
 DJANGO_POD=$(kubectl get pods --selector=app=django --output=jsonpath={.items..metadata.name})
 DSP=$(pwgen 32 1)
-echo "Creating upload superuser"
 k exec -ti $DJANGO_POD -c django -- DJANGO_SUPERUSER_PASSWORD=${DSP} env ./manage.py createsuperuser --date_of_birth 1970-01-01 --email upload@frikanalen.no --no-input
+
 echo "Obtaining token"
+
 FK_TOKEN=$(curl -u upload@frikanalen.no:${DSP} http://fk.dev.local/api/obtain-token | jq -r .key)
 
-# These are statically defined by s3-ninja, afaict
+echo "Writing upload-service secrets"
 
+# These are statically defined by s3-ninja, afaict
 AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
 AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
@@ -71,6 +75,11 @@ $k create secret -n default generic upload-receiver \
     --from-literal=AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
     --from-literal=AWS_REGION=no-where-1 \
     --from-literal=FK_TOKEN=${FK_TOKEN}
+
+echo "Starting upload-receiver service"
+
+# TODO: Move environment into config map
+$k apply -f ingest/upload-receiver/upload-receiver.yaml
 
 #$k apply -f $BASEPATH/django/periodic-schedule-tasks/001-fill_agenda_with_jukebox.yaml
 #$k apply -f $BASEPATH/django/periodic-schedule-tasks/001-fill_agenda.yaml
