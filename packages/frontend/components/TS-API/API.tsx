@@ -238,7 +238,7 @@ export const getUserToken = async (email: string, password: string): Promise<str
   const authToken = base64.encode(`${email}:${password}`);
   const r = await fetch(`${configs.api}obtain-token`, {
     headers: {
-      Authorization: `"Basic ${authToken}`,
+      Authorization: `Basic ${authToken}`,
     },
   });
 

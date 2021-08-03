@@ -1,61 +1,78 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import axios from "axios";
 import WindowWidget from "../components/WindowWidget";
 import Layout from "../components/Layout";
 import configs from "../components/configs";
 import Link from "next/link";
+import {z} from 'zod';
+import {ErrorsIfAny} from "../components/TS-API/formUtils";
+import {FetchError} from "node-fetch";
+import {getUserToken} from "../components/TS-API/API";
+import {UserContext} from "../components/UserContext";
+
+const userSignupForm = z.object({
+    givenName: z.string().nonempty({message: "Du må oppgi et fornavn"}),
+    familyName: z.string().nonempty({message: "Du må oppgi et etternavn"}),
+    email: z.string().email({message: "Ugyldig e-postadresse"}),
+    password: z.string()
+        .min(6, {message: "Passord må være minst 6 tegn"})
+        .max(64, {message: "Imponerende, men ditt passord må være maksimalt 64 tegn"}),
+})
 
 export default function Signupform(): JSX.Element {
+    const userContext = useContext(UserContext);
     const [errorMessage, setErrorMessage] = useState<React.ReactNode>(null);
+    const [fieldErrors, setFieldErrors] = useState<{ [k: string]: string[]; }>();
     const [givenName, setGivenName] = useState("");
     const [familyName, setFamilyName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    // FIXME: Rewrite for fetch and zod
     async function signup(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
 
         try {
-            await axios.post(`${configs.api}user/register`, {
-                email,
-                password,
-                firstName: givenName,
-                lastName: familyName,
-                dateOfBirth: "2020-07-24",
-            });
-        } catch (requestException) {
-            if (axios.isAxiosError(requestException)) {
-                setErrorMessage(<p>Noe gikk galt. Vennligst sjekk at du har gjort ting riktig.</p>)
-                // const returnedErrors = Object.keys(requestException?.response?.data);
-                /*
-                interface Dictionary<T> {
-                    [Key: string]: T;
-                }
-
-
-                const fieldNames: Dictionary<string> = {
-                    firstName: "Fornavn",
-                    lastName: "Etternavn",
-                    password: "Passord",
-                    email: "E-post",
-                };
-
-                setErrorMessage(
-                    <Alert variant="warning">
-                        <Alert.Heading>Beklager, det oppstod en feil!</Alert.Heading>
-                        <code>{requestException.message}</code>
-                    </Alert>
-                );
-                                 */
-
+            userSignupForm.parse({givenName, familyName, email, password})
+        } catch (validationException) {
+            if (validationException instanceof z.ZodError) {
+                setFieldErrors(validationException.flatten().fieldErrors)
+                return
             }
         }
+
+            const headers: Headers = new Headers();
+            headers.set("Content-Type", "application/json");
+            try {
+                const res = await fetch(`${configs.api}user/register`,
+                    {
+                        method: "POST",
+                        headers,
+                        body: JSON.stringify({
+                            email,
+                            password,
+                            firstName: givenName,
+                            lastName: familyName,
+                            dateOfBirth: "2020-07-24",
+                        })
+                    });
+                if (!res.ok) {
+                    throw new FetchError(await res.text(), res.statusText)
+                }
+            } catch (fe) {
+                if(fe instanceof Error)
+                    setErrorMessage(<p>Feil fra server: {fe.message}</p>)
+            }
+            try {
+                const token = await getUserToken(email, password)
+                if (userContext?.login) userContext.login(token)
+            } catch (e) {
+                if(e instanceof Error)
+                    setErrorMessage(<p>Feil fra server: {e.message}</p>)
+            }
     }
 
     return (
@@ -80,55 +97,58 @@ export default function Signupform(): JSX.Element {
                                 <Form.Row>
                                     <Col>
                                         <Form.Label>Fornavn</Form.Label>
-                                    </Col>
-                                    <Col>
-                                        <Form.Label>Etternavn</Form.Label>
-                                    </Col>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Col>
                                         <Form.Control
                                             autoComplete="given-name"
                                             onChange={(e): void => setGivenName(e.target.value)}
                                             placeholder="Fornavn"
+                                            isInvalid={!!fieldErrors?.givenName}
                                         />
+                                        <ErrorsIfAny error={fieldErrors?.givenName}/>
+                                    </Col>
+
+                                </Form.Row>
+                                <Form.Row>
+                                    <Col>
+                                        <Form.Label>Etternavn</Form.Label>
                                     </Col>
                                     <Col>
                                         <Form.Control
                                             autoComplete="family-name"
                                             onChange={(e): void => setFamilyName(e.target.value)}
                                             placeholder="Etternavn"
+                                            isInvalid={!!fieldErrors?.familyName}
                                         />
+                                        <ErrorsIfAny error={fieldErrors?.familyName}/>
                                     </Col>
                                 </Form.Row>
                                 <Form.Row>
                                     <Col>
                                         <Form.Label>Epost-addresse (brukernavn)</Form.Label>
                                     </Col>
-                                </Form.Row>
-                                <Form.Row>
                                     <Col>
                                         <Form.Control
                                             type="email"
                                             onChange={(e): void => setEmail(e.target.value)}
                                             autoComplete="username"
+                                            isInvalid={!!fieldErrors?.email}
                                             placeholder="Oppgi epostadresse"
                                         />
+                                        <ErrorsIfAny error={fieldErrors?.email}/>
                                     </Col>
                                 </Form.Row>
                                 <Form.Row>
                                     <Col>
                                         <Form.Label>Passord</Form.Label>
                                     </Col>
-                                </Form.Row>
-                                <Form.Row>
                                     <Col>
                                         <Form.Control
                                             type="password"
                                             onChange={(e): void => setPassword(e.target.value)}
                                             autoComplete="new-password"
+                                            isInvalid={!!fieldErrors?.password}
                                             placeholder="Passord"
                                         />
+                                        <ErrorsIfAny error={fieldErrors?.password}/>
                                     </Col>
                                 </Form.Row>
                                 <Form.Row>

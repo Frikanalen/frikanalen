@@ -6,7 +6,16 @@ import { GetServerSideProps } from "next";
 import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
 import { UserContext } from "../../../components/UserContext";
-import { getCategories, fkCategory, fkOrg, getOrg, fkVideoPartial, APIPOST } from "../../../components/TS-API/API";
+import {
+  getCategories,
+  fkCategory,
+  fkOrg,
+  getOrg,
+  fkVideoPartial,
+  APIPOST,
+  fkVideoPartialSchema
+} from "../../../components/TS-API/API";
+import {ErrorsIfAny} from "../../../components/TS-API/formUtils";
 
 interface VideoCreateProps {
   org: fkOrg;
@@ -17,7 +26,8 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
   const context = useContext(UserContext);
 
   const router = useRouter();
-
+  const [fieldErrors, setFieldErrors] = useState<{ [k: string]: string[]; }>();
+  const [formError, setFormError] = useState<JSX.Element>();
   const [errors, setErrors] = useState<React.ReactNode>(null);
   const [videoName, setVideoName] = useState<string>("");
   const [videoHeader, setVideoHeader] = useState<string>("");
@@ -27,17 +37,17 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
 
   const { token } = context;
 
-  const handleSubmit = (event: React.MouseEvent<HTMLElement>): void => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    const newVideo: fkVideoPartial = {
+    const newVideo = fkVideoPartialSchema.parse({
       id: 0,
       header: videoHeader,
       name: videoName,
       description: "",
       organization: org.id,
       categories: videoCategories,
-    };
+    });
 
     APIPOST<fkVideoPartial>({
       endpoint: "videos/",
@@ -50,15 +60,14 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
         await router.push("/video/[videoID]", `/video/${newVideoResponse.id}`);
       })
       .catch((reason: Error) => {
-        setErrors(reason);
+        setErrors(<div>{reason.message}</div>);
       });
   };
 
   return (
     <Layout>
       <WindowWidget>
-        <Form>
-          {errors}
+        <Form onSubmit={handleSubmit}>
           <Form.Group>
             <Form.Label>På vegne av:</Form.Label>
             <Form.Control readOnly value={org.name} />
@@ -70,7 +79,9 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
               onChange={(e): void => setVideoName(e.target.value)}
               value={videoName}
               placeholder="Kort videonavn"
+              isInvalid={!!fieldErrors?.streetAddress}
             />
+            <ErrorsIfAny error={fieldErrors?.streetAddress} />
           </Form.Group>
           <Form.Group>
             <Form.Label>Ingress:</Form.Label>
@@ -101,7 +112,9 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
               ))}
             </Form.Control>
           </Form.Group>
-          <Button onClick={(e): void => handleSubmit(e)} variant="primary" type="submit">
+          {errors}
+
+          <Button variant="primary" type="submit">
             Start
           </Button>
         </Form>

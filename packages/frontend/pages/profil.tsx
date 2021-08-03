@@ -50,31 +50,27 @@ function UserProfile(): JSX.Element {
 
   return (
     <Form onSubmit={submitProfile}>
-      <Form.Row>
-        <Col>
-          <Form.Label>Epostadressse</Form.Label>
-          <Form.Control value={profile.email} readOnly />
-        </Col>
-        <Col>
-          <Form.Label>Mobilnummer</Form.Label>
-          <Form.Control onChange={(e): void => setMSISDN(e.target.value)} value={MSISDN} />
-        </Col>
-      </Form.Row>
-      <br />
-      <Form.Row>
-        <Col>
+      <Row>
+        <Form.Group as={Col} className="mb-3">
           <Form.Label>Fornavn</Form.Label>
           <Form.Control onChange={(e): void => setFirstName(e.target.value)} value={firstName} />
-        </Col>
-        <Col>
+        </Form.Group>
+        <Form.Group as={Col} className="mb-3">
           <Form.Label>Etternavn</Form.Label>
           <Form.Control onChange={(e): void => setLastName(e.target.value)} value={lastName} />
-        </Col>
-      </Form.Row>
+        </Form.Group>
+      </Row>
       <Row>
+        <Form.Group as={Col} className="mb-3">
+          <Form.Label>Mobilnummer</Form.Label>
+          <Form.Control onChange={(e): void => setMSISDN(e.target.value)} value={MSISDN} />
+        </Form.Group>
         <Col>
-          <br />
-          <Button className="float-right" type="submit">
+        </Col>
+      </Row>
+      <Row>
+        <Col className="mb-3">
+          <Button type="submit">
             Oppdater
           </Button>
         </Col>
@@ -84,11 +80,13 @@ function UserProfile(): JSX.Element {
 }
 
 function UserCard(): JSX.Element {
+  const context = useContext(UserContext) as UserContextLoggedInState;
+
   return (
     <Col>
       <Card bg="light" className="text-dark">
         <Card.Body>
-          <Card.Title>Brukerprofil</Card.Title>
+          <Card.Title>Brukerprofil for {context.profile.email}</Card.Title>
           <UserProfile />
         </Card.Body>
       </Card>

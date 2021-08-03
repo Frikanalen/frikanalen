@@ -81,7 +81,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       value={
         token
           ? ({ isLoggedIn: true, refresh, token, profile, login, logout } as UserContextLoggedInState)
-          : ({ isLoggedIn: false, isReady: true } as UserContextUnauthState)
+          : ({ isLoggedIn: false, login } as UserContextUnauthState)
       }
     >
       <Component {...pageProps} />

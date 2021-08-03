@@ -11,16 +11,34 @@ import Layout from "../components/Layout";
 
 import {UserContext, UserContextState} from "../components/UserContext";
 import { getUserToken } from "../components/TS-API/API";
+import { z } from 'zod';
+import {ErrorsIfAny} from "../components/TS-API/formUtils";
+
+const userLoginForm = z.object({
+  email: z.string().email({message: "Ugyldig e-postadresse"}),
+  password: z.string()
+      .min(6, {message: "Passord må være minst 6 tegn"})
+      .max(64, {message: "Imponerende, men ditt passord må være maksimalt 64 tegn"}),
+})
 
 export default function LoginForm(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [fieldErrors, setFieldErrors] = useState<{ [k: string]: string[]; }>();
   const user: UserContextState = useContext(UserContext);
+
+
 
   async function authenticate(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
-    if(!user.isReady) throw new Error("Tried to login on uninitialized user context")
+    try {
+      userLoginForm.parse({email, password})
+    } catch (ze) {
+      if (ze instanceof z.ZodError)
+        setFieldErrors(ze.flatten().fieldErrors)
+      return
+    }
     if (user.login) user.login(await getUserToken(email, password));
     await Router.push("/profil");
   }
@@ -34,7 +52,6 @@ export default function LoginForm(): JSX.Element {
         <Card border="primary" className="loginCard">
           <Card.Body>
             <Card.Title>Logg inn</Card.Title>
-            {errorMessage}
             <Form onSubmit={async (event): Promise<void> => {
               try {
                 await authenticate(event)
@@ -47,20 +64,27 @@ export default function LoginForm(): JSX.Element {
                 <Form.Label>Epostadresse</Form.Label>
                 <Form.Control
                   type="email"
+                  isInvalid={!!fieldErrors?.email}
                   autoComplete="username"
                   onChange={(e): void => setEmail(e.target.value)}
                   placeholder="Oppgi epostadresse"
                 />
+              <ErrorsIfAny error={fieldErrors?.email} />
               </Form.Group>
               <Form.Group controlId="formBasicPassword">
                 <Form.Label>Passord</Form.Label>
                 <Form.Control
                   type="password"
+                  isInvalid={!!fieldErrors?.password}
                   autoComplete="current-password"
                   onChange={(e): void => setPassword(e.target.value)}
                   placeholder="Passord"
                 />
+              <ErrorsIfAny error={fieldErrors?.password} />
               </Form.Group>
+              <h3>
+              {errorMessage}
+              </h3>
               <Button variant="primary" type="submit">
                 Logg inn
               </Button>

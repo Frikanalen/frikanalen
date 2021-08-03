@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, useContext} from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,6 +6,7 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import Button from "react-bootstrap/Button";
 import { Upload } from "tus-js-client";
 import bsCustomFileInput from "bs-custom-file-input";
+import configs from "./configs";
 
 import { fkVideo, getUploadToken } from "./TS-API/API";
 import {UserContext, UserContextLoggedInState, UserContextState} from "./UserContext";
@@ -71,6 +72,8 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
     this.startUpload = this.startUpload.bind(this);
     this.uploadComplete = onUploadComplete;
 
+    this.context = UserContext;
+
     this.state = {
       uploadToken: null,
       uploadedBytes: 0,
@@ -82,8 +85,9 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
   }
 
   async componentDidMount(): Promise<void> {
-    const { isLoggedIn } = this.context as UserContextState;
-    if (!isLoggedIn) throw new Error("A user who isn't logged in should never see this");
+    const context = this.context as UserContextState;
+
+    if (!context.isLoggedIn) throw new Error("A user who isn't logged in should never see this");
 
     const { token } = this.context as UserContextLoggedInState;
 
@@ -104,7 +108,7 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
     }
 
     const upload = new Upload(file, {
-      endpoint: "https://frikanalen.no/api/videos/upload/",
+      endpoint: configs.upload,
       retryDelays: [0, 1000], // , 3000, 5000],
       metadata: {
         origFileName: file.name,

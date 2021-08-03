@@ -11,20 +11,15 @@ export type UserContextLoggedInState = {
   refresh: (authToken: string) => void;
 };
 
-export type UserContextUninitializedState = {
-  isReady: false
-  isLoggedIn: false;
-};
-
 export type UserContextUnauthState = {
-  isReady: true
   isLoggedIn: false;
   login?: (token: string) => void;
 };
 
-export type UserContextState = UserContextLoggedInState | UserContextUnauthState | UserContextUninitializedState;
+export type UserContextState = UserContextLoggedInState | UserContextUnauthState;
 
 export const UserContext = createContext<UserContextState>({
   isLoggedIn: false,
-  isReady: false
+  // eslint-disable-next-line no-unused-vars
+  login: (token: string): void => void {}
 });
