@@ -13,22 +13,21 @@ interface VideoCreateProps {
   possibleCategories: fkCategory[];
 }
 
-export default function VideoCreate({ org, possibleCategories }: VideoCreateProps) {
+export default function VideoCreate({ org, possibleCategories }: VideoCreateProps): JSX.Element {
   const context = useContext(UserContext);
 
   const router = useRouter();
 
-  const [categories, setCategories] = useState<fkCategory[]>([]);
   const [errors, setErrors] = useState<React.ReactNode>(null);
   const [videoName, setVideoName] = useState<string>("");
   const [videoHeader, setVideoHeader] = useState<string>("");
   const [videoCategories, setVideoCategories] = useState<string[]>();
 
-  if (!context.isLoggedIn) return null;
+  if (!context.isLoggedIn) return <></>;
 
   const { token } = context;
 
-  const handleSubmit = (event: React.MouseEvent<HTMLElement>) => {
+  const handleSubmit = (event: React.MouseEvent<HTMLElement>): void => {
     event.preventDefault();
 
     const newVideo: fkVideoPartial = {
@@ -68,7 +67,7 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
             <Form.Label>Navn:</Form.Label>
             <Form.Control
               type="text"
-              onChange={(e) => setVideoName(e.target.value)}
+              onChange={(e): void => setVideoName(e.target.value)}
               value={videoName}
               placeholder="Kort videonavn"
             />
@@ -78,7 +77,7 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
             <Form.Control
               type="text"
               value={videoHeader}
-              onChange={(e) => setVideoHeader(e.target.value)}
+              onChange={(e): void => setVideoHeader(e.target.value)}
               placeholder="En relativt kortfattet beskrivelse"
             />
           </Form.Group>
@@ -86,7 +85,7 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
             <Form.Label>Kategori:</Form.Label>
             <Form.Control
               as="select"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
                 const selectedCategories = [];
                 for (let i = 0; i < e.target.selectedOptions.length; i += 1) {
                   selectedCategories.push(e.target.selectedOptions[i].value);
@@ -102,7 +101,7 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
               ))}
             </Form.Control>
           </Form.Group>
-          <Button onClick={(e) => handleSubmit(e)} variant="primary" type="submit">
+          <Button onClick={(e): void => handleSubmit(e)} variant="primary" type="submit">
             Start
           </Button>
         </Form>

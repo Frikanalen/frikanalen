@@ -7,7 +7,7 @@ export type UserContextLoggedInState = {
   login: (token: string) => void;
   token: string;
   profile: fkUser;
-  logout: () => any;
+  logout: () => void;
   refresh: (authToken: string) => void;
 };
 

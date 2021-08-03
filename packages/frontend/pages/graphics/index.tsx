@@ -1,16 +1,16 @@
-import React, { ReactElement, useState } from "react";
-import { APIGET, fkSchedule, fkBulletin } from "components/TS-API/API";
+import React from "react";
+import { APIGET, fkSchedule } from "components/TS-API/API";
 import Moment from "react-moment";
 import dynamic from "next/dynamic";
 
 import { findRunningProgram } from "../../components/ScheduleInfo";
 import "moment/locale/nb";
-import { UserContextState } from "../../components/UserContext";
+import {GetServerSideProps} from "next";
 
 const TrianglifiedDiv = dynamic(() => import("components/graphics/background"), { ssr: false });
 const AnalogClock = dynamic(() => import("components/graphics/analogclock"), { ssr: false });
 
-const Footer = () => (
+const Footer = (): JSX.Element => (
   <>
     <img src="/logo.svg" alt="logo" className="logo" />
     <div className="divsclaimer">
@@ -47,48 +47,14 @@ const Footer = () => (
   </>
 );
 
-interface BulletinProps {
-  bulletinJSON: fkBulletin;
-}
-
-const Bulletin = ({ bulletinJSON }: BulletinProps) => (
-  <div>
-    <h3>{bulletinJSON.heading}</h3>
-    <p>{bulletinJSON.text}</p>
-    <style jsx>{`
-      p {
-        white-space: pre;
-        line-height: 1.5em;
-        font-family: Roboto;
-        font-weight: 700;
-        font-size: 27px;
-        padding-left: 15px;
-      }
-      h3 {
-        font-family: Roboto;
-        font-weight: 900;
-        font-size: 37px;
-      }
-    `}</style>
-  </div>
-);
-export async function getServerSideProps(context: UserContextState) {
+export const getServerSideProps: GetServerSideProps = async () => {
   const scheduleJSON = await APIGET<fkSchedule>({ endpoint: `scheduleitems/?days=1` });
-  // We don't use this yet so best to silently ignore errors
-  let bulletinsJSON = null;
-
-  bulletinsJSON = await APIGET<fkBulletin>({ endpoint: `news/bulletins/` });
 
   return {
     props: {
       scheduleJSON,
-      bulletinsJSON,
     },
   };
-}
-
-interface CarouselProps {
-  children: ReactElement<CarouselPageProps>[];
 }
 
 interface CarouselPageProps {
@@ -100,7 +66,7 @@ interface ClockProps {
   title: string;
 }
 
-const Clock = ({ title }: ClockProps) => (
+const Clock = ({ title }: ClockProps): JSX.Element => (
   <div className="clock">
     <AnalogClock size="500" />
     <h3>{title}</h3>
@@ -133,7 +99,7 @@ const Clock = ({ title }: ClockProps) => (
   </div>
 );
 
-const CarouselPage: React.FC<CarouselPageProps> = ({ children, title, duration }: CarouselPageProps) => (
+const CarouselPage: React.FC<CarouselPageProps> = ({ children, title }: CarouselPageProps): JSX.Element => (
   <div className="clockAndContainer">
     <Clock title={title} />
     <div className="childElement">{children}</div>
@@ -165,32 +131,12 @@ const CarouselPage: React.FC<CarouselPageProps> = ({ children, title, duration }
     `}</style>
   </div>
 );
-CarouselPage.defaultProps = {
-  children: {},
-};
-
-function Carousel({ children }: CarouselProps) {
-  const [currentPage, setCurrentPage] = useState(0);
-
-  const currentChild: ReactElement<CarouselPageProps> = children[currentPage];
-  const currentPageDuration: number = currentChild?.props?.duration || 1000;
-
-  setTimeout(() => {
-    if (1 + currentPage === children.length) {
-      setCurrentPage(0);
-      return;
-    }
-    setCurrentPage(currentPage + 1);
-  }, currentPageDuration * 1000);
-
-  return <div style={{ background: "#faa", width: "1280px", height: "720px" }}>{children[currentPage]}</div>;
-}
 
 interface NextUpProps {
   scheduleJSON: fkSchedule;
 }
 
-function NextUp({ scheduleJSON }: NextUpProps) {
+function NextUp({ scheduleJSON }: NextUpProps): JSX.Element {
   //
   const currentProgramme = findRunningProgram(scheduleJSON.results) + 1;
 
@@ -227,10 +173,9 @@ function NextUp({ scheduleJSON }: NextUpProps) {
 
 interface IndexProps {
   scheduleJSON: fkSchedule;
-  bulletinsJSON: fkBulletin;
 }
 
-export default function Index({ scheduleJSON, bulletinsJSON }: IndexProps) {
+export default function Index({ scheduleJSON }: IndexProps): JSX.Element {
   return (
     <TrianglifiedDiv width="1280" height="720">
       <CarouselPage duration={1000000} title={"neste\nprogram"}>

@@ -39,7 +39,7 @@ interface ScheduleInfoState {
   schedule: fkScheduleItem[];
 }
 export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleInfoState> {
-  async componentDidMount() {
+  public async componentDidMount(): Promise<void> {
     const json = await APIGET<fkSchedule>({ endpoint: `scheduleitems/?days=1` });
     this.setState({
       schedule: json.results,
@@ -55,12 +55,12 @@ export default class ScheduleInfo extends Component<ScheduleInfoProps, ScheduleI
     };
   }
 
-  render() {
+  render(): JSX.Element {
     const { schedule } = this.state;
     const currentItem = findRunningProgram(schedule);
-    const programmeRow = (programme: fkScheduleItem | null, DOMclass: string) => {
+    const programmeRow = (programme: fkScheduleItem | null, DOMclass: string): JSX.Element => {
       if (programme == null) {
-        return null;
+        return <></>;
       }
 
       let video = {

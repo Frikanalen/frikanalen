@@ -7,9 +7,9 @@ import Layout from "../components/Layout";
 import { APIGET, fkSchedule, fkScheduleItem, fkScheduleSchema } from "../components/TS-API/API";
 import { GetServerSideProps } from "next";
 
-async function scheduleForDate(date: moment.Moment) {
+async function scheduleForDate(date: moment.Moment): Promise<fkSchedule> {
   const queryString = `scheduleitems/?days=1&date=${moment(date).format("YYYYMMDD")}`;
-  return await APIGET<fkSchedule>({
+  return APIGET<fkSchedule>({
     endpoint: queryString,
     validator: fkScheduleSchema.parse,
   });
@@ -29,9 +29,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-function ScheduleItem(item: fkScheduleItem) {
+function ScheduleItem(item: fkScheduleItem): JSX.Element {
   if (item.video === null) {
-    return null;
+    return <></>;
   }
 
   return (
@@ -94,7 +94,7 @@ interface ScheduleProps {
   scheduleJSON: fkSchedule;
 }
 
-export default function Schedule(props: ScheduleProps) {
+export default function Schedule(props: ScheduleProps): JSX.Element {
   const [date, setDate] = useState(props.date);
   const [scheduleJSON, setScheduleJSON] = useState(props.scheduleJSON);
   const firstUpdate = useRef(true);
@@ -112,7 +112,7 @@ export default function Schedule(props: ScheduleProps) {
       <WindowWidget>
         <div style={{ display: "flex" }}>
           <h1
-            onClick={() => setDate(moment(date).add(-1, "days"))}
+            onClick={(): void => setDate(moment(date).add(-1, "days"))}
             style={{ cursor: "pointer", lineHeight: "75.6px", fontSize: "56px", padding: "10px 0" }}
             className="material-icons"
           >
@@ -124,7 +124,7 @@ export default function Schedule(props: ScheduleProps) {
             </Moment>
           </h1>
           <h1
-            onClick={() => setDate(moment(date).add(1, "days"))}
+            onClick={(): void => setDate(moment(date).add(1, "days"))}
             style={{ cursor: "pointer", lineHeight: "75.6px", fontSize: "56px", padding: "10px 0" }}
             className="material-icons"
           >

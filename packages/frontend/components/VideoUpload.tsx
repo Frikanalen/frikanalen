@@ -11,7 +11,7 @@ import { fkVideo, getUploadToken } from "./TS-API/API";
 import {UserContext, UserContextLoggedInState, UserContextState} from "./UserContext";
 import styles from "./VideoUpload.module.sass";
 
-function humanFileSize(sizeBytes: number, si = true, dp = 1) {
+function humanFileSize(sizeBytes: number, si = true, dp = 1): string {
   let bytes = sizeBytes;
   const thresh = si ? 1000 : 1024;
 
@@ -33,7 +33,7 @@ function humanFileSize(sizeBytes: number, si = true, dp = 1) {
   return `${bytes.toFixed(dp)} ${units[u]}`;
 }
 
-const errorMessage = (error: string) => (
+const errorMessage = (error: string): JSX.Element => (
   <div>
     <h2>Beklager!</h2>
     <p>Det har oppstått en feil. Vennligst ta kontakt med oss, og vis denne meldingen:</p>
@@ -111,22 +111,19 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
         videoID: `${this.videoID}`,
         uploadToken,
       },
-      onError: (error) => {
+      onError: (error): void => {
         console.log(error);
         this.setState({
           error: `upload failed:\n${error.message}`,
         });
       },
-      onProgress: (uploadedBytes, totalBytes) => {
+      onProgress: (uploadedBytes, totalBytes): void => {
         this.setState({
           totalBytes,
           uploadedBytes,
         });
       },
-      onSuccess: () => {
-        console.log("huzzah");
-        this.uploadComplete();
-      },
+      onSuccess: (): void => this.uploadComplete()
     });
 
     upload.start();
@@ -141,7 +138,7 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
   fileUploader = (): JSX.Element => {
     const { error, status, uploadedBytes, totalBytes, file } = this.state;
 
-    const uploadButton = () => (
+    const uploadButton = (): JSX.Element => (
       <div>
         {error ? errorMessage(error) : null}
         <div>{status}</div>
@@ -150,7 +147,7 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
             Lastet opp: {humanFileSize(uploadedBytes)} / {humanFileSize(totalBytes)}
           </div>
           <div>
-            <Button id="uploadStartButton" onClick={() => this.startUpload()}>
+            <Button id="uploadStartButton" onClick={(): void => this.startUpload()}>
               Start
             </Button>
           </div>
@@ -171,7 +168,7 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
                     id="inputGroupFile01"
                     type="file"
                     className="custom-file-input"
-                    onChange={(event) => {
+                    onChange={(event): void => {
                       if (event.target.files?.[0]) {
                         this.setState({
                           file: event.target.files[0],

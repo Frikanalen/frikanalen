@@ -2,8 +2,9 @@ import React from "react";
 import Alert from "react-bootstrap/Alert";
 import Layout from "../../components/Layout";
 import WindowWidget from "../../components/WindowWidget";
+import Link from "next/link";
 
-export default function Blimed() {
+export default function Blimed(): JSX.Element {
   return (
     <Layout>
       <WindowWidget>
@@ -11,7 +12,7 @@ export default function Blimed() {
           <h3>Du er tidlig ute!</h3>
           <p>Denne nettsiden er under aktiv utvikling.</p>
           <p>
-            Se «<a href="/om/kontakt">Kontakt oss</a>» for informasjon om kontingent og innmelding.
+            Se «<Link href="/om/kontakt"><a>Kontakt oss</a></Link>» for informasjon om kontingent og innmelding.
           </p>
         </Alert>
         <h2>Bli med!</h2>

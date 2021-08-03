@@ -1,11 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import React, { useContext } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { UserContext, UserContextState } from "./UserContext";
 
-const UserDropdown = () => {
+const UserDropdown = (): JSX.Element => {
   const user = useContext<UserContextState>(UserContext);
   if (!user.isLoggedIn) return <Nav.Link href="/login">Logg inn/registrer</Nav.Link>;
 
@@ -26,7 +27,7 @@ const UserDropdown = () => {
   );
 };
 
-export default function Header() {
+export default function Header(): JSX.Element {
   let devMessage = null;
 
   if (process.env.NEXT_PUBLIC_ENV === "development") devMessage = <span>development</span>;
@@ -35,7 +36,7 @@ export default function Header() {
     <header>
       <Navbar bg="light">
         <Navbar.Brand href="/">
-          <img className="logo" src="/images/frikanalen.png" alt="Frikanalen" />
+          <Image width={300} height={65} src="/images/frikanalen.png" alt="Frikanalen" />
           {devMessage}
         </Navbar.Brand>
       </Navbar>

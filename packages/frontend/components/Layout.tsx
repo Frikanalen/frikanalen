@@ -10,7 +10,7 @@ import Header from "./Header";
 interface LayoutProps {
   children?: React.ReactNode;
 }
-const Layout = ({ children }: LayoutProps) => (
+const Layout = ({ children }: LayoutProps): JSX.Element => (
   <Container fluid className="mainContainer">
     <MetaTags>
       <title>Frikanalen</title>
@@ -26,7 +26,7 @@ const Layout = ({ children }: LayoutProps) => (
       &nbsp;|&nbsp;
       <a href="https://frikanalen.no/xmltv/">XMLTV</a>
       &nbsp;|&nbsp;
-      <a href="http://github.com/Frikanalen">Source code</a>
+      <a href="https://github.com/Frikanalen">Source code</a>
       &nbsp;&copy; 2009-2020 Foreningen Frikanalen
     </footer>
     <style jsx global>

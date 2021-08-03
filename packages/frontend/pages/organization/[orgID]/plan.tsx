@@ -1,6 +1,6 @@
 import React from "react";
 
-const foo = () => <p>Not in use</p>;
+const foo = (): JSX.Element => <p>Not in use</p>;
 export default foo;
 
 /*

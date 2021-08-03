@@ -2,7 +2,7 @@ import React from "react";
 import WindowWidget from "../../components/WindowWidget";
 import Layout from "../../components/Layout";
 
-export default function About() {
+export default function About(): JSX.Element {
   return (
     <Layout>
       <WindowWidget>

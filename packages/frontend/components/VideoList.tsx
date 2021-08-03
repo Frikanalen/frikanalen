@@ -27,7 +27,7 @@ interface VideoComponent {
 
 const VideoCard = ({ video }: VideoComponent): JSX.Element => (
   <Card key={video.id} style={{ minWidth: "18rem", minHeight: "100%", marginBottom: "15px" }}>
-    <Link href={`/video/${video.id}`} as={`/video/${video.id}`}>
+    <Link passHref href={`/video/${video.id}`} as={`/video/${video.id}`}>
       <Card.Img
         style={{ cursor: "pointer", objectFit: "contain", height: "140.625px", background: "black" }}
         variant="top"

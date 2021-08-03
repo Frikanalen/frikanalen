@@ -13,7 +13,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noUnusedParameters": false, // So it won't complain about getstatic... etc
+    "noUnusedLocals": false // So it won't complain about getstatic... etc
   },
   "include": ["types/*.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-function OrganizationData(props: { orgData: fkOrg }) {
+function OrganizationData(props: { orgData: fkOrg }): JSX.Element {
   const { orgData } = props;
   return (
     <div>
@@ -35,7 +35,7 @@ function OrganizationData(props: { orgData: fkOrg }) {
   );
 }
 
-function OrganizationContactInfo(props: { orgData: fkOrg }) {
+function OrganizationContactInfo(props: { orgData: fkOrg }): JSX.Element {
   const { orgData } = props;
 
   return (
@@ -73,7 +73,7 @@ interface OrganizationPageProps {
   latestVideos: fkVideoQuery;
 }
 
-export default function OrganizationPage({ orgData, latestVideos }: OrganizationPageProps) {
+export default function OrganizationPage({ orgData, latestVideos }: OrganizationPageProps): JSX.Element {
   return (
     <Layout>
       <WindowWidget>

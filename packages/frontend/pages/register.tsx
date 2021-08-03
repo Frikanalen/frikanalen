@@ -8,8 +8,9 @@ import axios from "axios";
 import WindowWidget from "../components/WindowWidget";
 import Layout from "../components/Layout";
 import configs from "../components/configs";
+import Link from "next/link";
 
-export default function Signupform() {
+export default function Signupform(): JSX.Element {
     const [errorMessage, setErrorMessage] = useState<React.ReactNode>(null);
     const [givenName, setGivenName] = useState("");
     const [familyName, setFamilyName] = useState("");
@@ -17,7 +18,7 @@ export default function Signupform() {
     const [password, setPassword] = useState("");
 
     // FIXME: Rewrite for fetch and zod
-    async function signup(e: React.FormEvent<HTMLFormElement>) {
+    async function signup(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
 
         try {
@@ -30,11 +31,13 @@ export default function Signupform() {
             });
         } catch (requestException) {
             if (axios.isAxiosError(requestException)) {
-                const returnedErrors = Object.keys(requestException?.response?.data);
-
+                setErrorMessage(<p>Noe gikk galt. Vennligst sjekk at du har gjort ting riktig.</p>)
+                // const returnedErrors = Object.keys(requestException?.response?.data);
+                /*
                 interface Dictionary<T> {
                     [Key: string]: T;
                 }
+
 
                 const fieldNames: Dictionary<string> = {
                     firstName: "Fornavn",
@@ -49,6 +52,8 @@ export default function Signupform() {
                         <code>{requestException.message}</code>
                     </Alert>
                 );
+                                 */
+
             }
         }
     }
@@ -64,14 +69,14 @@ export default function Signupform() {
                                 <p>For å laste opp innhold må individet eller organisasjonen formelt innmeldes i
                                     Frikanalen.</p>
                                 <p>
-                                    For mer om medlemskap, se: «<a href="/om/blimed">Bli med!</a>»
+                                    For mer om medlemskap, se: «<Link passHref href="/om/blimed"><a>Bli med!</a></Link>»
                                 </p>
                                 <p>
                                     Her kan du opprette en bruker for tilgang til innmeldingsskjema og andre
                                     medlemsfunksjoner på siden.
                                 </p>
                             </Alert>
-                            <Form onSubmit={(event) => signup(event)}>
+                            <Form onSubmit={(event): Promise<void> => signup(event)}>
                                 <Form.Row>
                                     <Col>
                                         <Form.Label>Fornavn</Form.Label>
@@ -84,14 +89,14 @@ export default function Signupform() {
                                     <Col>
                                         <Form.Control
                                             autoComplete="given-name"
-                                            onChange={(e) => setGivenName(e.target.value)}
+                                            onChange={(e): void => setGivenName(e.target.value)}
                                             placeholder="Fornavn"
                                         />
                                     </Col>
                                     <Col>
                                         <Form.Control
                                             autoComplete="family-name"
-                                            onChange={(e) => setFamilyName(e.target.value)}
+                                            onChange={(e): void => setFamilyName(e.target.value)}
                                             placeholder="Etternavn"
                                         />
                                     </Col>
@@ -105,7 +110,7 @@ export default function Signupform() {
                                     <Col>
                                         <Form.Control
                                             type="email"
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={(e): void => setEmail(e.target.value)}
                                             autoComplete="username"
                                             placeholder="Oppgi epostadresse"
                                         />
@@ -120,7 +125,7 @@ export default function Signupform() {
                                     <Col>
                                         <Form.Control
                                             type="password"
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            onChange={(e): void => setPassword(e.target.value)}
                                             autoComplete="new-password"
                                             placeholder="Passord"
                                         />

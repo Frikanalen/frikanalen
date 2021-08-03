@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Layout from "../components/Layout";
 import WindowWidget from "../components/WindowWidget";
 
-export default function About() {
+export default function About(): JSX.Element {
   return (
     <Layout>
       <WindowWidget invisible nomargin>

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import VideoList, { getLatestVideos } from "components/VideoList";
 import { APIGET, fkOrg, fkOrgSchema, fkVideoQuery } from "components/TS-API/API";
@@ -14,10 +13,7 @@ interface OrgAdminProps {
   latestVideos: fkVideoQuery;
 }
 
-export default function OrgAdmin({ orgName, orgID, latestVideos }: OrgAdminProps) {
-  const router = useRouter();
-
-  return (
+const OrgAdmin = ({ orgName, latestVideos }: OrgAdminProps): JSX.Element => (
     <Layout>
       <WindowWidget>
         <h3>{orgName}</h3>
@@ -33,7 +29,8 @@ export default function OrgAdmin({ orgName, orgID, latestVideos }: OrgAdminProps
       </WindowWidget>
     </Layout>
   );
-}
+
+export default OrgAdmin
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   if (typeof context.query.orgID !== "string" || Number.isNaN(parseInt(context.query.orgID, 10))) {

@@ -12,7 +12,7 @@ import { APIGET, fkSchedule, fkScheduleSchema } from "../components/TS-API/API";
 
 const ShakaPlayer = dynamic(() => import("../components/ShakaPlayer"), { ssr: false });
 
-const BetaDisclaimer = () => (
+const BetaDisclaimer = (): JSX.Element => (
   <WindowWidget nomargin>
     <Container fluid className="betaDisclaimer">
       <Row className="iconRow">
@@ -72,7 +72,7 @@ interface IndexProps {
   scheduleJSON: fkSchedule;
 }
 
-export default function Index({ scheduleJSON }: IndexProps) {
+export default function Index({ scheduleJSON }: IndexProps): JSX.Element {
   return (
     <Layout>
       <Container>

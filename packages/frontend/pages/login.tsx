@@ -1,5 +1,6 @@
 import React, { useState, useContext, FormEvent } from "react";
 import Router from "next/router";
+import Link from "next/link"
 
 import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
@@ -11,13 +12,13 @@ import Layout from "../components/Layout";
 import {UserContext, UserContextState} from "../components/UserContext";
 import { getUserToken } from "../components/TS-API/API";
 
-export default function LoginForm() {
+export default function LoginForm(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const user: UserContextState = useContext(UserContext);
 
-  async function authenticate(e: FormEvent<HTMLFormElement>) {
+  async function authenticate(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     if(!user.isReady) throw new Error("Tried to login on uninitialized user context")
     if (user.login) user.login(await getUserToken(email, password));
@@ -34,13 +35,20 @@ export default function LoginForm() {
           <Card.Body>
             <Card.Title>Logg inn</Card.Title>
             {errorMessage}
-            <Form onSubmit={(event) => authenticate(event)}>
+            <Form onSubmit={async (event): Promise<void> => {
+              try {
+                await authenticate(event)
+              } catch (e) {
+                if (e instanceof Error)
+                  setErrorMessage(e.message)
+              }
+            }}>
               <Form.Group controlId="formBasicEmail">
                 <Form.Label>Epostadresse</Form.Label>
                 <Form.Control
                   type="email"
                   autoComplete="username"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e): void => setEmail(e.target.value)}
                   placeholder="Oppgi epostadresse"
                 />
               </Form.Group>
@@ -49,7 +57,7 @@ export default function LoginForm() {
                 <Form.Control
                   type="password"
                   autoComplete="current-password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e): void => setPassword(e.target.value)}
                   placeholder="Passord"
                 />
               </Form.Group>
@@ -57,7 +65,7 @@ export default function LoginForm() {
                 Logg inn
               </Button>
               <span className="registration-invitation">
-                ...eller <a href="/register">registrer ny bruker</a>
+                ...eller <Link href="/register"><a>registrer ny bruker</a></Link>
               </span>
               <style jsx global>
                 {`

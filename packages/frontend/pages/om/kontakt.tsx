@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../../components/Layout";
 import WindowWidget from "../../components/WindowWidget";
 
-export default function KontaktOss() {
+export default function KontaktOss(): JSX.Element {
   return (
     <Layout>
       <WindowWidget>

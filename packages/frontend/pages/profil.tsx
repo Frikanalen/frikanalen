@@ -14,7 +14,7 @@ import configs from "../components/configs";
 
 import Layout from "../components/Layout";
 
-function UserProfile() {
+function UserProfile(): JSX.Element {
   const context = useContext(UserContext);
 
   const { profile, token, refresh } = context as UserContextLoggedInState;
@@ -30,7 +30,7 @@ function UserProfile() {
   if (!profile) {
     return <p>Kan ikke fortsette; brukerprofil udefinert.</p>;
   }
-  const submitProfile = async (e: { preventDefault: () => void }) => {
+  const submitProfile = async (e: { preventDefault: () => void }): Promise<void> => {
     e.preventDefault();
 
     await fetch(`${configs.api}user`, {
@@ -57,18 +57,18 @@ function UserProfile() {
         </Col>
         <Col>
           <Form.Label>Mobilnummer</Form.Label>
-          <Form.Control onChange={(e) => setMSISDN(e.target.value)} value={MSISDN} />
+          <Form.Control onChange={(e): void => setMSISDN(e.target.value)} value={MSISDN} />
         </Col>
       </Form.Row>
       <br />
       <Form.Row>
         <Col>
           <Form.Label>Fornavn</Form.Label>
-          <Form.Control onChange={(e) => setFirstName(e.target.value)} value={firstName} />
+          <Form.Control onChange={(e): void => setFirstName(e.target.value)} value={firstName} />
         </Col>
         <Col>
           <Form.Label>Etternavn</Form.Label>
-          <Form.Control onChange={(e) => setLastName(e.target.value)} value={lastName} />
+          <Form.Control onChange={(e): void => setLastName(e.target.value)} value={lastName} />
         </Col>
       </Form.Row>
       <Row>
@@ -83,7 +83,7 @@ function UserProfile() {
   );
 }
 
-function UserCard() {
+function UserCard(): JSX.Element {
   return (
     <Col>
       <Card bg="light" className="text-dark">
@@ -96,7 +96,7 @@ function UserCard() {
   );
 }
 
-function OrganizationCard({ role }: { role: fkOrgRole }) {
+function OrganizationCard({ role }: { role: fkOrgRole }): JSX.Element {
   const context = useContext(UserContext);
 
   const { token } = context as UserContextLoggedInState;
@@ -110,14 +110,13 @@ function OrganizationCard({ role }: { role: fkOrgRole }) {
         validator: fkOrgSchema.parse,
       }).then((res) => setOrg(res)).catch(e => console.log(e));
     }
-  }, [role.organizationId]);
-  if (!context.isLoggedIn) {
+  },[role.organizationId, token]);
+  if (!context.isLoggedIn || !org) {
     return <></>;
   }
 
   const roleText = role.role == "editor" ? "Du er redaktør" : "Du er medlem";
 
-  if (!org) return null;
   return (
     <Card body bg="white">
       <Card.Title className="mb-1">{org.name}</Card.Title>
@@ -129,7 +128,7 @@ function OrganizationCard({ role }: { role: fkOrgRole }) {
   );
 }
 
-function OrganizationList() {
+function OrganizationList(): JSX.Element {
   let organizationList;
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
@@ -157,7 +156,7 @@ function OrganizationList() {
   );
 }
 
-function OrganizationsCard() {
+function OrganizationsCard(): JSX.Element {
   return (
     <Col>
       <Card>
@@ -174,7 +173,7 @@ function OrganizationsCard() {
   );
 }
 
-function StaffMenu() {
+function StaffMenu(): JSX.Element {
   return (
     <WindowWidget invisible>
       <Col>
@@ -189,7 +188,7 @@ function StaffMenu() {
   );
 }
 
-export default function Profile() {
+export default function Profile(): JSX.Element {
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
     return (
@@ -201,7 +200,7 @@ export default function Profile() {
 
   const { profile } = context;
 
-  if (profile == null) return null;
+  if (profile == null) return <></>;
 
   return (
     <Layout>

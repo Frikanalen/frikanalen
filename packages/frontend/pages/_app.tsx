@@ -26,7 +26,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const [token, setToken] = useState<string | undefined>(undefined);
   const [profile, setProfile] = useState<fkUser | null>(null);
 
-  const refresh = (authToken: string) => {
+  const refresh = (authToken: string): void => {
     getUserProfile(authToken)
       .then((p) => {
         localStorage.setItem(
@@ -43,7 +43,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       });
   };
 
-  const logout = () => {
+  const logout = (): void => {
     localStorage.removeItem("userData");
     setToken(undefined);
     Router.push("/")
@@ -52,7 +52,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         throw problem;
       });
   };
-  const login = (withToken: string) => {
+  const login = (withToken: string): void => {
     setToken(withToken);
   };
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     if (profile == null) {
       refresh(token);
     }
-  }, [token]);
+  }, [token, profile]);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData") || "null") as {

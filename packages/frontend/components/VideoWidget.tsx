@@ -57,7 +57,7 @@ export const VideoWidget: React.FunctionComponent<VideoWidgetProps> = ({ video }
   const [videoState, setVideoState] = useState<string>("");
   const [videoJSON, setVideoJSON] = useState<fkVideo>(video);
   useEffect(() => {
-    const checkProgress = () => {
+    const checkProgress = (): void => {
       APIGET<fkVideo>({
         endpoint: `videos/${video.id}`,
         validator: fkVideoSchema.parse,
@@ -80,7 +80,7 @@ export const VideoWidget: React.FunctionComponent<VideoWidgetProps> = ({ video }
         setTimeout(checkProgress, 1000);
       }
     }, 1000);
-  }, [videoState]);
+  }, [videoState, video.id]);
 
   if (videoState === "pending") {
     return <VideoSpinner />;
@@ -91,7 +91,7 @@ export const VideoWidget: React.FunctionComponent<VideoWidgetProps> = ({ video }
     if ("theora" in videoJSON.files) return <VideoPlayer video={videoJSON} />;
     if ("original" in videoJSON.files || "broadcast" in videoJSON.files) setVideoState("pending");
   } else if (videoJSON) {
-    return <VideoUpload videoJSON={videoJSON} onUploadComplete={() => setVideoState("pending")} />;
+    return <VideoUpload videoJSON={videoJSON} onUploadComplete={(): void => setVideoState("pending")} />;
   }
 
   return <></>;

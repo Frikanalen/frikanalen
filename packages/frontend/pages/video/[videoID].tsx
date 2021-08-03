@@ -46,7 +46,7 @@ interface VideoPageProps {
   error: Error;
 }
 
-export default function VideoPage({ videoJSON, latestVideos, error }: VideoPageProps) {
+export default function VideoPage({ videoJSON, latestVideos, error }: VideoPageProps): JSX.Element {
   if (error) {
     return (
       <Layout>
