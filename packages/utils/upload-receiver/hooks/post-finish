@@ -39,8 +39,8 @@ def read_upload_status():
 if __name__=='__main__':
     video_id, orig_filename, s3_key = read_upload_status()
     event_data = {
-            "version":  "1",
-            "video_id": video_id,
+            "version":  1,
+            "video_id": int(video_id),
             "orig_filename": orig_filename,
             "s3_key": s3_key
             }
