@@ -27,7 +27,8 @@ const configs: { [key: string]: Config } = {
   },
 };
 
-const env = process.env.NEXT_PUBLIC_ENV || "development";
+// for some reason, profil.tsx considers it development
+const env = process.env.NEXT_PUBLIC_ENV || "production" // ""development";
 
 const environments = Object.keys(configs);
 if (!environments.includes(env)) {
