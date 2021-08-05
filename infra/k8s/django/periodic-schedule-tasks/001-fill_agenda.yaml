@@ -19,6 +19,16 @@ spec:
             env:
               - name: DJANGO_SETTINGS_MODULE
                 value: fkweb.settings.production
+              - name: DATABASE_HOST
+                value: postgres.database
+              - name: DATABASE_USER
+                value: fkweb
+              - name: DATABASE_NAME
+                value: fkweb
+              - name: ALLOWED_HOSTS
+                value: frikanalen.no,fk.dev.local
+              - name: SMTP_SERVER
+                value: smtp.uio.no
             envFrom:
             - secretRef:
                 name: postgres-secret-django
