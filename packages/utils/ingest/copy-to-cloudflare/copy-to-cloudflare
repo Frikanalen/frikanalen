@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+
+import json
+import os
+from pathlib import Path
+import boto3
+import requests
+from smart_open import open
+from kafka import KafkaConsumer, TopicPartition
+import json
+from tusclient.client import TusClient
+from tusclient.request import TusRequest
+import requests
+
+BACKEND_TOKEN=Path('secrets/backend_token').read_text().strip()
+CLOUDFLARE_ACCOUNT_ID=Path('secrets/cloudflare_account_id').read_text().strip()
+CLOUDFLARE_API_TOKEN=Path('secrets/cloudflare_api_token').read_text().strip()
+
+def attach_cloudflare_id(video_id, cloudflare_id):
+    request_body = {
+            'video': int(video_id),
+            'filename': cloudflare_id,
+            'format': 9,
+            }
+
+    r = requests.post('https://frikanalen.no/api/videofiles/',
+            json=request_body,
+            headers={
+                'Authorization': f'token {BACKEND_TOKEN}',
+                }
+            )
+
+    if(r.status_code != 201):
+        raise ValueError(r.text)
+
+def delete_from_cloudflare(cloudflare_id):
+    print("I would have deleted the ID {cloudflare_id}.")
+
+def upload_video(video_id, s3key, orig_filename):
+    """ Creates a temporary directory on file01, copies the file, and moves it
+    into the move_and_process watchfolder. """
+    s3_session = boto3.Session(
+        aws_access_key_id=Path('secrets/AWS_ACCESS_KEY_ID').read_text().strip(),
+        aws_secret_access_key=Path('secrets/AWS_SECRET_ACCESS_KEY').read_text().strip()
+    )
+    
+    s3_client = s3_session.client(
+        's3',
+        endpoint_url=Path('config/s3_endpoint_url').read_text().strip()
+    )
+
+    tus_client = TusClient(
+        f'https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/stream',
+        headers={'Authorization': f'Bearer {CLOUDFLARE_API_TOKEN}'}
+    )
+
+    print(f'https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/stream')
+
+    with open(f's3://incoming/{s3key}', 'rb', transport_params=dict(client=s3_client)) as f_s:
+        uploader = tus_client.uploader(file_stream=f_s, chunk_size=52428800)
+        uploader.upload()
+        request = TusRequest(uploader)
+        request.perform()
+        cloudflare_id = request.response_headers['stream-media-id']
+        try:
+            attach_cloudflare_id(video_id, cloudflare_id)
+        except:
+            delete_from_cloudflare(cloudflare_id)
+
+consumer = KafkaConsumer(
+        bootstrap_servers='kafka-service.kafka:9092',
+        auto_offset_reset='earliest',
+        value_deserializer=lambda x: json.loads(x),
+        enable_auto_commit=False,
+        group_id="cloudflare-uploader",
+        )
+
+topics = ["new-video-uploaded"]
+assignments = []
+
+for topic in topics:
+    partitions = consumer.partitions_for_topic(topic)
+    for p in partitions:
+        assignments.append(TopicPartition(topic, p))
+consumer.assign(assignments)
+print("Connected to Kafka. Waiting for events...")
+
+for msg in consumer:
+    print("Received message")
+    if isinstance(msg.value, dict) and msg.value.get('version', None) == '1':
+        print(f"Starting to upload video {msg.value['video_id']}")
+        upload_video(msg.value['video_id'], msg.value['s3_key'], msg.value['orig_filename'])
+        consumer.commit()
+    else:
+        print("Ignoring invalid message")
+

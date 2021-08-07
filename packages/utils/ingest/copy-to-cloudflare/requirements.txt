@@ -1,0 +1,5 @@
+boto3
+kafka-python
+tuspy
+requests
+smart_open
