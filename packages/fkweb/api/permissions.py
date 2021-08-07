@@ -74,6 +74,8 @@ class IsInOrganizationOrReadOnly(IsInOrganizationOrDisallow):
     """
 
     def has_object_permission(self, request, view, obj):
+        if request.user.is_staff:
+            return True
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
