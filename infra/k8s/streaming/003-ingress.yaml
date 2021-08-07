@@ -29,7 +29,8 @@ spec:
   entryPoints: 
     - websecure
   routes:
-  - match: (Host(`beta.frikanalen.no`) || Host(`frikanalen.no`)) && PathPrefix(`/stream/`)
+  - match: Host(`frikanalen.no`) && PathPrefix(`/stream/`)
+    priority: 1000
     kind: Rule
     middlewares:
       - name: cors
@@ -39,6 +40,7 @@ spec:
     services:
     - kind: Service
       name: shaka-packager
+      namespace: streaming
       scheme: http
       port: 80
   tls:

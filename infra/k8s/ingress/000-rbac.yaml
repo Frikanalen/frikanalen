@@ -38,6 +38,7 @@ rules:
       - traefikservices
       - ingressroutetcps
       - ingressrouteudps
+      - serverstransports
       - tlsoptions
       - tlsstores
     verbs:
@@ -58,4 +59,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: traefik-ingress-controller
-    namespace: traefik
+    namespace: default

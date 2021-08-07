@@ -29,7 +29,7 @@ spec:
   entryPoints: 
     - websecure
   routes:
-  - match: (Host(`beta.frikanalen.no`) || Host(`frikanalen.no`)) && PathPrefix(`/playout/atem/`)
+  - match: Host(`frikanalen.no`) && PathPrefix(`/playout/atem/`)
     kind: Rule
     middlewares:
       - name: strip-atem-prefix

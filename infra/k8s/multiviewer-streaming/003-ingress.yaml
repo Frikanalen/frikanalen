@@ -29,7 +29,7 @@ spec:
   entryPoints: 
     - websecure
   routes:
-  - match: (Host(`beta.frikanalen.no`) || Host(`frikanalen.no`)) && PathPrefix(`/stream/`)
+  - match: Host(`frikanalen.no`) && PathPrefix(`/stream/`)
     kind: Rule
     middlewares:
       - name: cors

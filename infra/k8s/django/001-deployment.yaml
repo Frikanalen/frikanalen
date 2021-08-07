@@ -27,7 +27,7 @@ spec:
           - name: DATABASE_NAME
             value: fkweb
           - name: ALLOWED_HOSTS
-            value: frikanalen.no,fk.dev.local
+            value: frikanalen.no,fk.dev.local,forrige.frikanalen.no
           - name: SMTP_SERVER
             value: smtp.uio.no
         envFrom:

@@ -4,4 +4,4 @@ metadata:
   name: s3-backend
 spec:
   type: ExternalName
-  externalName: "rook-ceph-rgw-media-store.rook-ceph"
+  externalName: "rook-ceph-rgw-media-store.rook-ceph.svc.cluster.local"

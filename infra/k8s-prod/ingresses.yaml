@@ -1,0 +1,132 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-http
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+    - match: Host(`forrige.frikanalen.no`) 
+      kind: Rule
+      services:
+      - kind: Service
+        name: django
+        scheme: http
+        port: 80
+      middlewares:
+        - name: scheme-redirect
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-https
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`forrige.frikanalen.no`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-static
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`frikanalen.no`) || Host(`www.frikanalen.no`)) && PathPrefix(`/static`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-xmltv
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`frikanalen.no`) || Host(`www.frikanalen.no`)) && PathPrefix(`/xmltv`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: django-api
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`frikanalen.no`) || Host(`www.frikanalen.no`)) && PathPrefix(`/api`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: django
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: scheme-redirect-frontend
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`www.frikanalen.no`) || Host(`frikanalen.no`)
+    priority: 100
+    kind: Rule
+    services:
+    - kind: Service
+      name: frontend
+      scheme: http
+      port: 3000
+    middlewares:
+      - name: scheme-redirect
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`www.frikanalen.no`) || Host(`frikanalen.no`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: frontend
+      scheme: http
+      port: 3000
+  tls:
+    certResolver: default
