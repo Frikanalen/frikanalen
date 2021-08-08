@@ -1,1 +1,3 @@
 .coverage
+.env
+*.pyc
