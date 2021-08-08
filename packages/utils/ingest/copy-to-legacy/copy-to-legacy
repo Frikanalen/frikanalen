@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 
 import json
+import logging
 import os
 from pathlib import Path
 import boto3
 from kafka import KafkaConsumer, TopicPartition
 from paramiko import SSHClient
 from paramiko.client import AutoAddPolicy
+logger = logging.getLogger('copy-to-legacy')
+logger.setLevel(logging.DEBUG)
 
 def upload_video(video_id, s3key, orig_filename):
     """ Creates a temporary directory on file01, copies the file, and moves it
     into the move_and_process watchfolder. """
+    logger.debug(f"starting upload of {video_id}")
+
     client = SSHClient()
     client.load_system_host_keys()
     client.set_missing_host_key_policy(AutoAddPolicy)
@@ -29,6 +34,7 @@ def upload_video(video_id, s3key, orig_filename):
         sftp.mkdir(legacy_temp_directory)
     except OSError as e:
         print("Target directory already exists!", e)
+        return
         # Fixme: Find a better way to handle an existing directory
 
     with sftp.file(legacy_temp_filename, 'wb') as legacy_temp_file:
@@ -36,6 +42,8 @@ def upload_video(video_id, s3key, orig_filename):
 
     print(f"mv {legacy_temp_directory} {legacy_watchfolder}")
     sftp.posix_rename(legacy_temp_directory, legacy_watchfolder)
+
+logger.info("Connecting to kafka...")
 
 consumer = KafkaConsumer(
         bootstrap_servers='kafka-service.kafka:9092',
@@ -53,9 +61,13 @@ for topic in topics:
     for p in partitions:
         assignments.append(TopicPartition(topic, p))
 consumer.assign(assignments)
-print("Connected to Kafka. Waiting for events...")
+
+logger.info("Connected to Kafka. Waiting for events...")
 
 for msg in consumer:
-    if isinstance(msg.value, dict) and msg.value.get('version', None) == '1':
+    if isinstance(msg.value, dict) and msg.value.get('version', None) == 1:
+        logger.info("got message")
         upload_video(msg.value['video_id'], msg.value['s3_key'], msg.value['orig_filename'])
         consumer.commit()
+    else:
+        logger.warning("skipping invalid message")

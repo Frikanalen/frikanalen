@@ -23,27 +23,27 @@ echo "Creating backend namespace"
 
 $k apply -f $BASEPATH/database/000-namespace.yaml
 
-echo "Creating database/backend secrets"
+echo "Creating Django SECRET_KEY"
 
 SECRET_KEY=$(base64 /dev/urandom | head -c50)
-DATABASE_PASS=$(pwgen 32 1)
 
-$k create secret -n database generic backend-secrets \
-    --from-literal=SECRET_KEY=${SECRET_KEY} \
-    --from-literal=DATABASE_PASS=${DATABASE_PASS} \
+$k create secret generic django-secret-key \
+    --from-literal=SECRET_KEY=${SECRET_KEY}
 
-$k create secret -n default generic backend-secrets \
-    --from-literal=SECRET_KEY=${SECRET_KEY} \
-    --from-literal=DATABASE_PASS=${DATABASE_PASS} \
+echo "Creating database/backend secrets"
 
-echo "Creating database storage"
+POSTGRES_REPLICATION_PASSWORD=$(pwgen 32 1)
+POSTGRES_PASSWORD=$(pwgen 32 1)
+FKSCHEDULE_PASSWORD=$(pwgen 32 1)
 
-$k apply -f database-storage.yaml
+$k create secret generic database-api-secret \
+    --from-literal=POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+    --from-literal=FKSCHEDULE_PASSWORD=${FKSCHEDULE_PASSWORD} \
+    --from-literal=POSTGRES_REPLICATION_PASSWORD=${POSTGRES_REPLICATION_PASSWORD}
 
 echo "Applying database CRDs..."
 
-$k apply -f $BASEPATH/database/001-deployment.yaml
-$k apply -f $BASEPATH/database/002-service.yaml
+$k apply -f databasev1.yaml
 
 echo "Starting backend..."
 
@@ -80,6 +80,18 @@ echo "Starting upload-receiver service"
 
 # TODO: Move environment into config map
 $k apply -f ingest/upload-receiver/upload-receiver.yaml
+
+
+echo "Setting up database for APIv2"
+
+POSTGRES_PASSWORD=$(pwgen 32 1)
+POSTGRES_REPLICATION_PASSWORD=$(pwgen 32 1)
+APIV2_PASSWORD=$(pwgen 32 1)
+
+$k create secret generic database-api-v2-secret \
+    --from-literal=POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+    --from-literal=POSTGRES_REPLICATION_PASSWORD=${POSTGRES_REPLICATION_PASSWORD} \
+    --from-literal=APIV2_PASSWORD=${APIV2_PASSWORD}
 
 #$k apply -f $BASEPATH/django/periodic-schedule-tasks/001-fill_agenda_with_jukebox.yaml
 #$k apply -f $BASEPATH/django/periodic-schedule-tasks/001-fill_agenda.yaml

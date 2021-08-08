@@ -21,7 +21,7 @@ spec:
           - name: DJANGO_SETTINGS_MODULE
             value: fkweb.settings.production
           - name: DATABASE_HOST
-            value: postgres.database
+            value: database-api
           - name: DATABASE_USER
             value: fkweb
           - name: DATABASE_NAME
@@ -30,9 +30,16 @@ spec:
             value: frikanalen.no,fk.dev.local,forrige.frikanalen.no
           - name: SMTP_SERVER
             value: smtp.uio.no
-        envFrom:
-        - secretRef:
-            name: backend-secrets
+          - name: SECRET_KEY
+            valueFrom:
+               secretKeyRef:
+                  name: django-secret-key
+                  key: SECRET_KEY
+          - name: DATABASE_PASSWORD
+            valueFrom:
+               secretKeyRef:
+                  name: database-api-secret
+                  key: POSTGRES_PASSWORD
         ports:
           - name: django-web
             containerPort: 8080
@@ -63,4 +70,45 @@ spec:
           items:
             - key: site.conf
               path: site.conf
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  site.conf: |
+    upstream website {
+        server localhost:8080;
+    }
 
+    server {
+        listen 8002;
+        server_name _;
+        location /static {
+            alias /usr/share/nginx/html;
+        }
+
+       location / {
+            proxy_pass http://website;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         }
+    }
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: django
+spec:
+  type: ClusterIP
+  selector:
+    app: django
+  ports:
+    # Three types of ports for a service
+    # nodePort - a static port assigned on each the node
+    # port - port exposed internally in the cluster
+    # targetPort - the container port to send requests to
+    - protocol: TCP
+      port: 8002
+      name: django-web

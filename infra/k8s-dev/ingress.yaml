@@ -112,3 +112,20 @@ spec:
       name: upload-receiver
       scheme: http
       port: 1080
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: s3-backend
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`s3.fk.dev.local`) 
+    kind: Rule
+    services:
+    - kind: Service
+      name: s3-ninja
+      scheme: http
+      port: 9000
