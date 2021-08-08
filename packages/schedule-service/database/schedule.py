@@ -1,6 +1,8 @@
 import psycopg2
 import pytz
 from datetime import datetime, timedelta
+from .connection import get_connstring
+import sys
 
 class Organization():
     def __init__(self, ID, name):
@@ -55,12 +57,8 @@ class Graphics(ScheduleItem):
                 }
 
 class Schedule():
-    def _build_conn_string(self):
-        """ Placeholder function; TODO: get these from envs"""
-        return "dbname=fkweb password=temporary host=postgres.database user=fkschedule"
-
     def __init__(self):
-        self.conn = psycopg2.connect(self._build_conn_string())
+        self.conn = psycopg2.connect(get_connstring())
 
     def get_date(self, date):
         query = """

@@ -25,6 +25,7 @@ def add_graphics(video_list):
 
     video_list['items'] = sorted(video_list['items'] + graphics, key=lambda x: x.start_time)
     return video_list
+
 def playout_schedule():
     s = Schedule()
     video_list = add_graphics(s.get_date(datetime.now(tz=pytz.timezone('Europe/Oslo'))))

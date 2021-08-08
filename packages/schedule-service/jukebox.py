@@ -1,5 +1,12 @@
 import psycopg2
+import os
+import logging
 from datetime import datetime, timedelta
+from database.connection import get_connstring
+
+logger = logging.get_logger(__name__)
+
+
 
 class Gap():
     def __init__(self, start_time, end_time):
@@ -14,7 +21,7 @@ class Gap():
         return f"Gap from {self.start_time} to {self.end_time}"
 
 def get_gaps(start_time, end_time):
-    conn = psycopg2.connect("dbname=fkweb password=temporary host=10.244.2.228 user=fkschedule")
+    conn = psycopg2.connect(get_connstring())
     cur = conn.cursor()
 
     min_gap_duration = timedelta(minutes=5)
