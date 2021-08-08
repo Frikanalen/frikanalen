@@ -35,7 +35,7 @@ spec:
                secretKeyRef:
                   name: django-secret-key
                   key: SECRET_KEY
-          - name: DATABASE_PASSWORD
+          - name: DATABASE_PASS
             valueFrom:
                secretKeyRef:
                   name: database-api-secret

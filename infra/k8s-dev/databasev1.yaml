@@ -94,6 +94,11 @@ data:
     dt=$(date '+%d/%m/%Y %H:%M:%S');
     echo "$dt - Running init script the 1st time Primary PostgreSql container is created...";
 
+    # Workaround for kubegres error. Kubegres replication expects to be able to
+    # log in with POSTGRES_PASSWORD as postgres, irrespective of the
+    # POSTGRES_USER variable.
+    ALTER ROLE postgres WITH NOSUPERUSER INHERIT NOCREATEROLE NOCREATEDB NOLOGIN NOREPLICATION NOBYPASSRLS PASSWORD '$POSTGRES_PASSWORD';
+
     ./fkschedule-init.sh
 
     echo "$dt - Init script is completed";
@@ -138,20 +143,20 @@ spec:
             name: database-api-secret
             key: POSTGRES_PASSWORD
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: database-api
-spec:
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
-  ports:
-  - port: 5432
-    protocol: TCP
-    targetPort: 5432
-  selector:
-    app: database
-    replicationRole: primary
-  sessionAffinity: None
-  type: NodePort
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: database-api
+#spec:
+#  ipFamilies:
+#  - IPv4
+#  ipFamilyPolicy: SingleStack
+#  ports:
+#  - port: 5432
+#    protocol: TCP
+#    targetPort: 5432
+#  selector:
+#    app: database
+#    replicationRole: primary
+#  sessionAffinity: None
+#  type: NodePort

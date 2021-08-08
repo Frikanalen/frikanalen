@@ -13,7 +13,7 @@ spec:
       - kind: Service
         name: django
         scheme: http
-        port: 80
+        port: 8002
       middlewares:
         - name: scheme-redirect
 ---
@@ -32,7 +32,7 @@ spec:
     - kind: Service
       name: django
       scheme: http
-      port: 80
+      port: 8002
   tls:
     certResolver: default
 ---
@@ -51,7 +51,7 @@ spec:
     - kind: Service
       name: django
       scheme: http
-      port: 80
+      port: 8002
   tls:
     certResolver: default
 ---
@@ -70,7 +70,7 @@ spec:
     - kind: Service
       name: django
       scheme: http
-      port: 80
+      port: 8002
   tls:
     certResolver: default
 ---
@@ -89,6 +89,6 @@ spec:
     - kind: Service
       name: django
       scheme: http
-      port: 80
+      port: 8002
   tls:
     certResolver: default
