@@ -142,21 +142,3 @@ spec:
          secretKeyRef:
             name: database-api-secret
             key: POSTGRES_PASSWORD
----
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: database-api
-#spec:
-#  ipFamilies:
-#  - IPv4
-#  ipFamilyPolicy: SingleStack
-#  ports:
-#  - port: 5432
-#    protocol: TCP
-#    targetPort: 5432
-#  selector:
-#    app: database
-#    replicationRole: primary
-#  sessionAffinity: None
-#  type: NodePort
