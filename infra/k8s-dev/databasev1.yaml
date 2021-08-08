@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-api-config
+
+data:
+  create_schedule_user.sh: |
+    #!/bin/bash
+    set -e
+
+    dt=$(date '+%d/%m/%Y %H:%M:%S');
+
+    echo "$dt - Creating fkschedule user"
+
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+        CREATE USER fkschedule with password '$FKSCHEDULE_PASSWORD';
+        GRANT select ON fk_video, fk_organization, fk_scheduleitem TO fkschedule;
+    EOSQL
+
+    echo "$dt - Created."
+  primary_init_script.sh: |
+    #!/bin/bash
+    set -e
+
+    # This script assumes that the env-var $APIV2_PASSWORD contains the password of the custom user to create.
+    # You can add any env-var in your Kubegres resource config YAML.
+
+    dt=$(date '+%d/%m/%Y %H:%M:%S');
+    echo "$dt - Running init script the 1st time Primary PostgreSql container is created...";
+
+    ./create_schedule_user.sh
+
+    echo "$dt - Init script is completed";
+---
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: database-api
+
+spec:
+  replicas: 1
+  image: postgres:13.2
+  port: 5432
+
+  database:
+     size: 200Mi
+
+  customConfig: database-api-config
+
+  # TODO: Figure out how to control access so backend does not
+  # need to connect to database with superuser credentials
+  env:
+    - name: TZ
+      value: Europe/Oslo
+    - name: POSTGRES_DB
+      value: fkweb
+    - name: POSTGRES_USER
+      value: fkweb
+    - name: FKSCHEDULE_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database-api-secret
+            key: FKSCHEDULE_PASSWORD
+    - name: POSTGRES_REPLICATION_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database-api-secret
+            key: POSTGRES_REPLICATION_PASSWORD
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database-api-secret
+            key: POSTGRES_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-api
+spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: database
+    replicationRole: primary
+  sessionAffinity: None
+  type: NodePort
