@@ -4,7 +4,7 @@ metadata:
   name: database-api-config
 
 data:
-  create_schedule_user.sh: |
+  fkschedule-init.sh: |
     #!/bin/bash
     set -e
 
@@ -14,7 +14,73 @@ data:
 
     psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
         CREATE USER fkschedule with password '$FKSCHEDULE_PASSWORD';
-        GRANT select ON fk_video, fk_organization, fk_scheduleitem TO fkschedule;
+        GRANT select ON fk_schedulepurpose, fk_video, fk_organization, fk_scheduleitem TO fkschedule;
+
+        # GRANT SELECT ON fk_video, fk_scheduleitem, fk_organization TO fkschedule;
+        # GRANT INSERT ON fk_scheduleitem to fkschedule;
+        # GRANT USAGE, SELECT ON SEQUENCE "ScheduleItem_id_seq" to fkschedule;
+
+        DROP FUNCTION IF EXISTS fk_schedule_gaps(TIMESTAMP, TIMESTAMP);
+
+        CREATE FUNCTION fk_schedule_gaps (
+            search_start TIMESTAMP,
+            search_end TIMESTAMP
+        )
+        RETURNS TABLE(
+            preceding_item INT,
+            following_item INT,
+            gap_start_time TIMESTAMP,
+            gap_end_time TIMESTAMP,
+            gap_duration INTERVAL) AS $$
+        BEGIN
+            RETURN query
+            SELECT
+                item_before,
+                item_after,
+                start_time at time zone 'Europe/Oslo',
+                end_time at time zone 'Europe/Oslo',
+                end_time - start_time AS duration
+            FROM
+                (
+                    SELECT
+                        *
+                    FROM
+                        (
+                            SELECT
+                                lag(id) OVER (ORDER BY starttime) AS item_before,
+                                id AS item_after,
+                                lag(starttime + duration) OVER (
+                            ORDER BY
+                                starttime) AS start_time,
+                                starttime AS end_time
+                            FROM
+                                (
+                                    SELECT
+                                        id,
+                                        starttime,
+                                        duration
+                                    FROM
+                                        fk_scheduleitem
+                                    -- dummy schedule item at start for gap calculation
+                                    UNION ALL SELECT NULL, search_start, '0'
+                                    -- dummy schedule item at end for gap calculation
+                                    UNION ALL SELECT NULL, search_end, '0'
+                                )
+                                AS schedule_items
+                        )
+                        AS gaps_inner
+                )
+                AS gaps
+            WHERE
+                -- If the dummy schedule item overlaps with
+                -- a real one, it will have a negative duration
+                -- so this clause eliminates it
+                end_time - start_time >= '0'
+                AND gaps.start_time >= search_start
+                AND gaps.end_time <= search_end;
+        END
+        ;
+        $$ LANGUAGE 'plpgsql';
     EOSQL
 
     echo "$dt - Created."
@@ -28,7 +94,7 @@ data:
     dt=$(date '+%d/%m/%Y %H:%M:%S');
     echo "$dt - Running init script the 1st time Primary PostgreSql container is created...";
 
-    ./create_schedule_user.sh
+    ./fkschedule-init.sh
 
     echo "$dt - Init script is completed";
 ---
