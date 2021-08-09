@@ -39,9 +39,6 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 - We are writing a new front-end
     - Migrating functionality from legacy site: Almost completely done!
     - Still needs a user interface for organizations to add their shows to schedules ([#216](https://github.com/Frikanalen/frikanalen/issues/216))
-    - This was the author's first React project, and there are still places where that shows.
-    - Remaining: Complete translation to strict Typescript, get to 0 eslint errors
-        - All typescript now compiles in strict mode; some js/jsx still remains
 - Filling airtime in a better way
     - New, far more maintainable playout has been written and deployed, running stably
     - Needs to add better instrumentalization, monitoring/alerting (final output is checked for motion, and alerts are sent on pod failure)
