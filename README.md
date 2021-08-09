@@ -9,8 +9,7 @@ This repository is home to all the software used by Frikanalen. The main [packag
 
 - [frontend](packages/frontend) - Next.js\/React-based front-end, under active development
 - [fkweb](packages/fkweb) - Django-based back end API server
-- [playout](packages/playout) - Legacy playout (being phased out soon)
-- [playout-ng](packages/playout-ng) - New playout (currently running in beta)
+- [playout-ng](packages/playout-ng) - Playout
 - [fkupload](packages/fkupload) - Upload backend (the frontend is in fkweb) taking files from users
 - [fkprocess](packages/fkprocess) - The processing backend for the files
 - [utils](packages/utils) - Small utilities, microservices and helpers, and things we find no other place for
