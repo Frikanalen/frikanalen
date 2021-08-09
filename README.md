@@ -35,6 +35,7 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 
 ## Current development focus
 
+- [Creating a local k8s developer environment](infra/k8s-dev)
 - We are writing a new front-end
     - Migrating functionality from legacy site: Almost completely done!
     - Still needs a user interface for organizations to add their shows to schedules ([#216](https://github.com/Frikanalen/frikanalen/issues/216))
@@ -57,7 +58,6 @@ Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/
 
 - It would be useful to have programmatically-generated test data for fkweb (so we can test and develop on realistic but anonymous data)
 - It would be very nice to be able to deploy our CRDs directly in the cloud to spin up a full developer instance (using some sort of templating?)
-- We should consider migrating to Istio - because it's, like, super neat
 
 ## Functional description
 
