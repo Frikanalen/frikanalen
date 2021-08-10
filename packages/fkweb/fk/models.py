@@ -285,6 +285,9 @@ class Video(models.Model):
         blank=True, max_length=1024, help_text='URL for reference')
     duration = models.DurationField(blank=True, default=datetime.timedelta(0))
 
+    # This field is used by the new ingest.
+    media_metadata = models.JSONField(blank=True, null=True, default=None)
+
     # This function is a workaround so we can pass a callable
     # to default argument. Otherwise, the migration analyser evaluates
     # the UUID and then concludes a new default value has been assigned,
@@ -642,3 +645,18 @@ class AsRun(TimeStampedModel):
 
     class Meta:
         ordering = ('-played_at', '-id',)
+
+# This class is actually not managed by Django. It is accessed by the 
+# media-processor, which manipulates the database directly. It is only
+# defined here so that database migrations are handled centrally.
+class Asset(models.Model):
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
+    asset_type = models.CharField(max_length=160)
+    location = models.CharField(max_length=160)
+
+class IngestJob(models.Model):
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
+    job_type = models.CharField(max_length=160)
+    percentage_done = models.IntegerField(blank=True, default=0)
+    status_text = models.TextField(max_length=1000, default="")
+    state = models.CharField(max_length=160, default="pending")
