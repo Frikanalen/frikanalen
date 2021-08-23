@@ -2,6 +2,8 @@
 k="microk8s kubectl"
 export BASEPATH="../k8s"
 
+sudo apt install jq curl pwgen 
+
 echo "Enabling required addons"
 
 microk8s enable dns storage traefik linkerd metallb fluentd
