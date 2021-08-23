@@ -4,7 +4,7 @@ interface Config {
   upload: string;
 }
 
-const configs: { [key: string]: Config } = {
+const configs: Record<string, Config> = {
   development: {
     api: "http://localhost:8080/api/",
     upload: "https://frikanalen.no/api/videos/upload/",
