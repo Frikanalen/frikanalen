@@ -31,6 +31,23 @@ spec:
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
+  name: django-admin
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`fk.dev.local`) && PathPrefix(`/admin`)
+    kind: Rule
+    services:
+    - name: django
+      kind: Service
+      scheme: http
+      port: 8002
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
   name: django-static
   namespace: default
 spec:
