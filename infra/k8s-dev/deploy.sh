@@ -47,6 +47,7 @@ $k create secret generic database-api-secret \
 
 echo "Applying database CRDs..."
 
+$k apply -f $BASEPATH/operators/kubegres-1.8.yaml
 $k apply -f database.yaml
 
 echo "Starting backend..."
@@ -58,9 +59,9 @@ sleep 20
 
 echo "Creating upload superuser"
 
-DJANGO_POD=$(kubectl get pods --selector=app=django --output=jsonpath={.items..metadata.name})
+DJANGO_POD=$($k get pods --selector=app=django --output=jsonpath={.items..metadata.name})
 DSP=$(pwgen 32 1)
-k exec -ti $DJANGO_POD -c django -- DJANGO_SUPERUSER_PASSWORD=${DSP} env ./manage.py createsuperuser --date_of_birth 1970-01-01 --email upload@frikanalen.no --no-input
+$k exec -ti $DJANGO_POD -c django -- DJANGO_SUPERUSER_PASSWORD=${DSP} env ./manage.py createsuperuser --date_of_birth 1970-01-01 --email upload@frikanalen.no --no-input
 
 echo "Obtaining token"
 
