@@ -1,8 +1,0 @@
-mediaAssets:
-  scheme: https
-  baseURL: https://file01.frikanalen.no/media/
-graphqlEndpoint: https://forrige.frikanalen.no/graphql
-playerClass: vision.players.casparcg_player:CasparCGPlayer
-casparHost: localhost
-useJukebox: false
-logFormat: json

@@ -1,9 +1,0 @@
-language: python
-dist: xenial
-python:
-  - "3.5"
-  - "3.6"
-install:
-  - pip install -r requirements-dev.txt
-script: make test
-cache: pip
