@@ -9,7 +9,7 @@ data:
     - name: example
       rules:
       - alert: PlayoutDown
-        expr: absent(kube_statefulset_status_replicas_ready{namespace="default", statefulset="playout-ng"})
+        expr: absent(kube_statefulset_status_replicas_ready{namespace="default", statefulset="playout"})
         labels:
           severity: page
         annotations:
