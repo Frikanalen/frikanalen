@@ -2,14 +2,14 @@ env:
   browser: true
   es2021: true
 extends:
-#  - airbnb-typescript
-  - 'plugin:react/recommended'
-  - 'prettier'
-  - 'plugin:@typescript-eslint/recommended'
+  #  - airbnb-typescript
+  - "plugin:react/recommended"
+  - "prettier"
+  - "plugin:@typescript-eslint/recommended"
   - "plugin:@typescript-eslint/recommended-requiring-type-checking"
   - "next"
 parserOptions:
-  project: './tsconfig.json'
+  project: "./tsconfig.json"
   ecmaFeatures:
     jsx: true
   ecmaVersion: 12
@@ -18,14 +18,8 @@ parserOptions:
   emitWarning: true
 plugins:
   - react
-  - '@typescript-eslint'
+  - "@typescript-eslint"
 rules:
-  "@typescript-eslint/naming-convention":
-    - error
-    - selector: variable
-      format:
-        - camelCase
-        - PascalCase
   react/static-property-placement:
     - "warn"
     - "property assignment"
@@ -36,19 +30,19 @@ rules:
     - warn
     - vars: local
   react/prop-types: "off"
-  "@typescript-eslint/no-use-before-define": [ "error" ]
+  "@typescript-eslint/no-use-before-define": ["error"]
   "@typescript-eslint/explicit-function-return-type":
     - warn
     - allowTypedFunctionExpressions: true
   "react/jsx-filename-extension":
     - 2
     - "extensions":
-      - ".jsx"
-      - ".tsx"
+        - ".jsx"
+        - ".tsx"
 overrides:
   - files:
-    - '*.ts'
-    - '*.tsx'
+      - "*.ts"
+      - "*.tsx"
 ignorePatterns:
-  - '*.js'
-  - '*.jsx'
+  - "*.js"
+  - "*.jsx"
