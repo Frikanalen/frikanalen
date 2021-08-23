@@ -47,9 +47,7 @@ $k apply -f databasev1.yaml
 
 echo "Starting backend..."
 
-$k apply -f $BASEPATH/django/000-nginx-config.yaml
-$k apply -f $BASEPATH/django/001-deployment.yaml
-$k apply -f $BASEPATH/django/002-service.yaml
+$k apply -f $BASEPATH/django/django.yaml
 
 echo "Waiting for Django to come up"
 sleep 20
