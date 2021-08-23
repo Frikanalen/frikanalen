@@ -286,7 +286,7 @@ class Video(models.Model):
     duration = models.DurationField(blank=True, default=datetime.timedelta(0))
 
     # This field is used by the new ingest.
-    media_metadata = models.JSONField(blank=True, null=True, default=None)
+    media_metadata = models.JSONField(blank=True, default=dict)
 
     # This function is a workaround so we can pass a callable
     # to default argument. Otherwise, the migration analyser evaluates
