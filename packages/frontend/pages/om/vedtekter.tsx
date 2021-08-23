@@ -1,10 +1,9 @@
 import React from "react";
 import WindowWidget from "../../components/WindowWidget";
-import Layout from "../../components/Layout";
 
 export default function About(): JSX.Element {
   return (
-    <Layout>
+    <>
       <WindowWidget>
         <h1>Vedtekter for Foreningen Frikanalen</h1>
 
@@ -171,6 +170,6 @@ export default function About(): JSX.Element {
           stemmeflertall. Årsmøtet bestemmer hvordan eventuelle disponible midler og eiendeler skal fordeles.
         </p>
       </WindowWidget>
-    </Layout>
+    </>
   );
 }

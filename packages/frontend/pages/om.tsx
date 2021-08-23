@@ -1,11 +1,10 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
-import Layout from "../components/Layout";
 import WindowWidget from "../components/WindowWidget";
 
-export default function About(): JSX.Element {
+export default function About() {
   return (
-    <Layout>
+    <>
       <WindowWidget invisible nomargin>
         <Card bg="primary" text="light">
           <Card.Body>
@@ -38,6 +37,6 @@ export default function About(): JSX.Element {
           tillegg til dette er vi i full gang med å utvikle en god løsning for spredning av video på nett. Så følg med!
         </p>
       </WindowWidget>
-    </Layout>
+    </>
   );
 }

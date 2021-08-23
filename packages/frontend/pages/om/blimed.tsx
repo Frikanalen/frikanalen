@@ -1,18 +1,21 @@
 import React from "react";
 import Alert from "react-bootstrap/Alert";
-import Layout from "../../components/Layout";
 import WindowWidget from "../../components/WindowWidget";
 import Link from "next/link";
 
 export default function Blimed(): JSX.Element {
   return (
-    <Layout>
+    <>
       <WindowWidget>
         <Alert variant="info">
           <h3>Du er tidlig ute!</h3>
           <p>Denne nettsiden er under aktiv utvikling.</p>
           <p>
-            Se «<Link href="/om/kontakt"><a>Kontakt oss</a></Link>» for informasjon om kontingent og innmelding.
+            Se «
+            <Link href="/om/kontakt">
+              <a>Kontakt oss</a>
+            </Link>
+            » for informasjon om kontingent og innmelding.
           </p>
         </Alert>
         <h2>Bli med!</h2>
@@ -32,6 +35,6 @@ export default function Blimed(): JSX.Element {
         <p>Frikanalen søker aktivt utviklere med kompetanse innen React, Next.JS, Python/Django, node.js.</p>
         <p>Ta kontakt med teknisk leder om du ønsker å bidra til at Frikanalen kan bli noe virkelig stort!</p>
       </WindowWidget>
-    </Layout>
+    </>
   );
 }

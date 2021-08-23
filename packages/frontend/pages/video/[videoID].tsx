@@ -6,8 +6,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import { APIGET, fkVideo, fkVideoQuery, fkVideoSchema } from "../../components/TS-API/API";
 
-import Layout from "../../components/Layout";
-
 import WindowWidget from "../../components/WindowWidget";
 import styles from "./VideoPage.module.sass";
 import VideoList, { getLatestVideos } from "../../components/VideoList";
@@ -49,19 +47,19 @@ interface VideoPageProps {
 export default function VideoPage({ videoJSON, latestVideos, error }: VideoPageProps): JSX.Element {
   if (error) {
     return (
-      <Layout>
+      <>
         <WindowWidget>
           <h1>Ikke funnet!</h1>
           <h2>Beklager. Vi fant ikke denne.</h2>
         </WindowWidget>
-      </Layout>
+      </>
     );
   }
 
   if (typeof videoJSON.organization == "number") throw new Error("Organization is integer; should be fkOrg");
 
   return (
-    <Layout>
+    <>
       <WindowWidget invisible>
         <Container fluid>
           <Row xs={1} xl={2}>
@@ -86,6 +84,6 @@ export default function VideoPage({ videoJSON, latestVideos, error }: VideoPageP
           </Row>
         </Container>
       </WindowWidget>
-    </Layout>
+    </>
   );
 }

@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import { GetServerSideProps } from "next";
 import VideoList, { getLatestVideos } from "components/VideoList";
 import { APIGET, fkOrg, fkOrgSchema, fkVideoQuery } from "components/TS-API/API";
-import Layout from "../../../components/Layout";
 import WindowWidget from "../../../components/WindowWidget";
 
 interface OrgAdminProps {
@@ -14,23 +13,23 @@ interface OrgAdminProps {
 }
 
 const OrgAdmin = ({ orgName, latestVideos }: OrgAdminProps): JSX.Element => (
-    <Layout>
-      <WindowWidget>
-        <h3>{orgName}</h3>
-        <Card bg="light" className="text-dark">
-          <Card.Title>Siste videoer</Card.Title>
-          <Card.Body>
-            <VideoList videosJSON={latestVideos} />
-          </Card.Body>
-        </Card>
-        <Card body>
-          <Button href="ny-video">Last opp ny video...</Button>
-        </Card>
-      </WindowWidget>
-    </Layout>
-  );
+  <>
+    <WindowWidget>
+      <h3>{orgName}</h3>
+      <Card bg="light" className="text-dark">
+        <Card.Title>Siste videoer</Card.Title>
+        <Card.Body>
+          <VideoList videosJSON={latestVideos} />
+        </Card.Body>
+      </Card>
+      <Card body>
+        <Button href="ny-video">Last opp ny video...</Button>
+      </Card>
+    </WindowWidget>
+  </>
+);
 
-export default OrgAdmin
+export default OrgAdmin;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   if (typeof context.query.orgID !== "string" || Number.isNaN(parseInt(context.query.orgID, 10))) {

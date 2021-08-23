@@ -1,5 +1,4 @@
 import configs from "../components/configs";
-import Layout from "../components/Layout";
 import fetch from "isomorphic-unfetch";
 import React, { Component, useContext, useEffect, useState } from "react";
 import MonitoringStream from "../components/MonitoringStream";
@@ -87,18 +86,18 @@ function ATEMPanel() {
   return <ProgramBus />;
 }
 
-export default function Playout() {
+export default function P() {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   return (
-    <Layout>
+    <>
       <TextSlideGenerator show={show} onHide={() => handleClose()} />
       <Container fluid>
         <Row>
-          <h1>playout-styring</h1>
+          <h1>p-styring</h1>
         </Row>
         <Row>
           <Col>
@@ -112,6 +111,6 @@ export default function Playout() {
           </Col>
         </Row>
       </Container>
-    </Layout>
+    </>
   );
 }

@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { GetServerSideProps } from "next";
-import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
 import { UserContext } from "../../../components/UserContext";
 import {
@@ -13,9 +12,9 @@ import {
   getOrg,
   fkVideoPartial,
   APIPOST,
-  fkVideoPartialSchema
+  fkVideoPartialSchema,
 } from "../../../components/TS-API/API";
-import {ErrorsIfAny} from "../../../components/TS-API/formUtils";
+import { ErrorsIfAny } from "../../../components/TS-API/formUtils";
 
 interface VideoCreateProps {
   org: fkOrg;
@@ -26,7 +25,7 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
   const context = useContext(UserContext);
 
   const router = useRouter();
-  const [fieldErrors, setFieldErrors] = useState<{ [k: string]: string[]; }>();
+  const [fieldErrors, setFieldErrors] = useState<{ [k: string]: string[] }>();
   const [formError, setFormError] = useState<JSX.Element>();
   const [errors, setErrors] = useState<React.ReactNode>(null);
   const [videoName, setVideoName] = useState<string>("");
@@ -65,7 +64,7 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
   };
 
   return (
-    <Layout>
+    <>
       <WindowWidget>
         <Form onSubmit={handleSubmit}>
           <Form.Group>
@@ -119,7 +118,7 @@ export default function VideoCreate({ org, possibleCategories }: VideoCreateProp
           </Button>
         </Form>
       </WindowWidget>
-    </Layout>
+    </>
   );
 }
 

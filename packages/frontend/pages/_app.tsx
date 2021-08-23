@@ -11,6 +11,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import "components/main.sass";
 import { fkUser, getUserProfile } from "components/TS-API/API";
 import { UserContext, UserContextLoggedInState, UserContextUnauthState } from "../components/UserContext";
+import Layout from "components/Layout";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -84,7 +85,9 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           : ({ isLoggedIn: false, login } as UserContextUnauthState)
       }
     >
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </UserContext.Provider>
   );
 }

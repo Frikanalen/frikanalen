@@ -4,7 +4,6 @@ import { GetServerSideProps } from "next";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import Layout from "../components/Layout";
 import WindowWidget from "../components/WindowWidget";
 import ScheduleInfo from "../components/ScheduleInfo";
 
@@ -74,7 +73,7 @@ interface IndexProps {
 
 export default function Index({ scheduleJSON }: IndexProps): JSX.Element {
   return (
-    <Layout>
+    <>
       <Container>
         <Row sm={1} xl={2}>
           <Col>
@@ -88,7 +87,7 @@ export default function Index({ scheduleJSON }: IndexProps): JSX.Element {
           </Col>
         </Row>
       </Container>
-    </Layout>
+    </>
   );
 }
 

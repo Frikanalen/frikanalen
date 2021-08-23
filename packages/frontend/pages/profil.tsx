@@ -9,10 +9,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import WindowWidget from "../components/WindowWidget";
 
-import {UserContext, UserContextLoggedInState} from "../components/UserContext";
+import { UserContext, UserContextLoggedInState } from "../components/UserContext";
 import configs from "../components/configs";
-
-import Layout from "../components/Layout";
 
 function UserProfile(): JSX.Element {
   const context = useContext(UserContext);
@@ -65,14 +63,11 @@ function UserProfile(): JSX.Element {
           <Form.Label>Mobilnummer</Form.Label>
           <Form.Control onChange={(e): void => setMSISDN(e.target.value)} value={MSISDN} />
         </Form.Group>
-        <Col>
-        </Col>
+        <Col></Col>
       </Row>
       <Row>
         <Col className="mb-3">
-          <Button type="submit">
-            Oppdater
-          </Button>
+          <Button type="submit">Oppdater</Button>
         </Col>
       </Row>
     </Form>
@@ -106,9 +101,11 @@ function OrganizationCard({ role }: { role: fkOrgRole }): JSX.Element {
         endpoint: `organization/${role.organizationId}`,
         token: token,
         validator: fkOrgSchema.parse,
-      }).then((res) => setOrg(res)).catch(e => console.log(e));
+      })
+        .then((res) => setOrg(res))
+        .catch((e) => console.log(e));
     }
-  },[role.organizationId, token]);
+  }, [role.organizationId, token]);
   if (!context.isLoggedIn || !org) {
     return <></>;
   }
@@ -189,11 +186,7 @@ function StaffMenu(): JSX.Element {
 export default function Profile(): JSX.Element {
   const context = useContext(UserContext);
   if (!context.isLoggedIn) {
-    return (
-      <Layout>
-        <p>Du må være logget inn</p>
-      </Layout>
-    );
+    return <p>Du må være logget inn</p>;
   }
 
   const { profile } = context;
@@ -201,7 +194,7 @@ export default function Profile(): JSX.Element {
   if (profile == null) return <></>;
 
   return (
-    <Layout>
+    <>
       <WindowWidget invisible>
         <h2>Hei, {profile.firstName}!</h2>
         <UserCard />
@@ -210,6 +203,6 @@ export default function Profile(): JSX.Element {
       <WindowWidget invisible>
         <OrganizationsCard />
       </WindowWidget>
-    </Layout>
+    </>
   );
 }

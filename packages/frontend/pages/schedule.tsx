@@ -3,7 +3,6 @@ import Moment from "react-moment";
 import moment from "moment";
 import "moment/locale/nb";
 import WindowWidget from "../components/WindowWidget";
-import Layout from "../components/Layout";
 import { APIGET, fkSchedule, fkScheduleItem, fkScheduleSchema } from "../components/TS-API/API";
 import { GetServerSideProps } from "next";
 
@@ -104,11 +103,15 @@ export default function Schedule(props: ScheduleProps): JSX.Element {
       return;
     }
     // FIXME: Do error handling here
-    scheduleForDate(date).then((s) => setScheduleJSON(s)).catch((reason)=>{console.log(reason)});
+    scheduleForDate(date)
+      .then((s) => setScheduleJSON(s))
+      .catch((reason) => {
+        console.log(reason);
+      });
   }, [date]);
 
   return (
-    <Layout>
+    <>
       <WindowWidget>
         <div style={{ display: "flex" }}>
           <h1
@@ -150,6 +153,6 @@ export default function Schedule(props: ScheduleProps): JSX.Element {
              }`}
         </style>
       </WindowWidget>
-    </Layout>
+    </>
   );
 }

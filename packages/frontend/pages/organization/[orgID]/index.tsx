@@ -1,5 +1,4 @@
 import React from "react";
-import Layout from "components/Layout";
 import WindowWidget from "components/WindowWidget";
 import { getOrg, fkOrg, fkVideoQuery } from "components/TS-API/API";
 import VideoList, { getLatestVideos } from "components/VideoList";
@@ -75,7 +74,7 @@ interface OrganizationPageProps {
 
 export default function OrganizationPage({ orgData, latestVideos }: OrganizationPageProps): JSX.Element {
   return (
-    <Layout>
+    <>
       <WindowWidget>
         <OrganizationData orgData={orgData} />
         <Card bg="light" className="text-dark">
@@ -87,6 +86,6 @@ export default function OrganizationPage({ orgData, latestVideos }: Organization
         <p>&nbsp;</p>
         <OrganizationContactInfo orgData={orgData} />
       </WindowWidget>
-    </Layout>
+    </>
   );
 }
