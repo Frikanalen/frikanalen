@@ -47,7 +47,7 @@ $k create secret generic database-api-secret \
 
 echo "Applying database CRDs..."
 
-$k apply -f databasev1.yaml
+$k apply -f database.yaml
 
 echo "Starting backend..."
 
