@@ -9,6 +9,8 @@ microk8s enable dns storage traefik linkerd metallb fluentd
 echo "Customizing traefik to play nice with metallb"
 
 $k apply -f traefik.yaml
+$k apply -f $BASEPATH/ingress/000-crds.yaml
+$k apply -f $BASEPATH/ingress/000-rbac.yaml
 
 echo "Opening ingresses..."
 
