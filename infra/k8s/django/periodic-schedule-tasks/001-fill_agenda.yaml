@@ -20,16 +20,23 @@ spec:
               - name: DJANGO_SETTINGS_MODULE
                 value: fkweb.settings.production
               - name: DATABASE_HOST
-                value: postgres.database
+                value: database-api
               - name: DATABASE_USER
                 value: fkweb
               - name: DATABASE_NAME
                 value: fkweb
               - name: ALLOWED_HOSTS
-                value: frikanalen.no,fk.dev.local
+                value: frikanalen.no,fk.dev.local,forrige.frikanalen.no
               - name: SMTP_SERVER
                 value: smtp.uio.no
-            envFrom:
-            - secretRef:
-                name: postgres-secret-django
+              - name: SECRET_KEY
+                valueFrom:
+                   secretKeyRef:
+                      name: django-secret-key
+                      key: SECRET_KEY
+              - name: DATABASE_PASS
+                valueFrom:
+                   secretKeyRef:
+                      name: database-api-secret
+                      key: POSTGRES_PASSWORD
           restartPolicy: OnFailure
