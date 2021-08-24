@@ -7,10 +7,12 @@ export const Container = styled.div`
   justify-content: center;
 
   margin-top: 32px;
+  width: 100%;
 `;
 
 const Content = styled.main`
   max-width: ${CONTENT_WIDTH}px;
+  width: 100%;
 `;
 
 export function Body(props: React.PropsWithChildren<{}>) {
