@@ -5,6 +5,10 @@ import "@fontsource/roboto/700.css";
 import "@fontsource/roboto/900.css";
 
 export const global = (theme: Theme) => css`
+  * {
+    box-sizing: border-box;
+  }
+
   body,
   html {
     margin: 0;
