@@ -21,7 +21,6 @@ export const global = (theme: Theme) => css`
   }
 
   a {
-    color: ${theme.fontColor.normal};
     text-decoration: none;
   }
 
@@ -31,7 +30,7 @@ export const global = (theme: Theme) => css`
   h4,
   h5 {
     margin-top: 0px;
-    line-height: inherit;
+    line-height: initial;
   }
 
   h2 {
