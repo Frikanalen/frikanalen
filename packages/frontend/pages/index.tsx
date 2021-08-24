@@ -1,4 +1,6 @@
 import styled from "@emotion/styled";
+import { useObserver } from "mobx-react-lite";
+import { ScheduleItemSummary } from "modules/schedule/components/ScheduleItemSummary";
 import { useStores } from "modules/state/manager";
 import { VideoPlayer } from "modules/video/components/VideoPlayer";
 import { GetServerSideProps, NextPageContext } from "next";
@@ -16,13 +18,23 @@ const Sidebar = styled.div`
   margin-left: 32px;
 `;
 
+const Schedule = styled.div`
+  margin-top: 32px;
+`;
+
 export default function Index() {
   const { scheduleStore } = useStores();
+  const items = useObserver(() => scheduleStore.upcoming);
 
   return (
     <Container>
       <Main>
         <VideoPlayer width={1280} height={720} src="https://frikanalen.no/stream/index.m3u8" />
+        <Schedule>
+          {items.map((x) => (
+            <ScheduleItemSummary key={x.id} item={x} />
+          ))}
+        </Schedule>
       </Main>
       <Sidebar>
         <h2>Velkommen til nye Frikanalen!</h2>
@@ -32,7 +44,6 @@ export default function Index() {
           I mellomtiden vil du kunne få et lite innblikk i endringene ved å se på{" "}
           <a href="https://github.com/Frikanalen/frikanalen/commits/master">endringsloggen i kodearkivet</a>.
         </p>
-        {JSON.stringify(scheduleStore.items)}
       </Sidebar>
     </Container>
   );

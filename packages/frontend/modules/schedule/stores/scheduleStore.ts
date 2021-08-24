@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { computed, observable } from "mobx";
 import { api } from "modules/network";
 import { ApiCollection } from "modules/network/types";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
@@ -31,6 +31,11 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
 
   public hydrate(data: SerializedScheduleStore) {
     this.items = data.items;
+  }
+
+  @computed
+  public get upcoming() {
+    return this.items.filter((x) => new Date() < new Date(x.endtime)).slice(0, 4);
   }
 }
 
