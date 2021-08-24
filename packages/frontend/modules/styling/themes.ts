@@ -6,6 +6,7 @@ export const lightTheme: Theme = {
     accent: "#E88840",
     secondAccent: "#F15645",
     thirdAccent: "#64BC50",
+    divider: "rgba(0, 0, 0, 0.2)",
   },
   fontColor: {
     normal: "rgba(0, 0, 0, 0.85)",
