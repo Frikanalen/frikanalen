@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oven-media-engine
+  namespace: streaming
+spec:
+  selector:
+    matchLabels:
+      app: oven-media-engine
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: oven-media-engine
+    spec:
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: oven-media-config
+      containers:
+      - name: oven-media-engine
+        image: airensoft/ovenmediaengine:latest
+        volumeMounts:
+        - name: config-volume
+          mountPath: /opt/ovenmediaengine/bin/origin_conf
+        ports:
+        - containerPort: 1935
+          protocol: TCP
+        - containerPort: 3333
+          protocol: TCP
+        - containerPort: 3478
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 9000
+          protocol: TCP
+        - containerPort: 4000
+          protocol: UDP
+        - containerPort: 4001
+          protocol: UDP
+        - containerPort: 4002
+          protocol: UDP
+        - containerPort: 4003
+          protocol: UDP
+        - containerPort: 4004
+          protocol: UDP
+        - containerPort: 4005
+          protocol: UDP
+        - containerPort: 9999
+          protocol: UDP
+        - containerPort: 10006
+          protocol: UDP
+        - containerPort: 10007
+          protocol: UDP
+        - containerPort: 10008
+          protocol: UDP
+        - containerPort: 10009
+          protocol: UDP
+        - containerPort: 10010
+          protocol: UDP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: oven-media-engine-udp
+  namespace: streaming
+spec:
+  externalIPs:
+    - 192.168.3.101
+  externalTrafficPolicy: Cluster
+  type: LoadBalancer
+  selector:
+    app: oven-media-engine
+  ports:
+    - port: 4000
+      protocol: UDP
+      name: udpdunno1
+    - port: 4001
+      protocol: UDP
+      name: udpdunno2
+    - port: 4002
+      protocol: UDP
+      name: udpdunno3
+    - port: 4003
+      protocol: UDP
+      name: udpdunno4
+    - port: 4004
+      protocol: UDP
+      name: udpdunno5
+    - port: 4005
+      protocol: UDP
+      name: udpdunno6
+    - port: 9999
+      protocol: UDP
+      name: udpdunno7
+    - port: 10006
+      protocol: UDP
+      name: udpdunno8
+    - port: 10007
+      protocol: UDP
+      name: udpdunno9
+    - port: 10008
+      protocol: UDP
+      name: udpdunno10
+    - port: 10009
+      protocol: UDP
+      name: udpdunno11
+    - port: 10010
+      protocol: UDP
+      name: udpdunno12
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: oven-media-engine-tcp
+  namespace: streaming
+spec:
+  externalIPs:
+    - 192.168.3.101
+  externalTrafficPolicy: Cluster
+  type: LoadBalancer
+  selector:
+    app: oven-media-engine
+  ports:
+    - port: 1935
+      protocol: TCP
+      name: dunno1
+    - port: 3333
+      protocol: TCP
+      name: dunno2
+    - port: 3478
+      protocol: TCP
+      name: dunno3
+    - port: 8080
+      protocol: TCP
+      name: dunno4
+    - port: 9000
+      protocol: TCP
+      name: dunno5

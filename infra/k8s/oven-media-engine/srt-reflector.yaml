@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: srt-reflector
+  namespace: streaming
+spec:
+  selector:
+    matchLabels:
+      app: srt-reflector
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: srt-reflector
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: srt-reflector
+        image: jrottenberg/ffmpeg:4.4-alpine
+        #command: [ "ffmpeg", "-re", "-i", "http://192.168.3.1:9094/frikanalen.ts", "-acodec", "libfdk_aac", "-b:a", "128k", "-ac", "2", "-vcodec", "copy", "-strict", "-2", "-y", "-f", "flv", "rtmp://oven-media-engine-tcp/frikanalen/program" ]
+        command: [ "ffmpeg", "-re", "-i", "http://192.168.3.1:9094/frikanalen.ts", "-acodec", "libfdk_aac", "-vbr", "5", "-vcodec", "libx264", "-strict", "-2", "-y", "-f", "mpegts", "udp://oven-media-engine-udp:4000" ]
+        #command: [ "ffmpeg", "-re", "-i", "http://192.168.3.1:9094/frikanalen.ts", "-acodec", "libfdk_aac", "-vbr", "5", "-vcodec", "copy", "-strict", "-2", "-y", "-f", "mpegts", "srt://oven-media-engine-udp:9999/frikanalen/program?streamid=srt%3A//oven-media-engine-udp%3A9999/frikanalen/program" ]
+        ports:
+        - containerPort: 1337
+          protocol: UDP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: srt-reflector
+  namespace: streaming
+spec:
+  type: ClusterIP
+  selector:
+    app: srt-reflector
+  ports:
+    - protocol: UDP
+      port: 1337
+      name: srt
