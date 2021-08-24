@@ -16,10 +16,30 @@ export const global = (theme: Theme) => css`
 
     font-family: "Roboto", sans-serif;
     color: ${theme.fontColor.normal};
+
+    font-size: 16px;
   }
 
   a {
     color: ${theme.fontColor.normal};
     text-decoration: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    margin-top: 0px;
+    line-height: inherit;
+  }
+
+  h2 {
+    font-weight: 700;
+    font-size: 2em;
+  }
+
+  p {
+    font-size: 1em;
   }
 `;
