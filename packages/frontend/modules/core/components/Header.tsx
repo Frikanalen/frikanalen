@@ -40,6 +40,7 @@ export function Header() {
         <Nav>
           <HeaderLink accent="secondAccent" to="/" label="Direkte" />
           <HeaderLink accent="accent" to="/schedule" label="Sendeplan" />
+          <HeaderLink accent="thirdAccent" to="/om" label="Om oss" />
         </Nav>
       </Container>
     </Outer>
