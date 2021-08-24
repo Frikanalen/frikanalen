@@ -6,12 +6,15 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shaka-player/dist/controls.css";
-import "shaka-player/dist/demo.css";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import "components/main.sass";
 import { fkUser, getUserProfile } from "components/TS-API/API";
 import { UserContext, UserContextLoggedInState, UserContextUnauthState } from "../components/UserContext";
-import Layout from "components/Layout";
+import { Header } from "modules/core/components/Header";
+import { Global, ThemeProvider } from "@emotion/react";
+import { global } from "modules/styling/global";
+import { lightTheme } from "modules/styling/themes";
+import { Body } from "modules/core/components/Body";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -85,9 +88,13 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           : ({ isLoggedIn: false, login } as UserContextUnauthState)
       }
     >
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <ThemeProvider theme={lightTheme}>
+        <Global styles={global} />
+        <Header />
+        <Body>
+          <Component {...pageProps} />
+        </Body>
+      </ThemeProvider>
     </UserContext.Provider>
   );
 }
