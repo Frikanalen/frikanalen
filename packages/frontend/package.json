@@ -39,6 +39,8 @@
     "isomorphic-unfetch": "^3.0.0",
     "js-cookie": "^3.0.0",
     "minimist": ">1.2.3",
+    "mobx": "^6.3.2",
+    "mobx-react-lite": "^3.2.0",
     "moment": "^2.27.0",
     "next": "^11.0.1",
     "next-cookies": "^2.0.3",
