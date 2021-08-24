@@ -1,0 +1,239 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oven-media-config
+  namespace: streaming
+data:
+  Server.xml: |
+    <?xml version="1.0" encoding="UTF-8" ?>
+
+    <Server version="8">
+      <Name>OvenMediaEngine</Name>
+      <!-- Host type (origin/edge) -->
+      <Type>origin</Type>
+      <!-- Specify IP address to bind (* means all IPs) -->
+      <IP>*</IP>
+      
+      <!-- 
+      To get the public IP address(mapped address of stun) of the local server. 
+      This is useful when OME cannot obtain a public IP from an interface, such as AWS or docker environment. 
+      If this is successful, you can use ${PublicIP} in your settings.
+      -->
+      <StunServer>stun.l.google.com:19302</StunServer>
+
+      <!-- Settings for the ports to bind -->
+      <Bind>
+        <!-- Enable this configuration if you want to use API Server -->
+        <!--
+        <Managers>
+          <API>
+            <Port>${env:OME_API_PORT:48081}</Port>
+            <WorkerCount>1</WorkerCount>
+          </API>
+        </Managers>
+        -->
+        <Providers>
+          <RTMP>
+            <Port>${env:OME_RTMP_PROV_PORT:1935}</Port>
+          </RTMP>
+          <SRT>
+            <Port>${env:OME_SRT_PROV_PORT:9999}</Port>
+          </SRT>
+          <MPEGTS>
+            <!--
+              Listen on port 4000-4005
+              This is just a demonstration to show that you can configure the port in several ways
+            -->
+            <Port>${env:OME_MPEGTS_PROV_PORT:4000-4003,4004,4005/udp}</Port>
+          </MPEGTS>
+          <WebRTC>
+            <Signalling>
+              <Port>${env:OME_SIGNALLING_PORT:3333}</Port>
+            </Signalling>
+            <IceCandidates>
+              <TcpRelay>${env:OME_TCP_RELAY_ADDRESS:stream.frikanalen.no:3478}</TcpRelay>
+              <IceCandidate>${env:OME_ICE_CANDIDATES:stream.frikanalen.no:10006-10010/udp}</IceCandidate>
+            </IceCandidates>
+          </WebRTC>
+        </Providers>
+
+        <Publishers>
+          <!-- The OVT is protocol for ORIGIN-EDGE -->
+          <OVT>
+            <Port>${env:OME_ORIGIN_PORT:9000}</Port>
+          </OVT>
+          <HLS>
+            <Port>${env:OME_HLS_STREAM_PORT:8080}</Port>
+            <!-- If you want to use TLS, specify the TLS port -->
+            <!-- <TLSPort>443</TLSPort> -->
+          </HLS>
+          <DASH>
+            <Port>${env:OME_DASH_STREAM_PORT:8080}</Port>
+            <!-- If you want to use TLS, specify the TLS port -->
+            <!-- <TLSPort>443</TLSPort> -->
+          </DASH>
+          <WebRTC>
+            <Signalling>
+              <Port>${env:OME_SIGNALLING_PORT:3333}</Port>
+            </Signalling>
+            <IceCandidates>
+              <TcpRelay>${env:OME_TCP_RELAY_ADDRESS:stream.frikanalen.no:3478}</TcpRelay>
+              <IceCandidate>${env:OME_ICE_CANDIDATES:stream.frikanalen.no:10006-10010/udp}</IceCandidate>
+            </IceCandidates>
+          </WebRTC>
+        </Publishers>
+      </Bind>
+
+      <VirtualHosts>
+        <!--
+          You can include multiple XML files by doing the following:
+          <VirtualHost include="sites-enabled/*.xml" />
+        -->
+        <VirtualHost include="VHost*.xml" />
+        <VirtualHost>
+          <Name>default</Name>
+
+          <!-- Settings for multi ip/domain and TLS -->
+          <Host>
+            <Names>
+              <!-- Host names
+                <Name>stream1.airensoft.com</Name>
+                <Name>stream2.airensoft.com</Name>
+                <Name>*.sub.airensoft.com</Name>
+                <Name>192.168.0.1</Name>
+              -->
+              <Name>*</Name>
+            </Names>
+            <!--
+            <TLS>
+              <CertPath>path/to/file.crt</CertPath>
+              <KeyPath>path/to/file.key</KeyPath>
+              <ChainCertPath>path/to/file.crt</ChainCertPath>
+            </TLS>
+            -->
+          </Host>
+
+          <!-- Refer https://airensoft.gitbook.io/ovenmediaengine/signedpolicy
+          <SignedPolicy>
+            <PolicyQueryKeyName>policy</PolicyQueryKeyName>
+            <SignatureQueryKeyName>signature</SignatureQueryKeyName>
+            <SecretKey>aKq#1kj</SecretKey>
+
+            <Enables>
+              <Providers>rtmp,webrtc,srt</Providers>
+              <Publishers>webrtc,hls,dash,lldash</Publishers>
+            </Enables>
+          </SignedPolicy>
+          -->
+
+          <!-- Settings for applications -->
+          <Applications>
+            <Application>
+              <Name>frikanalen</Name>
+              <!-- Application type (live/vod) -->
+              <Type>live</Type>
+              <OutputProfiles>
+                <OutputProfile>
+                  <Name>program</Name>
+                  <OutputStreamName>${OriginStreamName}_bypass</OutputStreamName>
+                  <Encodes>
+                    <Audio>
+                      <Bypass>true</Bypass>
+                    </Audio>
+                    <Video>
+                      <Bypass>true</Bypass>
+                    </Video>
+                    <Video>
+                       <!-- vp8, h264 -->
+                       <Codec>vp8</Codec>
+                       <Width>1280</Width>
+                       <Height>720</Height>
+                       <Bitrate>2000000</Bitrate>
+                       <Framerate>50.0</Framerate>
+                    </Video>
+                    <Audio>
+                      <Codec>opus</Codec>
+                      <Bitrate>128000</Bitrate>
+                      <Samplerate>48000</Samplerate>
+                      <Channel>2</Channel>
+                    </Audio>
+                  </Encodes>
+                </OutputProfile>
+              </OutputProfiles>
+              <Providers>
+                <OVT />
+                <WebRTC />
+                <RTMP />
+                <SRT />
+                <RTSPPull />
+                <MPEGTS>
+                  <StreamMap>
+                    <!--
+                      Set the stream name of the client connected to the port to "stream_${Port}"
+                      For example, if a client connets to port 4000, OME creates a "stream_4000" stream
+                    -->
+                    <Stream>
+                      <Name>program</Name>
+                      <Port>4000</Port>
+                    </Stream>
+                    <Stream>
+                      <Name>stream_${Port}</Name>
+                      <Port>4001-4004</Port>
+                    </Stream>
+                    <Stream>
+                      <Name>stream_4005</Name>
+                      <Port>4005</Port>
+                    </Stream>
+                  </StreamMap>
+                </MPEGTS>
+              </Providers>
+              <Publishers>
+                <SessionLoadBalancingThreadCount>8</SessionLoadBalancingThreadCount>
+                <OVT />
+                <WebRTC>
+                  <Timeout>30000</Timeout>
+                </WebRTC>
+                <HLS>
+                  <SegmentDuration>5</SegmentDuration>
+                  <SegmentCount>3</SegmentCount>
+                  <CrossDomains>
+                    <Url>*</Url>
+                  </CrossDomains>
+                </HLS>
+                <DASH>
+                  <SegmentDuration>5</SegmentDuration>
+                  <SegmentCount>3</SegmentCount>
+                  <CrossDomains>
+                    <Url>*</Url>
+                  </CrossDomains>
+                  <UTCTiming />
+                </DASH>
+                <LLDASH>
+                  <SegmentDuration>5</SegmentDuration>
+                  <CrossDomains>
+                    <Url>*</Url>
+                  </CrossDomains>
+                  <UTCTiming />
+                </LLDASH>
+              </Publishers>
+            </Application>
+          </Applications>
+        </VirtualHost>
+      </VirtualHosts>
+    </Server>
+  Logger.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <Logger version="2">
+      <!-- Log file location -->
+      <Path>/var/log/ovenmediaengine</Path>
+
+      <!-- Disable some SRT internal logs -->
+      <Tag name="SRT" level="critical" />
+      <Tag name="HttpServer" level="warn" />
+      <Tag name=".*\.Stat" level="warn" />
+
+      <!-- Log level: [debug, info, warn, error, critical] -->
+      <Tag name=".*" level="info" />
+    </Logger>
+

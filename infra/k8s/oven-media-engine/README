@@ -1,0 +1,5 @@
+This streaming server is not in use currently.
+
+An attempt was made to configure it, but it did not play nice with our outgoing transport stream.
+
+Perhaps when a new encoder is set up, it will be not broken.
