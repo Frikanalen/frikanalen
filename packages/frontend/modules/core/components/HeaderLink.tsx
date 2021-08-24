@@ -13,6 +13,25 @@ const Anchor = styled.a<{ active: boolean; accent: Accent }>`
   color: ${(props) => props.theme.fontColor.muted};
 
   transition: 200ms ease color;
+  position: relative;
+
+  &:after {
+    content: "";
+    display: block;
+
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: -8px;
+
+    height: 3px;
+    background: transparent;
+    border-radius: 3px;
+
+    transition: 200ms ease all;
+    transform-origin: 0 0;
+    transform: scaleX(0);
+  }
 
   ${(props) => {
     if (props.active) {
@@ -23,6 +42,11 @@ const Anchor = styled.a<{ active: boolean; accent: Accent }>`
 
         &:hover {
           color: ${accent};
+        }
+
+        &:after {
+          background: ${accent};
+          transform: scaleX(1);
         }
       `;
     } else {
