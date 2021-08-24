@@ -1,5 +1,7 @@
 import styled from "@emotion/styled";
+import { useStores } from "modules/state/manager";
 import { VideoPlayer } from "modules/video/components/VideoPlayer";
+import { GetServerSideProps, NextPageContext } from "next";
 
 const Container = styled.div`
   display: flex;
@@ -15,6 +17,8 @@ const Sidebar = styled.div`
 `;
 
 export default function Index() {
+  const { scheduleStore } = useStores();
+
   return (
     <Container>
       <Main>
@@ -28,7 +32,15 @@ export default function Index() {
           I mellomtiden vil du kunne få et lite innblikk i endringene ved å se på{" "}
           <a href="https://github.com/Frikanalen/frikanalen/commits/master">endringsloggen i kodearkivet</a>.
         </p>
+        {JSON.stringify(scheduleStore.items)}
       </Sidebar>
     </Container>
   );
 }
+
+Index.getInitialProps = async (context: NextPageContext) => {
+  const { scheduleStore } = context.manager.stores;
+  await scheduleStore.fetch();
+
+  return {};
+};
