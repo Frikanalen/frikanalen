@@ -10,7 +10,7 @@ const Container = styled.div`
 `;
 
 const Main = styled.div`
-  width: 50%;
+  width: 60%;
 `;
 
 const Sidebar = styled.div`
