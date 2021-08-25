@@ -22,7 +22,7 @@ const Anchor = styled.a<{ active: boolean; accent: Accent }>`
     position: absolute;
     left: 0px;
     right: 0px;
-    bottom: -8px;
+    bottom: -2px;
 
     height: 3px;
     background: transparent;
