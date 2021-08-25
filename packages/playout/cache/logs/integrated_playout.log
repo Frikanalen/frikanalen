@@ -1,0 +1,536 @@
+2020-02-05 18:16:41,853 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:16:41,853 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/video
+2020-02-05 18:16:41,853 WARNING:root playlist.py:199 Failed to update plans: 2020-02-05 - 2020-02-18
+2020-02-05 18:16:41,854 WARNING:root playlist.py:206 Cache empty
+2020-02-05 18:16:41,861 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 53, in <module>
+    playout = playout.Playout(service=playout_service)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 39, in __init__
+    self.player = _get_class(player_class)(LOOP_FILENAME)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 24, in __init__
+    self.caspar = CasparCG('localhost')
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 25, in __init__
+    self.socket.connect((self.hostname, self.amcp_port))
+ConnectionRefusedError: [Errno 111] Connection refused
+2020-02-05 18:18:00,337 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:18:00,338 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/video
+2020-02-05 18:18:00,338 WARNING:root playlist.py:199 Failed to update plans: 2020-02-05 - 2020-02-18
+2020-02-05 18:18:00,338 WARNING:root playlist.py:206 Cache empty
+2020-02-05 18:18:00,345 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:18:00,346 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:18:00,346 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:18:00,346 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:18:00,551 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:18:00,551 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 53, in <module>
+    playout = playout.Playout(service=playout_service)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 40, in __init__
+    self.random_provider = jukebox.RandomProvider()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 36, in __init__
+    self.reload()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 39, in reload
+    videos = csv.reader(open(self.filename, "r"), delimiter='|')
+FileNotFoundError: [Errno 2] No such file or directory: '/home/toresbe/frikanalen/packages/cache/csvdb/jukebox_selection.csv'
+2020-02-05 18:19:36,289 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:19:36,290 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/video
+2020-02-05 18:19:36,290 WARNING:root playlist.py:199 Failed to update plans: 2020-02-05 - 2020-02-18
+2020-02-05 18:19:36,290 WARNING:root playlist.py:206 Cache empty
+2020-02-05 18:19:36,297 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:19:36,297 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:19:36,297 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:19:36,298 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:19:36,505 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:19:36,505 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 53, in <module>
+    playout = playout.Playout(service=playout_service)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 40, in __init__
+    self.random_provider = jukebox.RandomProvider()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 36, in __init__
+    self.reload()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 39, in reload
+    videos = csv.reader(open(self.filename, "r"), delimiter='|')
+FileNotFoundError: [Errno 2] No such file or directory: '/home/toresbe/frikanalen/packages/cache/csvdb/jukebox_selection.csv'
+2020-02-05 18:20:07,484 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:20:07,484 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/video
+2020-02-05 18:20:07,484 WARNING:root playlist.py:199 Failed to update plans: 2020-02-05 - 2020-02-18
+2020-02-05 18:20:07,485 WARNING:root playlist.py:206 Cache empty
+2020-02-05 18:20:07,491 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:20:07,492 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:20:07,492 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:20:07,492 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:20:07,678 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:20:07,678 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 53, in <module>
+    playout = playout.Playout(service=playout_service)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 40, in __init__
+    self.random_provider = jukebox.RandomProvider()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 36, in __init__
+    self.reload()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 39, in reload
+    videos = csv.reader(open(self.filename, "r"), delimiter='|')
+FileNotFoundError: [Errno 2] No such file or directory: '/home/toresbe/frikanalen/packages/cache/csvdb/jukebox_selection.csv'
+2020-02-05 18:20:26,358 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:20:26,358 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/video
+2020-02-05 18:20:26,359 WARNING:root playlist.py:199 Failed to update plans: 2020-02-05 - 2020-02-18
+2020-02-05 18:20:26,359 WARNING:root playlist.py:206 Cache empty
+2020-02-05 18:20:26,365 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:20:26,366 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:20:26,366 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:20:26,366 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:20:26,554 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:20:26,554 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 53, in <module>
+    playout = playout.Playout(service=playout_service)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 40, in __init__
+    self.random_provider = jukebox.RandomProvider()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 36, in __init__
+    self.reload()
+  File "/home/toresbe/frikanalen/packages/playout/vision/jukebox.py", line 39, in reload
+    videos = csv.reader(open(self.filename, "r"), delimiter='|')
+FileNotFoundError: [Errno 2] No such file or directory: '/home/toresbe/frikanalen/packages/cache/csvdb/jukebox_selection.csv'
+2020-02-05 18:22:09,400 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:22:09,405 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:22:09,405 WARNING:root playlist.py:199 Failed to update plans: 2020-02-05 - 2020-02-18
+2020-02-05 18:22:09,405 WARNING:root playlist.py:206 Cache empty
+2020-02-05 18:22:09,412 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:22:09,412 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:22:09,413 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:22:09,413 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:22:09,580 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:22:09,591 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:22:09,591 WARNING:root playout.py:126 Scheduled nothing
+2020-02-05 18:22:09,592 WARNING:root playout.py:136 Program schedule empty
+2020-02-05 18:22:09,592 INFO:root playout.py:219 Pause before jukebox: 39.0s
+2020-02-05 18:22:09,592 INFO:root playout.py:113 Playback video_id=-1, offset=None+0s name='Jukebox pause screen' duration=0:12
+2020-02-05 18:22:09,592 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename filler/FrikanalenLoop.avi
+2020-02-05 18:22:09,592 DEBUG:root __init__.py:76 sending command PLAY 1-50 "filler/FrikanalenLoop" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:22:10,057 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:22:21,604 INFO:root playout.py:198 Ident playback start
+2020-02-05 18:22:21,605 INFO:root playout.py:113 Playback video_id=-1, offset=None+0s name='Frikanalen Vignett' duration=0:27
+2020-02-05 18:22:21,605 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename filler/FrikanalenVignett.avi
+2020-02-05 18:22:21,605 DEBUG:root __init__.py:76 sending command PLAY 1-50 "filler/FrikanalenVignett" MIX 50 1 LINEAR RIGHT 
+2020-02-05 18:22:21,847 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:22:53,930 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:22:53,930 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:22:53,931 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:22:53,938 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:22:53,938 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:22:53,938 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:22:53,938 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:22:54,126 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:22:54,137 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:22:54,137 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:22:54,137 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+234.137869s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:22:54,144 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:22:54,144 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:22:54,145 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:22:54,145 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 56, in <module>
+    playout.set_schedule(schedule)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 62, in set_schedule
+    self.resume_playback()
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 73, in resume_playback
+    self.cue_program(current_program, current_program.seconds_since_playback())
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 115, in cue_program
+    self.player.play_program(program, resume_offset=resume_offset)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 72, in play_program
+    self._play_file(filename, resume_offset, self.media_layer, loop)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 42, in _play_file
+    seek = int(resume_offset * self.channel.framerate)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/channel.py", line 13, in framerate
+    self.caspar._get_info()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 81, in _get_info
+    for line in self._send_command('INFO'):
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 77, in _send_command
+    return self._read_reply()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 57, in _read_reply
+    returned_data_buffer += self.socket.recv(512)
+TypeError: can only concatenate str (not "bytes") to str
+2020-02-05 18:23:24,077 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:23:24,077 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:23:24,078 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:23:24,085 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:23:24,086 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:23:24,086 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:23:24,086 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:23:24,274 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:23:24,285 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:23:24,285 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:23:24,285 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+264.285846s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:23:24,292 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:23:24,293 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:23:24,293 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:23:24,293 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 56, in <module>
+    playout.set_schedule(schedule)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 62, in set_schedule
+    self.resume_playback()
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 73, in resume_playback
+    self.cue_program(current_program, current_program.seconds_since_playback())
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 115, in cue_program
+    self.player.play_program(program, resume_offset=resume_offset)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 72, in play_program
+    self._play_file(filename, resume_offset, self.media_layer, loop)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 42, in _play_file
+    seek = int(resume_offset * self.channel.framerate)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/channel.py", line 13, in framerate
+    self.caspar._get_info()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 82, in _get_info
+    (channel_id, video_standard, status) = line.split(' ', 3)
+TypeError: a bytes-like object is required, not 'str'
+2020-02-05 18:23:40,354 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:23:40,354 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:23:40,355 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:23:40,363 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:23:40,363 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:23:40,363 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:23:40,364 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:23:40,524 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:23:40,535 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:23:40,536 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:23:40,536 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+280.536422s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:23:40,542 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:23:40,542 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:23:40,543 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:23:40,543 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 56, in <module>
+    playout.set_schedule(schedule)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 62, in set_schedule
+    self.resume_playback()
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 73, in resume_playback
+    self.cue_program(current_program, current_program.seconds_since_playback())
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 115, in cue_program
+    self.player.play_program(program, resume_offset=resume_offset)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 72, in play_program
+    self._play_file(filename, resume_offset, self.media_layer, loop)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 42, in _play_file
+    seek = int(resume_offset * self.channel.framerate)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/channel.py", line 13, in framerate
+    self.caspar._get_info()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 84, in _get_info
+    (resolution, refreshmode, framerate) = re.match(r'([0-9]+)(.)([0-9]+)', video_standard).groups()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/re.py", line 173, in match
+    return _compile(pattern, flags).match(string)
+TypeError: cannot use a string pattern on a bytes-like object
+2020-02-05 18:24:04,860 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:24:04,860 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:24:04,861 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:24:04,868 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:24:04,869 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:24:04,869 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:24:04,869 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:24:05,049 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:24:05,061 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:24:05,061 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:24:05,061 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+305.061645s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:24:05,068 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:24:05,068 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:24:05,068 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:24:05,069 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 56, in <module>
+    playout.set_schedule(schedule)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 62, in set_schedule
+    self.resume_playback()
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 73, in resume_playback
+    self.cue_program(current_program, current_program.seconds_since_playback())
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 115, in cue_program
+    self.player.play_program(program, resume_offset=resume_offset)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 72, in play_program
+    self._play_file(filename, resume_offset, self.media_layer, loop)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 42, in _play_file
+    seek = int(resume_offset * self.channel.framerate)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/channel.py", line 13, in framerate
+    self.caspar._get_info()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 82, in _get_info
+    (channel_id, video_standard, status) = str(line.split(b' ', 3))
+ValueError: too many values to unpack (expected 3)
+2020-02-05 18:24:13,114 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:24:13,114 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:24:13,115 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:24:13,125 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:24:13,126 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:24:13,126 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:24:13,126 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:24:13,307 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:24:13,319 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:24:13,319 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:24:13,319 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+313.319585s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:24:13,325 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:24:13,325 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:24:13,326 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:24:13,326 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 56, in <module>
+    playout.set_schedule(schedule)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 62, in set_schedule
+    self.resume_playback()
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 73, in resume_playback
+    self.cue_program(current_program, current_program.seconds_since_playback())
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 115, in cue_program
+    self.player.play_program(program, resume_offset=resume_offset)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 72, in play_program
+    self._play_file(filename, resume_offset, self.media_layer, loop)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 42, in _play_file
+    seek = int(resume_offset * self.channel.framerate)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/channel.py", line 13, in framerate
+    self.caspar._get_info()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 82, in _get_info
+    (channel_id, video_standard, status) = line.split(b' ', 3).decode()
+AttributeError: 'list' object has no attribute 'decode'
+2020-02-05 18:24:24,781 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:24:24,781 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:24:24,782 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:24:24,789 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:24:24,790 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:24:24,790 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:24:24,790 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:24:24,970 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:24:24,981 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:24:24,981 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:24:24,982 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+324.982219s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:24:24,988 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:24:24,989 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:24:24,989 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:24:24,989 DEBUG:root __init__.py:76 sending command INFO 1
+2020-02-05 18:24:24,990 DEBUG:root __init__.py:38 CasparCG replied 201 INFO OK
+2020-02-05 18:24:24,990 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 56, in <module>
+    playout.set_schedule(schedule)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 62, in set_schedule
+    self.resume_playback()
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 73, in resume_playback
+    self.cue_program(current_program, current_program.seconds_since_playback())
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 115, in cue_program
+    self.player.play_program(program, resume_offset=resume_offset)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 72, in play_program
+    self._play_file(filename, resume_offset, self.media_layer, loop)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 42, in _play_file
+    seek = int(resume_offset * self.channel.framerate)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/channel.py", line 13, in framerate
+    self.caspar._get_info()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 88, in _get_info
+    xml_string = self._send_command('INFO %d' % (channel_id,))
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 77, in _send_command
+    return self._read_reply()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 64, in _read_reply
+    returned_data += self.socket.recv(512)
+TypeError: can only concatenate str (not "bytes") to str
+2020-02-05 18:24:36,651 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:24:36,652 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:24:36,653 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:24:36,663 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:24:36,663 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:24:36,663 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:24:36,663 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:24:36,833 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:24:36,845 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:24:36,845 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:24:36,845 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+336.845569s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:24:36,852 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:24:36,852 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:24:36,852 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:24:36,853 DEBUG:root __init__.py:76 sending command INFO 1
+2020-02-05 18:24:36,853 DEBUG:root __init__.py:38 CasparCG replied 201 INFO OK
+2020-02-05 18:24:36,854 DEBUG:root fk-playout-service:26 Unhandled exception
+Traceback (most recent call last):
+  File "./fk-playout-service", line 56, in <module>
+    playout.set_schedule(schedule)
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 62, in set_schedule
+    self.resume_playback()
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 73, in resume_playback
+    self.cue_program(current_program, current_program.seconds_since_playback())
+  File "/home/toresbe/frikanalen/packages/playout/vision/playout.py", line 115, in cue_program
+    self.player.play_program(program, resume_offset=resume_offset)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 72, in play_program
+    self._play_file(filename, resume_offset, self.media_layer, loop)
+  File "/home/toresbe/frikanalen/packages/playout/vision/players/casparcg_player.py", line 42, in _play_file
+    seek = int(resume_offset * self.channel.framerate)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/channel.py", line 13, in framerate
+    self.caspar._get_info()
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/site-packages/pycaspar/__init__.py", line 90, in _get_info
+    xml_string = re.sub(r'(?P<start><|</)(?P<number>[0-9]+?)>', '\g<start>tag\g<number>>', xml_string, 0)
+  File "/home/toresbe/frikanalen/packages/playout/env/lib/python3.7/re.py", line 192, in sub
+    return _compile(pattern, flags).sub(repl, string, count)
+TypeError: cannot use a string pattern on a bytes-like object
+2020-02-05 18:24:59,505 INFO:root fk-playout-service:45 FK Integrated Playout started
+2020-02-05 18:24:59,505 INFO:root fk-playout-service:46 Configuration details:
+name: FKConfiguration
+cache_root: /home/toresbe/frikanalen/packages/playout/cache
+video_cache_root: /home/toresbe/frikanalen/packages/playout/playout/video
+schedule_cache_root: /home/toresbe/frikanalen/packages/playout/cache/dailyplan
+queue_root: /home/toresbe/frikanalen/packages/playout/cache/queue
+jobs_root: /home/toresbe/frikanalen/packages/playout/cache/jobs
+depot_root: /home/toresbe/frikanalen/packages/playout/cache/depot
+render_type: broadcast
+jukebox: True
+video_cache_only: False
+ident_media_root: /home/toresbe/frikanalen/packages/playout/video
+2020-02-05 18:24:59,506 WARNING:root playlist.py:199 Failed to update plans: 2020-02-06 - 2020-02-18
+2020-02-05 18:24:59,513 DEBUG:root __init__.py:76 sending command CLEAR 1
+2020-02-05 18:24:59,514 DEBUG:root __init__.py:38 CasparCG replied 202 CLEAR OK
+2020-02-05 18:24:59,514 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename stills/screenbug
+2020-02-05 18:24:59,514 DEBUG:root __init__.py:76 sending command PLAY 1-100 "stills/screenbug" MIX 50 1 LINEAR RIGHT LOOP 
+2020-02-05 18:24:59,690 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK
+2020-02-05 18:24:59,702 INFO:root jukebox.py:75 Total 818 videos in jukebox. Shortest duration is 48.1s
+2020-02-05 18:24:59,702 INFO:root playout.py:124 Next scheduled video_id=625160 @ 2020-02-05 19:18:00
+2020-02-05 18:24:59,702 INFO:root playout.py:113 Playback video_id=625180, offset=0.0+359.702642s name='God Søndag fra P7 - De to basunene - Den første basun' duration=58:11
+2020-02-05 18:24:59,709 DEBUG:root casparcg_player.py:36 CasparCG is being asked to play filename /mnt/media/625180/broadcast/tv_gs_085.avi
+2020-02-05 18:24:59,709 DEBUG:root __init__.py:76 sending command INFO
+2020-02-05 18:24:59,710 DEBUG:root __init__.py:38 CasparCG replied 200 INFO OK
+2020-02-05 18:24:59,710 DEBUG:root __init__.py:76 sending command INFO 1
+2020-02-05 18:24:59,711 DEBUG:root __init__.py:38 CasparCG replied 201 INFO OK
+2020-02-05 18:24:59,711 DEBUG:root __init__.py:76 sending command PLAY 1-50 "625180/broadcast/tv_gs_085" MIX 50 1 LINEAR RIGHT SEEK 17985 
+2020-02-05 18:25:00,028 DEBUG:root __init__.py:38 CasparCG replied 202 PLAY OK

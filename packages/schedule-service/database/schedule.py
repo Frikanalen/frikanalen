@@ -76,7 +76,7 @@ class Schedule():
             FROM fk_scheduleitem AS i
             JOIN fk_video AS v ON (video_id = v.id)
             JOIN fk_organization AS o ON (v.organization_id = o.id)
-            WHERE (date_trunc('day', i.starttime) =
+            WHERE (date_trunc('day', i.starttime at time zone 'Europe/Oslo') =
                 date_trunc('day', %s at time zone 'Europe/Oslo'))
             ORDER BY i.starttime ASC;"""
         cur = self.conn.cursor()

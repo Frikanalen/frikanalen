@@ -29,9 +29,9 @@ Some folders have a basic README file of their own.
 
 Frikanalen is actively seeking volunteers who want to be part of building our unique service.
 
-If you're curious about the project, please get in touch on our IRC channel #frikanalen on Freenode, or #dev:frikanalen.no on Matrix.
+If you're curious about the project, please get in touch on our IRC channel #frikanalen on OFTC.
 
-Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/) and he can be reached [by mail](mailto:toresbe@gmail.com) as well.
+Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/) and he can be reached [by mail](mailto:toresbe@protonmail.com) as well.
 
 ## Current development focus
 
