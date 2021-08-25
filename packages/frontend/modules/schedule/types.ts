@@ -6,6 +6,7 @@ export type Organization = {
 export type Video = {
   id: number;
   name: string;
+  header: string;
   organization: Organization;
 };
 
