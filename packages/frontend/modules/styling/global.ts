@@ -20,6 +20,10 @@ export const global = (theme: Theme) => css`
     font-size: 16px;
   }
 
+  body {
+    overflow-y: scroll;
+  }
+
   a {
     text-decoration: none;
   }
