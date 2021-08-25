@@ -29,6 +29,7 @@ const NextTitle = styled.h3`
 
 const Schedule = styled.div`
   margin-top: 16px;
+  margin-bottom: 32px;
 `;
 
 export default function Index() {
