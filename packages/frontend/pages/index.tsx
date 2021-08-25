@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useObserver } from "mobx-react-lite";
+import { ScheduleItemBlurb } from "modules/schedule/components/ScheduleItemBlurb";
 import { ScheduleItemSummary } from "modules/schedule/components/ScheduleItemSummary";
 import { useStores } from "modules/state/manager";
 import { VideoPlayer } from "modules/video/components/VideoPlayer";
@@ -18,20 +19,31 @@ const Sidebar = styled.div`
   margin-left: 32px;
 `;
 
+const NowPlaying = styled(ScheduleItemBlurb)`
+  margin-top: 16px;
+`;
+
+const NextTitle = styled.h3`
+  margin-top: 16px;
+`;
+
 const Schedule = styled.div`
-  margin-top: 32px;
+  margin-top: 16px;
 `;
 
 export default function Index() {
   const { scheduleStore } = useStores();
-  const items = useObserver(() => scheduleStore.upcoming);
+
+  const [now, ...later] = useObserver(() => scheduleStore.upcoming);
 
   return (
     <Container>
       <Main>
         <VideoPlayer width={1280} height={720} src="https://frikanalen.no/stream/index.m3u8" />
+        <NowPlaying item={now} />
+        <NextTitle>Senere</NextTitle>
         <Schedule>
-          {items.map((x) => (
+          {later.map((x) => (
             <ScheduleItemSummary key={x.id} item={x} />
           ))}
         </Schedule>
