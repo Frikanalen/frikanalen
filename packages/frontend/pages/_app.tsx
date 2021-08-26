@@ -14,6 +14,7 @@ import { lightTheme } from "modules/styling/themes";
 import { Body } from "modules/core/components/Body";
 import { getManager, ManagerContext } from "modules/state/manager";
 import App from "next/app";
+import { useEffect } from "react";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -30,6 +31,11 @@ export type CustomAppProps = AppProps & { serialized: any };
 export default function CustomApp(props: CustomAppProps): JSX.Element {
   const { Component, pageProps, serialized } = props;
   const manager = getManager(serialized);
+
+  // TEMPORARY WORKAROUND, SEE authStore.ts
+  useEffect(() => {
+    manager.stores.authStore.authenticate();
+  }, [manager]);
 
   /*const [token, setToken] = useState<string | undefined>(undefined);
   const [profile, setProfile] = useState<fkUser | null>(null);
