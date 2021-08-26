@@ -11,11 +11,26 @@ const Container = styled.div`
 `;
 
 export function HeaderAuthBar() {
-  const { authStore } = useStores();
+  const { authStore, modalStore } = useStores();
   const isAuthenticated = useObserver(() => authStore.isAuthenticated);
 
+  const renderModalContent = () => {
+    return <>Login modal goes here</>;
+  };
+
   const renderUnauthenticated = () => {
-    return <GenericButton label="Logg inn" />;
+    return (
+      <GenericButton
+        onClick={() => {
+          console.log("test");
+          modalStore.spawn({
+            key: "test",
+            render: renderModalContent,
+          });
+        }}
+        label="Logg inn"
+      />
+    );
   };
 
   const renderAuthenticated = () => {
