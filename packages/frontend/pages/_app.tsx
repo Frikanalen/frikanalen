@@ -15,6 +15,7 @@ import { Body } from "modules/core/components/Body";
 import { getManager, ManagerContext } from "modules/state/manager";
 import App from "next/app";
 import { useEffect } from "react";
+import { ModalOverlay } from "modules/modal/components/ModalOverlay";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -98,6 +99,7 @@ export default function CustomApp(props: CustomAppProps): JSX.Element {
         <Body>
           <Component {...pageProps} />
         </Body>
+        <ModalOverlay />
       </ThemeProvider>
     </ManagerContext.Provider>
   );
