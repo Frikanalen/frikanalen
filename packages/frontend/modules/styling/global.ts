@@ -45,4 +45,19 @@ export const global = (theme: Theme) => css`
   p {
     font-size: 1em;
   }
+
+  button {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    text-align: inherit;
+    box-sizing: inherit;
+    cursor: pointer;
+    font: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
 `;
