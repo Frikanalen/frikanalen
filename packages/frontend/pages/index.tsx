@@ -4,7 +4,7 @@ import { ScheduleItemBlurb } from "modules/schedule/components/ScheduleItemBlurb
 import { ScheduleItemSummary } from "modules/schedule/components/ScheduleItemSummary";
 import { useStores } from "modules/state/manager";
 import { VideoPlayer } from "modules/video/components/VideoPlayer";
-import { GetServerSideProps, NextPageContext } from "next";
+import { NextPageContext } from "next";
 
 const Container = styled.div`
   display: flex;
