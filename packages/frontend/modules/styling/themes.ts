@@ -7,6 +7,7 @@ export const lightTheme: Theme = {
     secondAccent: "#F15645",
     thirdAccent: "#64BC50",
     divider: "rgba(0, 0, 0, 0.2)",
+    overlay: "rgba(255, 255, 255, 0.7)",
   },
   fontColor: {
     normal: "rgba(0, 0, 0, 0.85)",

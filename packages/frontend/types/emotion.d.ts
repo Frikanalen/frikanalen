@@ -8,6 +8,7 @@ declare module "@emotion/react" {
       secondAccent: string;
       thirdAccent: string;
       divider: string;
+      overlay: string;
     };
     fontColor: {
       normal: string;
