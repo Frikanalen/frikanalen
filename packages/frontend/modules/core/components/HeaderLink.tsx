@@ -9,7 +9,7 @@ const Anchor = styled.a<{ active: boolean; accent: Accent }>`
   font-weight: 900;
   font-size: 24px;
 
-  margin-left: 24px;
+  margin-right: 24px;
   color: ${(props) => props.theme.fontColor.muted};
 
   transition: 200ms ease color;

@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { Logo } from "./Logo";
 import { CONTENT_WIDTH } from "../constants";
 import { HeaderLink } from "./HeaderLink";
+import { HeaderAuthBar } from "./HeaderAuthBar";
 
 const Outer = styled.div`
   margin-top: 64px;
@@ -23,9 +24,9 @@ const Container = styled.header`
 
 const Nav = styled.nav`
   margin-top: 32px;
-  margin-left: -24px;
 
   display: flex;
+  align-items: center;
 `;
 
 const SizedLogo = styled(Logo)`
@@ -41,6 +42,7 @@ export function Header() {
           <HeaderLink accent="secondAccent" to="/" label="Direkte" />
           <HeaderLink accent="accent" to="/schedule" label="Sendeplan" />
           <HeaderLink accent="thirdAccent" to="/om" label="Om oss" />
+          <HeaderAuthBar />
         </Nav>
       </Container>
     </Outer>
