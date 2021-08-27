@@ -8,8 +8,6 @@ export function ModalOverlay() {
 
   const items = useObserver(() => modalStore.items);
 
-  console.log(items, modalStore);
-
   return (
     <div>
       {items.map((item) => (
