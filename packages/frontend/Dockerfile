@@ -1,4 +1,4 @@
-FROM node:14-alpine AS builder
+FROM node:16-alpine AS builder
 
 WORKDIR /usr/app
 
@@ -6,10 +6,15 @@ COPY package.json .
 
 RUN yarn install --quiet
 
-COPY . .
-
 FROM builder
 
+ENV NODE_ENV production
+ENV NEXT_PUBLIC_ENV production
+
+COPY . .
+
 RUN yarn build
+
+USER node
 
 CMD yarn run start
