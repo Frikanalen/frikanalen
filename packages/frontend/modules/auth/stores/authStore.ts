@@ -11,9 +11,7 @@ export class AuthStore extends Store {
       const response = await api.get<User>("/user");
 
       this.user = response.data;
-    } catch (error) {
-      throw error;
-    }
+    } catch (error) {}
   }
 
   @computed
