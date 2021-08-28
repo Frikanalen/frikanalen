@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { useRef } from "react";
 import { CSSProperties } from "react";
 import { useWindowEvent } from "../hooks/useWindowEvent";
@@ -12,32 +12,41 @@ export const ScrollLockContext = React.createContext<[boolean, number]>([false, 
 
 const { Provider, Consumer } = ScrollLockContext;
 
-export function ScrollLock(props: ScrollLockProps) {
-  const { locked, children } = props;
-  const scrollYRef = useRef(0);
+// This needs to be a class component, as it relies on some hacky ways of getting the scroll position before re-render
+// If you can figure out how to convert it to a function component, that'd be great
+export class ScrollLock extends React.Component<ScrollLockProps> {
+  public static Consumer = Consumer;
+  private scrollY = 0;
 
-  useWindowEvent("scroll", () => {
-    if (!locked) {
-      scrollYRef.current = window.scrollY;
+  public shouldComponentUpdate() {
+    if (!this.props.locked) {
+      this.scrollY = window.scrollY;
     }
-  });
 
-  useEffect(() => {
-    if (!locked) {
-      window.scrollTo(0, scrollYRef.current);
+    return true;
+  }
+
+  public componentDidUpdate() {
+    if (!this.props.locked) {
+      window.scrollTo({
+        top: this.scrollY,
+        behavior: "auto",
+      });
     }
-  }, [locked]);
+  }
 
-  const style: CSSProperties = locked
-    ? {
-        position: "fixed",
-        left: "0px",
-        right: "0px",
-        top: `-${scrollYRef.current}px`,
-      }
-    : {};
+  public render() {
+    const { locked, children } = this.props;
 
-  return <Provider value={[locked, scrollYRef.current]}>{children(style)}</Provider>;
+    const style: CSSProperties | undefined = locked
+      ? {
+          position: "fixed",
+          left: "0px",
+          right: "0px",
+          top: `-${this.scrollY}px`,
+        }
+      : undefined;
+
+    return <Provider value={[locked, this.scrollY]}>{children(style)}</Provider>;
+  }
 }
-
-ScrollLock.Consumer = Consumer;
