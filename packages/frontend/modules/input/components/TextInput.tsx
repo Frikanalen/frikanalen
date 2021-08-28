@@ -20,7 +20,7 @@ const baseStyle = (props: { theme: Theme }) => css`
   flex: 1;
 
   font-size: 0.8em;
-  font-family: "Inter var", sans-serif;
+  font-family: "Roboto", sans-serif;
 
   color: ${props.theme.fontColor.normal};
   padding: 11px 12px;
@@ -28,8 +28,8 @@ const baseStyle = (props: { theme: Theme }) => css`
   outline: none;
 
   ::placeholder {
-    font-family: "Inter var", sans-serif;
-    font-weight: 500;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
 
     color: ${props.theme.fontColor.muted};
     opacity: 1;
