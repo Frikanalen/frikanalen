@@ -28,12 +28,16 @@ export const getManager = (hydrationData?: object) => {
 
 export const ManagerContext = React.createContext<Manager | undefined>(undefined);
 
-export const useStores = () => {
+export const useManager = () => {
   const manager = useContext(ManagerContext);
 
   if (!manager) {
     throw new Error("Manager not passed to context provider!");
   }
 
-  return manager.stores;
+  return manager;
+};
+
+export const useStores = () => {
+  return useManager().stores;
 };
