@@ -12,6 +12,7 @@ export type TextInputProps = {
   onChange?: (event: React.ChangeEvent<any>) => void;
   invalid?: boolean;
   multiline?: boolean;
+  autoFocus?: boolean;
   className?: string;
 };
 
