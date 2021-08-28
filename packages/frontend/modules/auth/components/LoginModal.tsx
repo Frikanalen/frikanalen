@@ -43,7 +43,7 @@ export function LoginModal(props: LoginModalProps) {
         <PrimaryModal.Header title="Logg inn" />
         <PrimaryModal.Body>
           <Field label="E-post" name="email">
-            <ControlledTextInput autoFocus name="email" />
+            <ControlledTextInput placeholder="ola-nordmann@addresse.no" autoFocus name="email" />
           </Field>
           <Field label="Passord" name="password">
             <ControlledTextInput type="password" name="password" />
