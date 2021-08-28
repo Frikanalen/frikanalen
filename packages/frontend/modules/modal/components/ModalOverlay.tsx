@@ -6,7 +6,7 @@ import { useStores } from "modules/state/manager";
 export function ModalOverlay() {
   const { modalStore } = useStores();
 
-  const items = useObserver(() => modalStore.items);
+  const items = useObserver(() => modalStore.items.filter((item) => item.visible));
 
   return (
     <div>

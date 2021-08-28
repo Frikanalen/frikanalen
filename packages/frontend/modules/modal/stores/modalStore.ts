@@ -46,7 +46,7 @@ export class ModalStore extends Store {
 
   @computed
   public get hasItems() {
-    return this.items.length > 0;
+    return this.items.filter((x) => x.visible).length > 0;
   }
 }
 
