@@ -15,11 +15,11 @@ const Container = styled.div`
 
 const Label = styled.label`
   font-weight: 600;
-  font-size: 0.9em;
+  font-size: 1em;
   letter-spacing: 0.025em;
 
   margin-bottom: 12px;
-  color: ${(props) => props.theme.color.accent};
+  color: ${(props) => props.theme.fontColor.normal};
 `;
 
 export function FormField(props: FormFieldProps) {

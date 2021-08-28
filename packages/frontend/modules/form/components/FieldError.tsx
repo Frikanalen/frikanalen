@@ -45,7 +45,7 @@ const Error = styled.span<{ status: TransitionStatus }>`
   color: ${(props) => props.theme.color.secondAccent};
 
   font-weight: 600;
-  font-size: 12px;
+  font-size: 0.8em;
 
   ${(props) => {
     if (props.status === "entering")

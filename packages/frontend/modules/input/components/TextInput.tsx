@@ -19,7 +19,7 @@ export type TextInputProps = {
 const baseStyle = (props: { theme: Theme }) => css`
   flex: 1;
 
-  font-size: 0.8em;
+  font-size: 0.9em;
   font-family: "Roboto", sans-serif;
 
   color: ${props.theme.fontColor.normal};
@@ -66,6 +66,7 @@ const Container = styled.div`
 `;
 
 const Input = styled.input`
+  height: ${FIELDSET_HEIGHT};
   ${baseStyle}
 `;
 
