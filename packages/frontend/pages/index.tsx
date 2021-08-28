@@ -36,6 +36,7 @@ export default function Index() {
   const { scheduleStore } = useStores();
 
   const [now, ...later] = useObserver(() => scheduleStore.upcoming);
+  if (!now) return null;
 
   return (
     <Container>
