@@ -1,0 +1,82 @@
+- model: fk.user
+  pk: 1
+  fields:
+    password: pbkdf2_sha256$216000$RUnVSlG5G8eg$exSswgMqCZP/l9wzCt+5SBU8BROd69AJkNznojhhMm4=
+    last_login: 2021-08-28 18:27:04.003185+00:00
+    email: dev-admin@frikanalen.no
+    first_name: ''
+    last_name: ''
+    is_active: true
+    is_superuser: true
+    identity_confirmed: false
+    phone_number: ''
+    date_joined: 2021-08-24 00:28:47.280673+00:00
+    date_of_birth: 1900-01-01
+- model: fk.user
+  pk: 2
+  fields:
+    password: pbkdf2_sha256$216000$vFxBvubuz1hD$kNIOLjULQ7WyKshq4XAvhzYamX1n755HlFPY0MlZxO8=
+    last_login: null
+    email: dev-org1-editor@frikanalen.no
+    first_name: ''
+    last_name: ''
+    is_active: true
+    is_superuser: false
+    identity_confirmed: false
+    phone_number: ''
+    date_joined: 2021-08-28 18:27:26.654272+00:00
+    date_of_birth: 2021-08-28
+- model: fk.user
+  pk: 3
+  fields:
+    password: pbkdf2_sha256$216000$sIulX4V9OfI7$qv9wAAEfhYCU4gki4+COymdtq4N8ECiZBVvdpkpLvuw=
+    last_login: null
+    email: dev-org1-member@frikanalen.no
+    first_name: ''
+    last_name: ''
+    is_active: true
+    is_superuser: false
+    identity_confirmed: false
+    phone_number: ''
+    date_joined: 2021-08-28 18:27:42.665697+00:00
+    date_of_birth: 2021-08-28
+- model: fk.user
+  pk: 4
+  fields:
+    password: pbkdf2_sha256$216000$WZkOfbmwSiet$3FvnmnP1yRDbiQsZkMifBY5Hh5Sm+UncceHOsMQn/xg=
+    last_login: null
+    email: dev-org2-editor@frikanalen.no
+    first_name: ''
+    last_name: ''
+    is_active: true
+    is_superuser: false
+    identity_confirmed: false
+    phone_number: ''
+    date_joined: 2021-08-28 18:32:22.700759+00:00
+    date_of_birth: 2021-08-28
+- model: fk.organization
+  pk: 1
+  fields:
+    name: Dev org 1
+    description: "This organization has an editor and a member.\r\n\r\nIt has an active\
+      \ FK membership."
+    fkmember: true
+    orgnr: 123-456-789
+    homepage: https://www.whitehouse.gov/
+    postal_address: "1600 Pennsylvania Avenue NW,\r\nWashington, DC 20500\r\nUSA"
+    street_address: "1600 Pennsylvania Avenue NW, \r\nWashington, DC 20500\r\nUSA"
+    editor: 2
+    members:
+    - 3
+- model: fk.organization
+  pk: 2
+  fields:
+    name: Dev org 2
+    description: This organization has only an editor
+    fkmember: false
+    orgnr: 987-654-321
+    homepage: https://kremlin.ru
+    postal_address: "4 Staraya Square\r\nMoscow, 103132\r\nRussia"
+    street_address: "4 Staraya Square\r\nMoscow, 103132\r\nRussia"
+    editor: 4
+    members: []
