@@ -9,6 +9,11 @@ export const global = (theme: Theme) => css`
     box-sizing: border-box;
   }
 
+  /** Remove this when bootstrap is removed **/
+  html {
+    scroll-behavior: revert !important;
+  }
+
   body,
   html {
     margin: 0;
