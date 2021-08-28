@@ -1,3 +1,4 @@
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -23,10 +24,13 @@ class UserRegistrationTests(APITestCase):
                 'password': 'Test',
                 'date_of_birth': datetime.date(1920, 1, 1)
                 }
-        req = self.factory.post(
+        request = self.factory.post(
             reverse('api-user-create'), fields, format='json'
             )
-        res = UserCreate.as_view()(req)
+        middleware = SessionMiddleware()
+        middleware.process_request(request)
+        request.session.save()
+        res = UserCreate.as_view()(request)
         self.assertEqual(status.HTTP_201_CREATED, res.status_code)
         user = get_user_model().objects.get(email=fields['email'])
         for k,v in fields.items():
