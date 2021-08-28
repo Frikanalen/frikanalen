@@ -8,27 +8,31 @@ import pytz
 import logging
 logger = logging.getLogger(__name__)
 
+from django.contrib.auth import login, logout
 from django.core.cache import caches
-from django.views.decorators.cache import cache_page
-from django.views.decorators.cache import never_cache
-from django.views.decorators.vary import vary_on_headers
+from django_filters import rest_framework as djfilters
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
-from rest_framework.authentication import BasicAuthentication
 from django.utils.decorators import method_decorator
-from django_filters import rest_framework as djfilters
-from rest_framework import generics
-from rest_framework import viewsets
-from rest_framework import serializers
+from django.utils import timezone
+from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.vary import vary_on_headers
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
+from rest_framework import generics
+from rest_framework import response
+from rest_framework import serializers
+from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.throttling import AnonRateThrottle
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.views import APIView
 
 from fk.models import AsRun
 from fk.models import Category
@@ -36,7 +40,6 @@ from fk.models import Scheduleitem
 from fk.models import Video
 from fk.models import VideoFile
 from fk.models import Organization
-
 
 from api.permissions import IsInOrganizationOrDisallow
 from api.permissions import IsInOrganizationOrReadOnly
@@ -54,6 +57,7 @@ from api.serializers import VideoUploadTokenSerializer
 from api.serializers import UserSerializer
 from api.serializers import OrganizationSerializer
 from api.serializers import NewUserSerializer
+from api.serializers import LoginSerializer
 
 
 @api_view(['GET'])
@@ -509,3 +513,18 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+class UserLogin(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        return response.Response(UserSerializer(user).data)
+
+class UserLogout(APIView):
+    def post(self, request):
+        logout(request)
+        return response.Response()
