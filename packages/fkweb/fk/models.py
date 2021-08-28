@@ -121,7 +121,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, max_length=255)
 
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL)  # User ownership of an organization
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)  # User ownership of an organization
     fkmember = models.BooleanField(default=False)
     orgnr = models.CharField(blank=True, max_length=255)
     homepage = models.CharField('Link back to the organisation home page.',
