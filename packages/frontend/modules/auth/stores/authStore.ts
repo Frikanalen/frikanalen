@@ -12,13 +12,8 @@ export class AuthStore extends Store {
   @observable user?: User;
 
   public async authenticate() {
-    const token = unsafeLocalStorageHack.restore();
-    if (!token) return;
-
     try {
-      const response = await api.get<User>("/user", {
-        headers: { Authorization: `Token ${token}` },
-      });
+      const response = await api.get<User>("/user");
 
       this.user = response.data;
     } catch (error) {
