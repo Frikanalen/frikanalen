@@ -11,30 +11,26 @@ import WindowWidget from "../components/WindowWidget";
 
 import { UserContext, UserContextLoggedInState } from "../components/UserContext";
 import configs from "../components/configs";
+import { useStores } from "modules/state/manager";
 
 function UserProfile(): JSX.Element {
-  const context = useContext(UserContext);
+  const { authStore } = useStores();
+  const { user } = authStore;
 
-  const { profile, token, refresh } = context as UserContextLoggedInState;
+  const [firstName, setFirstName] = useState(user?.firstName);
+  const [lastName, setLastName] = useState(user?.lastName);
+  const [MSISDN, setMSISDN] = useState(user?.phoneNumber);
 
-  const [firstName, setFirstName] = useState(profile?.firstName);
-  const [lastName, setLastName] = useState(profile?.lastName);
-  const [MSISDN, setMSISDN] = useState(profile?.phoneNumber);
-
-  if (!context.isLoggedIn) {
+  if (!user) {
     return <></>;
   }
 
-  if (!profile) {
-    return <p>Kan ikke fortsette; brukerprofil udefinert.</p>;
-  }
   const submitProfile = async (e: { preventDefault: () => void }): Promise<void> => {
     e.preventDefault();
 
     await fetch(`${configs.api}user`, {
       method: "put",
       headers: {
-        Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -43,7 +39,6 @@ function UserProfile(): JSX.Element {
         phoneNumber: MSISDN,
       }),
     });
-    if (token) refresh(token);
   };
 
   return (
@@ -75,13 +70,14 @@ function UserProfile(): JSX.Element {
 }
 
 function UserCard(): JSX.Element {
-  const context = useContext(UserContext) as UserContextLoggedInState;
+  const { authStore } = useStores();
+  const { user } = authStore;
 
   return (
     <Col>
       <Card bg="light" className="text-dark">
         <Card.Body>
-          <Card.Title>Brukerprofil for {context.profile.email}</Card.Title>
+          <Card.Title>Brukerprofil for {user?.email}</Card.Title>
           <UserProfile />
         </Card.Body>
       </Card>
@@ -90,23 +86,23 @@ function UserCard(): JSX.Element {
 }
 
 function OrganizationCard({ role }: { role: fkOrgRole }): JSX.Element {
-  const context = useContext(UserContext);
+  const { authStore } = useStores();
+  const { user } = authStore;
 
-  const { token } = context as UserContextLoggedInState;
   const [org, setOrg] = useState<fkOrg>();
 
   useEffect(() => {
     if (role.organizationId) {
       APIGET<fkOrg>({
         endpoint: `organization/${role.organizationId}`,
-        token: token,
         validator: fkOrgSchema.parse,
       })
         .then((res) => setOrg(res))
         .catch((e) => console.log(e));
     }
-  }, [role.organizationId, token]);
-  if (!context.isLoggedIn || !org) {
+  }, [role.organizationId]);
+
+  if (!user || !org) {
     return <></>;
   }
 
@@ -125,16 +121,17 @@ function OrganizationCard({ role }: { role: fkOrgRole }): JSX.Element {
 
 function OrganizationList(): JSX.Element {
   let organizationList;
-  const context = useContext(UserContext);
-  if (!context.isLoggedIn) {
+
+  const { authStore } = useStores();
+  const { user } = authStore;
+
+  if (!user) {
     return <></>;
   }
 
-  const { profile } = context;
-
-  if (profile && profile.organizationRoles) {
-    if (profile.organizationRoles.length) {
-      organizationList = profile.organizationRoles.map((role, idx) => (
+  if ((user as any).organizationRoles) {
+    if ((user as any).organizationRoles.length) {
+      organizationList = (user as any).organizationRoles.map((role: any, idx: any) => (
         <Col key={idx}>
           <OrganizationCard role={role} />
           <br />
@@ -184,22 +181,20 @@ function StaffMenu(): JSX.Element {
 }
 
 export default function Profile(): JSX.Element {
-  const context = useContext(UserContext);
-  if (!context.isLoggedIn) {
+  const { authStore } = useStores();
+  const { user } = authStore;
+
+  if (!user) {
     return <p>Du må være logget inn</p>;
   }
-
-  const { profile } = context;
-
-  if (profile == null) return <></>;
 
   return (
     <>
       <WindowWidget invisible>
-        <h2>Hei, {profile.firstName}!</h2>
+        <h2>Hei, {user.firstName}!</h2>
         <UserCard />
       </WindowWidget>
-      {profile.isStaff ? <StaffMenu /> : null}
+      {user.isStaff ? <StaffMenu /> : null}
       <WindowWidget invisible>
         <OrganizationsCard />
       </WindowWidget>
