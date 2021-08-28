@@ -42,7 +42,7 @@ const Container = styled.div<{ visible: boolean }>`
 
 const Error = styled.span<{ status: TransitionStatus }>`
   display: block;
-  color: ${(props) => props.theme.color.thirdAccent};
+  color: ${(props) => props.theme.color.secondAccent};
 
   font-weight: 600;
   font-size: 12px;

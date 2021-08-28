@@ -41,7 +41,7 @@ const stateStyle = (props: StateProps) => {
   if (props.invalid)
     return css`
       & {
-        border-color: ${(props as any).theme.color.thirdAccent};
+        border-color: ${(props as any).theme.color.secondAccent};
       }
     `;
 
