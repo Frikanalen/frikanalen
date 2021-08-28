@@ -501,6 +501,10 @@ class UserCreate(generics.CreateAPIView):
 
     serializer_class = NewUserSerializer
 
+    def perform_create(self, serializer):
+        """Log user in on successful registration"""
+        new_user = serializer.save()
+        login(self.request, new_user)
 
 @method_decorator(never_cache, name='dispatch')
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
