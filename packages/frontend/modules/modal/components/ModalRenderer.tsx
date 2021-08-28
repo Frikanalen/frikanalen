@@ -30,7 +30,7 @@ const Container = styled.div`
 const Content = styled.div``;
 
 export function ModalRenderer(props: ModalRendererProps) {
-  const { render, closeOnClickout, key } = props.item;
+  const { render, clickout, dismissOnClickout, key } = props.item;
   const { modalStore } = useStores();
 
   const context = {
@@ -39,8 +39,10 @@ export function ModalRenderer(props: ModalRendererProps) {
   };
 
   const onClick = (event: React.MouseEvent) => {
-    if (event.target === event.currentTarget) {
-      if (closeOnClickout) {
+    if (event.target === event.currentTarget && clickout) {
+      if (dismissOnClickout) {
+        context.dismiss();
+      } else {
         context.close();
       }
     }

@@ -10,6 +10,7 @@ export const spawnLoginModal = (manager: Manager) => {
   modalStore.spawn({
     key: "login",
     render: () => React.createElement(LoginModal, { form }),
-    closeOnClickout: true,
+    clickout: true,
+    dismissOnClickout: true,
   });
 };

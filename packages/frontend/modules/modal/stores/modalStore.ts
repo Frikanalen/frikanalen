@@ -5,7 +5,8 @@ export type ModalItem = {
   key: string;
   visible?: boolean;
   render: () => JSX.Element;
-  closeOnClickout?: boolean;
+  clickout?: boolean;
+  dismissOnClickout?: boolean;
 };
 
 export class ModalStore extends Store {
