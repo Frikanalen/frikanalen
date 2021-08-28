@@ -16,6 +16,8 @@ import { getManager, ManagerContext } from "modules/state/manager";
 import App from "next/app";
 import { useEffect } from "react";
 import { ModalOverlay } from "modules/modal/components/ModalOverlay";
+import { ScrollLock } from "modules/ui/components/ScrollLock";
+import { useObserver } from "mobx-react-lite";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -91,15 +93,23 @@ export default function CustomApp(props: CustomAppProps): JSX.Element {
     }
   }, []);*/
 
+  const locked = useObserver(() => manager.stores.modalStore.hasItems);
+
   return (
     <ManagerContext.Provider value={manager}>
       <ThemeProvider theme={lightTheme}>
-        <Global styles={global} />
-        <Header />
-        <Body>
-          <Component {...pageProps} />
-        </Body>
-        <ModalOverlay />
+        <ScrollLock locked={locked}>
+          {(style) => (
+            <div style={style}>
+              <Global styles={global} />
+              <Header />
+              <Body>
+                <Component {...pageProps} />
+              </Body>
+              <ModalOverlay />
+            </div>
+          )}
+        </ScrollLock>
       </ThemeProvider>
     </ManagerContext.Provider>
   );
