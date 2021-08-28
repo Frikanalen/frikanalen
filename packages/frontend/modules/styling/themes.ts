@@ -2,7 +2,7 @@ import { Theme } from "@emotion/react";
 
 export const lightTheme: Theme = {
   color: {
-    card: "rgba(255, 255, 255, 0.6)",
+    card: "rgba(255, 255, 255, 1)",
     accent: "#E88840",
     secondAccent: "#F15645",
     thirdAccent: "#64BC50",
