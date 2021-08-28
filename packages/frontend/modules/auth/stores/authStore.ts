@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { computed, observable } from "mobx";
 import { api } from "modules/network";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
@@ -11,7 +12,14 @@ export class AuthStore extends Store {
       const response = await api.get<User>("/user");
 
       this.user = response.data;
-    } catch (error) {}
+    } catch (error) {
+      const { response } = error as AxiosError;
+
+      // Not logged in
+      if (response?.status === 401) {
+        return;
+      }
+    }
   }
 
   @computed
