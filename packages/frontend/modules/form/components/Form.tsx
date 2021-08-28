@@ -1,24 +1,27 @@
-import { createContext, PropsWithChildren } from "react"
-import { ObservableForm } from "../classes/ObservableForm"
-import React from "react"
-import { FieldsProvider } from "./FieldsProvider"
+import { createContext, PropsWithChildren } from "react";
+import { ObservableForm } from "../classes/ObservableForm";
+import React from "react";
+import { FieldsProvider } from "./FieldsProvider";
 
-export const formContext = createContext<ObservableForm<any> | undefined>(undefined)
-const { Provider } = formContext
+export const formContext = createContext<ObservableForm<any> | undefined>(undefined);
+const { Provider } = formContext;
 
 export type FormProps = PropsWithChildren<{
-  form: ObservableForm<any>
-}>
+  form: ObservableForm<any>;
+  onSubmit?: () => void;
+}>;
 
 export function Form(props: FormProps) {
-  const { form, children } = props
+  const { form, onSubmit, children } = props;
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (onSubmit) onSubmit();
+  };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <Provider value={form}>
         <FieldsProvider fields={form.fields}>{children}</FieldsProvider>
       </Provider>
@@ -30,5 +33,5 @@ export function Form(props: FormProps) {
         }}
       />
     </form>
-  )
+  );
 }
