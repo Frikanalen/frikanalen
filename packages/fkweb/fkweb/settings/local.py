@@ -30,8 +30,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'fkweb',
         'USER': 'fkweb',
-        'PASSWORD': 'temporary',
-        'HOST': 'localhost',
+        'PASSWORD': 'morohbie0XeidaJie4vooshae7jee0Ah',
+        'HOST': 'database-api.default',
         'PORT': '',
     }
 }
