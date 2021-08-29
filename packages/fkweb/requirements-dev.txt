@@ -2,3 +2,4 @@
 # Local development and testing dependencies go in this file
 psycopg2-binary == 2.8.6
 PyYAML == 5.3.1
+pylint == 2.10.2
