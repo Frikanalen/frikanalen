@@ -2,6 +2,7 @@ import { Store } from "./Store";
 
 export class StoreManager<T extends Record<string, Store>> {
   public stores: T = {} as any;
+  public didInit = false;
 
   constructor(
     public instantiators: {
@@ -15,6 +16,7 @@ export class StoreManager<T extends Record<string, Store>> {
 
   public async init() {
     await Promise.all(Object.values(this.stores).map((x) => x.init()));
+    this.didInit = true;
   }
 
   public reset() {

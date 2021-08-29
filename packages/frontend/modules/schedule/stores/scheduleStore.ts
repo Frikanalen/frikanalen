@@ -1,5 +1,4 @@
 import { computed, observable } from "mobx";
-import { api } from "modules/network";
 import { ApiCollection } from "modules/network/types";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { ScheduleItem } from "../types";
@@ -12,6 +11,9 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
   @observable public items: ScheduleItem[] = [];
 
   public async fetch() {
+    const { networkStore } = this.manager.stores;
+    const { api } = networkStore;
+
     if (this.items.length > 0) return;
 
     const response = await api.get<ApiCollection<ScheduleItem>>("/scheduleitems", {

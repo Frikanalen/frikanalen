@@ -1,13 +1,27 @@
 import { AxiosError } from "axios";
 import { computed, observable } from "mobx";
-import { api } from "modules/network";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { User } from "modules/user/schemas";
 
-export class AuthStore extends Store {
+export type SerializedAuthStore = {
+  user?: User;
+};
+
+export class AuthStore extends Store<SerializedAuthStore> {
   @observable user?: User;
 
+  public serialize() {
+    return { user: this.user };
+  }
+
+  public hydrate(data: SerializedAuthStore) {
+    this.user = data.user;
+  }
+
   public async authenticate() {
+    const { networkStore } = this.manager.stores;
+    const { api } = networkStore;
+
     try {
       const response = await api.get<User>("/user");
 
@@ -23,6 +37,9 @@ export class AuthStore extends Store {
   }
 
   public async logout() {
+    const { networkStore } = this.manager.stores;
+    const { api } = networkStore;
+
     try {
       await api.post("/user/logout");
       this.user = undefined;

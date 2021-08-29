@@ -14,11 +14,11 @@ import { lightTheme } from "modules/styling/themes";
 import { Body } from "modules/core/components/Body";
 import { getManager, ManagerContext } from "modules/state/manager";
 import App from "next/app";
-import { useEffect } from "react";
 import { ModalOverlay } from "modules/modal/components/ModalOverlay";
 import { ScrollLock } from "modules/ui/components/ScrollLock";
 import { useObserver } from "mobx-react-lite";
 import { PopoverOverlay } from "modules/popover/components/PopoverOverlay";
+import { IS_SERVER } from "modules/core/constants";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -35,11 +35,6 @@ export type CustomAppProps = AppProps & { serialized: any };
 export default function CustomApp(props: CustomAppProps): JSX.Element {
   const { Component, pageProps, serialized } = props;
   const manager = getManager(serialized);
-
-  // TEMPORARY WORKAROUND, SEE authStore.ts
-  useEffect(() => {
-    manager.stores.authStore.authenticate();
-  }, [manager]);
 
   /*const [token, setToken] = useState<string | undefined>(undefined);
   const [profile, setProfile] = useState<fkUser | null>(null);
@@ -117,9 +112,30 @@ export default function CustomApp(props: CustomAppProps): JSX.Element {
   );
 }
 
+const INCOMING_HEADERS = ["Cookie", "X-Forwarded-For", "X-Forwarded-Proto"].map((x) => x.toLowerCase());
+
 CustomApp.getInitialProps = async (appContext: AppContext): Promise<any> => {
   const manager = getManager();
-  await manager.init();
+
+  const { authStore, networkStore } = manager.stores;
+  const { req, res } = appContext.ctx;
+
+  // Propagate headers such as cookies to api calls
+  if (IS_SERVER && req && res) {
+    for (const key of INCOMING_HEADERS) {
+      const value = req.headers[key] as any;
+      if (!value) continue;
+
+      networkStore.incomingHeaders[key] = value;
+    }
+
+    networkStore.setResponseObject(res);
+  }
+
+  if (!manager.didInit) {
+    await manager.init();
+    await authStore.authenticate();
+  }
 
   appContext.ctx.manager = manager;
 

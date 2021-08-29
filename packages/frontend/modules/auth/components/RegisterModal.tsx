@@ -4,7 +4,6 @@ import { FormField } from "modules/form/components/FormField";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
 import { PrimaryModal } from "modules/modal/components/PrimaryModal";
 import { useModal } from "modules/modal/hooks/useModal";
-import { api } from "modules/network";
 import { useStores } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { StatusLine, StatusType } from "modules/ui/components/StatusLine";
@@ -23,7 +22,9 @@ export function RegisterModal(props: RegisterModalProps) {
   const { form } = props;
 
   const modal = useModal();
-  const { authStore } = useStores();
+
+  const { authStore, networkStore } = useStores();
+  const { api } = networkStore;
 
   const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
   const [type, message] = status;
