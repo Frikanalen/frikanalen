@@ -32,63 +32,10 @@ Sentry.init({
 
 export type CustomAppProps = AppProps & { serialized: any };
 
-export default function CustomApp(props: CustomAppProps): JSX.Element {
+export default function CustomApp(props: CustomAppProps) {
   const { Component, pageProps, serialized } = props;
+
   const manager = getManager(serialized);
-
-  /*const [token, setToken] = useState<string | undefined>(undefined);
-  const [profile, setProfile] = useState<fkUser | null>(null);
-
-  const refresh = (authToken: string): void => {
-    getUserProfile(authToken)
-      .then((p) => {
-        localStorage.setItem(
-          "userData",
-          JSON.stringify({
-            profile: p,
-            token: authToken,
-          })
-        );
-        setProfile(p);
-      })
-      .catch((problem) => {
-        throw problem;
-      });
-  };
-
-  const logout = (): void => {
-    localStorage.removeItem("userData");
-    setToken(undefined);
-    Router.push("/")
-      .then()
-      .catch((problem) => {
-        throw problem;
-      });
-  };
-  const login = (withToken: string): void => {
-    setToken(withToken);
-  };
-  useEffect(() => {
-    if (token == null) {
-      setProfile(null);
-      return;
-    }
-    if (profile == null) {
-      refresh(token);
-    }
-  }, [token, profile]);
-
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("userData") || "null") as {
-      token: string;
-      profile: fkUser;
-    };
-    if (storedData?.token) {
-      setProfile(storedData.profile);
-      setToken(storedData.token);
-    }
-  }, []);*/
-
   const locked = useObserver(() => manager.stores.modalStore.hasItems);
 
   return (
