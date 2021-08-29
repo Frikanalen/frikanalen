@@ -15,9 +15,6 @@ export class NetworkStore extends Store {
     if (IS_SERVER) {
       instance.interceptors.response.use((response) => {
         const { headers } = response;
-
-        console.log(headers, response.status);
-
         const setCookie = headers["set-cookie"];
 
         if (setCookie) {
