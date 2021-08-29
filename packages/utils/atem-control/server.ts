@@ -38,6 +38,14 @@ async function check_if_staff(authHeader: string | undefined) {
     }
 }
 
+const initializeMixer = async (atem: Atem) => {
+            await atem.setAudioMixerInputProps(1, {mixOption: 2});
+            await atem.setAudioMixerInputProps(2, {mixOption: 2});
+            await atem.setAudioMixerInputProps(3, {mixOption: 2});
+            await atem.setAudioMixerInputProps(4, {mixOption: 2});
+            await atem.setAuxSource(10, 2)
+
+}
 class AtemControl {
     myAtem: Atem;
     app = express.application;
@@ -55,16 +63,13 @@ class AtemControl {
     async run() {
         if (ATEM_HOST === undefined)
             throw new Error("ATEM_HOST environment variable must be set!");
+
         this.myAtem.on('error', console.error)
 
         this.myAtem.on('connected', async () => {
-            await this.myAtem.setAudioMixerInputProps(1, {mixOption: 2});
-            await this.myAtem.setAudioMixerInputProps(2, {mixOption: 2});
-            await this.myAtem.setAudioMixerInputProps(3, {mixOption: 2});
-            await this.myAtem.setAudioMixerInputProps(4, {mixOption: 2});
-
+            initializeMixer(this.myAtem)
             this.app.listen(LISTEN_PORT, () => {
-                console.log(`Server lisdtening on port ${LISTEN_PORT}...`);
+                console.log(`Server listening on port ${LISTEN_PORT}...`);
             });
         })
 
