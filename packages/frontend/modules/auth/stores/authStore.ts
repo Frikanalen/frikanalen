@@ -22,6 +22,13 @@ export class AuthStore extends Store {
     }
   }
 
+  public async logout() {
+    try {
+      await api.post("/user/logout");
+      this.user = undefined;
+    } catch (e) {}
+  }
+
   @computed
   public get isAuthenticated() {
     return !!this.user;
