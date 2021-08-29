@@ -28,6 +28,7 @@
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@fontsource/roboto": "^4.5.0",
+    "@popperjs/core": "^2.9.3",
     "@sentry/react": "^6.10.0",
     "@sentry/tracing": "^6.10.0",
     "axios": "^0.21.1",
