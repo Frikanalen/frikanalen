@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { ModalOverlay } from "modules/modal/components/ModalOverlay";
 import { ScrollLock } from "modules/ui/components/ScrollLock";
 import { useObserver } from "mobx-react-lite";
+import { PopoverOverlay } from "modules/popover/components/PopoverOverlay";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -107,6 +108,7 @@ export default function CustomApp(props: CustomAppProps): JSX.Element {
                 <Component {...pageProps} />
               </Body>
               <ModalOverlay />
+              <PopoverOverlay />
             </div>
           )}
         </ScrollLock>
