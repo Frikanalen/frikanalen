@@ -3,18 +3,13 @@ import { useObserver } from "mobx-react-lite";
 import { spawnLoginModal } from "modules/auth/helpers/spawnLoginModal";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
-import Link from "next/link";
 import React from "react";
+import { HeaderUserDropdown } from "./HeaderUserDropdown";
 
 const Container = styled.div`
   display: flex;
   justify-content: flex-end;
   flex: 1;
-`;
-
-const UserLink = styled.a`
-  font-size: 1.2em;
-  font-weight: 600;
 `;
 
 export function HeaderAuthBar() {
@@ -30,11 +25,7 @@ export function HeaderAuthBar() {
   const renderAuthenticated = () => {
     const user = authStore.user!;
 
-    return (
-      <Link href="/profil" passHref>
-        <UserLink>Hei, {user.firstName}</UserLink>
-      </Link>
-    );
+    return <HeaderUserDropdown user={user} />;
   };
 
   return <Container>{isAuthenticated ? renderAuthenticated() : renderUnauthenticated()}</Container>;
