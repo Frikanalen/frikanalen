@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { AxiosError } from "axios";
 import { Form } from "modules/form/components/Form";
 import { FormField } from "modules/form/components/FormField";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
@@ -7,6 +8,8 @@ import { useModal } from "modules/modal/hooks/useModal";
 import { api } from "modules/network";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
+import { StatusLine, StatusType } from "modules/ui/components/StatusLine";
+import { useState } from "react";
 import { LoginForm } from "../forms/createLoginForm";
 import { spawnRegisterModal } from "../helpers/spawnRegisterModal";
 
@@ -28,19 +31,30 @@ export function LoginModal(props: LoginModalProps) {
   const manager = useManager();
   const modal = useModal();
 
+  const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
+  const [type, message] = status;
+
   const { authStore } = manager.stores;
 
   const handleSubmit = async () => {
     const valid = await form.ensureValidity();
 
     if (valid) {
+      setStatus(["info", "Vent litt..."]);
+
       try {
         await api.post("/user/login", form.serialized);
         await authStore.authenticate();
 
         modal.dismiss();
       } catch (e) {
-        // TODO: Show error in UI
+        const { response } = e as AxiosError;
+
+        if (response?.status === 400) {
+          return setStatus(["error", "Feil brukernavn eller passord"]);
+        }
+
+        setStatus(["error", "Noe gikk galt, prøv igjen senere"]);
       }
     }
   };
@@ -64,6 +78,7 @@ export function LoginModal(props: LoginModalProps) {
           <RegisterLink onClick={handleRegisterClick}>Registrer ny konto?</RegisterLink>
         </PrimaryModal.Body>
         <PrimaryModal.Footer>
+          <StatusLine message={message} type={type} />
           <PrimaryModal.Actions>
             <GenericButton onClick={handleSubmit} label="OK" />
           </PrimaryModal.Actions>

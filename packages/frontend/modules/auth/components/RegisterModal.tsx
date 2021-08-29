@@ -7,7 +7,8 @@ import { useModal } from "modules/modal/hooks/useModal";
 import { api } from "modules/network";
 import { useStores } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
-import React from "react";
+import { StatusLine, StatusType } from "modules/ui/components/StatusLine";
+import React, { useState } from "react";
 import { RegisterForm } from "../forms/createRegisterForm";
 
 const Field = styled(FormField)`
@@ -24,10 +25,15 @@ export function RegisterModal(props: RegisterModalProps) {
   const modal = useModal();
   const { authStore } = useStores();
 
+  const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
+  const [type, message] = status;
+
   const handleSubmit = async () => {
     const valid = await form.ensureValidity();
 
     if (valid) {
+      setStatus(["info", "Vent litt..."]);
+
       try {
         await api.post("/user/register", {
           ...form.serialized,
@@ -40,7 +46,7 @@ export function RegisterModal(props: RegisterModalProps) {
 
         modal.dismiss();
       } catch (e) {
-        // TODO: Show error in UI
+        setStatus(["error", "Noe gikk galt, prøv igjen senere"]);
       }
     }
   };
@@ -68,6 +74,7 @@ export function RegisterModal(props: RegisterModalProps) {
           </Field>
         </PrimaryModal.Body>
         <PrimaryModal.Footer>
+          <StatusLine message={message} type={type} />
           <PrimaryModal.Actions>
             <GenericButton onClick={handleSubmit} label="OK" />
           </PrimaryModal.Actions>
