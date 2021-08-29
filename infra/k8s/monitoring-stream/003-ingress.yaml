@@ -1,8 +1,39 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-playout-stream-prefix
+  namespace: default
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/playout/stream
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
   name: monitoring
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`frikanalen.no`) && PathPrefix(`/api/playout/stream/`)
+    kind: Rule
+    middlewares:
+      - name: strip-stream-prefix
+        namespace: default
+    services:
+    - kind: Service
+      name: monitoring-stream-ws
+      scheme: http
+      port: 8082
+  tls:
+    certResolver: default
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: monitoring-legacy
   namespace: default
 spec:
   entryPoints: 
