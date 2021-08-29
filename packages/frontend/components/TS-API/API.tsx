@@ -127,16 +127,14 @@ export type fkSchedule = z.infer<typeof fkScheduleSchema>;
 export interface APIGETOptions<T> {
   endpoint: string;
   validator?: (data: T) => T;
-  token?: string;
   reloadCache?: boolean;
 }
 
 export async function APIGET<T>(opts: APIGETOptions<T>): Promise<T> {
   let authHeaders = {};
   let cacheOptions: RequestCache = "default";
-  if (opts.token !== undefined) authHeaders = { Authorization: `Token ${opts.token}` };
   if (opts.reloadCache !== undefined) cacheOptions = "reload";
-  const response = await fetch(`${configs.api}${opts.endpoint}`, { cache: cacheOptions, headers: authHeaders });
+  const response = await fetch(`${configs.api}${opts.endpoint}`, { cache: cacheOptions, headers: authHeaders, credentials: "include" });
 
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -205,10 +203,9 @@ export const fkUploadTokenSchema = z.object({
 
 export type fkUploadToken = z.infer<typeof fkUploadTokenSchema>;
 
-export async function getUserProfile(token: string): Promise<fkUser> {
+export async function getUserProfile(): Promise<fkUser> {
   return APIGET<fkUser>({
     endpoint: "user",
-    token,
     reloadCache: true,
     validator: fkUserSchema.parse,
   });
@@ -226,10 +223,9 @@ export async function getCategories(): Promise<fkCategory[]> {
   return categories.results;
 }
 
-export function getUploadToken(videoID: number, token: string): Promise<fkUploadToken> {
+export function getUploadToken(videoID: number): Promise<fkUploadToken> {
   return APIGET<fkUploadToken>({
     endpoint: `videos/${videoID}/upload_token`,
-    token,
     validator: fkUploadTokenSchema.parse,
   });
 }

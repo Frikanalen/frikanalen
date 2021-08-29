@@ -1,4 +1,4 @@
-import React, {Component, useContext} from "react";
+import React, {Component} from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,7 +9,7 @@ import bsCustomFileInput from "bs-custom-file-input";
 import configs from "./configs";
 
 import { fkVideo, getUploadToken } from "./TS-API/API";
-import {UserContext, UserContextLoggedInState, UserContextState} from "./UserContext";
+import {UserContext, UserContextState} from "./UserContext";
 import styles from "./VideoUpload.module.sass";
 
 function humanFileSize(sizeBytes: number, si = true, dp = 1): string {
@@ -89,9 +89,7 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
 
     if (!context.isLoggedIn) throw new Error("A user who isn't logged in should never see this");
 
-    const { token } = this.context as UserContextLoggedInState;
-
-    const uploadToken = await getUploadToken(this.videoID, token);
+    const uploadToken = await getUploadToken(this.videoID);
 
     this.setState({ uploadToken: uploadToken.uploadToken });
 
@@ -108,7 +106,7 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
     }
 
     const upload = new Upload(file, {
-      endpoint: configs.upload,
+      endpoint: `${configs.api}videos/upload`,
       retryDelays: [0, 1000], // , 3000, 5000],
       metadata: {
         origFileName: file.name,

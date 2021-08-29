@@ -33,6 +33,7 @@ function UserProfile(): JSX.Element {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         lastName,
         firstName,
