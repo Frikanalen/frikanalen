@@ -65,7 +65,7 @@ export default function Index() {
 
 Index.getInitialProps = async (context: NextPageContext) => {
   const { scheduleStore } = context.manager.stores;
-  await scheduleStore.fetch();
+  await scheduleStore.fetchLatest();
 
   return {};
 };
