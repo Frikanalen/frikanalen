@@ -5,11 +5,14 @@ import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { ScheduleItem } from "../types";
 
 export type SerializedScheduleStore = {
-  items: ScheduleItem[];
+  latestItems: ScheduleItem[];
+  itemsByDate: Record<string, ScheduleItem[]>;
 };
 
 export class ScheduleStore extends Store<SerializedScheduleStore> {
   @observable public selectedDate = startOfDay(new Date());
+
+  @observable public itemsByDate: Record<string, ScheduleItem[]> = {};
   @observable public latestItems: ScheduleItem[] = [];
 
   public async fetchLatest() {
@@ -27,14 +30,46 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
     this.latestItems = response.data.results;
   }
 
+  public async fetchByDate(date: Date) {
+    const { networkStore } = this.manager.stores;
+    const { api } = networkStore;
+
+    const existingList = this.itemsByDate[date.toISOString()];
+    if (existingList) return existingList;
+
+    this.itemsByDate[date.toISOString()] = [];
+
+    const response = await api.get<ApiCollection<ScheduleItem>>("/scheduleitems", {
+      params: {
+        days: 1,
+        date: date.toISOString(),
+      },
+
+      // THIS IS TEMPORARY
+      baseURL: "https://frikanalen.no/api/",
+      withCredentials: false,
+    });
+
+    this.itemsByDate[date.toISOString()] = response.data.results;
+  }
+
   public serialize() {
     return {
-      items: this.latestItems,
+      latestItems: this.latestItems,
+      itemsByDate: this.itemsByDate,
     };
   }
 
   public hydrate(data: SerializedScheduleStore) {
-    this.latestItems = data.items;
+    this.latestItems = data.latestItems;
+    this.itemsByDate = data.itemsByDate;
+  }
+
+  @computed
+  public get selectedDateItems() {
+    console.log(this.itemsByDate);
+
+    return this.itemsByDate[this.selectedDate.toISOString()] ?? [];
   }
 
   @computed
