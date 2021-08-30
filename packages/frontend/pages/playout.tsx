@@ -21,16 +21,20 @@ const PlayoutControlPanel = styled.div`
   color: white;
   background-color: black;
   max-width: 100%;
+  padding: 20px;
 `;
 
 const SplitPanel = styled.div`
   display: flex;
   max-width: 100%;
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
 `;
 
 const LeftSide = styled.div`
   flex-grow: 1;
-  padding: 10px;
+  padding-right: 20px;
   overflow: no-scroll;
 `;
 

@@ -3,13 +3,8 @@ import fetch from "isomorphic-unfetch";
 import configs from "./configs";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Button from "react-bootstrap/Button";
+import styled from "@emotion/styled";
 type MixEffectsBusInput = { index: number; name: string };
-
-interface CrosspointBusProps {
-  inputs: MixEffectsBusInput[];
-  currentProgram: number | undefined;
-  setProgram: (inputIndex: number) => void;
-}
 
 const inputs: MixEffectsBusInput[] = [
   { index: 2, name: "tx1" },
@@ -20,10 +15,25 @@ const inputs: MixEffectsBusInput[] = [
   { index: 1000, name: "color bars" },
 ];
 
-export const ProgramBus = ({ inputs, currentProgram, setProgram }: CrosspointBusProps) => {
+const MixEffectInputsDiv = styled.div`
+  margin-bottom: 1em;
+  & > label {
+    display: block;
+    margin-bottom: 0.5em;
+    text-align: center;
+  }
+`;
+
+interface MixEffectsBusProps {
+  inputs: MixEffectsBusInput[];
+  currentProgram: number | undefined;
+  setProgram: (inputIndex: number) => void;
+}
+
+export const ProgramBus = ({ inputs, currentProgram, setProgram }: MixEffectsBusProps) => {
   return (
-    <div>
-      <label>Programutgang:</label>
+    <MixEffectInputsDiv>
+      <label>programutgang</label>
       <ButtonGroup>
         {inputs.map(({ index, name }) => (
           <Button
@@ -35,7 +45,7 @@ export const ProgramBus = ({ inputs, currentProgram, setProgram }: CrosspointBus
           </Button>
         ))}
       </ButtonGroup>
-    </div>
+    </MixEffectInputsDiv>
   );
 };
 
