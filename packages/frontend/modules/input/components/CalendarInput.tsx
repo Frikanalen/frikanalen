@@ -65,6 +65,9 @@ const DateNumber = styled.a<{ type: DateNumberType }>`
   align-items: center;
   justify-content: center;
 
+  font-size: 0.9em;
+  font-weight: 600;
+
   border: solid 2px transparent;
   border-radius: 100%;
 
