@@ -10,13 +10,13 @@ export type SerializedScheduleStore = {
 
 export class ScheduleStore extends Store<SerializedScheduleStore> {
   @observable public selectedDate = startOfDay(new Date());
-  @observable public items: ScheduleItem[] = [];
+  @observable public latestItems: ScheduleItem[] = [];
 
-  public async fetch() {
+  public async fetchLatest() {
     const { networkStore } = this.manager.stores;
     const { api } = networkStore;
 
-    if (this.items.length > 0) return;
+    if (this.latestItems.length > 0) return;
 
     const response = await api.get<ApiCollection<ScheduleItem>>("/scheduleitems", {
       params: {
@@ -24,22 +24,22 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
       },
     });
 
-    this.items = response.data.results;
+    this.latestItems = response.data.results;
   }
 
   public serialize() {
     return {
-      items: this.items,
+      items: this.latestItems,
     };
   }
 
   public hydrate(data: SerializedScheduleStore) {
-    this.items = data.items;
+    this.latestItems = data.items;
   }
 
   @computed
   public get upcoming() {
-    return this.items.filter((x) => new Date() < new Date(x.endtime)).slice(0, 4);
+    return this.latestItems.filter((x) => new Date() < new Date(x.endtime)).slice(0, 4);
   }
 }
 
