@@ -1,3 +1,4 @@
+import { startOfDay } from "date-fns";
 import { computed, observable } from "mobx";
 import { ApiCollection } from "modules/network/types";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
@@ -8,6 +9,7 @@ export type SerializedScheduleStore = {
 };
 
 export class ScheduleStore extends Store<SerializedScheduleStore> {
+  @observable public selectedDate = startOfDay(new Date());
   @observable public items: ScheduleItem[] = [];
 
   public async fetch() {
