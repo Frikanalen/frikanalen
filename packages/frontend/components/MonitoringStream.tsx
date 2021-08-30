@@ -8,18 +8,23 @@ export const MonitoringStream = () => {
   useEffect(() => {
     if (containerRef.current == null) return;
 
-    setVideoElement(
-      new JSMpeg.VideoElement(containerRef.current, "wss://monitoring.frikanalen.no/", {
-        videoBufferSize: 512 * 1024 * 20,
-        audioBufferSize: 128 * 1024 * 20,
-      })
-    );
-  }, [containerRef]);
+    if (!videoElement)
+      setVideoElement(
+        new JSMpeg.VideoElement(containerRef.current, "wss://monitoring.frikanalen.no/", {
+          videoBufferSize: 512 * 1024 * 20,
+          audioBufferSize: 128 * 1024 * 20,
+        })
+      );
+
+    return () => {
+      videoElement?.destroy && videoElement.destroy();
+    };
+  }, [videoElement]);
 
   return (
     <div
       ref={containerRef}
-      style={{ width: "1024px", height: "576px", margin: "0 auto" }}
+      style={{ width: "100%", paddingBottom: "56.25%" }}
       onClick={() => {
         if (!videoElement?.player) return;
         videoElement.player.getVolume() ? videoElement.player.setVolume(0) : videoElement.player.setVolume(1);
@@ -27,3 +32,5 @@ export const MonitoringStream = () => {
     />
   );
 };
+
+export default MonitoringStream;

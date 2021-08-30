@@ -18,7 +18,7 @@ metadata:
 spec:
   stripPrefix:
     prefixes:
-      - /playout/atem
+      - /api/playout/atem
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -29,7 +29,7 @@ spec:
   entryPoints: 
     - websecure
   routes:
-  - match: Host(`frikanalen.no`) && PathPrefix(`/playout/atem/`)
+  - match: Host(`frikanalen.no`) && PathPrefix(`/api/playout/atem/`)
     kind: Rule
     middlewares:
       - name: strip-atem-prefix

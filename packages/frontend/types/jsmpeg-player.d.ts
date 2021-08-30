@@ -8,6 +8,7 @@ declare module "@cycjimmy/jsmpeg-player" {
   }
   export class VideoElement {
     constructor(element: HTMLElement, uri: string, options: JSMpegOptions);
+    destroy();
     player: Player;
   }
 }

@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,7 +9,7 @@ import bsCustomFileInput from "bs-custom-file-input";
 import configs from "./configs";
 
 import { fkVideo, getUploadToken } from "./TS-API/API";
-import {UserContext, UserContextState} from "./UserContext";
+import { UserContext, UserContextState } from "./UserContext";
 import styles from "./VideoUpload.module.sass";
 
 function humanFileSize(sizeBytes: number, si = true, dp = 1): string {
@@ -125,7 +125,7 @@ class VideoUpload extends Component<VideoUploadProps, VideoUploadState> {
           uploadedBytes,
         });
       },
-      onSuccess: (): void => this.uploadComplete()
+      onSuccess: (): void => this.uploadComplete(),
     });
 
     upload.start();

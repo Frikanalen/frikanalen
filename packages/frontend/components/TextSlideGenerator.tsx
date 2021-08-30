@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
-import {UserContext, UserContextLoggedInState} from "./UserContext";
+import { UserContext, UserContextLoggedInState } from "./UserContext";
 
 interface Props {
   show: boolean;
@@ -20,14 +20,11 @@ export default function TextSlideGenerator(props: Props): JSX.Element {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const imageURL = 'https://stills-generator.frikanalen.no/poster/preview?text=&heading=",';
 
-  const { token } = context as UserContextLoggedInState;
-
   const uploadPoster = async (heading: string, text: string): Promise<void> => {
     setStatusMessage("Laster opp...");
     await fetch("https://stills-generator.frikanalen.no/poster/upload", {
       method: "post",
       headers: {
-        Authorization: `Token ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -55,7 +52,9 @@ export default function TextSlideGenerator(props: Props): JSX.Element {
           <Form.Group>
             <Form.Label>Tekst</Form.Label>
             <Form.Control
-              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>): void => setPosterText(event.currentTarget.value)}
+              onChange={(event: React.ChangeEvent<HTMLTextAreaElement>): void =>
+                setPosterText(event.currentTarget.value)
+              }
               as="textarea"
               placeholder="tekst"
             />
