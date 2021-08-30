@@ -12,5 +12,6 @@ export const lightTheme: Theme = {
   fontColor: {
     normal: "rgba(0, 0, 0, 0.85)",
     muted: "rgba(0, 0, 0, 0.7)",
+    subdued: "rgba(0, 0, 0, 0.5)",
   },
 };

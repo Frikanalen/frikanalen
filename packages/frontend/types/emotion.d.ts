@@ -13,6 +13,7 @@ declare module "@emotion/react" {
     fontColor: {
       normal: string;
       muted: string;
+      subdued: string;
     };
   }
 }
