@@ -1,13 +1,8 @@
+import { Video } from "modules/video/types";
+
 export type Organization = {
   id: number;
   name: string;
-};
-
-export type Video = {
-  id: number;
-  name: string;
-  header: string;
-  organization: Organization;
 };
 
 export type ScheduleItem = {
