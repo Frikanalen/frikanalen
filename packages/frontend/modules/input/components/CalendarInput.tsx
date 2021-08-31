@@ -177,7 +177,7 @@ export function CalendarInput(props: CalendarInputProps) {
       type = "selected";
     }
 
-    if (offsetDay < 0) {
+    if (offsetDay <= 0) {
       type = "previous";
     }
 
