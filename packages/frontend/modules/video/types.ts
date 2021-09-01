@@ -5,4 +5,8 @@ export type Video = {
   name: string;
   header: string;
   organization: Organization;
+  ogvUrl: string;
+  files: {
+    largeThumb: string;
+  };
 };
