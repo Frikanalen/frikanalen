@@ -26,13 +26,13 @@ const Container = styled.div`
   box-shadow: 2px 2px 11px 2px rgba(0, 0, 0, 0.1);
 `;
 
-export type VideoPlayerProp = {
+export type LiveVideoPlayerProp = {
   src: string;
   width: number;
   height: number;
 };
 
-export function VideoPlayer(props: VideoPlayerProp) {
+export function LiveVideoPlayer(props: LiveVideoPlayerProp) {
   const { src, width, height } = props;
 
   return (

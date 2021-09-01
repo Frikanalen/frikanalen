@@ -3,7 +3,7 @@ import { useObserver } from "mobx-react-lite";
 import { ScheduleItemBlurb } from "modules/schedule/components/ScheduleItemBlurb";
 import { ScheduleItemSummary } from "modules/schedule/components/ScheduleItemSummary";
 import { useStores } from "modules/state/manager";
-import { VideoPlayer } from "modules/video/components/VideoPlayer";
+import { LiveVideoPlayer } from "modules/video/components/LiveVideoPlayer";
 import { NextPageContext } from "next";
 
 const Container = styled.div`
@@ -41,7 +41,7 @@ export default function Index() {
   return (
     <Container>
       <Main>
-        <VideoPlayer width={1280} height={720} src="https://frikanalen.no/stream/index.m3u8" />
+        <LiveVideoPlayer width={1280} height={720} src="https://frikanalen.no/stream/index.m3u8" />
         <NowPlaying item={now} />
         <NextTitle>Senere</NextTitle>
         <Schedule>
