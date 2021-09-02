@@ -6,6 +6,10 @@ export type ResourceStoreOptions<R extends Resource<D>, D> = {
   getId: (data: D) => number;
 };
 
+export type SerializedResourceStore<D> = {
+  items: Record<number, D>;
+};
+
 export class ResourceStore<R extends Resource<D>, D> {
   @observable private items: Record<number, R> = {};
 
@@ -33,7 +37,7 @@ export class ResourceStore<R extends Resource<D>, D> {
     const resource = this.getOrCreateById(id);
 
     const internalFetch = async () => {
-      if (resource.data) return;
+      if (resource.fetching) return;
       resource.fetching = true;
 
       try {
@@ -50,5 +54,17 @@ export class ResourceStore<R extends Resource<D>, D> {
 
     const promise = internalFetch();
     return { resource, promise };
+  }
+
+  public serialize(): SerializedResourceStore<D> {
+    // Object.entries returns a record with string index, so :any this for now
+    const items: any = Object.fromEntries(Object.entries(this.items).filter(([, r]) => r.hasData));
+    return { items };
+  }
+
+  public hydrate(data: SerializedResourceStore<D>) {
+    for (const item of Object.values(data.items)) {
+      this.prepopulate(item);
+    }
   }
 }

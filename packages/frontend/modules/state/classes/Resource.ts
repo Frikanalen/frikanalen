@@ -18,6 +18,11 @@ export class Resource<T> {
   }
 
   @computed
+  public get hasData() {
+    return !!this._data;
+  }
+
+  @computed
   public get ready() {
     if (this.fetching || !this.hasFetched) {
       return false;
