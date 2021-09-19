@@ -38,10 +38,12 @@ echo "Creating database/backend secrets"
 
 POSTGRES_REPLICATION_PASSWORD=$(pwgen 32 1)
 POSTGRES_PASSWORD=$(pwgen 32 1)
+DATABASE_URL="postgres://fkweb:${POSTGRES_PASSWORD}@database-api/fkweb"
 FKSCHEDULE_PASSWORD=$(pwgen 32 1)
 
 $k create secret generic database-api-secret \
     --from-literal=POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+    --from-literal=DATABASE_URL=${DATABASE_URL} \
     --from-literal=FKSCHEDULE_PASSWORD=${FKSCHEDULE_PASSWORD} \
     --from-literal=POSTGRES_REPLICATION_PASSWORD=${POSTGRES_REPLICATION_PASSWORD}
 
