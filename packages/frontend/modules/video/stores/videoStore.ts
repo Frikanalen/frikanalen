@@ -8,12 +8,7 @@ export class VideoStore extends Store<SerializedResourceStore<VideoData>> {
   private store = new ResourceStore({
     manager: this.manager,
     getId: (d: VideoData) => d.id,
-    createFetcher: (manager, fetch) =>
-      new ResourceFetcher({
-        createResource: createVideo,
-        fetch,
-        manager,
-      }),
+    createFetcher: (manager, fetch) => new ResourceFetcher({ createResource: createVideo, fetch, manager }),
     createCanonicalFetchData: (d) => async () => {
       const { networkStore } = this.manager.stores;
       const { api } = networkStore;
