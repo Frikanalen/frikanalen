@@ -1,6 +1,6 @@
 import { Organization } from "modules/schedule/types";
 
-export type Video = {
+export type VideoData = {
   id: number;
   name: string;
   header: string;

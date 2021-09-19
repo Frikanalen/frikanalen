@@ -1,20 +1,34 @@
-import { Resource } from "modules/state/classes/Resource";
+import { ResourceFetcher } from "modules/state/classes/ResourceFetcher";
 import { ResourceStore, SerializedResourceStore } from "modules/state/classes/ResourceStore";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
-import { Video } from "../types";
+import { createVideo } from "../classes/Video";
+import { VideoData } from "../types";
 
-export class VideoStore extends Store<SerializedResourceStore<Video>> {
+export class VideoStore extends Store<SerializedResourceStore<VideoData>> {
   private store = new ResourceStore({
-    createResource: () => new Resource<Video>(),
-    getId: (d: Video) => d.id,
+    manager: this.manager,
+    getId: (d: VideoData) => d.id,
+    createFetcher: (manager, fetch) =>
+      new ResourceFetcher({
+        createResource: createVideo,
+        fetch,
+        manager,
+      }),
+    createCanonicalFetchData: (d) => async () => {
+      const { networkStore } = this.manager.stores;
+      const { api } = networkStore;
+
+      const { data } = await api.get<VideoData>(`/videos/${d.id}`);
+      return data;
+    },
   });
 
   public fetchById(id: number) {
     const { networkStore } = this.manager.stores;
     const { api } = networkStore;
 
-    return this.store.fetch(id, async () => {
-      const { data } = await api.get<Video>(`/videos/${id}`);
+    return this.store.getOrCreateById(id, async () => {
+      const { data } = await api.get<VideoData>(`/videos/${id}`);
       return data;
     });
   }
@@ -23,7 +37,7 @@ export class VideoStore extends Store<SerializedResourceStore<Video>> {
     return this.store.serialize();
   }
 
-  public hydrate(data: SerializedResourceStore<Video>) {
+  public hydrate(data: SerializedResourceStore<VideoData>) {
     this.store.hydrate(data);
   }
 }
