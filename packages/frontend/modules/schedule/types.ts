@@ -1,4 +1,4 @@
-import { Video } from "modules/video/types";
+import { VideoData } from "modules/video/types";
 
 export type Organization = {
   id: number;
@@ -7,7 +7,7 @@ export type Organization = {
 
 export type ScheduleItem = {
   id: number;
-  video: Video;
+  video: VideoData;
   starttime: string;
   endtime: string;
 };
