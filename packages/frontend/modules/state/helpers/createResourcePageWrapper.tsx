@@ -6,8 +6,8 @@ import { FetcherView } from "../components/FetcherView";
 import { useManager } from "../manager";
 import { Manager } from "../types";
 
-export type CreateResourcePageWrapperOptions<R extends Resource<D>, D> = {
-  getFetcher: (query: NextPageContext["query"], manager: Manager) => ResourceFetcher<R, D>;
+export type CreateResourcePageWrapperOptions<R extends Resource<any>> = {
+  getFetcher: (query: NextPageContext["query"], manager: Manager) => ResourceFetcher<R, R["data"]>;
   renderContent: (resource: R) => JSX.Element;
 };
 
@@ -15,9 +15,7 @@ export type WrapperProps = {
   query: NextPageContext["query"];
 };
 
-export const createResourcePageWrapper = <R extends Resource<D>, D>(
-  options: CreateResourcePageWrapperOptions<R, D>
-) => {
+export const createResourcePageWrapper = <R extends Resource<any>>(options: CreateResourcePageWrapperOptions<R>) => {
   const { getFetcher, renderContent } = options;
 
   function Wrapper(props: WrapperProps) {
