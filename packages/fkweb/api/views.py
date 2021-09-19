@@ -174,7 +174,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
     Query parameters
     ----------------
 
-    `date` - Date expressed in the format YYYYMMDD (eg. 20201231), or
+    `date` - Date expressed in the format YYYY-MM-DD (eg. 2020-12-31), or
              "today".  Default is today, Europe/Oslo time.
 
     `days` - Number of days schedule requested. Default is 7 days.
@@ -203,7 +203,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
 
     def parse_YYYYMMDD_or_today(self, inputDate):
         try:
-            return datetime.datetime.strptime(inputDate, '%Y%m%d')\
+            return datetime.datetime.strptime(inputDate, '%Y-%m-%d')\
                 .astimezone(pytz.timezone('Europe/Oslo'))
         except (KeyError, ValueError, TypeError):
             return datetime.datetime.now(tz = pytz.timezone('Europe/Oslo'))

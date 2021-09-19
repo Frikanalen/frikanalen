@@ -189,7 +189,7 @@ class APITest(TestCase):
             [v['filename'] for v in r.data['results']])
 
     def test_api_scheduleitems_list(self):
-        r = self.client.get(reverse('api-scheduleitem-list') + '?date=20141231')
+        r = self.client.get(reverse('api-scheduleitem-list') + '?date=2014-12-31')
 
         self.assertEqual(
             ['tech video', 'dummy video'],

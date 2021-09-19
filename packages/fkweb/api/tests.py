@@ -100,7 +100,7 @@ class PermissionsTest(APITestCase):
         Will list all videofiles even where parent video not proper_import
         """
         r = self.client.get(reverse('api-scheduleitem-list') +
-                            '?date=20150101')
+                            '?date=2015-01-01')
         videos = [v['video']['name'] for v in r.data['results']]
         self.assertEqual(videos, ['tech video', 'dummy video'])
         self.assertEqual(status.HTTP_200_OK, r.status_code)
