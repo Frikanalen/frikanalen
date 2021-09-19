@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: django
-        image: frikanalen/django-backend:latest
+        image: frikanalen/django-backend:master
+        imagePullPolicy: Always
         env:
           - name: DJANGO_SETTINGS_MODULE
             value: fkweb.settings.production
