@@ -14,11 +14,7 @@ export class VideoStore extends Store<SerializedResourceStore<Video>> {
     const { api } = networkStore;
 
     return this.store.fetch(id, async () => {
-      const { data } = await api.get<Video>(`/videos/${id}`, {
-        // THIS IS TEMPORARY
-        baseURL: "https://frikanalen.no/api/",
-        withCredentials: false,
-      });
+      const { data } = await api.get<Video>(`/videos/${id}`);
       return data;
     });
   }
@@ -28,8 +24,6 @@ export class VideoStore extends Store<SerializedResourceStore<Video>> {
   }
 
   public hydrate(data: SerializedResourceStore<Video>) {
-    console.log(data);
-
     this.store.hydrate(data);
   }
 }

@@ -44,10 +44,6 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
         days: 1,
         date: date.toISOString(),
       },
-
-      // THIS IS TEMPORARY
-      baseURL: "https://frikanalen.no/api/",
-      withCredentials: false,
     });
 
     this.itemsByDate[date.toISOString()] = response.data.results;
