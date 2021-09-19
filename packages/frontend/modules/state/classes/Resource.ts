@@ -1,37 +1,20 @@
-import { computed, observable } from "mobx";
+import { observable } from "mobx";
+import { Manager } from "../types";
 
 /** Represents a resource containing data that may be fetched later, or that can fail */
-export class Resource<T> {
-  @observable private _data?: T;
-  @observable public error?: any;
+export class Resource<D> {
+  public data: D;
+  public rawData: D;
 
-  @observable public hasFetched = false;
-  @observable public fetching = false;
-
-  @computed
-  public get data() {
-    if (!this._data) {
-      throw new Error("Attempt to access data before data is present");
-    }
-
-    return this._data;
+  public constructor(data: D, protected manager: Manager) {
+    this.data = observable(data);
+    this.rawData = data;
   }
 
-  @computed
-  public get hasData() {
-    return !!this._data;
-  }
-
-  @computed
-  public get ready() {
-    if (this.fetching || !this.hasFetched) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public populate(data: T) {
-    this._data = data;
+  public populate(newData: Partial<D>) {
+    this.data = { ...this.data, ...newData };
+    this.rawData = { ...this.rawData, ...newData };
   }
 }
+
+export type ResourceFactory<R extends Resource<any>> = (data: R["data"], manager: Manager) => R;

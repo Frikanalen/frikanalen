@@ -1,9 +1,13 @@
 import { observable } from "mobx";
+import { Manager } from "../types";
 import { Resource } from "./Resource";
+import { FetchData, ResourceFetcher } from "./ResourceFetcher";
 
 export type ResourceStoreOptions<R extends Resource<D>, D> = {
-  createResource: () => R;
+  createFetcher: (manager: Manager, fetch: FetchData<D>) => ResourceFetcher<R, D>;
+  createCanonicalFetchData: (data: D) => FetchData<D>;
   getId: (data: D) => number;
+  manager: Manager;
 };
 
 export type SerializedResourceStore<D> = {
@@ -11,54 +15,37 @@ export type SerializedResourceStore<D> = {
 };
 
 export class ResourceStore<R extends Resource<D>, D> {
-  @observable private items: Record<number, R> = {};
+  @observable private items: Record<number, ResourceFetcher<R, D>> = {};
 
   constructor(private options: ResourceStoreOptions<R, D>) {}
 
-  public getOrCreateById(id: number) {
-    const existingResource = this.items[id];
-    if (existingResource) return existingResource;
+  public getOrCreateById(id: number, fetchData: () => Promise<D>) {
+    const { manager, createFetcher } = this.options;
 
-    const newResource = this.options.createResource();
-    this.items[id] = newResource;
+    const existingFetcher = this.items[id];
+    if (existingFetcher) return existingFetcher;
 
-    return newResource;
+    const newFetcher = createFetcher(manager, fetchData);
+    this.items[id] = newFetcher;
+
+    return newFetcher;
   }
 
   public prepopulate(data: D) {
-    const id = this.options.getId(data);
-    const existing = this.getOrCreateById(id);
+    const { getId, createCanonicalFetchData } = this.options;
+
+    const id = getId(data);
+    const existing = this.getOrCreateById(id, createCanonicalFetchData(data));
 
     existing.populate(data);
     return existing;
   }
 
-  public fetch(id: number, doFetch: () => Promise<D>) {
-    const resource = this.getOrCreateById(id);
-
-    const internalFetch = async () => {
-      if (resource.fetching) return;
-      resource.fetching = true;
-
-      try {
-        const result = await doFetch();
-
-        resource.populate(result);
-      } catch (e) {
-        resource.error = e;
-      }
-
-      resource.hasFetched = true;
-      resource.fetching = false;
-    };
-
-    const promise = internalFetch();
-    return { resource, promise };
-  }
-
   public serialize(): SerializedResourceStore<D> {
-    const items = Object.entries(this.items).filter(([, r]) => r.hasData).map(([, r]) => r.data)
-    return { items }
+    const items = Object.entries(this.items)
+      .filter(([, r]) => r.resource)
+      .map(([, r]) => r.resource!.data);
+    return { items };
   }
 
   public hydrate(data: SerializedResourceStore<D>) {
