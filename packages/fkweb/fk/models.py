@@ -18,7 +18,6 @@ from django.urls import reverse
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.utils import timezone
-from django.utils.timezone import utc
 from django.utils.translation import ugettext as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
@@ -299,6 +298,7 @@ class Video(models.Model):
     #                 editable=False,
     #                 help_text='Video upload token (used by fkupload/frontend)')
 
+    @staticmethod
     def default_uuid_value():
         return uuid.uuid4().hex
 
