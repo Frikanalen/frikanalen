@@ -2,6 +2,7 @@
 
 
 from os import environ
+import dj_database_url
 
 from .base import *
 
@@ -35,15 +36,8 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 ########## END EMAIL CONFIGURATION
 
 ########## DATABASE CONFIGURATION
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_env_setting('DATABASE_NAME'),
-        'USER': get_env_setting('DATABASE_USER'),
-        'PASSWORD': get_env_setting('DATABASE_PASS'),
-        'HOST': get_env_setting('DATABASE_HOST'),
-    }
-}
+DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+
 ########## END DATABASE CONFIGURATION
 
 
