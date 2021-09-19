@@ -7,7 +7,7 @@ export type ResourceStoreOptions<R extends Resource<D>, D> = {
 };
 
 export type SerializedResourceStore<D> = {
-  items: Record<number, D>;
+  items: D[];
 };
 
 export class ResourceStore<R extends Resource<D>, D> {
@@ -57,13 +57,12 @@ export class ResourceStore<R extends Resource<D>, D> {
   }
 
   public serialize(): SerializedResourceStore<D> {
-    // Object.entries returns a record with string index, so :any this for now
-    const items: any = Object.fromEntries(Object.entries(this.items).filter(([, r]) => r.hasData));
-    return { items };
+    const items = Object.entries(this.items).filter(([, r]) => r.hasData).map(([, r]) => r.data)
+    return { items }
   }
 
   public hydrate(data: SerializedResourceStore<D>) {
-    for (const item of Object.values(data.items)) {
+    for (const item of data.items) {
       this.prepopulate(item);
     }
   }
