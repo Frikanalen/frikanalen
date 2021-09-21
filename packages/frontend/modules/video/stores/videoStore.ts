@@ -28,16 +28,20 @@ export class VideoStore extends Store<SerializedResourceStore<VideoData>> {
     });
   }
 
-  public add(data: VideoData) {
-    return this.store.prepopulate(data).resource!;
-  }
-
   public serialize() {
     return this.store.serialize();
   }
 
   public hydrate(data: SerializedResourceStore<VideoData>) {
     this.store.hydrate(data);
+  }
+
+  public get getById() {
+    return this.store.getById;
+  }
+
+  public get add() {
+    return this.store.add;
   }
 }
 
