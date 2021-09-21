@@ -63,8 +63,6 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
 
   @computed
   public get selectedDateItems() {
-    console.log(this.itemsByDate);
-
     return this.itemsByDate[this.selectedDate.toISOString()] ?? [];
   }
 
