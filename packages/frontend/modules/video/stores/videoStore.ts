@@ -37,11 +37,11 @@ export class VideoStore extends Store<SerializedResourceStore<VideoData>> {
   }
 
   public get getResourceById() {
-    return this.store.getResourceById;
+    return this.store.getResourceById.bind(this.store);
   }
 
   public get add() {
-    return this.store.add;
+    return this.store.add.bind(this.store);
   }
 }
 
