@@ -42,7 +42,7 @@ export default function Schedule() {
       <Result>
         <DayTitle>{humanizeSelectedScheduleDate(selectedDate)}</DayTitle>
         {selectedDateItems.map((i) => (
-          <ScheduleTimelineItem key={i.id} item={i} />
+          <ScheduleTimelineItem key={i.data.id} item={i} />
         ))}
       </Result>
       <Sidebar>

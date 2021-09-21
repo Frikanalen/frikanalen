@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { humanizeScheduleItemDate } from "../helpers/humanizeScheduleItemDate";
-import { ScheduleItem } from "../types";
+import { ScheduleItem } from "../resources/ScheduleItem";
 
 const Container = styled.div`
   display: flex;
@@ -50,18 +50,19 @@ export type ScheduleItemSummary = {
 
 export function ScheduleItemSummary(props: ScheduleItemSummary) {
   const { item } = props;
+  const { video } = item;
 
   return (
     <Container>
       <PrimaryInfo>
-        <Link href={`/video/${item.video.id}`} passHref>
-          <Title>{item.video.name}</Title>
+        <Link href={`/video/${item.video.data.id}`} passHref>
+          <Title>{video.data.name}</Title>
         </Link>
-        <Link href={`/organization/${item.video.organization.id}`} passHref>
-          <Organization>{item.video.organization.name}</Organization>
+        <Link href={`/organization/${item.video.organization.data.id}`} passHref>
+          <Organization>{item.video.organization.data.name}</Organization>
         </Link>
       </PrimaryInfo>
-      <Time>{humanizeScheduleItemDate(new Date(item.starttime))}</Time>
+      <Time>{humanizeScheduleItemDate(new Date(item.data.starttime))}</Time>
     </Container>
   );
 }

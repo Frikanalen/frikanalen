@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { ScheduleItem } from "../types";
+import { ScheduleItem } from "../resources/ScheduleItem";
 
 const Container = styled.div``;
 
@@ -32,16 +32,16 @@ export function ScheduleItemBlurb(props: ScheduleItemBlurbProps) {
   return (
     <Container className={className}>
       <Title>
-        <Link href={`/video/${item.video.id}`} passHref>
-          <a>{item.video.name}</a>
+        <Link href={`/video/${item.video.data.id}`} passHref>
+          <a>{item.video.data.name}</a>
         </Link>
       </Title>
       <Organization>
-        <Link href={`/organization/${item.video.organization.id}`} passHref>
-          <a>{item.video.organization.name}</a>
+        <Link href={`/organization/${item.video.organization.data.id}`} passHref>
+          <a>{item.video.organization.data.name}</a>
         </Link>
       </Organization>
-      <Description>{item.video.header}</Description>
+      <Description>{item.video.data.header}</Description>
     </Container>
   );
 }

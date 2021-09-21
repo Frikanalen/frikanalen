@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { format } from "date-fns";
 import Link from "next/link";
 import React from "react";
-import { ScheduleItem } from "../types";
+import { ScheduleItem } from "../resources/ScheduleItem";
 
 const Container = styled.div`
   display: flex;
@@ -51,16 +51,16 @@ export function ScheduleTimelineItem(props: ScheduleTimelineItemProps) {
 
   return (
     <Container>
-      <Time>{format(new Date(item.starttime), "HH:mm")}</Time>
+      <Time>{format(new Date(item.data.starttime), "HH:mm")}</Time>
       <PrimaryInfo>
         <Title>
-          <Link href={`/video/${item.video.id}`} passHref>
-            <a>{item.video.name}</a>
+          <Link href={`/video/${item.video.data.id}`} passHref>
+            <a>{item.video.data.name}</a>
           </Link>
         </Title>
         <Organization>
-          <Link href={`/organization/${item.video.organization.id}`} passHref>
-            <a>{item.video.organization.name}</a>
+          <Link href={`/organization/${item.video.organization.data.id}`} passHref>
+            <a>{item.video.organization.data.name}</a>
           </Link>
         </Organization>
       </PrimaryInfo>

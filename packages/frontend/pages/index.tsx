@@ -46,7 +46,7 @@ export default function Index() {
         <NextTitle>Senere</NextTitle>
         <Schedule>
           {later.map((x) => (
-            <ScheduleItemSummary key={x.id} item={x} />
+            <ScheduleItemSummary key={x.data.id} item={x} />
           ))}
         </Schedule>
       </Main>
