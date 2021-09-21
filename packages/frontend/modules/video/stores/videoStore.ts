@@ -28,7 +28,7 @@ export class VideoStore extends Store<SerializedResourceStore<VideoData>> {
     });
   }
 
-  public getResourceFromData(data: VideoData) {
+  public add(data: VideoData) {
     return this.store.prepopulate(data).resource!;
   }
 

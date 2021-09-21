@@ -30,7 +30,7 @@ export const createVideoList: ListFactory<Data, Params> = (data, manager) => {
       });
 
       const { results, next } = result.data;
-      const mappedIds = results.map((r) => videoStore.getResourceFromData(r).data.id);
+      const mappedIds = results.map((r) => videoStore.add(r).data.id);
 
       return {
         newItems: mappedIds,
