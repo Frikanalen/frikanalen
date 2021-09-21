@@ -10,10 +10,11 @@ export type Params = {
 
 export type Data = {
   path: string;
+  params: Partial<Params>;
 };
 
 export const createVideoList: ListFactory<Data, Params> = (data, manager) => {
-  const { path } = data;
+  const { path, params } = data;
   const { videoStore, networkStore } = manager.stores;
 
   return new List<number, Params>({
@@ -38,6 +39,7 @@ export const createVideoList: ListFactory<Data, Params> = (data, manager) => {
         hasMore: !!next,
       };
     },
+    initialParams: params,
   });
 };
 
