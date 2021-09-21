@@ -2,4 +2,5 @@
 export type ApiCollection<T> = {
   count: number;
   results: T[];
+  next: string | null;
 };
