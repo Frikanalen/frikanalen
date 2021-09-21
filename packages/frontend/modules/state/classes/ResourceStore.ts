@@ -31,6 +31,21 @@ export class ResourceStore<R extends Resource<D>, D> {
     return newFetcher;
   }
 
+  public getById(id: number) {
+    const item = this.items[id];
+
+    if (!item) {
+      throw new Error("Passed invalid id to getById");
+    }
+
+    return item;
+  }
+
+  public add(data: D) {
+    const fetcher = this.prepopulate(data);
+    return this.options.getId(fetcher.resource!.data);
+  }
+
   public prepopulate(data: D) {
     const { getId, createCanonicalFetchData } = this.options;
 
