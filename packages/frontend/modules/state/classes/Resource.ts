@@ -14,10 +14,7 @@ export class Resource<D> {
   public populate(newData: Partial<D>) {
     this.data = { ...this.data, ...newData };
     this.rawData = { ...this.rawData, ...newData };
-    this.onData();
   }
-
-  protected onData() {}
 }
 
 export type ResourceFactory<R extends Resource<any>> = (data: R["data"], manager: Manager) => R;

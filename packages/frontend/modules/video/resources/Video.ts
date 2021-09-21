@@ -1,8 +1,11 @@
 import { Resource, ResourceFactory } from "modules/state/classes/Resource";
+import { Manager } from "modules/state/types";
 import { VideoData } from "../types";
 
 export class Video extends Resource<VideoData> {
-  protected onData() {
+  constructor(data: VideoData, manager: Manager) {
+    super(data, manager);
+
     const { organization } = this.data;
     const { organizationStore } = this.manager.stores;
 
