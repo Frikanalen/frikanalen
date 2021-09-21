@@ -8,6 +8,7 @@ import { Manager } from "../types";
 
 export type CreateResourcePageWrapperOptions<R extends Resource<any>> = {
   getFetcher: (query: NextPageContext["query"], manager: Manager) => ResourceFetcher<R, R["data"]>;
+  onResource?: (resource: R) => Promise<void>;
   renderContent: (resource: R) => JSX.Element;
 };
 
@@ -16,7 +17,7 @@ export type WrapperProps = {
 };
 
 export const createResourcePageWrapper = <R extends Resource<any>>(options: CreateResourcePageWrapperOptions<R>) => {
-  const { getFetcher, renderContent } = options;
+  const { getFetcher, renderContent, onResource } = options;
 
   function Wrapper(props: WrapperProps) {
     const { query } = props;
@@ -34,6 +35,10 @@ export const createResourcePageWrapper = <R extends Resource<any>>(options: Crea
     // Only fetch if it hasn't been fetched already
     if (!fetcher.resource && !fetcher.fetching) {
       await fetcher.fetch();
+    }
+
+    if (fetcher.resource && onResource) {
+      await onResource(fetcher.resource);
     }
 
     return { query };
