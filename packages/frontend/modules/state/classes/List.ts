@@ -23,6 +23,14 @@ export type ListOptions<T, P extends object> = {
   limit?: number;
 };
 
+export type SerializedInfiniteList<T, P extends object> = {
+  items: T[];
+  hasMore: boolean;
+  limit: number;
+  offset: number;
+  params: Partial<P>;
+};
+
 export class List<T, P extends object> {
   @observable public status: ListStatus = "idle";
   @observable public items: T[] = [];
@@ -59,6 +67,23 @@ export class List<T, P extends object> {
       this.status = "idle";
     } catch {
       this.status = "failed";
+    }
+  }
+
+  public serialize(): SerializedInfiniteList<T, P> {
+    return {
+      items: this.items,
+      offset: this.offset,
+      params: this.params,
+      hasMore: this.hasMore,
+      limit: this.limit,
+    };
+  }
+
+  public hydrate(data: SerializedInfiniteList<T, P>) {
+    for (const [key, value] of Object.entries(data)) {
+      //@ts-ignore
+      this[key] = value;
     }
   }
 }
