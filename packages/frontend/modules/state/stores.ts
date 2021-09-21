@@ -1,6 +1,7 @@
 import { authStore, AuthStore } from "modules/auth/stores/authStore";
 import { ModalStore, modalStore } from "modules/modal/stores/modalStore";
 import { NetworkStore, networkStore } from "modules/network/stores/networkStore";
+import { organizationStore, OrganizationStore } from "modules/organization/stores/organizationStore";
 import { PopoverStore, popoverStore } from "modules/popover/stores/popoverStore";
 import { ScheduleStore, scheduleStore } from "modules/schedule/stores/scheduleStore";
 import { VideoStore, videoStore } from "modules/video/stores/videoStore";
@@ -15,6 +16,7 @@ export type Stores = {
   networkStore: NetworkStore;
   popoverStore: PopoverStore;
   scheduleStore: ScheduleStore;
+  organizationStore: OrganizationStore;
 };
 
 export const stores: StoreFactories = {
@@ -25,4 +27,5 @@ export const stores: StoreFactories = {
   popoverStore,
   networkStore,
   scheduleStore,
+  organizationStore,
 };
