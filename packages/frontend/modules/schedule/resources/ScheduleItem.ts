@@ -15,8 +15,6 @@ export class ScheduleItem extends Resource<ScheduleItemData> {
 
     const { videoStore } = this.manager.stores;
     videoStore.add(data.video);
-
-    console.log(videoStore);
   }
 
   public get video() {
