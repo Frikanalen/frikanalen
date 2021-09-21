@@ -21,6 +21,7 @@ export type SerializedListStore = {
 export class ListStore extends Store<SerializedListStore> {
   private lists: Record<string, StoredListEntry> = {};
 
+  // TODO: Fix "data" being any here. Somehow extract the correct type infornmation?
   public ensure(name: string, type: ListType, data: any) {
     const existing = this.lists[name];
     if (existing) return existing.list;
