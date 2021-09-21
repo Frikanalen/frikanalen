@@ -41,6 +41,11 @@ export class ResourceStore<R extends Resource<D>, D> {
     return item;
   }
 
+  public getResourceById(id: number) {
+    const item = this.getById(id);
+    return item.resource!;
+  }
+
   public add(data: D) {
     const fetcher = this.prepopulate(data);
     return this.options.getId(fetcher.resource!.data);

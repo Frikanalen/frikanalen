@@ -25,8 +25,8 @@ export class OrganizationStore extends Store<SerializedResourceStore<Organizatio
     this.store.hydrate(data);
   }
 
-  public get getById() {
-    return this.store.getById;
+  public get getResourceById() {
+    return this.store.getResourceById;
   }
 
   public get add() {

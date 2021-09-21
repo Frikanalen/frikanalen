@@ -36,8 +36,8 @@ export class VideoStore extends Store<SerializedResourceStore<VideoData>> {
     this.store.hydrate(data);
   }
 
-  public get getById() {
-    return this.store.getById;
+  public get getResourceById() {
+    return this.store.getResourceById;
   }
 
   public get add() {

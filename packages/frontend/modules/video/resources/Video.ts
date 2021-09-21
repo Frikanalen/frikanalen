@@ -11,9 +11,7 @@ export class Video extends Resource<VideoData> {
 
   public get organization() {
     const { organizationStore } = this.manager.stores;
-
-    // Figure out a better way to do this
-    return organizationStore.getById(this.data.organization.id).resource!;
+    return organizationStore.getResourceById(this.data.organization.id);
   }
 
   // TODO: This should perhaps be moved to the Organization resource in the future
