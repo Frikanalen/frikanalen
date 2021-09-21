@@ -51,7 +51,7 @@ export class List<T, P extends object> {
   }
 
   public async more() {
-    if (this.status === "fetching") {
+    if (this.status === "fetching" || !this.hasMore) {
       return;
     }
 
