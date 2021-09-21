@@ -6,6 +6,10 @@ import { Video } from "modules/video/resources/Video";
 import { VideoPlayer } from "modules/video/components/VideoPlayer";
 import Link from "next/link";
 import React from "react";
+import { useResourceList } from "modules/state/hooks/useResourceList";
+import { useStores } from "modules/state/manager";
+import { ListTail } from "modules/state/components/ListTail";
+import { RecentVideoItem } from "./RecentVideoItem";
 
 const Container = styled.div`
   display: flex;
@@ -37,12 +41,20 @@ const Description = styled.p`
 `;
 
 const UploadedDate = styled.span`
+  font-size: 1em;
   color: ${(props) => props.theme.fontColor.muted};
 `;
 
 const Sidebar = styled.div`
-  width: 320px;
+  width: 380px;
   margin-left: 32px;
+`;
+
+const SidebarTitle = styled.h5`
+  font-size: 1.2em;
+  font-weight: 500;
+
+  margin-bottom: 16px;
 `;
 
 export type ContentProps = {
@@ -50,8 +62,11 @@ export type ContentProps = {
 };
 
 function VideoView(props: ContentProps) {
+  const { videoStore } = useStores();
   const { video } = props;
   const { name, createdTime, header, organization, ogvUrl, files } = video.data;
+
+  const videos = useResourceList(video.latestVideosByOrganization, videoStore);
 
   return (
     <Container>
@@ -68,7 +83,13 @@ function VideoView(props: ContentProps) {
         <Description>{header}</Description>
         <UploadedDate>lastet opp {format(new Date(createdTime), "d. MMM yyyy", { locale: nb })}</UploadedDate>
       </Content>
-      <Sidebar></Sidebar>
+      <Sidebar>
+        <SidebarTitle>Nyeste videoer fra {video.organization.data.name}</SidebarTitle>
+        {videos.map((x) => (
+          <RecentVideoItem key={x.data.id} video={x} />
+        ))}
+        <ListTail list={video.latestVideosByOrganization} />
+      </Sidebar>
     </Container>
   );
 }
@@ -82,6 +103,9 @@ const VideoPage = createResourcePageWrapper<Video>({
     return videoStore.fetchById(safeVideoId);
   },
   renderContent: (v) => <VideoView video={v} />,
+  onResource: async (v) => {
+    await v.latestVideosByOrganization.more();
+  },
 });
 
 export default VideoPage;
