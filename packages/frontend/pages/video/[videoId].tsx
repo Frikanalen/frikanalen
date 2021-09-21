@@ -73,7 +73,7 @@ function VideoView(props: ContentProps) {
   );
 }
 
-const VideoPage = createResourcePageWrapper({
+const VideoPage = createResourcePageWrapper<Video>({
   getFetcher: (query, manager) => {
     const { videoStore } = manager.stores;
     const { videoId } = query;
