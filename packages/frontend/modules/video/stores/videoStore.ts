@@ -1,7 +1,7 @@
 import { ResourceFetcher } from "modules/state/classes/ResourceFetcher";
 import { ResourceStore, SerializedResourceStore } from "modules/state/classes/ResourceStore";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
-import { createVideo } from "../classes/Video";
+import { createVideo } from "../resources/Video";
 import { VideoData } from "../types";
 
 export class VideoStore extends Store<SerializedResourceStore<VideoData>> {

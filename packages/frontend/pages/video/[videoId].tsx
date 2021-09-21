@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale";
 import { createResourcePageWrapper } from "modules/state/helpers/createResourcePageWrapper";
-import { Video } from "modules/video/classes/Video";
+import { Video } from "modules/video/resources/Video";
 import { VideoPlayer } from "modules/video/components/VideoPlayer";
 import Link from "next/link";
 import React from "react";
