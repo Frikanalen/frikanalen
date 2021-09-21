@@ -6,6 +6,7 @@ export type VideoData = {
   header: string;
   organization: Organization;
   ogvUrl: string;
+  createdTime: string;
   files: {
     largeThumb: string;
   };
