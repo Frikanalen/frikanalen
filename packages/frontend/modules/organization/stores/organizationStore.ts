@@ -26,11 +26,11 @@ export class OrganizationStore extends Store<SerializedResourceStore<Organizatio
   }
 
   public get getResourceById() {
-    return this.store.getResourceById;
+    return this.store.getResourceById.bind(this.store);
   }
 
   public get add() {
-    return this.store.prepopulate;
+    return this.store.prepopulate.bind(this.store);
   }
 }
 
