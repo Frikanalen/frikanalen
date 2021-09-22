@@ -7,15 +7,15 @@ const typeToIconMap: Record<NoticeType, IconType> = {
   tip: "lightbulb",
 };
 
-const typeToColorMap: Record<NoticeType, keyof Theme["color"]> = {
-  tip: "secondAccent",
+const typeToColorMap: Record<NoticeType, keyof Theme["stateColor"]> = {
+  tip: "tip",
 };
 
 const Container = styled.div<{ type: NoticeType }>`
   display: flex;
   align-items: center;
 
-  background: ${(props) => props.theme.color[typeToColorMap[props.type]]};
+  background: ${(props) => props.theme.stateColor[typeToColorMap[props.type]]};
   color: ${(props) => props.theme.fontColor.muted};
 
   padding: 14px 16px;
