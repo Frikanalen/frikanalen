@@ -21,7 +21,7 @@ export function Form(props: FormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form style={{ width: "100%" }} onSubmit={handleSubmit}>
       <Provider value={form}>
         <FieldsProvider fields={form.fields}>{children}</FieldsProvider>
       </Provider>
