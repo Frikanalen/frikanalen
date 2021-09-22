@@ -72,6 +72,7 @@ const Input = styled.input`
 
 const MultilineInput = styled.textarea`
   min-height: calc(${FIELDSET_HEIGHT} * 2);
+  white-space: pre-line;
   resize: vertical;
   ${baseStyle}
 `;
