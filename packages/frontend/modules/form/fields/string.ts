@@ -54,7 +54,7 @@ export class ObservableStringField extends ObservableFormField<string> {
 
       try {
         const url = new URL(value);
-        return ["https:", "http:"].includes(url.protocol) ? message : "";
+        return ["https:", "http:"].includes(url.protocol) ? "" : message;
       } catch {
         return message;
       }
