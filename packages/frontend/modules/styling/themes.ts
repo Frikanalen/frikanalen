@@ -9,6 +9,12 @@ export const lightTheme: Theme = {
     divider: "rgba(0, 0, 0, 0.2)",
     overlay: "rgba(255, 255, 255, 0.7)",
   },
+  stateColor: {
+    success: "#93EC61",
+    warning: "#FFB657",
+    danger: "#FF5A49",
+    tip: "#FFE766",
+  },
   fontColor: {
     normal: "rgba(0, 0, 0, 0.85)",
     muted: "rgba(0, 0, 0, 0.7)",

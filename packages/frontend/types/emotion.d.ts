@@ -10,6 +10,12 @@ declare module "@emotion/react" {
       divider: string;
       overlay: string;
     };
+    stateColor: {
+      success: string;
+      warning: string;
+      danger: string;
+      tip: string;
+    };
     fontColor: {
       normal: string;
       muted: string;
