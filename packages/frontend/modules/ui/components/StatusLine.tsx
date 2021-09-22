@@ -28,7 +28,6 @@ export type StatusLineProps = {
 
 export function StatusLine(props: StatusLineProps) {
   const { type, className, message } = props;
-  if (!message) return null;
 
   return (
     <Container className={className} type={type}>
