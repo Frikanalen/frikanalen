@@ -48,7 +48,7 @@ export class ObservableStringField extends ObservableFormField<string> {
     return this;
   }
 
-  public url(message = "Må være en gyldig URL") {
+  public url(message = "Må være en gyldig URL (begynner med http)") {
     this.validators.add(async (value) => {
       if (!value) return "";
 
