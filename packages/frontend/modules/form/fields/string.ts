@@ -47,6 +47,21 @@ export class ObservableStringField extends ObservableFormField<string> {
 
     return this;
   }
+
+  public url(message = "Må være en gyldig URL") {
+    this.validators.add(async (value) => {
+      if (!value) return "";
+
+      try {
+        const url = new URL(value);
+        return ["https:", "http:"].includes(url.protocol) ? message : "";
+      } catch {
+        return message;
+      }
+    });
+
+    return this;
+  }
 }
 
 export const string = (options = defaultOptions) => {
