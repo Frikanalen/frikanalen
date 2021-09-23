@@ -48,13 +48,15 @@ export class ObservableStringField extends ObservableFormField<string> {
     return this;
   }
 
-  public url(message = "Må være en gyldig URL (begynner med http)") {
+  public url(message = "Må være en gyldig URL") {
     this.validators.add(async (value) => {
       if (!value) return "";
 
       try {
-        const url = new URL(value);
-        return ["https:", "http:"].includes(url.protocol) ? "" : message;
+        const regex = /^((http(s?)?):\/\/)?([wW]{3}\.)?[a-zA-Z0-9\-.]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/g;
+        const result = regex.test(value);
+
+        return result ? "" : message;
       } catch {
         return message;
       }
