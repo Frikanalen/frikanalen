@@ -34,11 +34,6 @@ export const global = (theme: Theme) => css`
     color: inherit;
   }
 
-  a:hover {
-    text-decoration: none;
-    color: inherit;
-  }
-
   h1,
   h2,
   h3,
