@@ -10,6 +10,7 @@ import { fetchBrregData } from "modules/organization/helpers/fetchBrregData";
 import { formatAddress } from "modules/organization/helpers/formatAddress";
 import { OrganizationData } from "modules/organization/resources/Organization";
 import { useManager } from "modules/state/manager";
+import { ExternalLink } from "modules/ui/components/ExternalLink";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { Notice } from "modules/ui/components/Notice";
 import { StatusLine, StatusType } from "modules/ui/components/StatusLine";
@@ -141,8 +142,8 @@ function Content() {
           <p>
             Privatpersoner kan også melde seg inn i Frikanalen og sende innhold som en organisasjon, men de vil likevel
             måtte inkludere besøks- og postadresse i henhold til{" "}
-            <a href="https://lovdata.no/lov/1992-12-04-127/§2-16">Kringkastingsloven §2-16</a>, og vil ikke ha
-            medlemsrettigheter i Frikanalen, som blant annet stemmerett.
+            <ExternalLink href="https://lovdata.no/lov/1992-12-04-127/§2-16">Kringkastingsloven §2-16</ExternalLink>, og
+            vil ikke ha medlemsrettigheter i Frikanalen, som blant annet stemmerett.
           </p>
           <p>
             En mal for redaktørerklæring vil være tilgjengelig for nedlasting på organisasjonens side. Utelat i så fall
