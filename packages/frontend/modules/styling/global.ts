@@ -55,6 +55,7 @@ export const global = (theme: Theme) => css`
   h2 {
     font-weight: 700;
     font-size: 1.5em;
+    margin: 24px 0px;
   }
 
   h3 {
