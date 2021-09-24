@@ -22,7 +22,7 @@ const Result = styled.div`
   flex: 1;
 `;
 
-const DayTitle = styled.h2`
+const DayTitle = styled.h1`
   margin-bottom: 16px;
 `;
 
