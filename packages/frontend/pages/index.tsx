@@ -52,7 +52,7 @@ export default function Index() {
       </Main>
       <Sidebar>
         <h1>Velkommen til nye Frikanalen!</h1>
-        <p>Etter mye hardt arbeide bak scenene kan vi endelig presentere første versjon av nye frikanalen.no!</p>
+        <p>Etter mye hardt arbeid bak scenene kan vi endelig presentere første versjon av nye frikanalen.no!</p>
         <p>Snart vil det komme en nyhetsseksjon så dere vil kunne få et innblikk i alt arbeidet som er gjort.</p>
         <p>
           I mellomtiden vil du kunne få et lite innblikk i endringene ved å se på{" "}
