@@ -38,14 +38,23 @@ export const global = (theme: Theme) => css`
   h2,
   h3,
   h4,
-  h5 {
+  h5,
+  figure,
+  figcaption,
+  blockquote {
+    margin: 0;
+    padding: 0;
     margin-top: 0px;
     line-height: initial;
   }
 
+  h1 {
+    font-size: 1.7em;
+  }
+
   h2 {
     font-weight: 700;
-    font-size: 2em;
+    font-size: 1.5em;
   }
 
   p {
