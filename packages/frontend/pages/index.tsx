@@ -51,7 +51,7 @@ export default function Index() {
         </Schedule>
       </Main>
       <Sidebar>
-        <h2>Velkommen til nye Frikanalen!</h2>
+        <h1>Velkommen til nye Frikanalen!</h1>
         <p>Etter mye hardt arbeide bak scenene kan vi endelig presentere første versjon av nye frikanalen.no!</p>
         <p>Snart vil det komme en nyhetsseksjon så dere vil kunne få et innblikk i alt arbeidet som er gjort.</p>
         <p>
