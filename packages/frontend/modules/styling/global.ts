@@ -49,12 +49,19 @@ export const global = (theme: Theme) => css`
   }
 
   h1 {
-    font-size: 1.7em;
+    font-size: 1.8em;
   }
 
   h2 {
     font-weight: 700;
     font-size: 1.5em;
+  }
+
+  h3 {
+    font-size: 1.2em;
+    font-weight: 600;
+
+    margin: 12px 0px;
   }
 
   p {
