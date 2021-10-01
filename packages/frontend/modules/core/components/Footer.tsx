@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { ExternalLink } from "modules/ui/components/ExternalLink";
-import { SVGIcon } from "modules/ui/components/SVGIcon";
 import { CONTENT_WIDTH } from "../constants";
 
 export const Container = styled.footer`
