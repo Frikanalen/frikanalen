@@ -24,12 +24,12 @@ const NowPlaying = styled(ScheduleItemBlurb)`
 `;
 
 const NextTitle = styled.h3`
-  margin-top: 16px;
+  margin-top: 32px;
+  font-size: 1.5em;
 `;
 
 const Schedule = styled.div`
   margin-top: 16px;
-  margin-bottom: 32px;
 `;
 
 export default function Index() {

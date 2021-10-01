@@ -8,9 +8,9 @@ const Container = styled.div`
   align-items: center;
 
   & + & {
-    margin-top: 8px;
+    margin-top: 16px;
     border-top: solid 2px ${(props) => props.theme.color.divider};
-    padding-top: 8px;
+    padding-top: 16px;
   }
 `;
 
@@ -34,6 +34,8 @@ const Title = styled.a`
 const Organization = styled.a`
   font-size: 1.1em;
   font-weight: 400;
+
+  margin-top: 4px;
 `;
 
 const Time = styled.span`
