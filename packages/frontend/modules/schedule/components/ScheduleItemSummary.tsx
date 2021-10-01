@@ -24,7 +24,7 @@ const PrimaryInfo = styled.div`
 
 const Title = styled.a`
   font-size: 1.1em;
-  font-weight: 700;
+  font-weight: 600;
 
   white-space: nowrap;
   overflow: hidden;
@@ -35,7 +35,7 @@ const Organization = styled.a`
   font-size: 1.1em;
   font-weight: 400;
 
-  margin-top: 4px;
+  margin-top: 2px;
 `;
 
 const Time = styled.span`
