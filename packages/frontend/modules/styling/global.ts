@@ -48,6 +48,20 @@ export const global = (theme: Theme) => css`
     line-height: initial;
   }
 
+  h1 {
+    font-size: 1.8em;
+  }
+
+  h2 {
+    font-weight: 700;
+    font-size: 1.5em;
+  }
+
+  h3 {
+    font-size: 1.2em;
+    font-weight: 600;
+  }
+
   p {
     font-size: 1em;
   }
