@@ -10,14 +10,15 @@ const Container = styled.a`
 `;
 
 export type ExternalLinkProps = PropsWithChildren<{
+  className?: string;
   href: string;
 }>;
 
 export function ExternalLink(props: ExternalLinkProps) {
-  const { href, children } = props;
+  const { className, href, children } = props;
 
   return (
-    <Container href={href} target="_blank" rel="noopener">
+    <Container className={className} href={href} target="_blank" rel="noopener">
       {children}
     </Container>
   );
