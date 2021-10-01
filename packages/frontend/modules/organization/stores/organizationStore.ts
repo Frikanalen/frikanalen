@@ -17,6 +17,16 @@ export class OrganizationStore extends Store<SerializedResourceStore<Organizatio
     },
   });
 
+  public fetchById(id: number) {
+    const { networkStore } = this.manager.stores;
+    const { api } = networkStore;
+
+    return this.store.getOrCreateById(id, async () => {
+      const { data } = await api.get<OrganizationData>(`/organization/${id}`);
+      return data;
+    });
+  }
+
   public serialize() {
     return this.store.serialize();
   }
