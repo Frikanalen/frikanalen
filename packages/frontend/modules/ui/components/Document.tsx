@@ -8,4 +8,17 @@ export const Document = styled.div`
   h3 {
     margin: 12px 0px;
   }
+
+  ul,
+  ol {
+    padding-left: 16px;
+  }
+
+  li {
+    margin: 8px 0px;
+  }
+
+  ul > li {
+    list-style-type: disc;
+  }
 `;
