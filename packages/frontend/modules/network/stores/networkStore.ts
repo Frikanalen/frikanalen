@@ -3,6 +3,7 @@ import configs from "components/configs";
 import { IS_SERVER } from "modules/core/constants";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { NextPageContext } from "next";
+import Cookies from "js-cookie";
 
 export class NetworkStore extends Store {
   public incomingHeaders: Record<string, string> = {};
@@ -35,7 +36,8 @@ export class NetworkStore extends Store {
   private createInstances() {
     if (this.hasCreated) return;
 
-    const headers = IS_SERVER ? this.incomingHeaders : {};
+    const csrf = IS_SERVER ? undefined : Cookies.get("csrftoken");
+    const headers = IS_SERVER ? this.incomingHeaders : { "X-CSRFToken": csrf };
 
     this.apiInstance = this.addInterceptors(
       axios.create({
