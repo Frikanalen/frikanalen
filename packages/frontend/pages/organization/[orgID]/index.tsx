@@ -118,6 +118,9 @@ const OrganizationPage = createResourcePageWrapper<Organization>({
     return organizationStore.fetchById(safeOrgId);
   },
   renderContent: (o) => <OrganizationView organization={o} />,
+  onResource: async (o) => {
+    await o.videos.more();
+  },
 });
 
 export default OrganizationPage;
