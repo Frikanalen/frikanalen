@@ -4,7 +4,6 @@ import type { AppContext, AppProps } from "next/app";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import "shaka-player/dist/controls.css";
-import "components/main.sass";
 import { Header } from "modules/core/components/Header";
 import { Global, ThemeProvider } from "@emotion/react";
 import { global } from "modules/styling/global";
@@ -17,6 +16,7 @@ import { ScrollLock } from "modules/ui/components/ScrollLock";
 import { useObserver } from "mobx-react-lite";
 import { PopoverOverlay } from "modules/popover/components/PopoverOverlay";
 import { IS_SERVER } from "modules/core/constants";
+import { Footer } from "modules/core/components/Footer";
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -47,6 +47,7 @@ export default function CustomApp(props: CustomAppProps) {
               <Body>
                 <Component {...pageProps} />
               </Body>
+              <Footer />
               <ModalOverlay />
               <PopoverOverlay />
             </div>
