@@ -1,8 +1,9 @@
+import { Document } from "modules/ui/components/Document";
 import React from "react";
 
 export default function About() {
   return (
-    <>
+    <Document>
       <h1>Vedtekter for Foreningen Frikanalen</h1>
 
       <p>
@@ -166,6 +167,6 @@ export default function About() {
         Foreningen Frikanalen og alle tilsluttede medlemmer minst to måneder før Årsmøtet. Til oppløsning kreves 3⁄4
         stemmeflertall. Årsmøtet bestemmer hvordan eventuelle disponible midler og eiendeler skal fordeles.
       </p>
-    </>
+    </Document>
   );
 }

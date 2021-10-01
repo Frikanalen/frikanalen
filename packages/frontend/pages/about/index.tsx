@@ -1,12 +1,10 @@
-import styled from "@emotion/styled";
+import { Document } from "modules/ui/components/Document";
 import { ExternalLink } from "modules/ui/components/ExternalLink";
 import { Quote } from "modules/ui/components/Quote";
 
-const Container = styled.div``;
-
 export default function About() {
   return (
-    <Container>
+    <Document>
       <h1>Frikanalen er sivilsamfunnets videoplatform</h1>
       <Quote
         citation={{
@@ -61,6 +59,6 @@ export default function About() {
         Teknisk leder Tore Sinding Bekkedal kan nås på{" "}
         <ExternalLink href="mailto:toresbe@protonmail.com">toresbe@protonmail.com</ExternalLink>
       </p>
-    </Container>
+    </Document>
   );
 }
