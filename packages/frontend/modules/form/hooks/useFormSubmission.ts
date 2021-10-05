@@ -4,7 +4,8 @@ import { FieldsType, ObservableForm } from "../classes/ObservableForm";
 
 export const useFormSubmission = <F extends FieldsType>(
   form: ObservableForm<F>,
-  submit: (serialized: ObservableForm<F>["serialized"]) => Promise<void>
+  submit: (serialized: ObservableForm<F>["serialized"]) => Promise<void>,
+  handleError: (e: any) => [StatusType, string] = () => ["error", "Noe gikk galt, prøv igjen senere"]
 ) => {
   const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
 
@@ -17,7 +18,7 @@ export const useFormSubmission = <F extends FieldsType>(
       try {
         await submit(form.serialized);
       } catch (e) {
-        setStatus(["error", "Noe gikk galt, prøv igjen senere"]);
+        setStatus(handleError(e));
       }
     } else {
       setStatus(["error", "Kontroller at skjemaet er gyldig"]);
