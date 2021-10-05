@@ -3,6 +3,7 @@ import { useObserver } from "mobx-react-lite";
 import { RequireAuthentication } from "modules/auth/components/RequireAuthentication";
 import { Form } from "modules/form/components/Form";
 import { FormField, FormFieldWithProps } from "modules/form/components/FormField";
+import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
 import { toTitleCase } from "modules/lang/string";
 import { createNewOrganizationForm } from "modules/organization/forms/createNewOrganizationForm";
@@ -90,23 +91,14 @@ function Content() {
     }
   }, [organizationNumber, form]);
 
-  // TODO: Make this way of submitting forms more DRY
-  const handleSubmit = async () => {
-    const valid = await form.ensureValidity();
+  const [formStatus, handleSubmit] = useFormSubmission(form, async (serialized) => {
+    const { data } = await api.post<OrganizationData>("/organization/", serialized);
 
-    if (valid) {
-      setStatus(["info", "Vent litt..."]);
+    organizationStore.add(data);
+    router.push(`/organization/${data.id}/admin`);
+  });
 
-      try {
-        const { data } = await api.post<OrganizationData>("/organization/", form.serialized);
-
-        organizationStore.add(data);
-        router.push(`/organization/${data.id}/admin`);
-      } catch (e) {
-        setStatus(["error", "Noe gikk galt, prøv igjen senere"]);
-      }
-    }
-  };
+  useEffect(() => setStatus(formStatus), [formStatus]);
 
   return (
     <Form onSubmit={handleSubmit} form={form}>

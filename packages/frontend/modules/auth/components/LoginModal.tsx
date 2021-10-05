@@ -2,13 +2,13 @@ import styled from "@emotion/styled";
 import { AxiosError } from "axios";
 import { Form } from "modules/form/components/Form";
 import { FormField } from "modules/form/components/FormField";
+import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
 import { PrimaryModal } from "modules/modal/components/PrimaryModal";
 import { useModal } from "modules/modal/hooks/useModal";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
-import { StatusLine, StatusType } from "modules/ui/components/StatusLine";
-import { useState } from "react";
+import { StatusLine } from "modules/ui/components/StatusLine";
 import { LoginForm } from "../forms/createLoginForm";
 import { spawnRegisterModal } from "../helpers/spawnRegisterModal";
 
@@ -30,34 +30,29 @@ export function LoginModal(props: LoginModalProps) {
   const manager = useManager();
   const modal = useModal();
 
-  const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
-  const [type, message] = status;
-
   const { authStore, networkStore } = manager.stores;
   const { api } = networkStore;
 
-  const handleSubmit = async () => {
-    const valid = await form.ensureValidity();
+  const [status, handleSubmit] = useFormSubmission(
+    form,
+    async (serialized) => {
+      await api.post("/user/login", serialized);
+      await authStore.authenticate();
 
-    if (valid) {
-      setStatus(["info", "Vent litt..."]);
+      modal.dismiss();
+    },
+    (e) => {
+      const { response } = e as AxiosError;
 
-      try {
-        await api.post("/user/login", form.serialized);
-        await authStore.authenticate();
-
-        modal.dismiss();
-      } catch (e) {
-        const { response } = e as AxiosError;
-
-        if (response?.status === 400) {
-          return setStatus(["error", "Feil brukernavn eller passord"]);
-        }
-
-        setStatus(["error", "Noe gikk galt, prøv igjen senere"]);
+      if (response?.status === 400) {
+        return ["error", "Feil brukernavn eller passord"];
       }
+
+      return ["error", "Noe gikk galt, prøv igjen senere"];
     }
-  };
+  );
+
+  const [type, message] = status;
 
   const handleRegisterClick = () => {
     modal.dismiss();

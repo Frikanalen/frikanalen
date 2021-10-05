@@ -1,13 +1,14 @@
+import React from "react";
 import styled from "@emotion/styled";
 import { Form } from "modules/form/components/Form";
 import { FormField } from "modules/form/components/FormField";
+import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
 import { PrimaryModal } from "modules/modal/components/PrimaryModal";
 import { useModal } from "modules/modal/hooks/useModal";
 import { useStores } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
-import { StatusLine, StatusType } from "modules/ui/components/StatusLine";
-import React, { useState } from "react";
+import { StatusLine } from "modules/ui/components/StatusLine";
 import { RegisterForm } from "../forms/createRegisterForm";
 
 const Field = styled(FormField)`
@@ -26,31 +27,20 @@ export function RegisterModal(props: RegisterModalProps) {
   const { authStore, networkStore } = useStores();
   const { api } = networkStore;
 
-  const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
+  const [status, handleSubmit] = useFormSubmission(form, async (serialized) => {
+    await api.post("/user/register", {
+      ...serialized,
+
+      // Hardcoded awaiting change of database schema
+      dateOfBirth: "2020-07-24",
+    });
+
+    await authStore.authenticate();
+
+    modal.dismiss();
+  });
+
   const [type, message] = status;
-
-  const handleSubmit = async () => {
-    const valid = await form.ensureValidity();
-
-    if (valid) {
-      setStatus(["info", "Vent litt..."]);
-
-      try {
-        await api.post("/user/register", {
-          ...form.serialized,
-
-          // Hardcoded awaiting change of database schema
-          dateOfBirth: "2020-07-24",
-        });
-
-        await authStore.authenticate();
-
-        modal.dismiss();
-      } catch (e) {
-        setStatus(["error", "Noe gikk galt, prøv igjen senere"]);
-      }
-    }
-  };
 
   return (
     <PrimaryModal.Container>
