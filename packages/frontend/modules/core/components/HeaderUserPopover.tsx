@@ -41,7 +41,7 @@ export function HeaderUserPopover() {
 
   return (
     <Container>
-      <Link href="/profil" passHref>
+      <Link href="/profile" passHref>
         <Option onClick={popover.dismiss}>
           <Icon name="user" />
           <Label>Profil</Label>
