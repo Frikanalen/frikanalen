@@ -13,6 +13,7 @@ const Container = styled(PrimaryPopover)`
 
 const Option = styled.a`
   display: flex;
+  align-items: center;
 
   min-width: 180px;
 
@@ -20,6 +21,11 @@ const Option = styled.a`
   cursor: pointer;
 
   color: ${(props) => props.theme.fontColor.muted};
+  transition: 200ms ease color;
+
+  &:hover {
+    color: ${(props) => props.theme.color.accent};
+  }
 `;
 
 const Label = styled.span`
