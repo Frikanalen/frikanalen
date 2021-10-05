@@ -7,12 +7,13 @@ export const formContext = createContext<ObservableForm<any> | undefined>(undefi
 const { Provider } = formContext;
 
 export type FormProps = PropsWithChildren<{
+  className?: string;
   form: ObservableForm<any>;
   onSubmit?: () => void;
 }>;
 
 export function Form(props: FormProps) {
-  const { form, onSubmit, children } = props;
+  const { className, form, onSubmit, children } = props;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +22,7 @@ export function Form(props: FormProps) {
   };
 
   return (
-    <form style={{ width: "100%" }} onSubmit={handleSubmit}>
+    <form className={className} style={{ width: className ? undefined : "100%" }} onSubmit={handleSubmit}>
       <Provider value={form}>
         <FieldsProvider fields={form.fields}>{children}</FieldsProvider>
       </Provider>
