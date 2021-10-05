@@ -1,3 +1,4 @@
+import { ARTIFICIAL_DELAY } from "modules/core/constants";
 import { wait } from "modules/lang/async";
 import { StatusType } from "modules/ui/components/StatusLine";
 import { useState } from "react";
@@ -19,7 +20,7 @@ export const useFormSubmission = <F extends FieldsType>(
       setStatus(["info", "Vent litt..."]);
 
       try {
-        const result = await submit(form.serialized);
+        const [, result] = await Promise.all([wait(ARTIFICIAL_DELAY), submit(form.serialized)]);
 
         if (result) {
           setStatus(result);
