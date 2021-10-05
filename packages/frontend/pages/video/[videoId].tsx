@@ -9,7 +9,7 @@ import React from "react";
 import { useResourceList } from "modules/state/hooks/useResourceList";
 import { useStores } from "modules/state/manager";
 import { ListTail } from "modules/state/components/ListTail";
-import { RecentVideoItem } from "./RecentVideoItem";
+import { RecentVideoItem } from "../../modules/video/components/RecentVideoItem";
 
 const Container = styled.div`
   display: flex;
