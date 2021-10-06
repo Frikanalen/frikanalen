@@ -22,6 +22,8 @@ export class AuthStore extends Store<SerializedAuthStore> {
     const { networkStore } = this.manager.stores;
     const { api } = networkStore;
 
+    if (this.isAuthenticated) return;
+
     try {
       const response = await api.get<User>("/user");
 
