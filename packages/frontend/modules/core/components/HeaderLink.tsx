@@ -7,7 +7,7 @@ type Accent = "accent" | "secondAccent" | "thirdAccent";
 
 const Anchor = styled.a<{ active: boolean; accent: Accent }>`
   font-weight: 900;
-  font-size: 24px;
+  font-size: 1.4em;
 
   margin-right: 24px;
   color: ${(props) => props.theme.fontColor.muted};
