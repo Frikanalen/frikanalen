@@ -7,7 +7,7 @@ const Container = styled.span<{ type: StatusType }>`
   display: flex;
   align-items: center;
 
-  font-size: 0.9em;
+  font-size: 0.8em;
   font-weight: 600;
 
   ${(props) => {
