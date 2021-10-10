@@ -60,6 +60,10 @@ export class ObservableFormField<V, SV = V> implements ObservableFormFieldLike<V
     this.validators.validate(this.value);
   };
 
+  public makeDirty = () => {
+    this.dirty = true;
+  };
+
   public reset = () => {
     this.value = this.defaultValue;
     this.touched = false;

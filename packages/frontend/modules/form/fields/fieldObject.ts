@@ -9,6 +9,7 @@ export class ObservableFieldObject<F extends FieldsType> {
   protected validators: ValidatorList<F>;
 
   @observable public touched = false;
+  @observable public dirty = false;
 
   public constructor(public fields: F) {
     this.validators = new ValidatorList(this.fields);

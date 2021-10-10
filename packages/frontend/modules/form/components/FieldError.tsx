@@ -67,9 +67,10 @@ export function FieldError(props: FieldErrorProps) {
   const meta = useObserver(() => ({
     error: field.error,
     touched: field.touched,
+    dirty: field.dirty,
   }));
 
-  const hasError = useObserver(() => !!(meta.error && meta.touched));
+  const hasError = useObserver(() => !!(meta.error && meta.touched && meta.dirty));
 
   const renderError = () => {
     if (hasError) {

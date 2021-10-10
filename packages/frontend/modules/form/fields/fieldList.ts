@@ -21,6 +21,7 @@ export class ObservableFieldList<F extends Field> {
 
   @observable public fields: F[];
   @observable public touched = false;
+  @observable public dirty = false;
 
   private create: () => F;
 

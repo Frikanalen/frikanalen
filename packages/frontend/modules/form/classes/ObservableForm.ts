@@ -68,10 +68,18 @@ export class ObservableForm<F extends FieldsType> {
     }
   }
 
+  public makeDirty() {
+    for (const field of Object.values(this.fields)) {
+      const meta = checkFieldMeta(field);
+      meta.makeDirty();
+    }
+  }
+
   public async ensureValidity() {
     this.touch();
-    await this.validate();
+    this.makeDirty();
 
+    await this.validate();
     return this.valid;
   }
 
