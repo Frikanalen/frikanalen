@@ -26,10 +26,10 @@ export type ButtonProps = ComponentPropsWithoutRef<"button"> & {
 };
 
 function _Button(props: ButtonProps, ref: React.Ref<HTMLButtonElement>) {
-  const { stretch, className, children, ...rest } = props;
+  const { stretch, className, children, type = "button", ...rest } = props;
 
   return (
-    <Container ref={ref} stretch={stretch} {...rest}>
+    <Container ref={ref} stretch={stretch} type={type} {...rest}>
       <Inner className={className}>{children}</Inner>
     </Container>
   );
