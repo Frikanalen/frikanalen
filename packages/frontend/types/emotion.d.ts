@@ -17,6 +17,7 @@ declare module "@emotion/react" {
       tip: string;
     };
     fontColor: {
+      overlay: string;
       normal: string;
       muted: string;
       subdued: string;

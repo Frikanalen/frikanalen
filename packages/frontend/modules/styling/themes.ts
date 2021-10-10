@@ -16,6 +16,7 @@ export const lightTheme: Theme = {
     tip: "#FFE766",
   },
   fontColor: {
+    overlay: "rgba(255, 255, 255, 1)",
     normal: "rgba(0, 0, 0, 0.85)",
     muted: "rgba(0, 0, 0, 0.7)",
     subdued: "rgba(0, 0, 0, 0.5)",
