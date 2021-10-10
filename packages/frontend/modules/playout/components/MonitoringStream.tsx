@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import JSMpeg from "@cycjimmy/jsmpeg-player";
+import styled from "@emotion/styled";
+import { AspectContainer } from "modules/core/components/AspectContainer";
+
+const Content = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 export const MonitoringStream = () => {
   const [videoElement, setVideoElement] = useState<JSMpeg.VideoElement | undefined>(undefined);
@@ -17,20 +24,20 @@ export const MonitoringStream = () => {
       );
 
     return () => {
-      videoElement?.destroy && videoElement.destroy();
+      videoElement?.destroy();
     };
   }, [videoElement]);
 
+  const toggleMute = () => {
+    if (!videoElement?.player) return;
+
+    const { player } = videoElement;
+    player.setVolume(player.getVolume() > 0 ? 0 : 1);
+  };
+
   return (
-    <div
-      ref={containerRef}
-      style={{ width: "100%", paddingBottom: "56.25%" }}
-      onClick={() => {
-        if (!videoElement?.player) return;
-        videoElement.player.getVolume() ? videoElement.player.setVolume(0) : videoElement.player.setVolume(1);
-      }}
-    />
+    <AspectContainer width={1280} height={720}>
+      <Content ref={containerRef} onClick={toggleMute} />
+    </AspectContainer>
   );
 };
-
-export default MonitoringStream;
