@@ -74,8 +74,8 @@ export function TextSlideModal(props: TextSlideModalProps) {
         <PrimaryModal.Footer>
           <StatusLine message={message} type={type} />
           <PrimaryModal.Actions>
-            <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Lukk" />
             <GenericButton variant="primary" onClick={handleSubmit} label="Lagre" />
+            <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Lukk" />
           </PrimaryModal.Actions>
         </PrimaryModal.Footer>
       </Form>
