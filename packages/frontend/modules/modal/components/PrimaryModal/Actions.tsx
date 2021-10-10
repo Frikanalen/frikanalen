@@ -6,6 +6,10 @@ export const Container = styled.div`
   justify-content: flex-end;
 
   flex: 1;
+
+  > * {
+    margin-left: 16px;
+  }
 `;
 
 export function Actions(props: PropsWithChildren<{}>) {

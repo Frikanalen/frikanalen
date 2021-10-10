@@ -53,7 +53,7 @@ export function RequireAuthentication(props: { children: JSX.Element }) {
       <Icon name="lock" />
       <Title>Hvem der?</Title>
       <Subtitle>Du må være logget inn for å kunne bruke denne siden.</Subtitle>
-      <GenericButton onClick={() => spawnLoginModal(manager)} label="Logg inn" />
+      <GenericButton variant="primary" onClick={() => spawnLoginModal(manager)} label="Logg inn" />
     </Container>
   );
 }

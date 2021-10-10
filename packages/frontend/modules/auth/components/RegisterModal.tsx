@@ -67,7 +67,8 @@ export function RegisterModal(props: RegisterModalProps) {
         <PrimaryModal.Footer>
           <StatusLine message={message} type={type} />
           <PrimaryModal.Actions>
-            <GenericButton onClick={handleSubmit} label="OK" />
+            <GenericButton variant="primary" onClick={handleSubmit} label="Registrer" />
+            <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />
           </PrimaryModal.Actions>
         </PrimaryModal.Footer>
       </Form>

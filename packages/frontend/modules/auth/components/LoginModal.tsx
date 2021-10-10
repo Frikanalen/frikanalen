@@ -75,7 +75,8 @@ export function LoginModal(props: LoginModalProps) {
         <PrimaryModal.Footer>
           <StatusLine message={message} type={type} />
           <PrimaryModal.Actions>
-            <GenericButton onClick={handleSubmit} label="OK" />
+            <GenericButton variant="primary" onClick={handleSubmit} label="Logg inn" />
+            <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />
           </PrimaryModal.Actions>
         </PrimaryModal.Footer>
       </Form>

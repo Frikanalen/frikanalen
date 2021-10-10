@@ -121,7 +121,7 @@ function Content() {
           </Field>
           <FormFooter>
             <StatusLine message={message} type={type} />
-            <GenericButton label="Opprett" />
+            <GenericButton variant="primary" onClick={handleSubmit} label="Opprett" />
           </FormFooter>
         </FormContainer>
         <Info>

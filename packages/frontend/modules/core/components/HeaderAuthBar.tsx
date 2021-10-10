@@ -19,7 +19,7 @@ export function HeaderAuthBar() {
   const isAuthenticated = useObserver(() => authStore.isAuthenticated);
 
   const renderUnauthenticated = () => {
-    return <GenericButton onClick={() => spawnLoginModal(manager)} label="Logg inn" />;
+    return <GenericButton variant="primary" onClick={() => spawnLoginModal(manager)} label="Logg inn" />;
   };
 
   const renderAuthenticated = () => {

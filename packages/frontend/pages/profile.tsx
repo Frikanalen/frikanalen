@@ -82,7 +82,7 @@ function Profile() {
           </Field>
           <FormFooter>
             <StatusLine message={message} type={type} />
-            <GenericButton label="Lagre" />
+            <GenericButton variant="primary" onClick={handleSubmit} label="Lagre" />
           </FormFooter>
         </FormContainer>
         <OrganizationSection icon="officeBuilding" title="Organisasjoner du er medlem av">
