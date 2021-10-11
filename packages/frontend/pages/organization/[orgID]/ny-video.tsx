@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { useRouter } from "next/router";
+import React from "react";
+/*import { useRouter } from "next/router";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { GetServerSideProps } from "next";
@@ -21,7 +21,7 @@ interface VideoCreateProps {
   possibleCategories: fkCategory[];
 }
 
-export default function VideoCreate({ org, possibleCategories }: VideoCreateProps): JSX.Element {
+/*export default function VideoCreate({ org, possibleCategories }: VideoCreateProps): JSX.Element {
   const context = useContext(UserContext);
 
   const router = useRouter();
@@ -137,3 +137,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
+*/
+
+export default function Placeholder() {
+  return <div>Placeholder</div>;
+}

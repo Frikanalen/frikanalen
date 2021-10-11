@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import configs from "components/configs";
+import configs from "../config";
 import { IS_SERVER } from "modules/core/constants";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { NextPageContext } from "next";
