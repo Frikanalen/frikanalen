@@ -46,7 +46,6 @@ export function OrganizationRoleItem(props: OrganizationRoleItemProps) {
       </Name>
       <RoleText>{roleText}</RoleText>
       <Options>
-        <InternalLink href={`/organization/${role.organizationId}/admin`}>Administrasjonsside</InternalLink>
         <InternalLink href={`/organization/${role.organizationId}/upload`}>Last opp video</InternalLink>
       </Options>
     </Container>
