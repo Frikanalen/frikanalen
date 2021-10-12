@@ -14,10 +14,16 @@ import { Section } from "modules/ui/components/Section";
 import { OrganizationRoleItem } from "modules/user/components/OrganizationRoleItem";
 import { Meta } from "modules/core/components/Meta";
 
+const breakpoint = 800;
+
 const Container = styled.div``;
 
 const Content = styled.div`
   display: flex;
+
+  @media (max-width: ${breakpoint}px) {
+    flex-direction: column;
+  }
 `;
 
 const FormContainer = styled(Form)`
@@ -47,6 +53,11 @@ const Field = styled(FormField as FormFieldWithProps<{ area: string }>)`
 const OrganizationSection = styled(Section)`
   width: 400px;
   margin-left: 32px;
+
+  @media (max-width: ${breakpoint}px) {
+    margin-left: 0px;
+    margin-top: 32px;
+  }
 `;
 
 function Profile() {
