@@ -158,3 +158,5 @@ export default function NewOrganization() {
     </RequireAuthentication>
   );
 }
+
+NewOrganization.getInitialProps = RequireAuthentication.getInitialProps;

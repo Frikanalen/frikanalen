@@ -104,3 +104,5 @@ export default function Page() {
     </RequireAuthentication>
   );
 }
+
+Page.getInitialProps = RequireAuthentication.getInitialProps;

@@ -3,6 +3,7 @@ import { useObserver } from "mobx-react-lite";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { SVGIcon } from "modules/ui/components/SVGIcon";
+import { NextPageContext } from "next";
 import { useEffect } from "react";
 import { spawnLoginModal } from "../helpers/spawnLoginModal";
 
@@ -57,3 +58,15 @@ export function RequireAuthentication(props: { children: JSX.Element }) {
     </Container>
   );
 }
+
+RequireAuthentication.getInitialProps = async (context: NextPageContext) => {
+  const { res, manager } = context;
+  const { authStore } = manager.stores;
+
+  if (authStore.isAuthenticated || !res) {
+    return {};
+  }
+
+  res.statusCode = 401;
+  return { statusCode: 401 };
+};
