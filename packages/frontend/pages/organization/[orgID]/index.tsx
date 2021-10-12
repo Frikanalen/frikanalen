@@ -10,10 +10,16 @@ import { Section } from "modules/ui/components/Section";
 import { VideoGrid } from "modules/video/components/VideoGrid";
 import React from "react";
 
+const breakpoint = 1250;
+
 const Container = styled.div``;
 
 const Header = styled.div`
   display: flex;
+
+  @media (max-width: ${breakpoint}px) {
+    flex-direction: column;
+  }
 `;
 
 const PrimaryInfo = styled.div`
@@ -34,11 +40,20 @@ const SecondaryInfo = styled.div`
   word-break: break-word;
 
   display: flex;
+
+  @media (max-width: ${breakpoint}px) {
+    flex-direction: column;
+  }
 `;
 
 const InfoSection = styled(Section)`
   margin-left: 32px;
   min-width: 200px;
+
+  @media (max-width: ${breakpoint}px) {
+    margin-left: 0px;
+    margin-top: 32px;
+  }
 `;
 
 const InfoSectionLine = styled.span`
