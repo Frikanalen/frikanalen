@@ -46,7 +46,7 @@ export type HeaderUserDropdownProps = {
 
 export function HeaderUserDropdown(props: HeaderUserDropdownProps) {
   const { user } = props;
-  const { firstName } = useObserver(() => ({ firstName: user.firstName }));
+  const { firstName, email } = useObserver(() => ({ firstName: user.firstName, email: user.email }));
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -58,7 +58,7 @@ export function HeaderUserDropdown(props: HeaderUserDropdownProps) {
 
   return (
     <Container onClick={toggle} ref={ref}>
-      <Name>Hei, {firstName}!</Name>
+      <Name>Hei, {firstName || email}!</Name>
       <Icon flipped={active} name="chevronDown" />
     </Container>
   );
