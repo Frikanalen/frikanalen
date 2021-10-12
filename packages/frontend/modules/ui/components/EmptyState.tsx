@@ -19,7 +19,6 @@ const Subtitle = styled.h2`
   font-weight: 500;
 
   margin-top: 8px;
-  margin-bottom: 32px;
 `;
 
 const Icon = styled(SVGIcon)`
@@ -33,7 +32,7 @@ const Icon = styled(SVGIcon)`
 export type EmptyStateProps = {
   icon: IconType;
   title: string;
-  subtitle: string;
+  subtitle?: string;
 };
 
 export function EmptyState(props: EmptyStateProps) {
