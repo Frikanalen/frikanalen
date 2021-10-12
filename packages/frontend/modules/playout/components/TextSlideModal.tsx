@@ -47,8 +47,6 @@ export function TextSlideModal(props: TextSlideModalProps) {
     modal.dismiss();
   });
 
-  const [type, message] = status;
-
   const previewURL = useObserver(
     () =>
       `${STILLS_GENERATOR_URL}/poster/preview?text=${encodeURIComponent(text.value)}&heading=${encodeURIComponent(
@@ -72,7 +70,7 @@ export function TextSlideModal(props: TextSlideModalProps) {
           </AspectContainer>
         </Body>
         <PrimaryModal.Footer>
-          <StatusLine message={message} type={type} />
+          <StatusLine {...status} />
           <PrimaryModal.Actions>
             <GenericButton variant="primary" onClick={handleSubmit} label="Lagre" />
             <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Lukk" />
