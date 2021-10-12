@@ -1,3 +1,4 @@
+import { EmptyStateProps } from "modules/ui/components/EmptyState";
 import { NextPageContext } from "next";
 import React from "react";
 import { Resource } from "../classes/Resource";
@@ -5,10 +6,28 @@ import { ResourceFetcher } from "../classes/ResourceFetcher";
 import { FetcherView } from "../components/FetcherView";
 import { useManager } from "../manager";
 import { Manager } from "../types";
+import { errorToStatusMap, ErrorType } from "./interpretError";
+
+const getDefaultEmptyStateProps = (error: ErrorType): EmptyStateProps => {
+  if (error === "not-found") {
+    return {
+      icon: "magnifyingGlass",
+      title: "Ikke funnet (400)",
+      subtitle: "Ressursen du ser etter finnes ikke",
+    };
+  }
+
+  return {
+    icon: "fire",
+    title: "Intern serverfeil (500)",
+    subtitle: "Prøv igjen senere",
+  };
+};
 
 export type CreateResourcePageWrapperOptions<R extends Resource<any>> = {
   getFetcher: (query: NextPageContext["query"], manager: Manager) => ResourceFetcher<R, R["data"]>;
   onResource?: (resource: R) => Promise<void>;
+  getEmptyStateProps?: (error: ErrorType) => EmptyStateProps;
   renderContent: (resource: R) => JSX.Element;
 };
 
@@ -17,7 +36,7 @@ export type WrapperProps = {
 };
 
 export const createResourcePageWrapper = <R extends Resource<any>>(options: CreateResourcePageWrapperOptions<R>) => {
-  const { getFetcher, renderContent, onResource } = options;
+  const { getFetcher, renderContent, onResource, getEmptyStateProps = getDefaultEmptyStateProps } = options;
 
   function Wrapper(props: WrapperProps) {
     const { query } = props;
@@ -25,11 +44,11 @@ export const createResourcePageWrapper = <R extends Resource<any>>(options: Crea
     const manager = useManager();
     const fetcher = getFetcher(query, manager);
 
-    return <FetcherView fetcher={fetcher} renderContent={renderContent} />;
+    return <FetcherView fetcher={fetcher} getEmptyStateProps={getEmptyStateProps} renderContent={renderContent} />;
   }
 
   Wrapper.getInitialProps = async (context: NextPageContext) => {
-    const { query, manager } = context;
+    const { query, manager, res } = context;
     const fetcher = getFetcher(query, manager);
 
     // Only fetch if it hasn't been fetched already
@@ -39,6 +58,10 @@ export const createResourcePageWrapper = <R extends Resource<any>>(options: Crea
 
     if (fetcher.resource && onResource) {
       await onResource(fetcher.resource);
+    }
+
+    if (fetcher.error && res) {
+      res.statusCode = errorToStatusMap[fetcher.error];
     }
 
     return { query };
