@@ -70,7 +70,7 @@ export function Meta(props: MetaProps) {
       <meta name="keywords" content={keywords.join(", ")} />
       <meta name="viewport" content="initial-scale=1" />
       <meta name="theme-color" content={theme.color.accent} />
-      <title>{title !== WEBSITE_NAME ? `${title} | ${WEBSITE_NAME}` : WEBSITE_NAME}</title>
+      <title>{title !== WEBSITE_NAME ? `${title} - ${WEBSITE_NAME}` : WEBSITE_NAME}</title>
       {ogTags}
       {twitterTags}
       {renderDescription(getSafeString(description))}
