@@ -20,8 +20,14 @@ import { useStatusLine } from "modules/ui/hooks/useStatusLine";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
+const breakpoint = 900;
+
 const Container = styled.div`
   display: flex;
+
+  @media (max-width: ${breakpoint}px) {
+    flex-direction: column;
+  }
 `;
 
 const FormContainer = styled.div`
@@ -33,6 +39,10 @@ const FormContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "number name" "homepage homepage" "postal street" "footer footer";
   gap: 24px;
+
+  @media (max-width: ${breakpoint}px) {
+    grid-template-areas: "number number" "name name" "homepage homepage" "postal street" "footer footer";
+  }
 `;
 
 const FormFooter = styled.div`
@@ -46,6 +56,15 @@ const FormFooter = styled.div`
 const Info = styled.div`
   width: 700px;
   margin-left: 32px;
+
+  @media (max-width: ${breakpoint}px) {
+    width: 100%;
+
+    margin-left: 0px;
+    margin-bottom: 32px;
+
+    order: -1;
+  }
 `;
 
 const Field = styled(FormField as FormFieldWithProps<{ area: string }>)`
