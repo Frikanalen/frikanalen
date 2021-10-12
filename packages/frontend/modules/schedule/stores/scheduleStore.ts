@@ -19,11 +19,11 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
     manager: this.manager,
     getId: (d: ScheduleItemData) => d.id,
     createFetcher: (manager, fetch) => new ResourceFetcher({ createResource: createScheduleItem, fetch, manager }),
-    createCanonicalFetchData: (d) => async () => {
+    createCanonicalFetchData: (id) => async () => {
       const { networkStore } = this.manager.stores;
       const { api } = networkStore;
 
-      const { data } = await api.get<ScheduleItemData>(`/scheduleitems/${d.id}`);
+      const { data } = await api.get<ScheduleItemData>(`/scheduleitems/${id}`);
       return data;
     },
   });
