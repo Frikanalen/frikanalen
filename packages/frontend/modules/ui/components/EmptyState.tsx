@@ -6,7 +6,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 64px;
+  margin: 64px 0px;
 `;
 
 const Title = styled.h1`
