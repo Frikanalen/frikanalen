@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 import { useObserver } from "mobx-react-lite";
+import { Meta } from "modules/core/components/Meta";
 import { ScheduleItemBlurb } from "modules/schedule/components/ScheduleItemBlurb";
 import { ScheduleItemSummary } from "modules/schedule/components/ScheduleItemSummary";
 import { useStores } from "modules/state/manager";
 import { LiveVideoPlayer } from "modules/video/components/LiveVideoPlayer";
 import { NextPageContext } from "next";
+import React from "react";
 
 const Container = styled.div`
   display: flex;
@@ -36,12 +38,12 @@ export default function Index() {
   const { scheduleStore } = useStores();
 
   const [now, ...later] = useObserver(() => scheduleStore.upcoming);
-  if (!now) return null;
 
-  return (
-    <Container>
-      <Main>
-        <LiveVideoPlayer width={1280} height={720} src="https://frikanalen.no/stream/index.m3u8" />
+  const renderSchedule = () => {
+    if (!now) return null;
+
+    return (
+      <>
         <NowPlaying item={now} />
         <NextTitle>Senere</NextTitle>
         <Schedule>
@@ -49,6 +51,22 @@ export default function Index() {
             <ScheduleItemSummary key={x.data.id} item={x} />
           ))}
         </Schedule>
+      </>
+    );
+  };
+
+  return (
+    <Container>
+      <Meta
+        meta={{
+          title: "Direkte",
+          description: "Frikanalen er sivilsamfunnets videoplatform",
+          type: "website",
+        }}
+      />
+      <Main>
+        <LiveVideoPlayer width={1280} height={720} src="https://frikanalen.no/stream/index.m3u8" />
+        {renderSchedule()}
       </Main>
       <Sidebar>
         <h1>Velkommen til nye Frikanalen!</h1>
