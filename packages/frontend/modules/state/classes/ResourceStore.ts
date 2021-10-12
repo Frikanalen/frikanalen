@@ -1,17 +1,17 @@
 import { observable } from "mobx";
 import { Manager } from "../types";
 import { Resource } from "./Resource";
-import { FetchData, ResourceFetcher } from "./ResourceFetcher";
+import { FetchData, ResourceFetcher, SerializedResourceFetcher } from "./ResourceFetcher";
 
 export type ResourceStoreOptions<R extends Resource<D>, D> = {
   createFetcher: (manager: Manager, fetch: FetchData<D>) => ResourceFetcher<R, D>;
-  createCanonicalFetchData: (data: D) => FetchData<D>;
+  createCanonicalFetchData: (id: number) => FetchData<D>;
   getId: (data: D) => number;
   manager: Manager;
 };
 
 export type SerializedResourceStore<D> = {
-  items: D[];
+  items: Record<number, SerializedResourceFetcher<D>>;
 };
 
 export class ResourceStore<R extends Resource<D>, D> {
@@ -55,22 +55,24 @@ export class ResourceStore<R extends Resource<D>, D> {
     const { getId, createCanonicalFetchData } = this.options;
 
     const id = getId(data);
-    const existing = this.getOrCreateById(id, createCanonicalFetchData(data));
+    const existing = this.getOrCreateById(id, createCanonicalFetchData(id));
 
     existing.populate(data);
     return existing;
   }
 
   public serialize(): SerializedResourceStore<D> {
-    const items = Object.entries(this.items)
-      .filter(([, r]) => r.resource)
-      .map(([, r]) => r.resource!.data);
-    return { items };
+    return { items: Object.fromEntries(Object.entries(this.items).map(([id, r]) => [id, r.serialize()])) };
   }
 
   public hydrate(data: SerializedResourceStore<D>) {
-    for (const item of data.items) {
-      this.prepopulate(item);
+    const { createCanonicalFetchData } = this.options;
+
+    for (const [id, item] of Object.entries(data.items)) {
+      const safeId = Number(id);
+      const fetcher = this.getOrCreateById(safeId, createCanonicalFetchData(safeId));
+
+      fetcher.hydrate(item);
     }
   }
 }
