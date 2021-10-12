@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { ExternalLink } from "modules/ui/components/ExternalLink";
-import { CONTENT_WIDTH } from "../constants";
+import { mainContentStyle } from "../styles/mainContentStyle";
 
 export const Container = styled.footer`
   margin-top: 32px;
@@ -11,8 +11,7 @@ export const Container = styled.footer`
 `;
 
 const Content = styled.div`
-  max-width: ${CONTENT_WIDTH}px;
-  width: 100%;
+  ${mainContentStyle}
 
   display: flex;
 `;

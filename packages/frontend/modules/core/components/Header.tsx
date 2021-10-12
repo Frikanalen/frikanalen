@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Logo } from "./Logo";
-import { CONTENT_WIDTH } from "../constants";
 import { HeaderLink } from "./HeaderLink";
 import { HeaderAuthBar } from "./HeaderAuthBar";
+import { mainContentStyle } from "../styles/mainContentStyle";
+import { CONTENT_WIDTH, CONTENT_WIDTH_PADDING } from "../constants";
 
 const Outer = styled.div`
   margin-top: 64px;
@@ -19,7 +20,7 @@ const Outer = styled.div`
 `;
 
 const Container = styled.header`
-  width: ${CONTENT_WIDTH}px;
+  ${mainContentStyle}
 `;
 
 const Nav = styled.nav`
@@ -29,15 +30,33 @@ const Nav = styled.nav`
   align-items: center;
 `;
 
+const LogoContainer = styled.div`
+  display: flex;
+
+  @media (max-width: ${CONTENT_WIDTH + CONTENT_WIDTH_PADDING}px) {
+    justify-content: center;
+  }
+`;
+
 const SizedLogo = styled(Logo)`
   width: 400px;
+
+  @media (max-width: 800px) {
+    width: 60vw;
+    min-width: 250px;
+    max-width: 400px;
+
+    margin-bottom: 24px;
+  }
 `;
 
 export function Header() {
   return (
     <Outer>
       <Container>
-        <SizedLogo />
+        <LogoContainer>
+          <SizedLogo />
+        </LogoContainer>
         <Nav>
           <HeaderLink accent="secondAccent" to="/" label="Direkte" />
           <HeaderLink accent="accent" to="/schedule" label="Sendeplan" />

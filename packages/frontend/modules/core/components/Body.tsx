@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { CONTENT_WIDTH } from "../constants";
+import { mainContentStyle } from "../styles/mainContentStyle";
 
 export const Container = styled.div`
   display: flex;
@@ -11,8 +11,7 @@ export const Container = styled.div`
 `;
 
 const Content = styled.main`
-  max-width: ${CONTENT_WIDTH}px;
-  width: 100%;
+  ${mainContentStyle}
 `;
 
 export function Body(props: React.PropsWithChildren<{}>) {
