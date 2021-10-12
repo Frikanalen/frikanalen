@@ -9,8 +9,14 @@ import { Spinner } from "modules/ui/components/Spinner";
 import { NextPageContext } from "next";
 import React from "react";
 
+const breakpoint = 700;
+
 const Container = styled.div`
   display: flex;
+
+  @media (max-width: ${breakpoint}px) {
+    flex-direction: column;
+  }
 `;
 
 const Sidebar = styled.div`
@@ -19,6 +25,17 @@ const Sidebar = styled.div`
   border-left: solid 2px ${(props) => props.theme.color.divider};
   padding-left: 32px;
   margin-left: 32px;
+
+  @media (max-width: ${breakpoint}px) {
+    border-left: none;
+    padding-left: 0px;
+    margin-left: 0px;
+
+    width: 100%;
+    order: -1;
+
+    margin-bottom: 32px;
+  }
 `;
 
 const Result = styled.div`
