@@ -15,6 +15,10 @@ const Field = styled(FormField)`
   margin-bottom: 16px;
 `;
 
+const Info = styled.p`
+  margin-top: 0px;
+`;
+
 export type RegisterModalProps = {
   form: RegisterForm;
 };
@@ -47,10 +51,10 @@ export function RegisterModal(props: RegisterModalProps) {
       <Form form={form}>
         <PrimaryModal.Header title="Registrer" />
         <PrimaryModal.Body>
-          <p>
+          <Info>
             Her kan du opprette en bruker for tilgang til innmeldingsskjema <br />
             og andre medlemsfunksjoner på siden.
-          </p>
+          </Info>
           <Field label="Fornavn" name="firstName">
             <ControlledTextInput placeholder="Ola" autoFocus name="firstName" />
           </Field>

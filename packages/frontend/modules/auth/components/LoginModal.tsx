@@ -9,6 +9,7 @@ import { useModal } from "modules/modal/hooks/useModal";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { StatusLine } from "modules/ui/components/StatusLine";
+import { linkStyle } from "modules/ui/styles/linkStyle";
 import { LoginForm } from "../forms/createLoginForm";
 import { spawnRegisterModal } from "../helpers/spawnRegisterModal";
 
@@ -22,6 +23,7 @@ const Field = styled(FormField)`
 
 const RegisterLink = styled.a`
   cursor: pointer;
+  ${linkStyle}
 `;
 
 export function LoginModal(props: LoginModalProps) {
