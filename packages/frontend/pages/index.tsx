@@ -8,17 +8,32 @@ import { LiveVideoPlayer } from "modules/video/components/LiveVideoPlayer";
 import { NextPageContext } from "next";
 import React from "react";
 
+const breakpoint = 880;
+
 const Container = styled.div`
   display: flex;
+
+  @media (max-width: ${breakpoint}px) {
+    flex-direction: column;
+  }
 `;
 
 const Main = styled.div`
   width: 60%;
+
+  @media (max-width: ${breakpoint}px) {
+    width: 100%;
+  }
 `;
 
 const Sidebar = styled.div`
   flex: 1;
   margin-left: 32px;
+
+  @media (max-width: ${breakpoint}px) {
+    margin-top: 32px;
+    margin-left: 0px;
+  }
 `;
 
 const NowPlaying = styled(ScheduleItemBlurb)`
