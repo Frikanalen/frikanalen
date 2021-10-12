@@ -37,4 +37,6 @@ function _Button(props: ButtonProps, ref: React.Ref<HTMLButtonElement>) {
 
 export const Button = React.forwardRef(_Button);
 
-export type ButtonWithProps<T extends object> = (props: ButtonProps & T) => JSX.Element;
+export type ButtonWithProps<T extends object> = (
+  props: ButtonProps & { ref?: React.Ref<HTMLButtonElement> } & T
+) => JSX.Element;
