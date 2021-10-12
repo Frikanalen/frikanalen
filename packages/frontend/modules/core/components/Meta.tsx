@@ -33,7 +33,7 @@ export function Meta(props: MetaProps) {
   const { meta } = props;
   const { title, description, image, type, author } = meta;
 
-  const keywords = ["skins", "osu!", "skinning", "themes", "game"];
+  const keywords = [""];
 
   const renderDescription = (description: string) => {
     return (
