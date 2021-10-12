@@ -23,6 +23,16 @@ const Container = styled.div`
 const Name = styled.span`
   font-size: 1.2em;
   font-weight: 600;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  max-width: 300px;
+
+  @media (max-width: 730px) {
+    max-width: 170px;
+  }
 `;
 
 const Icon = styled(SVGIcon as SVGIconWithProps<{ flipped: boolean }>)`
