@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Logo } from "./Logo";
-import { HeaderLink } from "./HeaderLink";
 import { HeaderAuthBar } from "./HeaderAuthBar";
 import { mainContentStyle } from "../styles/mainContentStyle";
-import { CONTENT_WIDTH, CONTENT_WIDTH_PADDING } from "../constants";
+import { CONTENT_WIDTH, CONTENT_WIDTH_PADDING, MOBILE_MENU_THRESHOLD } from "../constants";
+import { MobileNav } from "./MobileNav";
+import { NavLinks } from "./NavLinks";
 
 const Outer = styled.div`
   margin-top: 64px;
@@ -23,11 +24,20 @@ const Container = styled.header`
   ${mainContentStyle}
 `;
 
-const Nav = styled.nav`
+const Bottom = styled.div`
   margin-top: 32px;
 
   display: flex;
   align-items: center;
+`;
+
+const Nav = styled.nav`
+  display: flex;
+  align-items: center;
+
+  @media (max-width: ${MOBILE_MENU_THRESHOLD}px) {
+    display: none;
+  }
 `;
 
 const LogoContainer = styled.div`
@@ -57,12 +67,13 @@ export function Header() {
         <LogoContainer>
           <SizedLogo />
         </LogoContainer>
-        <Nav>
-          <HeaderLink accent="secondAccent" to="/" label="Direkte" />
-          <HeaderLink accent="accent" to="/schedule" label="Sendeplan" />
-          <HeaderLink accent="thirdAccent" to="/about" label="Om oss" />
+        <Bottom>
+          <MobileNav />
+          <Nav>
+            <NavLinks />
+          </Nav>
           <HeaderAuthBar />
-        </Nav>
+        </Bottom>
       </Container>
     </Outer>
   );
