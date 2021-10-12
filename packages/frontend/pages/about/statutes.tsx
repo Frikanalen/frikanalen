@@ -1,9 +1,16 @@
+import { Meta } from "modules/core/components/Meta";
 import { Document } from "modules/ui/components/Document";
 import React from "react";
 
 export default function About() {
   return (
     <Document>
+      <Meta
+        meta={{
+          title: "Våre vedtekter",
+          description: "Her kan du lese vedtektene for Foreningen Frikanalen",
+        }}
+      />
       <h1>Vedtekter for Foreningen Frikanalen</h1>
 
       <p>

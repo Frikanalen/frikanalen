@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { useObserver } from "mobx-react-lite";
 import { RequireAuthentication } from "modules/auth/components/RequireAuthentication";
+import { Meta } from "modules/core/components/Meta";
 import { Form } from "modules/form/components/Form";
 import { FormField, FormFieldWithProps } from "modules/form/components/FormField";
 import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
@@ -104,6 +105,12 @@ function Content() {
 
   return (
     <Form onSubmit={handleSubmit} form={form}>
+      <Meta
+        meta={{
+          title: "Opprett medlemskap",
+          description: "",
+        }}
+      />
       <Container>
         <FormContainer>
           <Field area="number" label="Organisasjonsnummer" name="orgnr">

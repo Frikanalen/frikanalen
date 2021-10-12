@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useObserver } from "mobx-react-lite";
+import { Meta } from "modules/core/components/Meta";
 import { CalendarInput } from "modules/input/components/CalendarInput";
 import { ScheduleTimelineItem } from "modules/schedule/components/ScheduleTimelineItem";
 import { humanizeSelectedScheduleDate } from "modules/schedule/helpers/humanizeSelectedScheduleDate";
@@ -60,6 +61,12 @@ export default function Schedule() {
 
   return (
     <Container>
+      <Meta
+        meta={{
+          title: "Sendeplan",
+          description: "Oversikt over programmer som blir sendt i dag",
+        }}
+      />
       <Result>
         <DayTitle>{humanizeSelectedScheduleDate(selectedDate)}</DayTitle>
         {renderSpinner()}

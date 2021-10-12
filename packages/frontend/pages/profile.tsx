@@ -12,6 +12,7 @@ import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { User } from "modules/user/schemas";
 import { Section } from "modules/ui/components/Section";
 import { OrganizationRoleItem } from "modules/user/components/OrganizationRoleItem";
+import { Meta } from "modules/core/components/Meta";
 
 const Container = styled.div``;
 
@@ -67,6 +68,12 @@ function Profile() {
   return (
     <Container>
       <h1>Din profil</h1>
+      <Meta
+        meta={{
+          title: "Din profil",
+          description: "",
+        }}
+      />
       <Content>
         <FormContainer onSubmit={handleSubmit} form={form}>
           <Field area="firstName" label="Fornavn" name="firstName">

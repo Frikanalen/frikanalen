@@ -7,6 +7,7 @@ import { Section } from "modules/ui/components/Section";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { spawnTextSlideModal } from "modules/playout/helpers/spawnTextSlideModal";
+import { Meta } from "modules/core/components/Meta";
 // import { NextPageContext } from "next";
 
 const Container = styled.div``;
@@ -52,6 +53,12 @@ export default function Playout(props: PlayoutProps) {
 
   return (
     <Container>
+      <Meta
+        meta={{
+          title: "Playout",
+          description: "",
+        }}
+      />
       <h1>Playout</h1>
       <Content>
         <MonitoringStream />

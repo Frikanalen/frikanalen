@@ -10,6 +10,7 @@ import { useResourceList } from "modules/state/hooks/useResourceList";
 import { useStores } from "modules/state/manager";
 import { ListTail } from "modules/state/components/ListTail";
 import { RecentVideoItem } from "../../modules/video/components/RecentVideoItem";
+import { Meta } from "modules/core/components/Meta";
 
 const Container = styled.div`
   display: flex;
@@ -70,6 +71,13 @@ function VideoView(props: ContentProps) {
 
   return (
     <Container>
+      <Meta
+        meta={{
+          title: name,
+          description: header,
+          author: organization.name,
+        }}
+      />
       <Content>
         <VideoPlayer width={1280} height={720} src={ogvUrl} thumbnail={files.largeThumb} />
         <PrimaryInfo>

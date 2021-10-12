@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useObserver } from "mobx-react-lite";
+import { Meta } from "modules/core/components/Meta";
 import { EmptyState, EmptyStateProps } from "modules/ui/components/EmptyState";
 import { useEffect } from "react";
 import { Resource } from "../classes/Resource";
@@ -36,9 +37,18 @@ export function FetcherView<R extends Resource<D>, D>(props: FetcherViewProps<R,
   }
 
   if (error) {
+    const emptyStateProps = getEmptyStateProps(error);
+    const { title, subtitle } = emptyStateProps;
+
     return (
       <Container>
-        <EmptyState {...getEmptyStateProps(error)} />
+        <Meta
+          meta={{
+            title,
+            description: subtitle || "",
+          }}
+        />
+        <EmptyState {...emptyStateProps} />
       </Container>
     );
   }

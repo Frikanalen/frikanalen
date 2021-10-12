@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Meta } from "modules/core/components/Meta";
 import { Organization } from "modules/organization/resources/Organization";
 import { ListTail } from "modules/state/components/ListTail";
 import { createResourcePageWrapper } from "modules/state/helpers/createResourcePageWrapper";
@@ -73,6 +74,12 @@ function OrganizationView(props: OrganizationViewProps) {
 
   return (
     <Container>
+      <Meta
+        meta={{
+          title: name,
+          description,
+        }}
+      />
       <Header>
         <PrimaryInfo>
           <Title>{name}</Title>

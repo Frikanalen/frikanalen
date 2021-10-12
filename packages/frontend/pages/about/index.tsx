@@ -1,3 +1,4 @@
+import { Meta } from "modules/core/components/Meta";
 import { Document } from "modules/ui/components/Document";
 import { ExternalLink } from "modules/ui/components/ExternalLink";
 import { Quote } from "modules/ui/components/Quote";
@@ -5,6 +6,12 @@ import { Quote } from "modules/ui/components/Quote";
 export default function About() {
   return (
     <Document>
+      <Meta
+        meta={{
+          title: "Om",
+          description: "Informasjon om Frikanalen og hvordan du kan bli medlem",
+        }}
+      />
       <h1>Frikanalen er sivilsamfunnets videoplatform</h1>
       <Quote
         citation={{

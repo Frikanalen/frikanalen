@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useObserver } from "mobx-react-lite";
+import { Meta } from "modules/core/components/Meta";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { SVGIcon } from "modules/ui/components/SVGIcon";
@@ -51,6 +52,12 @@ export function RequireAuthentication(props: { children: JSX.Element }) {
 
   return (
     <Container>
+      <Meta
+        meta={{
+          title: "Logg inn",
+          description: "Denne siden krever innlogging",
+        }}
+      />
       <Icon name="lock" />
       <Title>Hvem der?</Title>
       <Subtitle>Du må være logget inn for å kunne bruke denne siden.</Subtitle>
