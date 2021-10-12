@@ -16,10 +16,15 @@ export const ButtonList = styled.div<{ horizontal?: boolean; compact?: boolean }
 
     const horizontalStyle = css`
       display: flex;
+      flex-wrap: wrap;
 
-      > * + * {
-        margin-left: ${spacing};
+      > * {
+        margin-right: ${spacing};
+        margin-bottom: ${spacing};
       }
+
+      margin-right: -${spacing};
+      margin-bottom: -${spacing};
     `;
 
     return horizontal ? horizontalStyle : verticalStyle;
