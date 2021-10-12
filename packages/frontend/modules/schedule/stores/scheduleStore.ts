@@ -1,5 +1,7 @@
 import { startOfDay } from "date-fns";
 import { computed, observable } from "mobx";
+import { ARTIFICIAL_DELAY } from "modules/core/constants";
+import { wait } from "modules/lang/async";
 import { ApiCollection } from "modules/network/types";
 import { ResourceFetcher } from "modules/state/classes/ResourceFetcher";
 import { ResourceStore, SerializedResourceStore } from "modules/state/classes/ResourceStore";
@@ -55,12 +57,15 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
 
     this.itemsByDate[date.toISOString()] = [];
 
-    const response = await api.get<ApiCollection<ScheduleItemData>>("/scheduleitems", {
-      params: {
-        days: 1,
-        date: date.toISOString(),
-      },
-    });
+    const [response] = await Promise.all([
+      await api.get<ApiCollection<ScheduleItemData>>("/scheduleitems", {
+        params: {
+          days: 1,
+          date: date.toISOString(),
+        },
+      }),
+      wait(ARTIFICIAL_DELAY),
+    ]);
 
     this.itemsByDate[date.toISOString()] = response.data.results.map((i) => this.store.add(i));
   }

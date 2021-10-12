@@ -4,7 +4,9 @@ import { CalendarInput } from "modules/input/components/CalendarInput";
 import { ScheduleTimelineItem } from "modules/schedule/components/ScheduleTimelineItem";
 import { humanizeSelectedScheduleDate } from "modules/schedule/helpers/humanizeSelectedScheduleDate";
 import { useStores } from "modules/state/manager";
+import { Spinner } from "modules/ui/components/Spinner";
 import { NextPageContext } from "next";
+import React from "react";
 
 const Container = styled.div`
   display: flex;
@@ -26,6 +28,15 @@ const DayTitle = styled.h1`
   margin-bottom: 16px;
 `;
 
+const SpinnerContainer = styled.div`
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  height: calc(100vh - 400px);
+`;
+
 export default function Schedule() {
   const { scheduleStore } = useStores();
 
@@ -37,10 +48,21 @@ export default function Schedule() {
     scheduleStore.fetchByDate(date);
   };
 
+  const renderSpinner = () => {
+    if (selectedDateItems.length > 0) return null;
+
+    return (
+      <SpinnerContainer>
+        <Spinner size="normal" />
+      </SpinnerContainer>
+    );
+  };
+
   return (
     <Container>
       <Result>
         <DayTitle>{humanizeSelectedScheduleDate(selectedDate)}</DayTitle>
+        {renderSpinner()}
         {selectedDateItems.map((i) => (
           <ScheduleTimelineItem key={i.data.id} item={i} />
         ))}
