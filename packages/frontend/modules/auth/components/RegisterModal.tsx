@@ -44,8 +44,6 @@ export function RegisterModal(props: RegisterModalProps) {
     modal.dismiss();
   });
 
-  const [type, message] = status;
-
   return (
     <PrimaryModal.Container>
       <Form form={form}>
@@ -69,7 +67,7 @@ export function RegisterModal(props: RegisterModalProps) {
           </Field>
         </PrimaryModal.Body>
         <PrimaryModal.Footer>
-          <StatusLine message={message} type={type} />
+          <StatusLine {...status} />
           <PrimaryModal.Actions>
             <GenericButton variant="primary" onClick={handleSubmit} label="Registrer" />
             <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />

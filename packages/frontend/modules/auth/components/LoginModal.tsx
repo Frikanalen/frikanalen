@@ -54,8 +54,6 @@ export function LoginModal(props: LoginModalProps) {
     }
   );
 
-  const [type, message] = status;
-
   const handleRegisterClick = () => {
     modal.dismiss();
     spawnRegisterModal(manager);
@@ -75,7 +73,7 @@ export function LoginModal(props: LoginModalProps) {
           <RegisterLink onClick={handleRegisterClick}>Registrer ny konto?</RegisterLink>
         </PrimaryModal.Body>
         <PrimaryModal.Footer>
-          <StatusLine message={message} type={type} />
+          <StatusLine {...status} />
           <PrimaryModal.Actions>
             <GenericButton variant="primary" onClick={handleSubmit} label="Logg inn" />
             <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />

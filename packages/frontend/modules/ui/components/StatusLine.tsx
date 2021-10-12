@@ -1,6 +1,8 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { IconType } from "../types";
+import { Spinner } from "./Spinner";
 import { SVGIcon } from "./SVGIcon";
 
 const Container = styled.span<{ type: StatusType }>`
@@ -36,23 +38,52 @@ const Icon = styled(SVGIcon)`
   margin-right: 8px;
 `;
 
+const Loading = styled(Spinner)`
+  margin-right: 8px;
+`;
+
+const statusTimeout = 5000;
+
 const typeToIconMap: Record<StatusType, IconType | undefined> = {
+  loading: undefined,
   info: undefined,
   success: "circledCheckmark",
   error: "triangularExclamation",
 };
 
-export type StatusType = "info" | "success" | "error";
+export type StatusType = "info" | "loading" | "success" | "error";
 
 export type StatusLineProps = {
   type: StatusType;
+  fingerprint: number;
   message?: string;
   className?: string;
 };
 
 export function StatusLine(props: StatusLineProps) {
-  const { type, className, message } = props;
+  const { type, className, message, fingerprint } = props;
   const icon = typeToIconMap[type];
+
+  const timeoutRef = useRef<number>();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    timeoutRef.current = window.setTimeout(() => {
+      setVisible(false);
+    }, statusTimeout);
+
+    setVisible(true);
+
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
+  }, [fingerprint]);
+
+  const renderSpinner = () => {
+    if (type !== "loading") return null;
+
+    return <Loading size="small" />;
+  };
 
   const renderIcon = () => {
     if (!icon) return null;
@@ -60,10 +91,21 @@ export function StatusLine(props: StatusLineProps) {
     return <Icon name={icon} />;
   };
 
+  const renderStatus = () => {
+    if (!visible) return null;
+
+    return (
+      <Fragment key={type + message}>
+        {renderSpinner()}
+        {renderIcon()}
+        {message}
+      </Fragment>
+    );
+  };
+
   return (
     <Container className={className} type={type}>
-      {renderIcon()}
-      {message}
+      {renderStatus()}
     </Container>
   );
 }

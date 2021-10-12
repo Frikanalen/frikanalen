@@ -14,7 +14,8 @@ import { useManager } from "modules/state/manager";
 import { ExternalLink } from "modules/ui/components/ExternalLink";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { Notice } from "modules/ui/components/Notice";
-import { StatusLine, StatusType } from "modules/ui/components/StatusLine";
+import { StatusLine } from "modules/ui/components/StatusLine";
+import { useStatusLine } from "modules/ui/hooks/useStatusLine";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
@@ -59,19 +60,18 @@ function Content() {
 
   const [form] = useState(() => createNewOrganizationForm(manager));
 
-  const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
-  const [type, message] = status;
+  const [status, setStatus] = useStatusLine();
 
   const organizationNumber = useObserver(() => form.fields.orgnr.value);
 
   useEffect(() => {
     const doFetch = async () => {
-      setStatus(["info", "Henter data fra registeret..."]);
+      setStatus("loading", "Henter data fra registeret...");
 
       const data = await fetchBrregData(organizationNumber);
 
       if (!data) {
-        setStatus(["error", "Kunne ikke hente data fra register, er organisasjonsnummer riktig?"]);
+        setStatus("error", "Kunne ikke hente data fra register, er organisasjonsnummer riktig?");
         return;
       }
 
@@ -82,14 +82,12 @@ function Content() {
       postalAddress.setValue(`${safeName}\n${formatAddress(data.postadresse)}`);
       streetAddress.setValue(`${safeName}\n${formatAddress(data.forretningsadresse)}`);
       homepage.setValue(data.hjemmeside);
-
-      setStatus(["info", ""]);
     };
 
     if (organizationNumber.length === 9 && Number.isInteger(Number(organizationNumber))) {
       doFetch();
     }
-  }, [organizationNumber, form]);
+  }, [organizationNumber, form, setStatus]);
 
   const [formStatus, handleSubmit] = useFormSubmission(form, async (serialized) => {
     const { data } = await api.post<OrganizationData>("/organization/", serialized);
@@ -98,7 +96,11 @@ function Content() {
     router.push(`/organization/${data.id}/admin`);
   });
 
-  useEffect(() => setStatus(formStatus), [formStatus]);
+  // Pass automatic form status along to manual one
+  useEffect(() => {
+    const { type, message } = formStatus;
+    setStatus(type, message);
+  }, [formStatus, setStatus]);
 
   return (
     <Form onSubmit={handleSubmit} form={form}>
@@ -120,7 +122,7 @@ function Content() {
             <ControlledTextInput multiline name="streetAddress" />
           </Field>
           <FormFooter>
-            <StatusLine message={message} type={type} />
+            <StatusLine {...status} />
             <GenericButton variant="primary" onClick={handleSubmit} label="Opprett" />
           </FormFooter>
         </FormContainer>

@@ -1,42 +1,37 @@
 import { ARTIFICIAL_DELAY } from "modules/core/constants";
 import { wait } from "modules/lang/async";
 import { StatusType } from "modules/ui/components/StatusLine";
-import { useState } from "react";
+import { useStatusLine } from "modules/ui/hooks/useStatusLine";
 import { FieldsType, ObservableForm } from "../classes/ObservableForm";
-
-const statusTimeout = 5000;
 
 export const useFormSubmission = <F extends FieldsType>(
   form: ObservableForm<F>,
   submit: (serialized: ObservableForm<F>["serialized"]) => Promise<[StatusType, string] | void>,
   handleError: (e: any) => [StatusType, string] = () => ["error", "Noe gikk galt, prøv igjen senere"]
 ) => {
-  const [status, setStatus] = useState<[StatusType, string]>(["info", ""]);
+  const [status, setStatus] = useStatusLine();
 
   const handleSubmit = async () => {
     const valid = await form.ensureValidity();
 
     if (valid) {
-      setStatus(["info", "Vent litt..."]);
+      setStatus("loading", "Vent litt...");
 
       try {
         const [, result] = await Promise.all([wait(ARTIFICIAL_DELAY), submit(form.serialized)]);
 
         if (result) {
-          setStatus(result);
+          const [type, message] = result;
+          setStatus(type, message);
         } else {
-          setStatus(["success", "Skjemaet ble sendt"]);
+          setStatus("success", "Skjemaet ble sendt");
         }
-
-        await wait(statusTimeout);
-        setStatus(["info", ""]);
       } catch (e) {
-        setStatus(handleError(e));
-        await wait(statusTimeout);
-        setStatus(["info", ""]);
+        const [type, message] = handleError(e);
+        setStatus(type, message);
       }
     } else {
-      setStatus(["error", "Kontroller at skjemaet er gyldig"]);
+      setStatus("error", "Kontroller at skjemaet er gyldig");
     }
   };
 

@@ -64,8 +64,6 @@ function Profile() {
     Object.assign(authStore.user, data);
   });
 
-  const [type, message] = status;
-
   return (
     <Container>
       <h1>Din profil</h1>
@@ -81,7 +79,7 @@ function Profile() {
             <ControlledTextInput name="phoneNumber" />
           </Field>
           <FormFooter>
-            <StatusLine message={message} type={type} />
+            <StatusLine {...status} />
             <GenericButton variant="primary" onClick={handleSubmit} label="Lagre" />
           </FormFooter>
         </FormContainer>
