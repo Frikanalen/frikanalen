@@ -10,6 +10,8 @@ import { spawnTextSlideModal } from "modules/playout/helpers/spawnTextSlideModal
 import { Meta } from "modules/core/components/Meta";
 // import { NextPageContext } from "next";
 
+const breakpoint = 830;
+
 const Container = styled.div``;
 
 const Content = styled.div`
@@ -17,6 +19,10 @@ const Content = styled.div`
   padding: 24px;
   border: solid 2px ${(props) => props.theme.color.divider};
   border-radius: 4px;
+
+  @media (max-width: ${breakpoint}px) {
+    padding: 0px;
+  }
 `;
 
 const Controls = styled.div`
@@ -31,6 +37,17 @@ const Controls = styled.div`
 
   > * {
     margin-right: 32px;
+  }
+
+  @media (max-width: ${breakpoint}px) {
+    margin: 0px;
+
+    flex-direction: column;
+
+    > * {
+      margin-right: 0px;
+      margin-bottom: 32px;
+    }
   }
 `;
 
