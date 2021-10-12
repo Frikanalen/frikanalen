@@ -302,7 +302,7 @@ class Video(models.Model):
     def default_uuid_value():
         return uuid.uuid4().hex
 
-    upload_token = models.CharField(blank=True, default=default_uuid_value,
+    upload_token = models.CharField(blank=True, default=default_uuid_value.__func__,
             max_length=32, help_text='Video upload token (used by fkupload/frontend)')
 
     objects = VideoManager()
