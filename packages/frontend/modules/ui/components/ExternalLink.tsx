@@ -1,12 +1,9 @@
 import styled from "@emotion/styled";
 import { PropsWithChildren } from "react";
+import { linkStyle } from "../styles/linkStyle";
 
 const Container = styled.a`
-  color: ${(props) => props.theme.color.accent};
-
-  &:hover {
-    text-decoration: underline;
-  }
+  ${linkStyle}
 `;
 
 export type ExternalLinkProps = PropsWithChildren<{
