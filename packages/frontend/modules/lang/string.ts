@@ -17,3 +17,8 @@ export const toTitleCase = (str: string) => {
 
   return splitStr.join(" ");
 };
+
+export const truncate = (str: string, length: number) => {
+  if (str.length > length) return str.slice(0, length).trim() + "...";
+  return str;
+};
