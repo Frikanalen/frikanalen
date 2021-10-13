@@ -12,7 +12,7 @@ const getDefaultEmptyStateProps = (error: ErrorType): EmptyStateProps => {
   if (error === "not-found") {
     return {
       icon: "magnifyingGlass",
-      title: "Ikke funnet (400)",
+      title: "Ikke funnet (404)",
       subtitle: "Ressursen du ser etter finnes ikke",
     };
   }
