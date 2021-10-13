@@ -14,8 +14,8 @@ import React from "react";
 import { STILLS_GENERATOR_URL } from "../constants";
 import { TextSlideForm } from "../forms/createTextSlideForm";
 
-const Body = styled(PrimaryModal.Body)`
-  min-width: 650px;
+const Container = styled(PrimaryModal.Container)`
+  width: 650px;
 `;
 
 const Field = styled(FormField)`
@@ -55,10 +55,10 @@ export function TextSlideModal(props: TextSlideModalProps) {
   );
 
   return (
-    <PrimaryModal.Container>
-      <Form form={form}>
-        <PrimaryModal.Header title="Sendingsplakat" />
-        <Body>
+    <Container>
+      <PrimaryModal.Header title="Sendingsplakat" />
+      <PrimaryModal.Body>
+        <Form form={form}>
           <Field label="Overskrift" name="heading">
             <ControlledTextInput autoFocus name="heading" />
           </Field>
@@ -68,15 +68,15 @@ export function TextSlideModal(props: TextSlideModalProps) {
           <AspectContainer width={1280} height={720}>
             <Preview style={{ backgroundImage: `url(${previewURL})` }} />
           </AspectContainer>
-        </Body>
-        <PrimaryModal.Footer>
-          <StatusLine {...status} />
-          <PrimaryModal.Actions>
-            <GenericButton variant="primary" onClick={handleSubmit} label="Lagre" />
-            <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Lukk" />
-          </PrimaryModal.Actions>
-        </PrimaryModal.Footer>
-      </Form>
-    </PrimaryModal.Container>
+        </Form>
+      </PrimaryModal.Body>
+      <PrimaryModal.Footer>
+        <StatusLine {...status} />
+        <PrimaryModal.Actions>
+          <GenericButton variant="primary" onClick={handleSubmit} label="Lagre" />
+          <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Lukk" />
+        </PrimaryModal.Actions>
+      </PrimaryModal.Footer>
+    </Container>
   );
 }

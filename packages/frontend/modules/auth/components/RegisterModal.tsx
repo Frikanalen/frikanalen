@@ -46,12 +46,11 @@ export function RegisterModal(props: RegisterModalProps) {
 
   return (
     <PrimaryModal.Container>
-      <Form form={form}>
-        <PrimaryModal.Header title="Registrer" />
-        <PrimaryModal.Body>
+      <PrimaryModal.Header title="Registrer" />
+      <PrimaryModal.Body>
+        <Form form={form}>
           <Info>
-            Her kan du opprette en bruker for tilgang til innmeldingsskjema <br />
-            og andre medlemsfunksjoner på siden.
+            Her kan du opprette en bruker for tilgang til innmeldingsskjema og andre medlemsfunksjoner på siden.
           </Info>
           <Field label="Fornavn" name="firstName">
             <ControlledTextInput placeholder="Ola" autoFocus name="firstName" />
@@ -65,15 +64,15 @@ export function RegisterModal(props: RegisterModalProps) {
           <Field label="Passord" name="password">
             <ControlledTextInput type="password" name="password" />
           </Field>
-        </PrimaryModal.Body>
-        <PrimaryModal.Footer>
-          <StatusLine {...status} />
-          <PrimaryModal.Actions>
-            <GenericButton variant="primary" onClick={handleSubmit} label="Registrer" />
-            <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />
-          </PrimaryModal.Actions>
-        </PrimaryModal.Footer>
-      </Form>
+        </Form>
+      </PrimaryModal.Body>
+      <PrimaryModal.Footer>
+        <StatusLine {...status} />
+        <PrimaryModal.Actions>
+          <GenericButton variant="primary" onClick={handleSubmit} label="Registrer" />
+          <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />
+        </PrimaryModal.Actions>
+      </PrimaryModal.Footer>
     </PrimaryModal.Container>
   );
 }

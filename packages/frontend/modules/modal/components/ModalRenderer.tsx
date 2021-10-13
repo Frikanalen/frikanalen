@@ -27,7 +27,11 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Content = styled.div``;
+const Content = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
 
 export function ModalRenderer(props: ModalRendererProps) {
   const { render, clickout, dismissOnClickout, key } = props.item;

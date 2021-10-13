@@ -61,9 +61,9 @@ export function LoginModal(props: LoginModalProps) {
 
   return (
     <PrimaryModal.Container>
-      <Form onSubmit={handleSubmit} form={form}>
-        <PrimaryModal.Header title="Logg inn" />
-        <PrimaryModal.Body>
+      <PrimaryModal.Header title="Logg inn" />
+      <PrimaryModal.Body>
+        <Form onSubmit={handleSubmit} form={form}>
           <Field label="E-post" name="email">
             <ControlledTextInput placeholder="epost@webside.no" autoFocus name="email" />
           </Field>
@@ -71,15 +71,15 @@ export function LoginModal(props: LoginModalProps) {
             <ControlledTextInput type="password" name="password" />
           </Field>
           <RegisterLink onClick={handleRegisterClick}>Registrer ny konto?</RegisterLink>
-        </PrimaryModal.Body>
-        <PrimaryModal.Footer>
-          <StatusLine {...status} />
-          <PrimaryModal.Actions>
-            <GenericButton variant="primary" onClick={handleSubmit} label="Logg inn" />
-            <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />
-          </PrimaryModal.Actions>
-        </PrimaryModal.Footer>
-      </Form>
+        </Form>
+      </PrimaryModal.Body>
+      <PrimaryModal.Footer>
+        <StatusLine {...status} />
+        <PrimaryModal.Actions>
+          <GenericButton variant="primary" onClick={handleSubmit} label="Logg inn" />
+          <GenericButton variant="secondary" onClick={() => modal.dismiss()} label="Avbryt" />
+        </PrimaryModal.Actions>
+      </PrimaryModal.Footer>
     </PrimaryModal.Container>
   );
 }
