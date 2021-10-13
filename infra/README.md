@@ -1,6 +1,11 @@
 Frikanalen infrastructure
 =========================
 
+## Developer environment
+
+To get a developer instance of the Frikanalen software stack, run deploy.sh in k8s-dev.
+
+### Ansible (not in use?)
 Requires Ansible >=2.4
 
 To deploy, run:
