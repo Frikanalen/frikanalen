@@ -1,16 +1,56 @@
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Transition, TransitionGroup, TransitionStatus } from "react-transition-group";
 import { IconType } from "../types";
 import { Spinner } from "./Spinner";
 import { SVGIcon } from "./SVGIcon";
 
-const Container = styled.span<{ type: StatusType }>`
+const Container = styled.div`
+  font-size: 0.8em;
+  font-weight: 600;
+
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+`;
+
+const EnterAnimation = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(0%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+`;
+
+const ExitAnimation = keyframes`
+  0% {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+`;
+
+const Content = styled.span<{ type: StatusType; status: TransitionStatus }>`
   display: flex;
   align-items: center;
 
-  font-size: 0.8em;
-  font-weight: 600;
+  position: absolute;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  left: 0px;
+  right: 0px;
 
   ${(props) => {
     if (props.type === "error") {
@@ -28,6 +68,19 @@ const Container = styled.span<{ type: StatusType }>`
     return css`
       color: ${props.theme.fontColor.muted};
     `;
+  }}
+
+  ${(props) => {
+    if (props.status === "entering")
+      return css`
+        animation: ${EnterAnimation} 150ms ease forwards;
+      `;
+
+    if (props.status === "exiting") {
+      return css`
+        animation: ${ExitAnimation} 150ms ease forwards;
+      `;
+    }
   }}
 `;
 
@@ -95,17 +148,21 @@ export function StatusLine(props: StatusLineProps) {
     if (!visible) return null;
 
     return (
-      <Fragment key={type + message}>
-        {renderSpinner()}
-        {renderIcon()}
-        {message}
-      </Fragment>
+      <Transition timeout={150} key={type + message}>
+        {(status) => (
+          <Content status={status} type={type}>
+            {renderSpinner()}
+            {renderIcon()}
+            {message}
+          </Content>
+        )}
+      </Transition>
     );
   };
 
   return (
-    <Container className={className} type={type}>
-      {renderStatus()}
+    <Container className={className}>
+      <TransitionGroup>{renderStatus()}</TransitionGroup>
     </Container>
   );
 }
