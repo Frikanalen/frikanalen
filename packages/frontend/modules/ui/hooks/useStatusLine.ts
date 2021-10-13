@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { StatusType } from "../components/StatusLine";
 
 export const useStatusLine = () => {
-  const [status, setStatus] = useState<[StatusType, string, number]>(["info", "", 0]);
+  const [status, setStatus] = useState<[StatusType, string, number]>(["info", "", -1]);
 
   const set = useCallback((type: StatusType, message: string) => {
     setStatus([type, message, getUniqueId()]);
