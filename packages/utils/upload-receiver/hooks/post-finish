@@ -4,7 +4,17 @@
 """
 import json
 import sys
+import os
+from loguru import logger
+# noinspection PyPackageRequirements
 from kafka import KafkaProducer
+
+KAFKA_SERVER = os.environ.get('KAFKA_SERVER', None)
+
+
+if KAFKA_SERVER is None:
+    KAFKA_SERVER = 'kafka-service.kafka:9092'
+    logger.warning(f"KAFKA_SERVER environment variable not set; defaulting to {KAFKA_SERVER}")
 
 
 def read_upload_status():
@@ -34,20 +44,22 @@ def read_upload_status():
     }
     """
     s = json.load(sys.stdin)["Upload"]
-    return (s["MetaData"]["videoID"], s["MetaData"]["origFileName"], s["Storage"]["Key"])
+    return (s["MetaData"]["videoID"], s["MetaData"]["origFileName"],
+            s["Storage"]["Key"])
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     video_id, orig_filename, s3_key = read_upload_status()
     event_data = {
-            "version":  1,
-            "video_id": int(video_id),
-            "orig_filename": orig_filename,
-            "s3_key": s3_key
-            }
+        "version": 1,
+        "video_id": int(video_id),
+        "orig_filename": orig_filename,
+        "s3_key": s3_key
+    }
 
     p = KafkaProducer(
-            bootstrap_servers='kafka-service.kafka:9092',
-            value_serializer=lambda x: json.dumps(x).encode('utf-8'),
+        bootstrap_servers=KAFKA_SERVER,
+        value_serializer=lambda x: json.dumps(x).encode('utf-8'),
     )
 
     future = p.send('new-video-uploaded', event_data)

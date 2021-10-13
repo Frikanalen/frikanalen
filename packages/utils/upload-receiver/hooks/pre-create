@@ -5,38 +5,48 @@ that the upload_token is correct for a given video_id. """
 import json
 import os
 import sys
-
 import requests
+from loguru import logger
+
+FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
+FK_TOKEN = os.environ.get('FK_TOKEN')
+UPLOAD_ENV = os.environ.get('UPLOAD_ENV', False)
+
 
 class TokenValidationException(Exception):
     pass
 
-FK_API = os.environ.get('FK_API', 'https://frikanalen.no/api')
-FK_TOKEN = os.environ.get('FK_TOKEN')
 
 def get_token(video_id):
     """ Obtain the upload token for a given video_id."""
-    response = requests.get(
-        '%s/videos/%d/upload_token.json' % (FK_API, video_id),
-        headers={'Authorization': 'Token %s' % FK_TOKEN}
-    )
-    data = response.json()
+    response = requests.get(f'{FK_API}/videos/{video_id}/upload_token.json',
+                            headers={'Authorization': f'Token {FK_TOKEN}'})
+
     if response.status_code != 200:
-        refuse(f'Querying API for video {video_id} returned %d' % response.status_code)
+        refuse(f'Querying API for video {video_id} returned %d' %
+               response.status_code)
+
+    data = response.json()
+
     if 'uploadToken' not in data or not data['uploadToken']:
         refuse('There is no upload token set in database for this video')
+
     return data['uploadToken']
+
 
 def refuse(string):
     """ Reject an incoming request. The output given to stdout will be returned
     as part of the error message which is presently displayed on the front end.
     The output given to standard error is logged by the upload receiver. """
-    print(string)
-    print(f'[pre_create hook] {string}', file=sys.stderr)
+    logger.warning(string)
     sys.exit(1)
 
+
+def parse_request():
+    return json.load(sys.stdin)
+
+
 def validate_request():
-    request = json.load(sys.stdin)
     metadata = request['Upload']['MetaData']
 
     try:
@@ -49,14 +59,19 @@ def validate_request():
     except KeyError:
         raise TokenValidationException('Video ID header not set!')
     except ValueError:
-        raise TokenValidationException('Video ID header could not be converted to int!')
+        raise TokenValidationException(
+            'Video ID header could not be converted to int!')
 
-    good_token = get_token(video_id)
-    if upload_token != good_token:
-        raise TokenValidationException(f'Your upload token {upload_token} is incorrect')
+    if upload_token != get_token(video_id):
+        raise TokenValidationException(
+            f'Your upload token {upload_token} is incorrect')
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     try:
-        validate_request()
+        request = parse_request()
+        logger.info(request)
+        logger = logger.bind(remote_addr=request['HTTPRequest']['RemoteAddr'])
+        validate_request(request)
     except TokenValidationException as e:
         refuse(e)
