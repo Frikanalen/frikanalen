@@ -26,7 +26,7 @@ const getDefaultEmptyStateProps = (error: ErrorType): EmptyStateProps => {
 
 export type CreateResourcePageWrapperOptions<R extends Resource<any>> = {
   getFetcher: (query: NextPageContext["query"], manager: Manager) => ResourceFetcher<R, R["data"]>;
-  onResource?: (resource: R) => Promise<void>;
+  onResource?: (resource: R, manager: Manager) => Promise<void>;
   getEmptyStateProps?: (error: ErrorType) => EmptyStateProps;
   renderContent: (resource: R) => JSX.Element;
 };
@@ -57,7 +57,7 @@ export const createResourcePageWrapper = <R extends Resource<any>>(options: Crea
     }
 
     if (fetcher.resource && onResource) {
-      await onResource(fetcher.resource);
+      await onResource(fetcher.resource, manager);
     }
 
     if (fetcher.error && res) {
