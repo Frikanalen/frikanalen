@@ -19,7 +19,7 @@ const Container = styled.div`
 const EnterAnimation = keyframes`
   0% {
     opacity: 0;
-    transform: translateY(0%);
+    transform: translateY(-20%);
   }
 
   100% {
@@ -36,7 +36,7 @@ const ExitAnimation = keyframes`
 
   100% {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translateY(-80%);
   }
 `;
 
