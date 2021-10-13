@@ -52,12 +52,12 @@ const Container = styled.div<{ status: TransitionStatus }>`
   ${(props) => {
     if (props.status === "entering")
       return css`
-        animation: ${ContainerAnimation} 150ms ease forwards;
+        animation: ${ContainerAnimation} 150ms linear forwards;
       `;
 
     if (props.status === "exiting") {
       return css`
-        animation: ${ContainerAnimation} 150ms ease forwards reverse;
+        animation: ${ContainerAnimation} 150ms linear forwards reverse;
       `;
     }
   }}
