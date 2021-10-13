@@ -12,7 +12,7 @@ const Container = styled.div`
 
   position: relative;
 
-  width: 100%;
+  flex: 1;
   height: 100%;
 `;
 
