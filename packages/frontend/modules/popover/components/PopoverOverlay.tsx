@@ -3,6 +3,7 @@ import { PopoverItem } from "./PopoverItem";
 import { useObserver } from "mobx-react-lite";
 import styled from "@emotion/styled";
 import { useStores } from "modules/state/manager";
+import { Transition, TransitionGroup } from "react-transition-group";
 
 const Container = styled.div``;
 
@@ -17,7 +18,10 @@ export function PopoverOverlay() {
       const { current: container } = ref;
       const popover = popoverStore.popovers[0];
 
-      if (container && !container.contains(event.target as any) && popover?.autoDismiss) {
+      const isWithinContainer = container && container.contains(event.target as any);
+      const isAnchor = event.target === popover.anchor || popover.anchor.contains(event.target as any);
+
+      if (!isWithinContainer && !isAnchor && popover?.autoDismiss) {
         popoverStore.dismiss(popover.name);
       }
     };
@@ -31,9 +35,13 @@ export function PopoverOverlay() {
 
   return useObserver(() => (
     <Container ref={ref}>
-      {popoverStore.popovers.map((popover) => (
-        <PopoverItem key={popover.name} popover={popover} />
-      ))}
+      <TransitionGroup>
+        {popoverStore.popovers.map((popover) => (
+          <Transition mountOnEnter timeout={150} key={popover.name}>
+            {(status) => <PopoverItem transitionStatus={status} key={popover.name} popover={popover} />}
+          </Transition>
+        ))}
+      </TransitionGroup>
     </Container>
   ));
 }

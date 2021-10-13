@@ -41,11 +41,10 @@ export const usePopover = (options: UsePopoverOptions) => {
   }, [popoverName, popoverStore]);
 
   const toggle = () => {
-    // Only spawn the popover,
-    // let the popover overlay
-    // handle dismissing on click
     if (!popoverName) {
       spawn();
+    } else {
+      dismiss();
     }
   };
 
