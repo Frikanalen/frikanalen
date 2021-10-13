@@ -4,14 +4,37 @@ import { ModalItem } from "../stores/modalStore";
 import styled from "@emotion/styled";
 import { useStores } from "modules/state/manager";
 import { modalContext } from "../contexts";
+import { css, keyframes } from "@emotion/react";
+import { TransitionStatus } from "react-transition-group";
 
 const { Provider } = modalContext;
 
 export type ModalRendererProps = {
+  transitionStatus: TransitionStatus;
   item: ModalItem;
 };
 
-const Container = styled.div`
+const ContainerAnimation = keyframes`
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+`;
+
+const ContentAnimation = keyframes`
+  0% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+`;
+
+const Container = styled.div<{ status: TransitionStatus }>`
   position: fixed;
   z-index: 5;
 
@@ -25,12 +48,36 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${(props) => {
+    if (props.status === "entering")
+      return css`
+        animation: ${ContainerAnimation} 150ms ease forwards;
+      `;
+
+    if (props.status === "exiting") {
+      return css`
+        animation: ${ContainerAnimation} 150ms ease forwards reverse;
+      `;
+    }
+  }}
 `;
 
-const Content = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
+const Content = styled.div<{ status: TransitionStatus }>`
+  max-width: 100vw;
+
+  ${(props) => {
+    if (props.status === "entering")
+      return css`
+        animation: ${ContentAnimation} 150ms ease forwards;
+      `;
+
+    if (props.status === "exiting") {
+      return css`
+        animation: ${ContentAnimation} 150ms ease forwards reverse;
+      `;
+    }
+  }}
 `;
 
 export function ModalRenderer(props: ModalRendererProps) {
@@ -53,8 +100,8 @@ export function ModalRenderer(props: ModalRendererProps) {
   };
 
   return (
-    <Container onClick={onClick}>
-      <Content>
+    <Container status={props.transitionStatus} onClick={onClick}>
+      <Content status={props.transitionStatus}>
         <Provider value={context}>{render()}</Provider>
       </Content>
     </Container>

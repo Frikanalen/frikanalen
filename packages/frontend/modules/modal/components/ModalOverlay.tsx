@@ -2,6 +2,7 @@ import React from "react";
 import { useObserver } from "mobx-react-lite";
 import { ModalRenderer } from "./ModalRenderer";
 import { useStores } from "modules/state/manager";
+import { Transition, TransitionGroup } from "react-transition-group";
 
 export function ModalOverlay() {
   const { modalStore } = useStores();
@@ -9,10 +10,12 @@ export function ModalOverlay() {
   const items = useObserver(() => modalStore.items.filter((item) => item.visible));
 
   return (
-    <div>
+    <TransitionGroup>
       {items.map((item) => (
-        <ModalRenderer key={item.key} item={item} />
+        <Transition timeout={200} key={item.key}>
+          {(status) => <ModalRenderer transitionStatus={status} key={item.key} item={item} />}
+        </Transition>
       ))}
-    </div>
+    </TransitionGroup>
   );
 }
