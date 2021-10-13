@@ -22,3 +22,5 @@ export const truncate = (str: string, length: number) => {
   if (str.length > length) return str.slice(0, length).trim() + "...";
   return str;
 };
+
+export const toSafeAsciiString = (string: string) => string.replace(/[^\x00-\x7F]/g, "").replace(/\s+/g, " ");
