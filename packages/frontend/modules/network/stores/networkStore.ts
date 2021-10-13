@@ -11,6 +11,7 @@ export class NetworkStore extends Store {
 
   private hasCreated = false;
   private apiInstance?: AxiosInstance;
+  private uploadInstance?: AxiosInstance;
 
   private addInterceptors(instance: AxiosInstance) {
     if (IS_SERVER) {
@@ -47,12 +48,25 @@ export class NetworkStore extends Store {
       })
     );
 
+    this.uploadInstance = this.addInterceptors(
+      axios.create({
+        baseURL: configs.upload,
+        withCredentials: true,
+        headers,
+      })
+    );
+
     this.hasCreated = true;
   }
 
   public get api() {
     this.createInstances();
     return this.apiInstance!;
+  }
+
+  public get upload() {
+    this.createInstances();
+    return this.uploadInstance!;
   }
 }
 

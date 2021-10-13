@@ -2,6 +2,7 @@ export const VALID_CONFIGS = ["development", "staging", "devcluster", "productio
 
 export type Config = {
   api: string;
+  upload: string;
 };
 
 export type ConfigType = typeof VALID_CONFIGS[number];
@@ -9,15 +10,19 @@ export type ConfigType = typeof VALID_CONFIGS[number];
 export const configs: Record<ConfigType, Config> = {
   development: {
     api: "http://localhost:8080/api/",
+    upload: "https://frikanalen.no/api/videos/upload/",
   },
   staging: {
     api: "https://frikanalen.no/api/",
+    upload: "https://frikanalen.no/api/videos/upload/",
   },
   devcluster: {
     api: "http://fk.dev.local/api/",
+    upload: "http://fk.dev.local/api/videos/upload/",
   },
   production: {
     api: "https://frikanalen.no/api/",
+    upload: "https://frikanalen.no/api/videos/upload/",
   },
 };
 
