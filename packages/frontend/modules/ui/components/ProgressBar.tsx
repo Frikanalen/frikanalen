@@ -2,13 +2,15 @@ import styled from "@emotion/styled";
 import { useRef } from "react";
 import { useInterpolatedValue } from "../hooks/useInterpolatedValue";
 
-const PROGRESS_BAR_HEIGHT = "2px";
+const PROGRESS_BAR_HEIGHT = "4px";
 
 const Container = styled.div`
   position: relative;
 
   background: ${(props) => props.theme.color.divider};
   height: ${PROGRESS_BAR_HEIGHT};
+
+  border-radius: 4px;
 `;
 
 const Fill = styled.div<{ state: ProgressBarState }>`
@@ -17,6 +19,8 @@ const Fill = styled.div<{ state: ProgressBarState }>`
   right: 0px;
   top: 0px;
   bottom: 0px;
+
+  border-radius: 4px;
 
   transform-origin: 0 0;
   background: ${(props) => {
