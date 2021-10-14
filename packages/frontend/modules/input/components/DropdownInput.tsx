@@ -17,6 +17,9 @@ const PopoverContainer = styled(PrimaryPopover)`
 
   display: flex;
   flex-direction: column;
+
+  max-height: ${38 * 6}px;
+  overflow-y: auto;
 `;
 
 const OptionContainer = styled(Button as ButtonWithProps<{ active: boolean }>)`
@@ -73,6 +76,7 @@ function Popover(props: PopoverProps) {
 const Container = styled(Button as ButtonWithProps<{ active: boolean }>)`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   position: relative;
   height: ${FIELDSET_HEIGHT};
