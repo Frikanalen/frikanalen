@@ -4,20 +4,18 @@ import { ComponentPropsWithoutRef } from "react";
 
 const Container = styled.button<{ stretch?: boolean }>`
   display: inline-block;
-  pointer-events: none;
 
   ${(props) =>
     props.stretch &&
     `
     width: 100%;
-  `}
+    `}
 `;
 
 const Inner = styled.span`
   display: flex;
   width: 100%;
 
-  pointer-events: all;
   user-select: none;
 `;
 
