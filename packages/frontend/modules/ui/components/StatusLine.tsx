@@ -95,7 +95,7 @@ const Loading = styled(Spinner)`
   margin-right: 8px;
 `;
 
-const statusTimeout = 5000;
+const statusTimeout = 15000;
 
 const typeToIconMap: Record<StatusType, IconType | undefined> = {
   loading: undefined,
@@ -145,7 +145,7 @@ export function StatusLine(props: StatusLineProps) {
   };
 
   const renderStatus = () => {
-    if (!visible) return null;
+    if (!visible && type !== "loading") return null;
 
     return (
       <Transition timeout={150} key={type + message}>
