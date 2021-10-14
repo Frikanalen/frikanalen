@@ -6,7 +6,8 @@ import { VideoCategoryData } from "../types";
 
 export const createNewVideoForm = (categories: VideoCategoryData[], manager: Manager) => {
   const categoryOptions: Option[] = categories.map((c) => ({
-    value: c.id,
+    // FIXME: API expects a string (name) rather than an id
+    value: c.name,
     label: c.name,
   }));
 
@@ -15,8 +16,9 @@ export const createNewVideoForm = (categories: VideoCategoryData[], manager: Man
       name: string().required(),
       header: string(),
       description: string(),
-      category: select({
+      categories: select({
         options: categoryOptions,
+        multiple: true,
         value: [],
       }).required(),
     },

@@ -42,9 +42,9 @@ export class VideoUploadStore extends Store<SerializedVideoUploadStore> {
     const { networkStore } = this.manager.stores;
     const { api } = networkStore;
 
-    const { data: video } = await api.post<VideoData>("/videos/upload", {
+    const { data: video } = await api.post<VideoData>("/videos/", {
       ...form.serialized,
-      organizationId,
+      organization: organizationId,
     });
 
     const { data: token } = await api.post<VideoUploadTokenData>(`/videos/${video.id}/upload_token`);

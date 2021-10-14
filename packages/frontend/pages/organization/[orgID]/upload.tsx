@@ -30,7 +30,7 @@ const StyledForm = styled(Form)`
   align-content: start;
 
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: "name category" "header header" "description description" "footer footer";
+  grid-template-areas: "name categories" "header header" "description description" "footer footer";
   gap: 24px;
 `;
 
@@ -112,8 +112,8 @@ function Upload() {
         <Field area="name" label="Tittel" name="name">
           <ControlledTextInput name="name" />
         </Field>
-        <Field area="category" label="Kategori" name="category">
-          <ControlledDropdownInput name="category" />
+        <Field area="categories" label="Kategori" name="categories">
+          <ControlledDropdownInput name="categories" />
         </Field>
         <Field area="header" label="Underskrift" name="header">
           <ControlledTextInput name="header" />
