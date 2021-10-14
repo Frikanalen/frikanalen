@@ -13,6 +13,7 @@ import { User } from "modules/user/schemas";
 import { Section } from "modules/ui/components/Section";
 import { OrganizationRoleItem } from "modules/user/components/OrganizationRoleItem";
 import { Meta } from "modules/core/components/Meta";
+import { useRouter } from "next/router";
 
 const breakpoint = 800;
 
@@ -60,7 +61,12 @@ const OrganizationSection = styled(Section)`
   }
 `;
 
+const OrganizationList = styled.ul`
+  margin-bottom: 32px;
+`;
+
 function Profile() {
+  const router = useRouter();
   const manager = useManager();
 
   const { authStore, networkStore } = manager.stores;
@@ -102,11 +108,12 @@ function Profile() {
           </FormFooter>
         </FormContainer>
         <OrganizationSection icon="officeBuilding" title="Organisasjoner du er medlem av">
-          <ul>
+          <OrganizationList>
             {user.organizationRoles.map((r) => (
               <OrganizationRoleItem key={r.organizationId} role={r} />
             ))}
-          </ul>
+          </OrganizationList>
+          <GenericButton variant="secondary" label="Ny organisasjon" onClick={() => router.push("/organization/new")} />
         </OrganizationSection>
       </Content>
     </Container>
