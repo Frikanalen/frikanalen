@@ -47,13 +47,13 @@ export class VideoUploadStore extends Store<SerializedVideoUploadStore> {
       organization: organizationId,
     });
 
-    const { data: token } = await api.post<VideoUploadTokenData>(`/videos/${video.id}/upload_token`);
+    const { data: token } = await api.get<VideoUploadTokenData>(`/videos/${video.id}/upload_token`);
 
     this.videoId = video.id;
     this.upload = new FileUpload(
       {
         file,
-        destination: "/upload",
+        destination: "/",
         metadata: {
           origFileName: file.name,
           videoID: video.id,

@@ -1,6 +1,6 @@
 import { observable, computed } from "mobx";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
-import { TUS_CHUNK_SIZE, UPLOAD_RETRY_COUNT } from "../constants";
+import { TUS_CHUNK_SIZE, TUS_RESUMABLE, UPLOAD_RETRY_COUNT } from "../constants";
 import { StoredArray } from "modules/state/classes/StoredArray";
 import { toSafeAsciiString } from "modules/lang/string";
 import { Manager } from "modules/state/types";
@@ -18,6 +18,10 @@ export type FileUploadOptions = {
   file: File;
   destination: string;
   metadata: object;
+};
+
+const TUS_HEADERS = {
+  "Tus-Resumable": TUS_RESUMABLE,
 };
 
 export class FileUpload {
@@ -52,6 +56,7 @@ export class FileUpload {
       ...this.cancelOptions,
       onUploadProgress: this.handleProgress,
       headers: {
+        ...TUS_HEADERS,
         "content-type": "application/offset+octet-stream",
         "upload-offset": String(this.offset),
       },
@@ -85,6 +90,7 @@ export class FileUpload {
     const { size } = this.file;
 
     const headers = {
+      ...TUS_HEADERS,
       "Upload-Length": String(size),
       "Upload-Metadata": `${btoa(JSON.stringify(metadata))}`,
     };
@@ -109,7 +115,7 @@ export class FileUpload {
   }
 
   private async restore(location: string) {
-    const request = this.server.head(location, this.cancelOptions);
+    const request = this.server.head(location, { ...this.cancelOptions, headers: TUS_HEADERS });
 
     try {
       const response = await request;
