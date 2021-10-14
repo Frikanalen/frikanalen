@@ -26,8 +26,8 @@ const getDefaultEmptyStateProps = (error: ErrorType): EmptyStateProps => {
 
 export type CreateResourcePageWrapperOptions<R extends Resource<any>> = {
   getFetcher: (query: NextPageContext["query"], manager: Manager) => ResourceFetcher<R, R["data"]>;
-  onResource?: (resource: R, manager: Manager) => Promise<void>;
   getEmptyStateProps?: (error: ErrorType) => EmptyStateProps;
+  getInitialProps?: (resource: R, context: NextPageContext) => Promise<object | void>;
   renderContent: (resource: R) => JSX.Element;
 };
 
@@ -36,7 +36,7 @@ export type WrapperProps = {
 };
 
 export const createResourcePageWrapper = <R extends Resource<any>>(options: CreateResourcePageWrapperOptions<R>) => {
-  const { getFetcher, renderContent, onResource, getEmptyStateProps = getDefaultEmptyStateProps } = options;
+  const { getFetcher, renderContent, getInitialProps, getEmptyStateProps = getDefaultEmptyStateProps } = options;
 
   function Wrapper(props: WrapperProps) {
     const { query } = props;
@@ -51,20 +51,26 @@ export const createResourcePageWrapper = <R extends Resource<any>>(options: Crea
     const { query, manager, res } = context;
     const fetcher = getFetcher(query, manager);
 
+    let props = { query };
+
     // Only fetch if it hasn't been fetched already
     if (!fetcher.resource && !fetcher.fetching) {
       await fetcher.fetch();
     }
 
-    if (fetcher.resource && onResource) {
-      await onResource(fetcher.resource, manager);
+    if (fetcher.resource && getInitialProps) {
+      const extraProps = await getInitialProps(fetcher.resource, context);
+
+      if (extraProps) {
+        props = { ...extraProps, ...props };
+      }
     }
 
     if (fetcher.error && res) {
       res.statusCode = errorToStatusMap[fetcher.error];
     }
 
-    return { query };
+    return props;
   };
 
   return Wrapper;

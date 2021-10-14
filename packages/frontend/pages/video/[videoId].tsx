@@ -124,7 +124,7 @@ const VideoPage = createResourcePageWrapper<Video>({
     return videoStore.fetchById(safeVideoId);
   },
   renderContent: (v) => <VideoView video={v} />,
-  onResource: async (v) => {
+  getInitialProps: async (v) => {
     await v.latestVideosByOrganization.more();
   },
 });
