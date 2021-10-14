@@ -11,3 +11,15 @@ export type VideoData = {
     largeThumb: string;
   };
 };
+
+export type VideoCategoryData = {
+  id: number;
+  name: string;
+  desc: string;
+  videocount: number;
+};
+
+export type VideoUploadTokenData = {
+  uploadToken: string;
+  uploadUrl: string;
+};
