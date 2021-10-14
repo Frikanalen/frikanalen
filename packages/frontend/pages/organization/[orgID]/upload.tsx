@@ -18,6 +18,8 @@ import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { ProgressBar } from "modules/ui/components/ProgressBar";
 import { InternalLink } from "modules/ui/components/InternalLink";
 
+const breakpoint = 550;
+
 const Container = styled.div``;
 
 const Instruction = styled.h2`
@@ -32,6 +34,11 @@ const StyledForm = styled(Form)`
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "name categories" "header header" "description description" "footer footer";
   gap: 24px;
+
+  @media (max-width: ${breakpoint}px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: "name" "categories" "header" "description" "footer";
+  }
 `;
 
 const FormFooter = styled.div`
