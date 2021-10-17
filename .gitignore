@@ -1,6 +1,6 @@
 *.py[cod]
 packages/fkweb/fkbeta/default.db
-/.idea
+.idea/
 env
 **/.DS_Store
 
