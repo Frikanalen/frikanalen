@@ -46,7 +46,7 @@ def parse_request():
     return json.load(sys.stdin)
 
 
-def validate_request():
+def validate_request(request):
     metadata = request['Upload']['MetaData']
 
     try:
@@ -70,7 +70,7 @@ def validate_request():
 if __name__ == '__main__':
     try:
         request = parse_request()
-        logger.info(request)
+        print(json.dumps(request), indent=2)
         logger = logger.bind(remote_addr=request['HTTPRequest']['RemoteAddr'])
         validate_request(request)
     except TokenValidationException as e:

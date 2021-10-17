@@ -18,6 +18,6 @@ FROM builder
 
 ADD . /srv/frikanalen/
 
-CMD ["gunicorn", "fkweb.wsgi:application", "--bind", "0.0.0.0:8080"]
+CMD ["./start.sh"]
 
 EXPOSE 8080
