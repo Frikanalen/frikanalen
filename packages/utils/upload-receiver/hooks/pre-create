@@ -18,7 +18,7 @@ class TokenValidationException(Exception):
 
 
 def get_token(video_id):
-    """ Obtain the upload token for a given video_id."""
+    """ Obtain the upload token for a given video_id. """
     response = requests.get(f'{FK_API}/videos/{video_id}/upload_token.json',
                             headers={'Authorization': f'Token {FK_TOKEN}'})
 

@@ -11,10 +11,11 @@ from kafka import KafkaProducer
 
 KAFKA_SERVER = os.environ.get('KAFKA_SERVER', None)
 
-
 if KAFKA_SERVER is None:
     KAFKA_SERVER = 'kafka-service.kafka:9092'
-    logger.warning(f"KAFKA_SERVER environment variable not set; defaulting to {KAFKA_SERVER}")
+    logger.warning(
+        f"KAFKA_SERVER environment variable not set; defaulting to {KAFKA_SERVER}"
+    )
 
 
 def read_upload_status():
