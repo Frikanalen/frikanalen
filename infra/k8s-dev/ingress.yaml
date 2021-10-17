@@ -1,6 +1,50 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
+  name: atem-cors
+  namespace: default
+spec:
+  headers:
+    customResponseHeaders:
+      Access-Control-Allow-Origin: "*"
+      Access-Control-Allow-Headers: "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+      Access-Control-Allow-Methods: "POST"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-atem-prefix
+  namespace: default
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/playout/atem
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: atem-control
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`fk.dev.local`) && PathPrefix(`/api/playout/atem/`)
+    kind: Rule
+    middlewares:
+      - name: strip-atem-prefix
+        namespace: default
+      - name: atem-cors
+        namespace: default
+    services:
+    - kind: Service
+      name: atem-control
+      scheme: http
+      port: 8089
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
   name: linkerd-dashboard-host-override
   namespace: linkerd
 spec:
