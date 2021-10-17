@@ -5,6 +5,7 @@ on:
       - master
     paths:
       - 'packages/utils/upload-receiver/**'
+      - '.github/workflows/upload-receiver.yml'
 
 jobs:
   docker:
