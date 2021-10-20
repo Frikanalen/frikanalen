@@ -87,7 +87,7 @@ spec:
     - name: django
       kind: Service
       scheme: http
-      port: 8002
+      port: 80
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -104,7 +104,7 @@ spec:
     - name: django
       kind: Service
       scheme: http
-      port: 8002
+      port: 80
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -121,7 +121,7 @@ spec:
     - name: django
       kind: Service
       scheme: http
-      port: 8002
+      port: 80
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -138,7 +138,7 @@ spec:
     - name: django
       kind: Service
       scheme: http
-      port: 8002
+      port: 80
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
