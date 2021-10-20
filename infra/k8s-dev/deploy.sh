@@ -6,7 +6,7 @@ sudo apt install jq curl pwgen
 
 echo "Enabling required addons"
 
-microk8s enable dns storage traefik linkerd metallb fluentd
+microk8s enable dns storage traefik linkerd metallb fluentd rbac
 
 echo "Customizing traefik to play nice with metallb"
 
