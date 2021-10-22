@@ -17,6 +17,11 @@ import { useObserver } from "mobx-react-lite";
 import { PopoverOverlay } from "modules/popover/components/PopoverOverlay";
 import { IS_SERVER } from "modules/core/constants";
 import { Footer } from "modules/core/components/Footer";
+import { useStaticRendering } from "mobx-react-lite";
+
+// Not a React hook.
+// eslint-disable-next-line react-hooks/rules-of-hooks
+useStaticRendering(IS_SERVER);
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
