@@ -7,4 +7,4 @@ metadata:
   name: frontend
 spec:
   type: ExternalName
-  externalName: 192.168.135.111
+  externalName: 192.168.135.235
