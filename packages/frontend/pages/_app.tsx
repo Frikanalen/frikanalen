@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
+import React, { useState } from "react";
 import type { AppContext, AppProps } from "next/app";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
@@ -33,7 +33,7 @@ export type CustomAppProps = AppProps & { serialized: any };
 export default function CustomApp(props: CustomAppProps) {
   const { Component, pageProps, serialized } = props;
 
-  const manager = getManager(serialized);
+  const [manager] = useState(() => getManager(serialized));
   const locked = useObserver(() => manager.stores.modalStore.hasItems);
 
   return (
