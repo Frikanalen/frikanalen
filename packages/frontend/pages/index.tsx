@@ -100,5 +100,6 @@ Index.getInitialProps = async (context: NextPageContext) => {
   const { scheduleStore } = context.manager.stores;
   await scheduleStore.fetchLatest();
 
-  return {};
+  // Needs to return non empty object to silence error
+  return { _: "" };
 };
