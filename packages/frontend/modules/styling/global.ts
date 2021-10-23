@@ -26,6 +26,7 @@ export const global = (theme: Theme) => css`
   }
 
   body {
+    background: ${theme.color.background};
     overflow-y: scroll;
   }
 
