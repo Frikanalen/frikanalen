@@ -40,7 +40,7 @@ export class NetworkStore extends Store {
 
   public setCookie(key: string, value: string, path = "/") {
     const serialized = cookie.serialize(key, value);
-    const safeValue = `${serialized}; path=${path}; expires=${THE_END_OF_TIMES}`;
+    const safeValue = `${serialized}; path=${path}; expires=${THE_END_OF_TIMES}; samesite=lax`;
 
     if (!IS_SERVER) {
       document.cookie = safeValue;
