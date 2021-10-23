@@ -4,6 +4,7 @@ import { IS_SERVER } from "modules/core/constants";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { NextPageContext } from "next";
 import cookie from "cookie";
+import { THE_END_OF_TIMES } from "../constants";
 
 export class NetworkStore extends Store {
   public incomingHeaders: Record<string, string> = {};
@@ -37,11 +38,12 @@ export class NetworkStore extends Store {
     this.req = req;
   }
 
-  public setCookie(key: string, value: string) {
+  public setCookie(key: string, value: string, path = "/") {
     const serialized = cookie.serialize(key, value);
+    const safeValue = `${serialized}; path=${path}; expires=${THE_END_OF_TIMES}`;
 
     if (!IS_SERVER) {
-      document.cookie = serialized;
+      document.cookie = safeValue;
     }
   }
 
