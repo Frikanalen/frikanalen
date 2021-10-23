@@ -39,9 +39,10 @@ export class NetworkStore extends Store {
 
   public setCookie(key: string, value: string) {
     const serialized = cookie.serialize(key, value);
-    const newCookieString = [...this.cookieString.split("; "), serialized].join("; ");
 
-    this.cookieString = newCookieString;
+    if (!IS_SERVER) {
+      document.cookie = serialized;
+    }
   }
 
   public getCookie(key: string): string | undefined {
@@ -85,12 +86,15 @@ export class NetworkStore extends Store {
   }
 
   public get cookieString() {
-    return IS_SERVER ? (this.req!.headers["Cookie"] as string) ?? "" : document.cookie;
-  }
+    if (this.req && IS_SERVER) {
+      return this.req.headers["cookie"] as string;
+    }
 
-  public set cookieString(v: string) {
-    if (IS_SERVER) return;
-    document.cookie = v;
+    if (!IS_SERVER) {
+      return document.cookie;
+    }
+
+    return "";
   }
 }
 
