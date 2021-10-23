@@ -3,10 +3,12 @@ import configs from "../config";
 import { IS_SERVER } from "modules/core/constants";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { NextPageContext } from "next";
-import Cookies from "js-cookie";
+import cookie from "cookie";
 
 export class NetworkStore extends Store {
   public incomingHeaders: Record<string, string> = {};
+
+  private req: NextPageContext["req"];
   private res: NextPageContext["res"];
 
   private hasCreated = false;
@@ -30,14 +32,27 @@ export class NetworkStore extends Store {
     return instance;
   }
 
-  public setResponseObject(res: NextPageContext["res"]) {
+  public setHTTPObjects(res: NextPageContext["res"], req: NextPageContext["req"]) {
     this.res = res;
+    this.req = req;
+  }
+
+  public setCookie(key: string, value: string) {
+    const serialized = cookie.serialize(key, value);
+    const newCookieString = [...this.cookieString.split("; "), serialized].join("; ");
+
+    this.cookieString = newCookieString;
+  }
+
+  public getCookie(key: string): string | undefined {
+    const parsed = cookie.parse(this.cookieString);
+    return parsed[key];
   }
 
   private createInstances() {
     if (this.hasCreated) return;
 
-    const csrf = IS_SERVER ? undefined : Cookies.get("csrftoken");
+    const csrf = IS_SERVER ? undefined : this.getCookie("csrftoken");
     const headers = IS_SERVER ? this.incomingHeaders : { "X-CSRFToken": csrf };
 
     this.apiInstance = this.addInterceptors(
@@ -67,6 +82,15 @@ export class NetworkStore extends Store {
   public get upload() {
     this.createInstances();
     return this.uploadInstance!;
+  }
+
+  public get cookieString() {
+    return IS_SERVER ? (this.req!.headers["Cookie"] as string) ?? "" : document.cookie;
+  }
+
+  public set cookieString(v: string) {
+    if (IS_SERVER) return;
+    document.cookie = v;
   }
 }
 

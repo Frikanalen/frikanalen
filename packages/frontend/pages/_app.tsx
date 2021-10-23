@@ -80,7 +80,7 @@ CustomApp.getInitialProps = async (appContext: AppContext): Promise<any> => {
       networkStore.incomingHeaders[key] = value;
     }
 
-    networkStore.setResponseObject(res);
+    networkStore.setHTTPObjects(res, req);
   }
 
   if (!manager.didInit) {

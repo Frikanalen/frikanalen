@@ -30,8 +30,8 @@
     "@sentry/tracing": "^6.10.0",
     "axios": "^0.21.1",
     "chokidar": "^3.5.2",
+    "cookie": "^0.4.1",
     "date-fns": "^2.23.0",
-    "js-cookie": "^3.0.0",
     "mobx": "^5.15.7",
     "mobx-react-lite": "^2.2.2",
     "next": "^11.1.1",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.15.8",
-    "@types/js-cookie": "^3.0.0",
+    "@types/cookie": "^0.4.1",
     "@types/react": "^17.0.15",
     "@types/react-dom": "^17.0.9",
     "@types/react-transition-group": "^4.4.3",
