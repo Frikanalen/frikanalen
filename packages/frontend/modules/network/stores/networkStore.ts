@@ -89,7 +89,7 @@ export class NetworkStore extends Store {
 
   public get cookieString() {
     if (this.req && IS_SERVER) {
-      return this.req.headers["cookie"] as string;
+      return (this.req.headers["cookie"] as string) ?? "";
     }
 
     if (!IS_SERVER) {
