@@ -5,9 +5,8 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import "shaka-player/dist/controls.css";
 import { Header } from "modules/core/components/Header";
-import { Global, ThemeProvider } from "@emotion/react";
+import { Global } from "@emotion/react";
 import { global } from "modules/styling/global";
-import { lightTheme } from "modules/styling/themes";
 import { Body } from "modules/core/components/Body";
 import { getManager, ManagerContext } from "modules/state/manager";
 import App from "next/app";
@@ -18,6 +17,7 @@ import { PopoverOverlay } from "modules/popover/components/PopoverOverlay";
 import { IS_SERVER } from "modules/core/constants";
 import { Footer } from "modules/core/components/Footer";
 import { useStaticRendering } from "mobx-react-lite";
+import { ThemeContext } from "modules/styling/components/ThemeContext";
 
 // Not a React hook.
 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -43,7 +43,7 @@ export default function CustomApp(props: CustomAppProps) {
 
   return (
     <ManagerContext.Provider value={manager}>
-      <ThemeProvider theme={lightTheme}>
+      <ThemeContext>
         <ScrollLock locked={locked}>
           {(style) => (
             <div style={style}>
@@ -58,7 +58,7 @@ export default function CustomApp(props: CustomAppProps) {
             </div>
           )}
         </ScrollLock>
-      </ThemeProvider>
+      </ThemeContext>
     </ManagerContext.Provider>
   );
 }
