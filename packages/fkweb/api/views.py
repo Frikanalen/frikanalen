@@ -197,7 +197,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
 
     def get_serializer_class(self):
-        if self.request.method in ['POST', 'PUT']:
+        if hasattr(self.request, 'method') and self.request.method in ['POST', 'PUT']:
             return ScheduleitemModifySerializer
         return ScheduleitemReadSerializer
 
@@ -276,7 +276,7 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Scheduleitem.objects.all()
 
     def get_serializer_class(self):
-        if self.request.method in ['POST', 'PUT']:
+        if hasattr(self.request, 'method') and self.request.method in ['POST', 'PUT']:
             return ScheduleitemModifySerializer
         return ScheduleitemReadSerializer
     permission_classes = (IsInOrganizationOrReadOnly,)
@@ -372,7 +372,7 @@ class VideoList(generics.ListCreateAPIView):
     ]
 
     def get_serializer_class(self):
-        if self.request.method in ['POST', 'PUT', 'PATCH']:
+        if hasattr(self.request, 'method') and self.request.method in ['POST', 'PUT', 'PATCH']:
             return VideoCreateSerializer
         return VideoSerializer
 

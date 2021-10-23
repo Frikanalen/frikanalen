@@ -1,9 +1,11 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
-from django.conf.urls import include
 from django.conf.urls import url
+from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from csp.decorators import csp_exempt
 
 from . import views
 
@@ -39,6 +41,11 @@ urlpatterns = [
         views.OrganizationList.as_view(), name='api-organization-list'),
     url(r'^api/organization/(?P<pk>\d+)$',
         views.OrganizationDetail.as_view(), name='api-organization-detail'),
+
+    # Spectacular API views
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', csp_exempt(SpectacularSwaggerView.as_view(url_name='schema')), name='swagger-ui'),
+    path('api/schema/redoc/', csp_exempt(SpectacularRedocView.as_view(url_name='schema')), name='redoc'),
 ]
 
 urlpatterns += router.urls
