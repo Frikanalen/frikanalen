@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@emotion/react";
 import { useCookie } from "modules/state/hooks/useCookie";
 import React from "react";
-import { lightTheme } from "../themes";
+import { darkTheme, lightTheme } from "../themes";
 
 export type ThemeType = "light" | "dark";
 
@@ -21,7 +21,7 @@ export function ThemeContext(props: React.PropsWithChildren<{}>) {
   const [type, setType] = useCookie<ThemeType>("theme", "light");
 
   return (
-    <ThemeProvider theme={type === "light" ? lightTheme : lightTheme}>
+    <ThemeProvider theme={type === "light" ? lightTheme : darkTheme}>
       <context.Provider value={{ type, toggle: () => setType(type === "light" ? "dark" : "light") }}>
         {children}
       </context.Provider>
