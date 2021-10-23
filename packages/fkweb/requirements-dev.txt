@@ -3,3 +3,5 @@
 psycopg2-binary == 2.8.6
 PyYAML == 5.4
 pylint == 2.10.2
+uritemplate
+drf_spectacular

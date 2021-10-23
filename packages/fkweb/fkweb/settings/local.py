@@ -30,7 +30,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'fkweb',
         'USER': 'fkweb',
-        'PASSWORD': 'phuefiecooshuquoShu3zan6AHoeheu9',
+        'PASSWORD': 'morohbie0XeidaJie4vooshae7jee0Ah',
         'HOST': 'database-api.default.svc.cluster.local',
         'PORT': '',
     }
