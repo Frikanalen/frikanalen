@@ -22,7 +22,7 @@ spec:
           - name: DJANGO_SETTINGS_MODULE
             value: fkweb.settings.production
           - name: ALLOWED_HOSTS
-            value: frikanalen.no,fk.dev.local,forrige.frikanalen.no
+            value: frikanalen.no,fk.dev.local,forrige.frikanalen.no,localhost,django.default.svc.cluster.local
           - name: SMTP_SERVER
             value: smtp.uio.no
           - name: SECRET_KEY
@@ -96,10 +96,6 @@ spec:
   selector:
     app: django
   ports:
-    # Three types of ports for a service
-    # nodePort - a static port assigned on each the node
-    # port - port exposed internally in the cluster
-    # targetPort - the container port to send requests to
     - protocol: TCP
       port: 80
       name: django-web
