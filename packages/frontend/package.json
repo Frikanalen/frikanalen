@@ -19,47 +19,47 @@
   "author": "Tore Sinding Bekkedal",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@babel/core": "^7.14.8",
+    "@babel/core": "^7.15.8",
     "@cycjimmy/jsmpeg-player": "^5.0.1",
     "@emotion/core": "^11.0.0",
-    "@emotion/react": "^11.4.1",
+    "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
-    "@fontsource/roboto": "^4.5.0",
-    "@popperjs/core": "^2.9.3",
-    "@sentry/react": "^6.10.0",
-    "@sentry/tracing": "^6.10.0",
-    "axios": "^0.21.1",
+    "@fontsource/roboto": "^4.5.1",
+    "@popperjs/core": "^2.10.2",
+    "@sentry/react": "^6.13.3",
+    "@sentry/tracing": "^6.13.3",
+    "axios": "^0.23.0",
     "chokidar": "^3.5.2",
     "cookie": "^0.4.1",
-    "date-fns": "^2.23.0",
+    "date-fns": "^2.25.0",
     "mobx": "^5.15.7",
-    "mobx-react-lite": "^2.2.2",
-    "next": "^11.1.1",
+    "mobx-react-lite": "^2.2.1",
+    "next": "^11.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-transition-group": "^4.4.2",
     "react-twitter-widgets": "^1.10.0",
-    "shaka-player": "^3.2.0",
+    "shaka-player": "^3.2.1",
     "shaka-player-react": "^1.0.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.15.8",
     "@types/cookie": "^0.4.1",
-    "@types/react": "^17.0.15",
+    "@types/react": "^17.0.30",
     "@types/react-dom": "^17.0.9",
     "@types/react-transition-group": "^4.4.3",
-    "@typescript-eslint/eslint-plugin": "^4.28.5",
-    "@typescript-eslint/parser": "^4.28.5",
-    "eslint": "^7.32.0",
-    "eslint-config-next": "^11.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-next": "^11.1.2",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-jsx-a11y": "^6.3.0",
-    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4",
-    "lint-staged": "^11.1.1",
-    "prettier": "2.3.2",
-    "typescript": "^4.3.5"
+    "lint-staged": "^11.2.3",
+    "prettier": "2.4.1",
+    "typescript": "^4.4.4"
   },
   "prettier": {
     "printWidth": 120
@@ -73,6 +73,8 @@
     }
   },
   "resolutions": {
-    "chokidar": "^3.4.0"
+    "chokidar": "^3.4.0",
+    "mobx": "5.15.7",
+    "mobx-react-lite": "2.2.2"
   }
 }
