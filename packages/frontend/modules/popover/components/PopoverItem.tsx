@@ -1,6 +1,6 @@
 import { Popover } from "../types/Popover";
 
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { createPopper } from "@popperjs/core";
 import { useObserver } from "mobx-react-lite";
 import styled from "@emotion/styled";
@@ -51,7 +51,7 @@ export function PopoverItem(props: PopoverItemProps) {
     dismiss: () => popoverStore.dismiss(popover.name),
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const { current: element } = ref;
     const { anchor } = popover;
 
@@ -78,3 +78,5 @@ export function PopoverItem(props: PopoverItemProps) {
     </Container>
   ));
 }
+
+export default PopoverItem;

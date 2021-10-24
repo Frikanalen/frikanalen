@@ -1,7 +1,5 @@
-import React, { useEffect, useLayoutEffect } from "react";
-import { useRef } from "react";
+import React from "react";
 import { CSSProperties } from "react";
-import { useWindowEvent } from "../hooks/useWindowEvent";
 
 export type ScrollLockProps = {
   locked: boolean;

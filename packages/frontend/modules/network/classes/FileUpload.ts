@@ -85,6 +85,16 @@ export class FileUpload {
     }
   }
 
+  private encodeMetadata(metadata: Record<string, any>) {
+    let encoded = [];
+
+    for (const key in metadata) {
+      encoded.push(`${key} ${window.btoa(metadata[key])}`);
+    }
+
+    return encoded.join(",");
+  }
+
   private async prepare() {
     const { destination, metadata } = this;
     const { size } = this.file;
@@ -92,7 +102,7 @@ export class FileUpload {
     const headers = {
       ...TUS_HEADERS,
       "Upload-Length": String(size),
-      "Upload-Metadata": `${btoa(JSON.stringify(metadata))}`,
+      "Upload-Metadata": this.encodeMetadata(metadata),
     };
 
     const request = this.server.post<any>(destination, null, {

@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from "react";
-import { PopoverItem } from "./PopoverItem";
 import { useObserver } from "mobx-react-lite";
 import styled from "@emotion/styled";
 import { useStores } from "modules/state/manager";
 import { Transition, TransitionGroup } from "react-transition-group";
+import { PopoverItem } from "./PopoverItem";
 
 const Container = styled.div``;
 
