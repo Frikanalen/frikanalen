@@ -1,7 +1,6 @@
 import datetime
 import random
 import re
-import unittest
 
 from django.test import TestCase
 from django.utils import timezone
@@ -69,20 +68,20 @@ class FillJukeboxUnitTests(TestCase):
     start_date = parse_to_datetime('2019-06-30 12:00')
 
     @classmethod
-    def _video(cls, vid=None, min=60, **kwargs):
-        vid = vid or random.randint(0, 1000)
+    def _video(cls, video_id=None, minutes=60, **kwargs):
+        video_id = video_id or random.randint(0, 1000)
         if 'duration' not in kwargs:
-            kwargs['duration'] =datetime.timedelta(minutes=min)
+            kwargs['duration'] = datetime.timedelta(minutes=minutes)
         return Video(
-                id=vid, name="id:%d, min:%d" % (vid, min),
+                id=video_id, name="id:%d, min:%d" % (video_id, minutes),
                 creator_id=1, organization_id=1,
                 proper_import=True, is_filler=True,
                 **kwargs)
 
     def test_two_videos_fills_time(self):
         videos = [
-            self._video(vid=1, min=2),
-            self._video(vid=2, min=3),
+            self._video(video_id=1, minutes=2),
+            self._video(video_id=2, minutes=3),
         ]
 
         end = self.start_date + datetime.timedelta(minutes=15)
@@ -101,12 +100,12 @@ class FillJukeboxUnitTests(TestCase):
         """
         self.skipTest("This test is not updated to match schedule code")
         videos = [
-            self._video(vid=1, duration=datetime.timedelta(minutes=1, seconds=1)),
-            self._video(vid=2, duration=datetime.timedelta(hours=1)),
-            self._video(vid=3, duration=datetime.timedelta(minutes=0, seconds=50)),
+            self._video(video_id=1, duration=datetime.timedelta(minutes=1, seconds=1)),
+            self._video(video_id=2, duration=datetime.timedelta(hours=1)),
+            self._video(video_id=3, duration=datetime.timedelta(minutes=0, seconds=50)),
         ]
         Scheduleitem.objects.create(
-                video_id=0, # unused
+                video_id=0,  # unused
                 starttime=self.start_date + datetime.timedelta(minutes=2, seconds=27),
                 duration=datetime.timedelta(minutes=1),
                 schedulereason=Scheduleitem.REASON_AUTO,
@@ -127,7 +126,7 @@ class FillJukeboxUnitTests(TestCase):
         self.skipTest("This test is skipped because code has changed")
         # video: fillers that exist and their order, <id>:<length_in_min>m
         # sched: existing, 2m means 2 unused minutes, x means 1m scheduled thing
-        tc = [ # name     video            sched                expect
+        tc = [  # name     video            sched                expect
             ("fill in",  "1:1m",           "2m x 1m",           "1 1 x 1"),
             ("double",   "1:2m 2:1m",      "4m x 2m",           "1 2 2 x 1"),
             ("carry over", "1:2m 2:1m",    "1m x 1m x 2m",      "2 x 2 x 1"),
@@ -145,12 +144,12 @@ class FillJukeboxUnitTests(TestCase):
                 for x in video_str.split(' ')
             ]
             videos = [
-                self._video(vid=int(m.group('id')), min=int(m.group('min')))
+                self._video(video_id=int(m.group('id')), min=int(m.group('min')))
                 for m in video_tok
             ]
 
             sched_tok = [
-                re.match('((?P<existing>x)|((?P<dur>\d)m))', x)
+                re.match(r'((?P<existing>x)|((?P<dur>\d)m))', x)
                 for x in sched_str.split(' ')
             ]
             sched_cur = 0
