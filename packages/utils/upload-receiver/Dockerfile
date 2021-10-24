@@ -2,7 +2,6 @@ FROM tusproject/tusd
 
 USER root
 COPY requirements.txt .
-ENV KAFKA_SERVER kafka-service.kafka:9092
 
 RUN apk add py3-pip
 RUN pip3 install -r requirements.txt
