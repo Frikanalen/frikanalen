@@ -1,7 +1,6 @@
 from .models import Bulletin
 from .serializers import BulletinSerializer
-from api.permissions import IsStaffOrReadOnly
-from django.shortcuts import render
+from api.auth.permissions import IsStaffOrReadOnly
 
 from rest_framework import viewsets
 
