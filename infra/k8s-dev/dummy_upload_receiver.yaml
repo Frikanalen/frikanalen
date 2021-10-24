@@ -1,0 +1,10 @@
+# This file defines a "loopback" ingress point, to a local instance of atem-control.
+# Replace the IP address on the last line with your workstation's IP, and the
+# requests will be routed through the ingress to your box.
+kind: Service
+apiVersion: v1
+metadata:
+  name: upload-receiver
+spec:
+  type: ExternalName
+  externalName: 192.168.135.111
