@@ -197,14 +197,16 @@ class ScheduleitemList(generics.ListCreateAPIView):
             return ScheduleitemModifySerializer
         return ScheduleitemReadSerializer
 
-    def parse_YYYYMMDD_or_today(self, inputDate):
+    @staticmethod
+    def parse_yyyymmdd_or_today(inputDate):
         try:
             return datetime.datetime.strptime(inputDate, '%Y-%m-%d')\
                 .astimezone(pytz.timezone('Europe/Oslo'))
         except (KeyError, ValueError, TypeError):
             return datetime.datetime.now(tz = pytz.timezone('Europe/Oslo'))
 
-    def parse_int_or_7(self, inputDays):
+    @staticmethod
+    def parse_int_or_7(inputDays):
         try:
             return int(inputDays)
         except (KeyError, ValueError, TypeError):
@@ -212,7 +214,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         params = self.request.query_params
-        date = self.parse_YYYYMMDD_or_today(params.get('date', None))
+        date = self.parse_yyyymmdd_or_today(params.get('date', None))
         days = self.parse_int_or_7(params.get('days', None))
 
         # FIXME by_day should be on queryset but need to upgrade
@@ -225,7 +227,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         query_parameters = request.GET
 
-        date = self.parse_YYYYMMDD_or_today(query_parameters.get('date', None))
+        date = self.parse_yyyymmdd_or_today(query_parameters.get('date', None))
         days = self.parse_int_or_7(query_parameters.get('days', None))
 
         # The schedule cache is cleared on save() and delete() in fk/models.py:Scheduleitem
