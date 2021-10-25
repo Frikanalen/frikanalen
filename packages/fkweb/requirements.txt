@@ -13,3 +13,4 @@ python-memcached == 1.59
 requests == 2.24.0
 djangorestframework-camel-case == 1.2.0
 dj-database-url == 0.5.0
+drf-spectacular == 0.20.2
