@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: graphics
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: graphics
+    spec:
+      containers:
+      - name: graphics
+        image: frikanalen/graphics:latest
+        imagePullPolicy: Always
+        ports:
+          - name: web
+            containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: graphics
+spec:
+  type: ClusterIP
+  selector:
+    app: graphics
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web
