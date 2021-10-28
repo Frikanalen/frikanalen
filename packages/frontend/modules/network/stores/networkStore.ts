@@ -56,13 +56,13 @@ export class NetworkStore extends Store {
     if (this.hasCreated) return;
 
     const csrf = IS_SERVER ? undefined : this.getCookie("csrftoken");
-    const headers = IS_SERVER ? this.incomingHeaders : { "X-CSRFToken": csrf };
+    const headers = IS_SERVER ? this.incomingHeaders : { "X-CSRFToken": csrf || "" };
 
     this.apiInstance = this.addInterceptors(
       axios.create({
         baseURL: configs.api,
         withCredentials: true,
-        headers,
+        headers, // FIXME: JUST TO GET BUILD RUNNING
       })
     );
 
