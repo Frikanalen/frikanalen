@@ -42,14 +42,13 @@ class AtemControl {
   }
 
   async run() {
-    if (this.atemHost) await this.atem.connect(this.atemHost);
+    if (this.atemHost) {
+      logger.info(`Connecting to ATEM at ${this.atemHost}`);
+      await this.atem.connect(this.atemHost);
+    }
 
     this.app.use(cookieParser());
     this.app.use(bodyParser.json());
-
-    this.app.listen(this.listenPort, () => {
-      logger.info(`Server listening on port ${this.listenPort}...`);
-    });
 
     this.app.get("/program", (req, res) => {
       res.send({ inputIndex: this.atem.ME[0].input });
@@ -79,6 +78,10 @@ class AtemControl {
       await this.atem.ME[0].setInput(inputIndex);
       res.send({ inputIndex: this.atem.ME[0].input });
     });
+
+    this.app.listen(this.listenPort, () => {
+      logger.info(`Server listening on port ${this.listenPort}...`);
+    });
   }
 }
 
@@ -100,6 +103,7 @@ const main = async () => {
     listenPort: getListenPort(),
     atemHost: ATEM_HOST,
   });
+  logger.info(`atem control service starting...`);
   try {
     if (ATEM_HOST === undefined) {
       logger.warn("ATEM_HOST environment not set; operating in dummy mode!");
@@ -107,7 +111,7 @@ const main = async () => {
 
     await atem.run();
   } catch (e) {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   }
 };
