@@ -96,14 +96,18 @@ export default function Playout(props: PlayoutProps) {
   );
 }
 
-Playout.getInitialProps = async (/* context: NextPageContext */) => {
-  // const { manager } = context;
-  // const { networkStore } = manager.stores;
-  // const { api } = networkStore;
+Playout.getInitialProps = async (context: NextPageContext) => {
+  const { manager } = context;
+  const { networkStore } = manager.stores;
+  const { api } = networkStore;
 
   // FIXME: https://github.com/Frikanalen/frikanalen/issues/245
-  // const { data } = await api.get<{ inputIndex: number }>("/playout/atem/program");
-  // const { inputIndex } = data;
+  try {
+    const { data } = await api.get<{ inputIndex: number }>("/playout/atem/program");
+    const { inputIndex } = data;
 
-  return { initialIndex: 0 };
+    return { initialIndex: inputIndex };
+  } catch {
+    return { initialIndex: 0 };
+  }
 };
