@@ -10,7 +10,8 @@
   "homepage": "https://frikanalen.no/",
   "main": "index.js",
   "scripts": {
-    "dev": "NEXT_PUBLIC_ENV=devcluster next",
+    "dev": "NEXT_PUBLIC_ENV=development next",
+    "devcluster": "NEXT_PUBLIC_ENV=devcluster next",
     "staging": "NEXT_PUBLIC_ENV=staging next",
     "build": "next build",
     "start": "next start"
