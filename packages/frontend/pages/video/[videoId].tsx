@@ -8,7 +8,6 @@ import Link from "next/link";
 import React from "react";
 import { useResourceList } from "modules/state/hooks/useResourceList";
 import { useStores } from "modules/state/manager";
-import { ListTail } from "modules/state/components/ListTail";
 import { RecentVideoItem } from "../../modules/video/components/RecentVideoItem";
 import { Meta } from "modules/core/components/Meta";
 
@@ -109,7 +108,6 @@ function VideoView(props: ContentProps) {
         {videos.map((x) => (
           <RecentVideoItem key={x.data.id} video={x} />
         ))}
-        <ListTail list={video.latestVideosByOrganization} />
       </Sidebar>
     </Container>
   );
