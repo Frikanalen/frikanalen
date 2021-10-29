@@ -44,6 +44,7 @@ class AtemControl {
     if (this.atemHost) {
       logger.info(`Connecting to ATEM at ${this.atemHost}`);
       await this.atem.connect(this.atemHost);
+        console.log('asdf')
     }
 
     this.app.use(cookieParser());
