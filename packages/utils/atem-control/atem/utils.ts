@@ -10,10 +10,14 @@ import { MULTI_VIEWER_INPUT } from "../server";
 export const applyInitialConfiguration = async (atem: Atem) => {
   const afv = AudioMixOption.AudioFollowVideo;
 
-  await atem.setAudioMixerInputProps(1, { mixOption: afv });
-  await atem.setAudioMixerInputProps(2, { mixOption: afv });
-  await atem.setAudioMixerInputProps(3, { mixOption: afv });
-  await atem.setAudioMixerInputProps(4, { mixOption: afv });
-
+  try {
+    await atem.setAudioMixerInputProps(1, { mixOption: afv });
+    await atem.setAudioMixerInputProps(2, { mixOption: afv });
+    await atem.setAudioMixerInputProps(3, { mixOption: afv });
+    await atem.setAudioMixerInputProps(4, { mixOption: afv });
+  } catch (e) {
+    console.log("got exception while setting audio mixer input props");
+    console.log(e);
+  }
   await atem.setAuxSource(MULTI_VIEWER_INPUT, 2);
 };

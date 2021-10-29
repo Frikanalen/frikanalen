@@ -13,7 +13,6 @@ import { MockAtem } from "./atem/MockAtem";
 const logger = getLogger();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-
 const ATEM_HOST = process.env.ATEM_HOST || undefined;
 export const FK_API_URL = process.env.FK_API_URL || "https://frikanalen.no/api";
 
