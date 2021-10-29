@@ -1,4 +1,4 @@
-import { startOfDay } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import { computed, observable } from "mobx";
 import { ARTIFICIAL_DELAY } from "modules/core/constants";
 import { wait } from "modules/lang/async";
@@ -61,7 +61,7 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
       await api.get<ApiCollection<ScheduleItemData>>("/scheduleitems", {
         params: {
           days: 1,
-          date: date.toISOString(),
+          date: format(date, "yyyy-M-d"),
         },
       }),
       wait(ARTIFICIAL_DELAY),
