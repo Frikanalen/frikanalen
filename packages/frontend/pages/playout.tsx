@@ -102,13 +102,8 @@ Playout.getInitialProps = async (context: NextPageContext) => {
   const { networkStore } = manager.stores;
   const { api } = networkStore;
 
-  // FIXME: https://github.com/Frikanalen/frikanalen/issues/245
-  try {
-    const { data } = await api.get<{ inputIndex: number }>("/playout/atem/program");
-    const { inputIndex } = data;
+  const { data } = await api.get<{ inputIndex: number }>("/playout/atem/program");
+  const { inputIndex } = data;
 
-    return { initialIndex: inputIndex };
-  } catch {
-    return { initialIndex: 0 };
-  }
+  return { initialIndex: inputIndex };
 };
