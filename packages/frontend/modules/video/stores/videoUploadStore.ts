@@ -3,7 +3,7 @@ import { ApiCollection } from "modules/network/types";
 import { VideoCategoryData, VideoData, VideoUploadTokenData } from "../types";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { createNewVideoForm, NewVideoForm } from "../forms/createNewVideoForm";
-import { observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 
 export type SerializedVideoUploadStore = {
   categories: VideoCategoryData[];
@@ -11,8 +11,8 @@ export type SerializedVideoUploadStore = {
 };
 
 export class VideoUploadStore extends Store<SerializedVideoUploadStore> {
-  @observable public file?: File;
-  @observable public upload?: FileUpload;
+  public file?: File;
+  public upload?: FileUpload;
 
   public form!: NewVideoForm;
 
@@ -20,6 +20,19 @@ export class VideoUploadStore extends Store<SerializedVideoUploadStore> {
   public videoId = 0;
 
   public categories: VideoCategoryData[] = [];
+
+  public make() {
+    makeObservable(this, {
+      file: observable,
+      upload: observable,
+
+      fetchCategories: action,
+      start: action,
+      cancel: action,
+      prepare: action,
+      hydrate: action,
+    });
+  }
 
   public async fetchCategories() {
     // Don't refetch categories

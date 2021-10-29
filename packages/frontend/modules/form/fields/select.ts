@@ -1,5 +1,5 @@
 import { ObservableFormField, ObservableFormFieldOptions } from "../classes/ObservableFormField";
-import { computed } from "mobx";
+import { makeObservable, override } from "mobx";
 
 export type Option = {
   label: string;
@@ -20,9 +20,12 @@ export class ObservableSelectField<T = any> extends ObservableFormField<T[], T[]
 
     this.options = options.options;
     this.multiple = options.multiple ?? false;
+
+    makeObservable(this, {
+      serializedValue: override,
+    });
   }
 
-  @computed
   public get serializedValue() {
     if (this.multiple) return this.value;
     return this.value[0];

@@ -2,12 +2,12 @@ import { Popover } from "../types/Popover";
 
 import React, { useEffect, useRef } from "react";
 import { createPopper } from "@popperjs/core";
-import { useObserver } from "mobx-react-lite";
 import styled from "@emotion/styled";
 import { useStores } from "modules/state/manager";
 import { popoverContext, PopoverContext } from "../contexts";
 import { TransitionStatus } from "react-transition-group";
 import { css, keyframes } from "@emotion/react";
+import { Observer } from "mobx-react-lite";
 
 export type PopoverItemProps = {
   transitionStatus: TransitionStatus;
@@ -72,11 +72,15 @@ export function PopoverItem(props: PopoverItemProps) {
     return () => popper.destroy();
   });
 
-  return useObserver(() => (
-    <Container status={transitionStatus} ref={ref}>
-      <popoverContext.Provider value={context}>{popover.render()}</popoverContext.Provider>
-    </Container>
-  ));
+  return (
+    <Observer>
+      {() => (
+        <Container status={transitionStatus} ref={ref}>
+          <popoverContext.Provider value={context}>{popover.render()}</popoverContext.Provider>
+        </Container>
+      )}
+    </Observer>
+  );
 }
 
 export default PopoverItem;

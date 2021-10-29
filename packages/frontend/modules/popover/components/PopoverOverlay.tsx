@@ -1,17 +1,17 @@
 import React, { useRef, useEffect } from "react";
-import { useObserver } from "mobx-react-lite";
 import styled from "@emotion/styled";
 import { useStores } from "modules/state/manager";
 import { Transition, TransitionGroup } from "react-transition-group";
 import { PopoverItem } from "./PopoverItem";
+import { observer } from "mobx-react-lite";
 
 const Container = styled.div``;
 
-export function PopoverOverlay() {
+export const PopoverOverlay = observer(() => {
   const { popoverStore } = useStores();
   const ref = useRef<HTMLDivElement>(null);
 
-  const popoversCount = useObserver(() => popoverStore.popovers.length);
+  const popoversCount = popoverStore.popovers.length;
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -33,7 +33,7 @@ export function PopoverOverlay() {
     return () => window.removeEventListener("click", handleClick);
   }, [popoversCount, popoverStore]);
 
-  return useObserver(() => (
+  return (
     <Container ref={ref}>
       <TransitionGroup>
         {popoverStore.popovers.map((popover) => (
@@ -43,5 +43,5 @@ export function PopoverOverlay() {
         ))}
       </TransitionGroup>
     </Container>
-  ));
-}
+  );
+});

@@ -1,6 +1,9 @@
 import styled from "@emotion/styled";
-import { useObserver } from "mobx-react-lite";
-import { RequireAuthentication } from "modules/auth/components/RequireAuthentication";
+import { observer } from "mobx-react-lite";
+import {
+  getInitialRequireAuthenticationProps,
+  RequireAuthentication,
+} from "modules/auth/components/RequireAuthentication";
 import { Meta } from "modules/core/components/Meta";
 import { Form } from "modules/form/components/Form";
 import { FormField, FormFieldWithProps } from "modules/form/components/FormField";
@@ -71,7 +74,7 @@ const Field = styled(FormField as FormFieldWithProps<{ area: string }>)`
   grid-area: ${(props) => props.area};
 `;
 
-function Content() {
+const Content = observer(() => {
   const router = useRouter();
   const manager = useManager();
 
@@ -82,7 +85,7 @@ function Content() {
 
   const [status, setStatus] = useStatusLine();
 
-  const organizationNumber = useObserver(() => form.fields.orgnr.value);
+  const organizationNumber = form.fields.orgnr.value;
 
   useEffect(() => {
     const doFetch = async () => {
@@ -177,7 +180,7 @@ function Content() {
       </Container>
     </Form>
   );
-}
+});
 
 export default function NewOrganization() {
   return (
@@ -187,4 +190,4 @@ export default function NewOrganization() {
   );
 }
 
-NewOrganization.getInitialProps = RequireAuthentication.getInitialProps;
+NewOrganization.getInitialProps = getInitialRequireAuthenticationProps;

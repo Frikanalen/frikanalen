@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useObserver } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { AspectContainer } from "modules/core/components/AspectContainer";
 import { Form } from "modules/form/components/Form";
 import { FormField } from "modules/form/components/FormField";
@@ -33,7 +33,7 @@ export type TextSlideModalProps = {
   form: TextSlideForm;
 };
 
-export function TextSlideModal(props: TextSlideModalProps) {
+export const TextSlideModal = observer((props: TextSlideModalProps) => {
   const { form } = props;
   const { heading, text } = form.fields;
 
@@ -47,12 +47,9 @@ export function TextSlideModal(props: TextSlideModalProps) {
     modal.dismiss();
   });
 
-  const previewURL = useObserver(
-    () =>
-      `${STILLS_GENERATOR_URL}/poster/preview?text=${encodeURIComponent(text.value)}&heading=${encodeURIComponent(
-        heading.value
-      )}`
-  );
+  const previewURL = `${STILLS_GENERATOR_URL}/poster/preview?text=${encodeURIComponent(
+    text.value
+  )}&heading=${encodeURIComponent(heading.value)}`;
 
   return (
     <Container>
@@ -79,4 +76,4 @@ export function TextSlideModal(props: TextSlideModalProps) {
       </PrimaryModal.Footer>
     </Container>
   );
-}
+});

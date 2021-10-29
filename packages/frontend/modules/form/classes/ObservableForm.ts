@@ -1,5 +1,5 @@
 import { ObservableFormField } from "./ObservableFormField";
-import { computed } from "mobx";
+import { computed, makeObservable } from "mobx";
 import { ObservableFieldList } from "../fields/fieldList";
 import { ObservableFieldObject } from "../fields/fieldObject";
 import { checkIfFieldIsReady } from "../helpers/checkIfFieldIsReady";
@@ -14,10 +14,15 @@ export type FieldsType = {
 
 export class ObservableForm<F extends FieldsType> {
   public constructor(public fields: F, manager: Manager) {
+    makeObservable(this, {
+      serialized: computed,
+      ready: computed,
+      valid: computed,
+    });
+
     Object.values(fields).map((f) => f.setManager(manager));
   }
 
-  @computed
   public get serialized() {
     const result: any = {};
 
@@ -28,7 +33,6 @@ export class ObservableForm<F extends FieldsType> {
     return result;
   }
 
-  @computed
   public get ready() {
     for (const field of Object.values(this.fields)) {
       const ready = checkIfFieldIsReady(field);
@@ -41,7 +45,6 @@ export class ObservableForm<F extends FieldsType> {
     return true;
   }
 
-  @computed
   public get valid() {
     for (const field of Object.values(this.fields)) {
       const meta = checkFieldMeta(field);

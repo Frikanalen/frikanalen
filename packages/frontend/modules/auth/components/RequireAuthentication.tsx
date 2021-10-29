@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useObserver } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { Meta } from "modules/core/components/Meta";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
@@ -35,12 +35,12 @@ const Icon = styled(SVGIcon)`
   margin-bottom: 32px;
 `;
 
-export function RequireAuthentication(props: { children: JSX.Element }) {
+export const RequireAuthentication = observer((props: { children: JSX.Element }) => {
   const { children } = props;
   const manager = useManager();
 
   const { authStore } = manager.stores;
-  const isAuthenticated = useObserver(() => authStore.isAuthenticated);
+  const { isAuthenticated } = authStore;
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -64,9 +64,9 @@ export function RequireAuthentication(props: { children: JSX.Element }) {
       <GenericButton variant="primary" onClick={() => spawnLoginModal(manager)} label="Logg inn" />
     </Container>
   );
-}
+});
 
-RequireAuthentication.getInitialProps = async (context: NextPageContext) => {
+export const getInitialRequireAuthenticationProps = async (context: NextPageContext) => {
   const { res, manager } = context;
   const { authStore } = manager.stores;
 

@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { computed, observable } from "mobx";
+import { computed, observable, makeObservable } from "mobx";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { User } from "modules/user/schemas";
 
@@ -8,7 +8,14 @@ export type SerializedAuthStore = {
 };
 
 export class AuthStore extends Store<SerializedAuthStore> {
-  @observable user?: User;
+  public user?: User;
+
+  public make() {
+    makeObservable(this, {
+      user: observable,
+      isAuthenticated: computed,
+    });
+  }
 
   public serialize() {
     return { user: this.user };
@@ -48,7 +55,6 @@ export class AuthStore extends Store<SerializedAuthStore> {
     } catch (e) {}
   }
 
-  @computed
   public get isAuthenticated() {
     return !!this.user;
   }

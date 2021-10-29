@@ -1,5 +1,5 @@
 import { createStoreFactory, Store } from "modules/state/classes/Store";
-import { observable, computed } from "mobx";
+import { observable, computed, makeObservable, action } from "mobx";
 
 export type ModalItem = {
   key: string;
@@ -10,7 +10,16 @@ export type ModalItem = {
 };
 
 export class ModalStore extends Store {
-  @observable public items: ModalItem[] = [];
+  public items: ModalItem[] = [];
+
+  public make() {
+    makeObservable(this, {
+      items: observable,
+      spawn: action,
+      dismiss: action,
+      hasItems: computed,
+    });
+  }
 
   public spawn(item: ModalItem) {
     const existingItem = this.getByKey(item.key);
@@ -45,7 +54,6 @@ export class ModalStore extends Store {
     return this.items.find((x) => x.key === key);
   }
 
-  @computed
   public get hasItems() {
     return this.items.filter((x) => x.visible).length > 0;
   }

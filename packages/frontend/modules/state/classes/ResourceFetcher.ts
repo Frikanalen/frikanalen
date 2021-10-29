@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { ErrorType, interpretError } from "../helpers/interpretError";
 import { Manager } from "../types";
 import { Resource, ResourceFactory } from "./Resource";
@@ -17,12 +17,20 @@ export type ResourceFetcherOptions<R extends Resource<D>, D> = {
 };
 
 export class ResourceFetcher<R extends Resource<D>, D> {
-  @observable public fetching = false;
-  @observable public error?: ErrorType;
+  public fetching = false;
+  public error?: ErrorType;
+  public resource?: R;
 
-  @observable public resource?: R;
+  public constructor(private options: ResourceFetcherOptions<R, D>) {
+    makeObservable(this, {
+      fetching: observable,
+      error: observable,
+      resource: observable,
 
-  public constructor(private options: ResourceFetcherOptions<R, D>) {}
+      populate: action,
+      fetch: action,
+    });
+  }
 
   public populate(data: D) {
     const { resource, options } = this;

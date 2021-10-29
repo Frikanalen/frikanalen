@@ -1,4 +1,4 @@
-import { computed, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import { Field } from "../classes/ObservableForm";
 import { checkIfFieldIsReady } from "../helpers/checkIfFieldIsReady";
 import { ValidatorList } from "../classes/ValidatorList";
@@ -19,9 +19,9 @@ export class ObservableFieldList<F extends Field> {
   protected manager!: Manager;
   protected validators: ValidatorList<F[]>;
 
-  @observable public fields: F[];
-  @observable public touched = false;
-  @observable public dirty = false;
+  public fields: F[];
+  public touched = false;
+  public dirty = false;
 
   private create: () => F;
 
@@ -29,6 +29,25 @@ export class ObservableFieldList<F extends Field> {
   public max: number;
 
   public constructor(options: ObservableFieldListOptions<F>) {
+    makeObservable(this, {
+      add: action,
+      remove: action,
+      destroy: action,
+      setManager: action,
+      move: action,
+      validate: action,
+      touch: action,
+      reset: action,
+
+      dirty: observable,
+      touched: observable,
+      fields: observable,
+
+      error: computed,
+      serializedValue: computed,
+      ready: computed,
+    });
+
     this.fields = options.fields ?? [];
     this.create = () => options.create();
 
@@ -115,17 +134,14 @@ export class ObservableFieldList<F extends Field> {
     }
   }
 
-  @computed
   public get error() {
     return this.validators.error;
   }
 
-  @computed
   public get serializedValue(): any[] {
     return this.fields.map((x) => x.serializedValue);
   }
 
-  @computed
   public get ready() {
     for (const field of this.fields) {
       const ready = checkIfFieldIsReady(field);

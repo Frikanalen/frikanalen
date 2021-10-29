@@ -2,9 +2,9 @@ import React from "react";
 import { SwitchTransition, Transition } from "react-transition-group";
 import { TransitionStatus } from "react-transition-group/Transition";
 import { useField } from "../hooks/useField";
-import { useObserver } from "mobx-react-lite";
 import { css, keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
+import { observer } from "mobx-react-lite";
 
 export type FieldErrorProps = {
   name: string;
@@ -61,16 +61,16 @@ const Error = styled.span<{ status: TransitionStatus }>`
   }}
 `;
 
-export function FieldError(props: FieldErrorProps) {
+export const FieldError = observer((props: FieldErrorProps) => {
   const field = useField(props.name);
 
-  const meta = useObserver(() => ({
+  const meta = {
     error: field.error,
     touched: field.touched,
     dirty: field.dirty,
-  }));
+  };
 
-  const hasError = useObserver(() => !!(meta.error && meta.touched && meta.dirty));
+  const hasError = !!(meta.error && meta.touched && meta.dirty);
 
   const renderError = () => {
     if (hasError) {
@@ -93,4 +93,4 @@ export function FieldError(props: FieldErrorProps) {
       <SwitchTransition>{renderError()}</SwitchTransition>
     </Container>
   );
-}
+});

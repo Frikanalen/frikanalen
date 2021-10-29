@@ -1,9 +1,18 @@
-import { observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { createStoreFactory, Store } from "modules/state/classes/Store";
 import { Popover } from "../types/Popover";
 
 export class PopoverStore extends Store {
-  @observable public popovers: Popover[] = [];
+  public popovers: Popover[] = [];
+
+  public make() {
+    makeObservable(this, {
+      popovers: observable,
+      spawn: action,
+      update: action,
+      dismiss: action,
+    });
+  }
 
   public spawn(popover: Popover) {
     this.popovers.push(popover);

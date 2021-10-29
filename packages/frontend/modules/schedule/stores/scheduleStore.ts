@@ -1,5 +1,5 @@
 import { format, startOfDay } from "date-fns";
-import { computed, observable } from "mobx";
+import { computed, makeObservable, observable } from "mobx";
 import { ARTIFICIAL_DELAY } from "modules/core/constants";
 import { wait } from "modules/lang/async";
 import { ApiCollection } from "modules/network/types";
@@ -15,6 +15,16 @@ export type SerializedScheduleStore = {
 };
 
 export class ScheduleStore extends Store<SerializedScheduleStore> {
+  public make() {
+    makeObservable(this, {
+      selectedDate: observable,
+      itemsByDate: observable,
+      latestItems: observable,
+      selectedDateItems: computed,
+      upcoming: computed,
+    });
+  }
+
   private store = new ResourceStore({
     manager: this.manager,
     getId: (d: ScheduleItemData) => d.id,
@@ -28,10 +38,9 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
     },
   });
 
-  @observable public selectedDate = startOfDay(new Date());
-
-  @observable public itemsByDate: Record<string, number[]> = {};
-  @observable public latestItems: number[] = [];
+  public selectedDate = startOfDay(new Date());
+  public itemsByDate: Record<string, number[]> = {};
+  public latestItems: number[] = [];
 
   public async fetchLatest() {
     const { networkStore } = this.manager.stores;
@@ -84,12 +93,10 @@ export class ScheduleStore extends Store<SerializedScheduleStore> {
     this.store.hydrate(data.store);
   }
 
-  @computed
   public get selectedDateItems() {
     return (this.itemsByDate[this.selectedDate.toISOString()] ?? []).map((id) => this.store.getResourceById(id));
   }
 
-  @computed
   public get upcoming() {
     return this.latestItems
       .map((id) => this.store.getResourceById(id))

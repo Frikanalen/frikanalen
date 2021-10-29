@@ -10,7 +10,10 @@ export class StoreManager<T extends Record<string, Store>> {
     }
   ) {
     for (const [name, creator] of Object.entries(instantiators)) {
-      this.stores[name as keyof T] = creator(this);
+      const store = creator(this);
+      store.make();
+
+      this.stores[name as keyof T] = store;
     }
   }
 

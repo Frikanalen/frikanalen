@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useObserver } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { Meta } from "modules/core/components/Meta";
 import { CalendarInput } from "modules/input/components/CalendarInput";
 import { ScheduleTimelineItem } from "modules/schedule/components/ScheduleTimelineItem";
@@ -55,11 +55,9 @@ const SpinnerContainer = styled.div`
   height: calc(100vh - 400px);
 `;
 
-export default function Schedule() {
+function Schedule() {
   const { scheduleStore } = useStores();
-
-  const selectedDate = useObserver(() => scheduleStore.selectedDate);
-  const selectedDateItems = useObserver(() => scheduleStore.selectedDateItems);
+  const { selectedDate, selectedDateItems } = scheduleStore;
 
   const handleSelect = (date: Date) => {
     scheduleStore.selectedDate = date;
@@ -104,3 +102,5 @@ Schedule.getInitialProps = async (context: NextPageContext) => {
 
   return {};
 };
+
+export default observer(Schedule);

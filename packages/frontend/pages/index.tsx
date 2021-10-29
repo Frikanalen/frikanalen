@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useObserver } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { Meta } from "modules/core/components/Meta";
 import { ScheduleItemBlurb } from "modules/schedule/components/ScheduleItemBlurb";
 import { ScheduleItemSummary } from "modules/schedule/components/ScheduleItemSummary";
@@ -49,10 +49,9 @@ const Schedule = styled.div`
   margin-top: 16px;
 `;
 
-export default function Index() {
+function Index() {
   const { scheduleStore } = useStores();
-
-  const [now, ...later] = useObserver(() => scheduleStore.upcoming);
+  const [now, ...later] = scheduleStore.upcoming;
 
   const renderSchedule = () => {
     if (!now) return null;
@@ -103,3 +102,5 @@ Index.getInitialProps = async (context: NextPageContext) => {
   // Needs to return non empty object to silence error
   return { _: "" };
 };
+
+export default observer(Index);

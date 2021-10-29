@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { Manager } from "../types";
 import { Resource } from "./Resource";
 import { FetchData, ResourceFetcher, SerializedResourceFetcher } from "./ResourceFetcher";
@@ -15,9 +15,13 @@ export type SerializedResourceStore<D> = {
 };
 
 export class ResourceStore<R extends Resource<D>, D> {
-  @observable private items: Record<number, ResourceFetcher<R, D>> = {};
+  private items: Record<number, ResourceFetcher<R, D>> = {};
 
-  constructor(private options: ResourceStoreOptions<R, D>) {}
+  constructor(private options: ResourceStoreOptions<R, D>) {
+    makeObservable<ResourceStore<R, D>, "items">(this, {
+      items: observable,
+    });
+  }
 
   public getOrCreateById(id: number, fetchData: () => Promise<D>) {
     const { manager, createFetcher } = this.options;

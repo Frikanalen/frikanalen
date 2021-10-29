@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 
 export type ListStatus = "idle" | "fetching" | "failed";
 
@@ -32,9 +32,9 @@ export type SerializedInfiniteList<T, P extends object> = {
 };
 
 export class List<T, P extends object> {
-  @observable public status: ListStatus = "idle";
-  @observable public items: T[] = [];
-  @observable public hasMore = true;
+  public status: ListStatus = "idle";
+  public items: T[] = [];
+  public hasMore = true;
 
   private limit: number;
   private offset: number;
@@ -48,6 +48,14 @@ export class List<T, P extends object> {
     this.params = initialParams;
     this.limit = limit;
     this.fetch = fetch;
+
+    makeObservable(this, {
+      status: observable,
+      items: observable,
+      hasMore: observable,
+
+      more: action,
+    });
   }
 
   public async more() {

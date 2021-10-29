@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useObserver } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { spawnLoginModal } from "modules/auth/helpers/spawnLoginModal";
 import { useManager } from "modules/state/manager";
 import { GenericButton } from "modules/ui/components/GenericButton";
@@ -12,11 +12,11 @@ const Container = styled.div`
   flex: 1;
 `;
 
-export function HeaderAuthBar() {
+export const HeaderAuthBar = observer(() => {
   const manager = useManager();
-  const { authStore } = manager.stores;
 
-  const isAuthenticated = useObserver(() => authStore.isAuthenticated);
+  const { authStore } = manager.stores;
+  const { isAuthenticated } = authStore;
 
   const renderUnauthenticated = () => {
     return <GenericButton variant="primary" onClick={() => spawnLoginModal(manager)} label="Logg inn" />;
@@ -29,4 +29,4 @@ export function HeaderAuthBar() {
   };
 
   return <Container>{isAuthenticated ? renderAuthenticated() : renderUnauthenticated()}</Container>;
-}
+});

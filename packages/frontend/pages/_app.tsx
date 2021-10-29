@@ -12,16 +12,15 @@ import { getManager, ManagerContext } from "modules/state/manager";
 import App from "next/app";
 import { ModalOverlay } from "modules/modal/components/ModalOverlay";
 import { ScrollLock } from "modules/ui/components/ScrollLock";
-import { useObserver } from "mobx-react-lite";
 import { PopoverOverlay } from "modules/popover/components/PopoverOverlay";
 import { IS_SERVER } from "modules/core/constants";
 import { Footer } from "modules/core/components/Footer";
-import { useStaticRendering } from "mobx-react-lite";
+import { enableStaticRendering, observer } from "mobx-react-lite";
 import { ThemeContext } from "modules/styling/components/ThemeContext";
 
 // Not a React hook.
 // eslint-disable-next-line react-hooks/rules-of-hooks
-useStaticRendering(IS_SERVER);
+enableStaticRendering(IS_SERVER);
 
 Sentry.init({
   dsn: "https://41ab0b4801094dfd8ecd84eafc947380@o310671.ingest.sentry.io/5701229",
@@ -35,11 +34,11 @@ Sentry.init({
 
 export type CustomAppProps = AppProps & { serialized: any };
 
-export default function CustomApp(props: CustomAppProps) {
+function CustomApp(props: CustomAppProps) {
   const { Component, pageProps, serialized } = props;
 
   const [manager] = useState(() => getManager(serialized));
-  const locked = useObserver(() => manager.stores.modalStore.hasItems);
+  const locked = manager.stores.modalStore.hasItems;
 
   return (
     <ManagerContext.Provider value={manager}>
@@ -95,3 +94,5 @@ CustomApp.getInitialProps = async (appContext: AppContext): Promise<any> => {
 
   return { ...appProps, serialized };
 };
+
+export default observer(CustomApp);

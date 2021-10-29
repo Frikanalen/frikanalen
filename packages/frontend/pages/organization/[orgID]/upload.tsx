@@ -6,10 +6,13 @@ import { ControlledTextInput } from "modules/input/components/ControlledTextInpu
 import { Organization } from "modules/organization/resources/Organization";
 import { createResourcePageWrapper } from "modules/state/helpers/createResourcePageWrapper";
 import { useStores } from "modules/state/manager";
-import { useObserver } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { FileInput } from "modules/input/components/FileInput";
 import { css } from "@emotion/react";
-import { RequireAuthentication } from "modules/auth/components/RequireAuthentication";
+import {
+  getInitialRequireAuthenticationProps,
+  RequireAuthentication,
+} from "modules/auth/components/RequireAuthentication";
 import { ControlledDropdownInput } from "modules/input/components/ControlledDropdownInput";
 import { StatusLine } from "modules/ui/components/StatusLine";
 import { GenericButton } from "modules/ui/components/GenericButton";
@@ -75,18 +78,15 @@ const UploadFooter = styled.div`
   justify-content: space-between;
 `;
 
-function Upload() {
+const Upload = observer(() => {
   const { videoUploadStore, organizationStore } = useStores();
 
   const { form, organizationId, videoId } = videoUploadStore;
   const organization = organizationStore.getResourceById(organizationId);
 
-  const { file, upload, progress, uploadStatus } = useObserver(() => ({
-    file: videoUploadStore.file,
-    upload: videoUploadStore.upload,
-    progress: videoUploadStore.upload?.progress || 0,
-    uploadStatus: videoUploadStore.upload?.status || "idle",
-  }));
+  const { file, upload } = videoUploadStore;
+  const progress = upload?.progress || 0;
+  const uploadStatus = upload?.status || "idle";
 
   const renderStatusText = () => {
     if (uploadStatus === "idle") return "Venter...";
@@ -158,7 +158,7 @@ function Upload() {
       {renderUpload()}
     </Container>
   );
-}
+});
 
 const UploadPage = createResourcePageWrapper<Organization>({
   getFetcher: (query, manager) => {
@@ -178,7 +178,7 @@ const UploadPage = createResourcePageWrapper<Organization>({
     const { videoUploadStore } = manager.stores;
 
     await videoUploadStore.prepare(o.data.id);
-    await RequireAuthentication.getInitialProps(context);
+    await getInitialRequireAuthenticationProps(context);
   },
 });
 

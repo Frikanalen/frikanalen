@@ -1,5 +1,5 @@
 import { FieldsType } from "../classes/ObservableForm";
-import { computed, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import { checkIfFieldIsReady } from "../helpers/checkIfFieldIsReady";
 import { ValidatorList } from "../classes/ValidatorList";
 import { Manager } from "modules/state/types";
@@ -8,10 +8,24 @@ export class ObservableFieldObject<F extends FieldsType> {
   protected manager!: Manager;
   protected validators: ValidatorList<F>;
 
-  @observable public touched = false;
-  @observable public dirty = false;
+  public touched = false;
+  public dirty = false;
 
   public constructor(public fields: F) {
+    makeObservable(this, {
+      touched: observable,
+      dirty: observable,
+
+      setManager: action,
+      destroy: action,
+      touch: action,
+      validate: action,
+
+      serializedValue: computed,
+      ready: computed,
+      error: computed,
+    });
+
     this.validators = new ValidatorList(this.fields);
 
     // Validate all fields within
@@ -37,12 +51,10 @@ export class ObservableFieldObject<F extends FieldsType> {
     Object.values(this.fields).forEach((x) => x.setManager(manager));
   }
 
-  @computed
   public get serializedValue(): any {
     return Object.fromEntries(Object.entries(this.fields).map(([k, f]) => [k, f.serializedValue]));
   }
 
-  @computed
   public get ready() {
     for (const field of Object.values(this.fields)) {
       const ready = checkIfFieldIsReady(field);
@@ -75,7 +87,6 @@ export class ObservableFieldObject<F extends FieldsType> {
     }
   }
 
-  @computed
   public get error() {
     return this.validators.error;
   }

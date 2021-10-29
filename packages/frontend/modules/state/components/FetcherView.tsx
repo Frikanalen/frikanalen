@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useObserver } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { Meta } from "modules/core/components/Meta";
 import { EmptyState, EmptyStateProps } from "modules/ui/components/EmptyState";
 import { useEffect } from "react";
@@ -17,14 +17,9 @@ export type FetcherViewProps<R extends Resource<D>, D> = {
   getEmptyStateProps: (error: ErrorType) => EmptyStateProps;
 };
 
-export function FetcherView<R extends Resource<D>, D>(props: FetcherViewProps<R, D>) {
+export const FetcherView = observer(<R extends Resource<D>, D>(props: FetcherViewProps<R, D>) => {
   const { fetcher, renderContent, getEmptyStateProps } = props;
-
-  const { resource, fetching, error } = useObserver(() => ({
-    resource: fetcher.resource,
-    fetching: fetcher.fetching,
-    error: fetcher.error,
-  }));
+  const { resource, fetching, error } = fetcher;
 
   useEffect(() => {
     if (!resource && !fetching) {
@@ -55,4 +50,4 @@ export function FetcherView<R extends Resource<D>, D>(props: FetcherViewProps<R,
 
   // FIXME: This is a placeholder
   return <span>Vent litt...</span>;
-}
+});

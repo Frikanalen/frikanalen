@@ -1,4 +1,4 @@
-import { observable, computed } from "mobx";
+import { makeAutoObservable } from "mobx";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { TUS_CHUNK_SIZE, TUS_RESUMABLE, UPLOAD_RETRY_COUNT } from "../constants";
 import { StoredArray } from "modules/state/classes/StoredArray";
@@ -25,10 +25,10 @@ const TUS_HEADERS = {
 };
 
 export class FileUpload {
-  @observable public status: FileUploadStatus = "idle";
-  @observable public uploaded = 0;
-  @observable public referenceId?: number;
-  @observable public error?: any;
+  public status: FileUploadStatus = "idle";
+  public uploaded = 0;
+  public referenceId?: number;
+  public error?: any;
 
   private offset = 0;
   private retries = 0;
@@ -40,6 +40,8 @@ export class FileUpload {
   private canceler = axios.CancelToken.source();
 
   public constructor(options: FileUploadOptions, private manager: Manager) {
+    makeAutoObservable(this);
+
     this.file = options.file;
     this.destination = options.destination;
     this.metadata = options.metadata;
@@ -216,7 +218,6 @@ export class FileUpload {
     return this.manager.stores.networkStore.upload;
   }
 
-  @computed
   public get progress() {
     return this.uploaded / this.file.size;
   }

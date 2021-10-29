@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { RequireAuthentication } from "modules/auth/components/RequireAuthentication";
+import {
+  getInitialRequireAuthenticationProps,
+  RequireAuthentication,
+} from "modules/auth/components/RequireAuthentication";
 import { Form } from "modules/form/components/Form";
 import { FormField, FormFieldWithProps } from "modules/form/components/FormField";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
@@ -128,4 +131,4 @@ export default function Page() {
   );
 }
 
-Page.getInitialProps = RequireAuthentication.getInitialProps;
+Page.getInitialProps = getInitialRequireAuthenticationProps;
