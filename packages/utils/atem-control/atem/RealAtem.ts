@@ -38,6 +38,9 @@ export class RealAtem implements AtemConnection {
 
     await this.atem.connect(hostName);
     logger.info(`Connected to ATEM mixer at ${hostName}.`);
-    await applyInitialConfiguration(this.atem);
+    this.atem.on("stateChanged", (state, pathToChange) => {
+      logger.debug(state); // catch the ATEM state.
+    });
+    this.atem.on("connected", () => applyInitialConfiguration(this.atem));
   }
 }
