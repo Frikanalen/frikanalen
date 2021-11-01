@@ -1,6 +1,7 @@
 [Unit]
   Description=Frikanalen media mount
-  After=networking.service remote-fs.target network-online.target
+  Wants=networking.service remote-fs.target network-online.target systemd-resolved.service
+  After=networking.service remote-fs.target network-online.target systemd-resolved.service
 
 [Mount]
   What=//192.168.3.59/media
