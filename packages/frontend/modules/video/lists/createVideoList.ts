@@ -26,8 +26,7 @@ export const createVideoList: ListFactory<Data, Params> = (data, manager) => {
         params: {
           ...params,
           page_size: limit,
-          // There's no support for pagination on this endpoint?
-          //page: offset,
+          page: offset,
         },
       });
 
