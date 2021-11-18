@@ -27,7 +27,7 @@ socketServer.connectionCount = 0;
 socketServer.on('connection', function(socket, upgradeReq) {
 	socketServer.connectionCount++;
 	console.log(
-		'New WebSocket Connection: ',
+		'New WebSocket Connection: ', 
 		(upgradeReq || socket.upgradeReq).socket.remoteAddress,
 		(upgradeReq || socket.upgradeReq).headers['user-agent'],
 		'('+socketServer.connectionCount+' total)'
@@ -47,64 +47,43 @@ socketServer.broadcast = function(data) {
 	});
 };
 
-//// HTTP Server to accept incomming MPEG-TS Stream from ffmpeg
-//var streamServer = http.createServer( function(request, response) {
-//	var params = request.url.substr(1).split('/');
-//
-//	if (params[0] !== STREAM_SECRET) {
-//		console.log(
-//			'Failed Stream Connection: '+ request.socket.remoteAddress + ':' +
-//			request.socket.remotePort + ' - wrong secret.'
-//		);
-//		response.end();
-//	}
-//
-//	response.connection.setTimeout(0);
-//	console.log(
-//		'Stream Connected: ' +
-//		request.socket.remoteAddress + ':' +
-//		request.socket.remotePort
-//	);
-//	request.on('data', function(data){
-//		socketServer.broadcast(data);
-//		if (request.socket.recording) {
-//			request.socket.recording.write(data);
-//		}
-//	});
-//	request.on('end',function(){
-//		console.log('close');
-//		if (request.socket.recording) {
-//			request.socket.recording.close();
-//		}
-//	});
-//
-//	// Record the stream to a local file?
-//	if (RECORD_STREAM) {
-//		var path = 'recordings/' + Date.now() + '.ts';
-//		request.socket.recording = fs.createWriteStream(path);
-//	}
-//})
-//// Keep the socket open for streaming
-//streamServer.headersTimeout = 0;
-//streamServer.listen(STREAM_PORT);
-const dgram = require('dgram');
-const server = dgram.createSocket('udp4');
+// HTTP Server to accept incomming MPEG-TS Stream from ffmpeg
+var streamServer = http.createServer( function(request, response) {
+	var params = request.url.substr(1).split('/');
 
-server.on('error', (err) => {
-  console.log(`server error:\n${err.stack}`);
-  server.close();
-});
+	if (params[0] !== STREAM_SECRET) {
+		console.log(
+			'Failed Stream Connection: '+ request.socket.remoteAddress + ':' +
+			request.socket.remotePort + ' - wrong secret.'
+		);
+		response.end();
+	}
 
-server.on('message', (msg, rinfo) => {
-    socketServer.broadcast(msg);
-  //iconsole.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-});
+	response.connection.setTimeout(0);
+	console.log(
+		'Stream Connected: ' + 
+		request.socket.remoteAddress + ':' +
+		request.socket.remotePort
+	);
+	request.on('data', function(data){
+		socketServer.broadcast(data);
+		if (request.socket.recording) {
+			request.socket.recording.write(data);
+		}
+	});
+	request.on('end',function(){
+		console.log('close');
+		if (request.socket.recording) {
+			request.socket.recording.close();
+		}
+	});
 
-server.on('listening', () => {
-  const address = server.address();
-  console.log(`server listening ${address.address}:${address.port}`);
-});
+	// Record the stream to a local file?
+	if (RECORD_STREAM) {
+		var path = 'recordings/' + Date.now() + '.ts';
+		request.socket.recording = fs.createWriteStream(path);
+	}
+}).listen(STREAM_PORT);
 
-server.bind(STREAM_PORT);
 console.log('Listening for incomming MPEG-TS Stream on http://127.0.0.1:'+STREAM_PORT+'/<secret>');
 console.log('Awaiting WebSocket connections on ws://127.0.0.1:'+WEBSOCKET_PORT+'/');

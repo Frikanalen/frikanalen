@@ -1,4 +1,4 @@
-from node:10-alpine as builder
+from node:16-alpine as builder
 
 copy package.json .
 copy yarn.lock .
