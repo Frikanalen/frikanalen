@@ -211,10 +211,14 @@ class PrerecordedVideo(PlannedItem):
         self.framerate = float(framerate/1000)
         self.metadata = None
         self.has_been_prepared = False
-        if self.files['broadcast'] is not None:
-            self.filename = FILE_BASE + self.files['broadcast']
-        else:
-            self.filename = FILE_BASE + self.files['original']
+        try:
+            if self.files['broadcast'] is not None:
+                self.filename = FILE_BASE + self.files['broadcast']
+            else:
+                self.filename = FILE_BASE + self.files['original']
+        except Exception:
+            logger.error(f"video {self.videoID} has no associated file!")
+            self.filename = FILE_BASE + 'filler/FrikanalenLoop.avi'
 
     async def prepare(self):
         try:
