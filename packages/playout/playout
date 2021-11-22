@@ -6,6 +6,7 @@ import requests
 import signal
 import logging
 from pythonjsonlogger import jsonlogger
+from distutils.util import strtobool
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -39,6 +40,7 @@ API_URL = 'http://schedule-service/playout'
 LEGACY_URL = 'https://frikanalen.no/api/'
 FILE_BASE = u''
 CASPAR_HOST = os.environ['CASPAR_HOST']
+USE_ORIGINAL = strtobool(os.getenv("USE_ORIGINAL", "false"))
 
 def localtime():
     return datetime.now(tz=pytz.timezone('Europe/Oslo'))
@@ -212,10 +214,16 @@ class PrerecordedVideo(PlannedItem):
         self.metadata = None
         self.has_been_prepared = False
         try:
-            if self.files['broadcast'] is not None:
-                self.filename = FILE_BASE + self.files['broadcast']
+            if USE_ORIGINAL:
+                if self.files['original'] is not None:
+                    self.filename = FILE_BASE + self.files['original']
+                else:
+                    self.filename = FILE_BASE + self.files['broadcast']
             else:
-                self.filename = FILE_BASE + self.files['original']
+                if self.files['broadcast'] is not None:
+                    self.filename = FILE_BASE + self.files['broadcast']
+                else:
+                    self.filename = FILE_BASE + self.files['original']
         except Exception:
             logger.error(f"video {self.videoID} has no associated file!")
             self.filename = FILE_BASE + 'filler/FrikanalenLoop.avi'
