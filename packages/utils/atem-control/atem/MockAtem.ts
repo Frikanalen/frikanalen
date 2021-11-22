@@ -20,6 +20,7 @@ class MockAtemME implements AtemMixEffects {
 
 export class MockAtem implements AtemConnection {
   public ME: AtemMixEffects[];
+  atem: undefined;
 
   constructor() {
     this.ME = [new MockAtemME(0)];

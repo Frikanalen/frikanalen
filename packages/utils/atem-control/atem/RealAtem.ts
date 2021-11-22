@@ -26,7 +26,7 @@ class RealAtemME implements AtemMixEffects {
 
 export class RealAtem implements AtemConnection {
   public ME: RealAtemME[];
-  private atem: Atem;
+  public atem: Atem;
 
   constructor() {
     this.atem = new Atem();
@@ -34,14 +34,12 @@ export class RealAtem implements AtemConnection {
   }
 
   async connect(hostName: string) {
-
     const connectionPromise = new Promise<void>(async (resolve) => {
       logger.info(`Connecting to ATEM mixer at ${hostName}.`);
 
       await this.atem.connect(hostName);
 
       this.atem.on("error", logger.error);
-
 
       this.atem.on("stateChanged", (state, pathToChange) => {
         logger.info(state); // catch the ATEM state.

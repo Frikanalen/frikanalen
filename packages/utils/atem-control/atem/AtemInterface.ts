@@ -1,5 +1,6 @@
 import { RealAtem } from "./RealAtem";
 import { MockAtem } from "./MockAtem";
+import { Atem } from "atem-connection";
 
 export interface AtemMixEffects {
   readonly input: number;
@@ -10,6 +11,7 @@ export interface AtemMixEffects {
 export interface AtemConnection {
   ME: AtemMixEffects[];
   connect: (atemHost: string) => Promise<void>;
+  atem: Atem | undefined;
 }
 
 module.exports = {

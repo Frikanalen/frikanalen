@@ -9,7 +9,11 @@ import { getLogger } from "./logger";
 import { checkIfStaff } from "./auth";
 import { AtemConnection } from "./atem/AtemInterface";
 import { MockAtem } from "./atem/MockAtem";
-
+import {
+  Request as expressRequest,
+  Response as expressResponse,
+} from "express";
+import fetch from "node-fetch";
 const logger = getLogger();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -44,11 +48,82 @@ class AtemControl {
     if (this.atemHost) {
       logger.info(`Connecting to ATEM at ${this.atemHost}`);
       await this.atem.connect(this.atemHost);
-        console.log('asdf')
+      console.log("asdf");
     }
 
     this.app.use(cookieParser());
     this.app.use(bodyParser.json());
+
+    this.app.get(
+      "/poster/preview",
+      async (req: expressRequest, res: expressResponse) => {
+        const text = req.query.text;
+        const heading = req.query.heading;
+        console.error(
+          "Generating poster: [",
+          text,
+          "] heading: [",
+          heading,
+          "]."
+        );
+        const pngPosterRes = await fetch(
+          "http://stills-generator/getPoster.png",
+          {
+            headers: { "Content-Type": "application/json" },
+            method: "post",
+            body: JSON.stringify({ text: text, heading: heading }),
+          }
+        );
+        if (!pngPosterRes.ok) {
+          res
+            .status(500)
+            .send(
+              `unexpected response from renderer ${pngPosterRes.statusText}`
+            )
+            .end();
+          return;
+        }
+        const pixMap = await pngPosterRes.arrayBuffer();
+        res.type("image/png").send(new Buffer(pixMap));
+      }
+    );
+
+    this.app.post(
+      "/poster/upload",
+      async (req: expressRequest, res: expressResponse) => {
+        const staff = await checkIfStaff(req.cookies);
+        if (!staff) {
+          res.status(403).send("User not authorized").end();
+          return;
+        }
+
+        const posterRequest = await fetch(
+          "http://stills-generator/getPoster.rgba",
+          {
+            method: "post",
+            body: JSON.stringify(req.body),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if (!posterRequest.ok)
+          throw new Error(
+            `unexpected response from renderer ${posterRequest.statusText}`
+          );
+        try {
+          const pixMap = await posterRequest.arrayBuffer();
+          await this.atem.atem?.uploadStill(
+            0,
+            new Buffer(pixMap),
+            "test",
+            "test"
+          );
+          res.send({ result: "success" });
+        } catch (e) {
+          console.log(e);
+          throw new Error(`exception: ${e}`);
+        }
+      }
+    );
 
     this.app.get("/program", (req, res) => {
       res.send({ inputIndex: this.atem.ME[0].input });
