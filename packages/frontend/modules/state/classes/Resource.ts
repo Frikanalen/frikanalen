@@ -7,7 +7,7 @@ export class Resource<D> {
   public rawData: D;
 
   public constructor(data: D, protected manager: Manager) {
-    this.data = observable(data);
+    this.data = observable(data as any); // FIXME: Huh?
     this.rawData = data;
   }
 
