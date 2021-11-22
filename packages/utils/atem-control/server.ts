@@ -92,10 +92,10 @@ class AtemControl {
       "/poster/upload",
       async (req: expressRequest, res: expressResponse) => {
         const staff = await checkIfStaff(req.cookies);
-        if (!staff) {
+        /*if (!staff) {
           res.status(403).send("User not authorized").end();
           return;
-        }
+        }*/
 
         const posterRequest = await fetch(
           "http://stills-generator/getPoster.rgba",
