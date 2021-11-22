@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import axios from "axios";
 import { observer } from "mobx-react-lite";
 import { AspectContainer } from "modules/core/components/AspectContainer";
 import { Form } from "modules/form/components/Form";
@@ -11,8 +10,8 @@ import { useModal } from "modules/modal/hooks/useModal";
 import { GenericButton } from "modules/ui/components/GenericButton";
 import { StatusLine } from "modules/ui/components/StatusLine";
 import React from "react";
-import { STILLS_GENERATOR_URL } from "../constants";
 import { TextSlideForm } from "../forms/createTextSlideForm";
+import {useManager} from "../../state/manager";
 
 const Container = styled(PrimaryModal.Container)`
   width: 650px;
@@ -36,18 +35,19 @@ export type TextSlideModalProps = {
 export const TextSlideModal = observer((props: TextSlideModalProps) => {
   const { form } = props;
   const { heading, text } = form.fields;
+  const manager = useManager();
+  const { networkStore } = manager.stores;
+  const { api } = networkStore;
 
   const modal = useModal();
 
   const [status, handleSubmit] = useFormSubmission(form, async (serialized) => {
-    await axios.post("/poster/upload", serialized, {
-      baseURL: STILLS_GENERATOR_URL,
-    });
+    await api.post("/playout/atem/poster/upload", serialized);
 
     modal.dismiss();
   });
 
-  const previewURL = `${STILLS_GENERATOR_URL}/poster/preview?text=${encodeURIComponent(
+  const previewURL = `/api/playout/atem/poster/preview?text=${encodeURIComponent(
     text.value
   )}&heading=${encodeURIComponent(heading.value)}`;
 

@@ -1,7 +1,5 @@
 import { MixEffectsBusInput } from "./types";
 
-export const STILLS_GENERATOR_URL = "https://stills-generator.frikanalen.no";
-
 export const ATEM_INPUTS: MixEffectsBusInput[] = [
   { index: 2, name: "TX1" },
   { index: 3, name: "TX2" },
