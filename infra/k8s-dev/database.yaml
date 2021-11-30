@@ -12,7 +12,24 @@ data:
 
     echo "$dt - Creating fkschedule user"
 
-    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+
+    echo "$dt - Created."
+  primary_init_script.sh: |
+    #!/bin/bash
+    set -e
+
+    # This script assumes that the env-var $APIV2_PASSWORD contains the password of the custom user to create.
+    # You can add any env-var in your Kubegres resource config YAML.
+
+    dt=$(date '+%d/%m/%Y %H:%M:%S');
+    echo "$dt - Running init script the 1st time Primary PostgreSql container is created...";
+
+    psql -v ON_ERROR_STOP=1 --username postgres --dbname "$POSTGRES_DB" <<-EOSQL
+      CREATE ROLE fkweb LOGIN SUPERUSER PASSWORD '$POSTGRES_PASSWORD';
+      CREATE DATABASE fkweb OWNER fkweb;
+    EOSQL
+
+    psql -v ON_ERROR_STOP=1 --username postgres --dbname fkweb <<-EOSQL
         CREATE USER fkschedule with password '$FKSCHEDULE_PASSWORD';
         GRANT select ON fk_schedulepurpose, fk_video, fk_organization, fk_scheduleitem TO fkschedule;
 
@@ -83,24 +100,6 @@ data:
         $$ LANGUAGE 'plpgsql';
     EOSQL
 
-    echo "$dt - Created."
-  primary_init_script.sh: |
-    #!/bin/bash
-    set -e
-
-    # This script assumes that the env-var $APIV2_PASSWORD contains the password of the custom user to create.
-    # You can add any env-var in your Kubegres resource config YAML.
-
-    dt=$(date '+%d/%m/%Y %H:%M:%S');
-    echo "$dt - Running init script the 1st time Primary PostgreSql container is created...";
-
-    # Workaround for kubegres error. Kubegres replication expects to be able to
-    # log in with POSTGRES_PASSWORD as postgres, irrespective of the
-    # POSTGRES_USER variable.
-    ALTER ROLE postgres WITH NOSUPERUSER INHERIT NOCREATEROLE NOCREATEDB NOLOGIN NOREPLICATION NOBYPASSRLS PASSWORD '$POSTGRES_PASSWORD';
-
-    ./fkschedule-init.sh
-
     echo "$dt - Init script is completed";
 ---
 apiVersion: kubegres.reactive-tech.io/v1
@@ -130,10 +129,6 @@ spec:
   env:
     - name: TZ
       value: Europe/Oslo
-    - name: POSTGRES_DB
-      value: fkweb
-    - name: POSTGRES_USER
-      value: fkweb
     - name: FKSCHEDULE_PASSWORD
       valueFrom:
          secretKeyRef:

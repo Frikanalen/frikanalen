@@ -1,50 +1,147 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: local-storage
-  namespace: database
-provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
----
 apiVersion: v1
-kind: PersistentVolume
+kind: ConfigMap
 metadata:
-  name: postgres-data
-  namespace: database
-  annotations:
-    pv.beta.kubernetes.io/gid: "1234"
-  labels:
-    type: local
-spec:
-  capacity:
-    storage: 10Gi
-  volumeMode: Filesystem
-  accessModes:
-  - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: local-storage
-  local:
-    path: /data/postgres-data
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - tx4
+  name: database-api-config
+
+data:
+  fkschedule-init.sh: |
+    #!/bin/bash
+    set -e
+
+    dt=$(date '+%d/%m/%Y %H:%M:%S');
+
+    echo "$dt - Creating fkschedule user"
+
+
+    echo "$dt - Created."
+  primary_init_script.sh: |
+    #!/bin/bash
+    set -e
+
+    # This script assumes that the env-var $APIV2_PASSWORD contains the password of the custom user to create.
+    # You can add any env-var in your Kubegres resource config YAML.
+
+    dt=$(date '+%d/%m/%Y %H:%M:%S');
+    echo "$dt - Running init script the 1st time Primary PostgreSql container is created...";
+
+    psql -v ON_ERROR_STOP=1 --username postgres --dbname "$POSTGRES_DB" <<-EOSQL
+      CREATE ROLE fkweb LOGIN SUPERUSER PASSWORD '$POSTGRES_PASSWORD';
+      CREATE DATABASE fkweb OWNER fkweb;
+    EOSQL
+
+    psql -v ON_ERROR_STOP=1 --username postgres --dbname fkweb <<-EOSQL
+        CREATE USER fkschedule with password '$FKSCHEDULE_PASSWORD';
+        # This must be run manually after database is created!
+        # GRANT select ON fk_schedulepurpose, fk_video, fk_organization, fk_scheduleitem TO fkschedule;
+
+        # GRANT SELECT ON fk_video, fk_scheduleitem, fk_organization TO fkschedule;
+        # GRANT INSERT ON fk_scheduleitem to fkschedule;
+        # GRANT USAGE, SELECT ON SEQUENCE "ScheduleItem_id_seq" to fkschedule;
+
+        DROP FUNCTION IF EXISTS fk_schedule_gaps(TIMESTAMP, TIMESTAMP);
+
+        CREATE FUNCTION fk_schedule_gaps (
+            search_start TIMESTAMP,
+            search_end TIMESTAMP
+        )
+        RETURNS TABLE(
+            preceding_item INT,
+            following_item INT,
+            gap_start_time TIMESTAMP,
+            gap_end_time TIMESTAMP,
+            gap_duration INTERVAL) AS $$
+        BEGIN
+            RETURN query
+            SELECT
+                item_before,
+                item_after,
+                start_time at time zone 'Europe/Oslo',
+                end_time at time zone 'Europe/Oslo',
+                end_time - start_time AS duration
+            FROM
+                (
+                    SELECT
+                        *
+                    FROM
+                        (
+                            SELECT
+                                lag(id) OVER (ORDER BY starttime) AS item_before,
+                                id AS item_after,
+                                lag(starttime + duration) OVER (
+                            ORDER BY
+                                starttime) AS start_time,
+                                starttime AS end_time
+                            FROM
+                                (
+                                    SELECT
+                                        id,
+                                        starttime,
+                                        duration
+                                    FROM
+                                        fk_scheduleitem
+                                    -- dummy schedule item at start for gap calculation
+                                    UNION ALL SELECT NULL, search_start, '0'
+                                    -- dummy schedule item at end for gap calculation
+                                    UNION ALL SELECT NULL, search_end, '0'
+                                )
+                                AS schedule_items
+                        )
+                        AS gaps_inner
+                )
+                AS gaps
+            WHERE
+                -- If the dummy schedule item overlaps with
+                -- a real one, it will have a negative duration
+                -- so this clause eliminates it
+                end_time - start_time >= '0'
+                AND gaps.start_time >= search_start
+                AND gaps.end_time <= search_end;
+        END
+        ;
+        $$ LANGUAGE 'plpgsql';
+    EOSQL
+
+    echo "$dt - Init script is completed";
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
 metadata:
-  labels:
-    app: postgres
-  name: postgres-data
-  namespace: database
+  name: database-api
+
 spec:
-  storageClassName: local-storage
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10G
+  replicas: 3
+  image: postgres:13.2
+  port: 5432
+
+
+  # TODO: Set up backup volume
+  # backup:
+  #   schedule: "0 */1 * * *"
+  #   pvcName: my-backup-pvc
+  #   volumeMount: /var/lib/backup
+
+  database:
+     size: 200Mi
+
+  customConfig: database-api-config
+
+  # TODO: Figure out how to control access so backend does not
+  # need to connect to database with superuser credentials
+  env:
+    - name: TZ
+      value: Europe/Oslo
+    - name: FKSCHEDULE_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database-api-secret
+            key: FKSCHEDULE_PASSWORD
+    - name: POSTGRES_REPLICATION_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database-api-secret
+            key: POSTGRES_REPLICATION_PASSWORD
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database-api-secret
+            key: POSTGRES_PASSWORD
