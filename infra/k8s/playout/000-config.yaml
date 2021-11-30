@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: playout-config
-  namespace: default
-data:
-  config.yaml: |
-    graphqlEndpoint: https://frikanalen.no/graphql
-    casparHost: 192.168.3.35
