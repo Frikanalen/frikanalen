@@ -15,8 +15,8 @@ import {
 } from "express";
 import fetch from "node-fetch";
 const logger = getLogger();
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 const ATEM_HOST = process.env.ATEM_HOST || undefined;
 export const FK_API_URL = process.env.FK_API_URL || "https://frikanalen.no/api";
 
@@ -48,7 +48,7 @@ class AtemControl {
     if (this.atemHost) {
       logger.info(`Connecting to ATEM at ${this.atemHost}`);
       await this.atem.connect(this.atemHost);
-      console.log("asdf");
+      logger.info('Connected.')
     }
 
     this.app.use(cookieParser());
@@ -125,11 +125,11 @@ class AtemControl {
       }
     );
 
-    this.app.get("/program", (req, res) => {
+    this.app.get("/program", (_req, res) => {
       res.send({ inputIndex: this.atem.ME[0].input });
     });
 
-    this.app.get("/ping", (req, res) => {
+    this.app.get("/ping", (_req, res) => {
       res.send("pong");
     });
 

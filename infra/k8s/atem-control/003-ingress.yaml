@@ -31,6 +31,7 @@ spec:
   routes:
   - match: Host(`frikanalen.no`) && PathPrefix(`/api/playout/atem/`)
     kind: Rule
+    priority: 100
     middlewares:
       - name: strip-atem-prefix
         namespace: default
