@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: playout-secondary
+spec:
+  serviceName: playout-secondary
+  selector:
+    matchLabels:
+      app: playout-secondary
+  template:
+    metadata:
+      annotations:
+        co.elastic.logs/json.add_error_key: "true"
+        co.elastic.logs/json.overwrite_keys: "true"
+        co.elastic.logs/json.keys_under_root: "true"
+      labels:
+        app: playout-secondary
+    spec:
+      containers:
+      - name: playout-secondary
+        image: frikanalen/playout:latest
+        env:
+          - name: USE_ORIGINAL
+            value: "yes"
+          - name: CASPAR_HOST
+            value: tx2
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Europe/Oslo
+          type: File
