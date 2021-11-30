@@ -1,0 +1,37 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: scheme-redirect-graphics
+  namespace: default
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`www.frikanalen.no`) || Host(`frikanalen.no`) && PathPrefix(`/graphics`)
+    priority: 100
+    kind: Rule
+    services:
+    - kind: Service
+      name: graphics
+      scheme: http
+      port: 80
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: graphics
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`www.frikanalen.no`) || Host(`frikanalen.no`) && PathPrefix(`/graphics`)
+    priority: 100
+    kind: Rule
+    services:
+    - kind: Service
+      name: graphics
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
