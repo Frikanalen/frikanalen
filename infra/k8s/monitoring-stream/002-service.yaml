@@ -1,6 +1,23 @@
 kind: Service
 apiVersion: v1
 metadata:
+  name: monitoring-stream-http-incoming
+spec:
+  type: ClusterIP
+  externalIPs:
+    - 192.168.3.100
+  externalTrafficPolicy: Cluster
+  selector:
+    app: monitoring-stream-ws
+  ports:
+    - protocol: TCP
+      port: 8081
+      name: http
+  type: LoadBalancer
+---
+kind: Service
+apiVersion: v1
+metadata:
   name: monitoring-stream-ws
 spec:
   type: ClusterIP
@@ -10,22 +27,3 @@ spec:
     - protocol: TCP
       port: 8082
       name: ws
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: monitoring-stream-ws
-  name: monitoring-stream-ws-udp
-spec:
-  externalIPs:
-    - 192.168.3.100
-  externalTrafficPolicy: Cluster
-  ports:
-  - name: ts-udp
-    port: 8081
-    protocol: UDP
-    targetPort: 8081
-  selector:
-    app: monitoring-stream-ws
-  type: LoadBalancer
