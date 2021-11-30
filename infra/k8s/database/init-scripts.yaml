@@ -1,8 +1,0 @@
-create-schedule-user.sh: |
-  #!/bin/bash
-  set -e
-
-  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-      CREATE USER fkschedule with password '$FKSCHEDULE_PASSWORD';
-      GRANT select ON fk_video, fk_organization, fk_scheduleitem TO fkschedule;
-  EOSQL
