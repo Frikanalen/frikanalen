@@ -339,7 +339,7 @@ class CasparPlayer():
         await self._query_framerate()
 
     async def _get_response(self):
-        response = await self.reader.read(3)
+        response = await asyncio.wait_for(self.reader.read(3), 10.0)
 
         try:
             return_code = int(response)
@@ -391,7 +391,7 @@ class CasparPlayer():
             try:
                 logger.debug("Issuing command to Caspar: %s", cmd.encode('utf-8'))
                 self.writer.write((cmd + "\r\n").encode('utf-8'))
-                await self.writer.drain()
+                await asyncio.wait_for(self.writer.drain(), 10)
                 return await self._get_response()
             except asyncio.TimeoutError:
                 raise
