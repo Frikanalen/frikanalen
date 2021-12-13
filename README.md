@@ -1,6 +1,8 @@
 Frikanalen
 ==========
 
+**NOTE**: We are transitioning away from a monorepo, and will gradually be removing files from this one.
+
 All code used by the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
 
 [GitHub page](http://github.com/Frikanalen/) | [Project mailing list](http://lists.nuug.no/mailman/listinfo/frikanalen/)
