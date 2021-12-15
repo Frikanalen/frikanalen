@@ -5,6 +5,7 @@ import asyncio
 import requests
 import signal
 import logging
+import sys
 from pythonjsonlogger import jsonlogger
 from distutils.util import strtobool
 
@@ -388,6 +389,9 @@ class CasparPlayer():
     async def issue(self, cmd):
         """ Issues a command to CasparCG. Blocks until a response is received. """
         async with self.caspar_lock:
+            if self.writer.is_closing():
+                logger.error("Connection closed!")
+                sys.exit("Lost CasparCG connection")
             try:
                 logger.debug("Issuing command to Caspar: %s", cmd.encode('utf-8'))
                 self.writer.write((cmd + "\r\n").encode('utf-8'))
