@@ -1,5 +1,6 @@
 import { List } from "../classes/List";
 import { Resource } from "../classes/Resource";
+import { useObserver } from "./useObserver";
 
 // TODO: Fix this, it used useObserver in the past which has been deprecated
 export const useResourceList = <R extends Resource<any>>(
@@ -8,6 +9,6 @@ export const useResourceList = <R extends Resource<any>>(
     getResourceById: (id: number) => R;
   }
 ) => {
-  const resources = list.items.map((id) => store.getResourceById(id));
+  const resources = useObserver(() => list.items.map((id) => store.getResourceById(id)));
   return resources;
 };

@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable, runInAction } from "mobx";
 
 export type ListStatus = "idle" | "fetching" | "failed";
 
@@ -66,11 +66,14 @@ export class List<T, P extends object> {
     const { offset, limit, params } = this;
 
     try {
+      this.status = "fetching";
       const result = await this.fetch({ offset, limit, params });
 
-      this.items.push(...result.newItems);
-      this.offset = result.newOffset;
-      this.hasMore = result.hasMore;
+      runInAction(() => {
+        this.items.push(...result.newItems);
+        this.offset = result.newOffset;
+        this.hasMore = result.hasMore;
+      });
 
       this.status = "idle";
     } catch {
