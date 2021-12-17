@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.reverse import reverse
 
 from fk.models import AsRun
@@ -93,10 +93,9 @@ def jukebox_csv(request):
 # the front-end.
 
 
-class Pagination(PageNumberPagination):
-    page_size = 50
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
+class Pagination(LimitOffsetPagination):
+    default_limit = 50
+    max_limit = 1000
 
 
 class AsRunViewSet(ModelViewSet):

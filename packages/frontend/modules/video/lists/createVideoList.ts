@@ -25,8 +25,8 @@ export const createVideoList: ListFactory<Data, Params> = (data, manager) => {
       const result = await api.get<ApiCollection<VideoData>>(path, {
         params: {
           ...params,
-          page_size: limit,
-          page: offset,
+          limit,
+          offset,
         },
       });
 
@@ -35,7 +35,7 @@ export const createVideoList: ListFactory<Data, Params> = (data, manager) => {
 
       return {
         newItems: mappedIds,
-        newOffset: offset + 1,
+        newOffset: offset + mappedIds.length,
         hasMore: !!next,
       };
     },
