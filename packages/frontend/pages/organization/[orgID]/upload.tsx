@@ -90,7 +90,7 @@ const Upload = observer(() => {
 
   const renderStatusText = () => {
     if (uploadStatus === "idle") return "Venter...";
-    if (uploadStatus === "uploading") return `Laster opp (${progress})`;
+    if (uploadStatus === "uploading") return `Laster opp (${Math.round(progress * 100)}%)`;
     if (uploadStatus === "failed") return "Noe gikk galt...";
     if (uploadStatus === "completed") {
       return <InternalLink href={`/video/${videoId}`}>Ferdig! Klikk her for å gå til videosiden</InternalLink>;
