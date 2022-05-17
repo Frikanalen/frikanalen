@@ -34,19 +34,20 @@ docker run -p 8080:8080 frikanalen/django-backend
 
 ### Local development
 
-Create, populate and activate a virtual environment:
+#### Initializing dev environment
+
 ```sh
-sudo apt install sqlite3 python3-virtualenv python3-pip
+sudo apt install python3-virtualenv python3-pip
 python3 -m venv env
 source env/bin/activate
 pip install -r requirements-dev.txt
 ```
 
-Open `fkweb/settings.py` in your editor and edit paths and database settings.
-
-You should set `SECRET_KEY` to a random string.
+#### Initializing database
 
 ```sh
+# Spin up PostgreSQL in Docker; web interface now at localhost:8082
+docker-compose up -d
 # Initialize the database
 ./manage.py migrate
 # Load necessary fixtures (eg. content categories) into the database:

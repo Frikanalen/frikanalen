@@ -5,6 +5,9 @@ from os.path import join, normpath
 
 from .base import *
 
+import dj_database_url
+
+
 
 FK_UPLOAD_URL = 'http://127.0.0.1:5000/upload'
 
@@ -25,16 +28,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ########## DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fkweb',
-        'USER': 'fkweb',
-        'PASSWORD': 'morohbie0XeidaJie4vooshae7jee0Ah',
-        'HOST': 'database-api.default.svc.cluster.local',
-        'PORT': '',
-    }
-}
+DATABASES['default'] = dj_database_url.config(default='postgres://postgres:fk@localhost/fk', conn_max_age=600)
 ########## END DATABASE CONFIGURATION
 
 
