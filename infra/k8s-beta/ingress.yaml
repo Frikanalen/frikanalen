@@ -1,0 +1,33 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: toches
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/api`)
+    kind: Rule
+    services:
+    - name: toches
+      kind: Service
+      scheme: http
+      port: 80
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: frontend
+  namespace: beta
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`beta.frikanalen.no`)
+    kind: Rule
+    services:
+    - name: frontend
+      kind: Service
+      scheme: http
+      port: 3000

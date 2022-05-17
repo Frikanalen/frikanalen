@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: beta
+
+data:
+  primary_init_script.sh: |
+    #!/bin/bash
+    set -e
+
+    # This script assumes that the env-var $APIV2_PASSWORD contains the password of the custom user to create.
+    # You can add any env-var in your Kubegres resource config YAML.
+
+    dt=$(date '+%d/%m/%Y %H:%M:%S');
+    echo "$dt - Running init script the 1st time Primary PostgreSql container is created...";
+
+    psql -v ON_ERROR_STOP=1 --username postgres --dbname "$POSTGRES_DB" <<-EOSQL
+      CREATE ROLE fk LOGIN SUPERUSER PASSWORD '$POSTGRES_PASSWORD';
+      CREATE DATABASE fk OWNER fk;
+    EOSQL
+
+    echo "$dt - Init script is completed";
+---
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: postgres
+  namespace: beta
+
+spec:
+  replicas: 1
+  image: postgres:14
+  port: 5432
+
+  database:
+     size: 200Mi
+
+  customConfig: database-config
+
+  env:
+    - name: TZ
+      value: Europe/Oslo
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database
+            key: POSTGRES_PASSWORD
+    - name: POSTGRES_REPLICATION_PASSWORD
+      valueFrom:
+         secretKeyRef:
+            name: database
+            key: POSTGRES_REPLICATION_PASSWORD

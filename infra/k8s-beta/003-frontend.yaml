@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: beta
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: frikanalen/frontend-v2:latest
+        env:
+          - name: FK_API
+            value: http://beta.frikanalen.no/api/v2
+          - name: FK_UPLOAD
+            value: http://beta.frikanalen.no/api/v2
+        imagePullPolicy: Always
+        ports:
+          - name: web
+            containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend
+  namespace: beta
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      name: web
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: frontend
+  namespace: beta
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`beta.frikanalen.no`)
+    kind: Rule
+    services:
+    - name: frontend
+      kind: Service
+      scheme: http
+      port: 3000

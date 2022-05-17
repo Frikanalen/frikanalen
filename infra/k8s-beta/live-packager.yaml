@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: live-packager
+  namespace: beta
+spec:
+  selector:
+    matchLabels:
+      app: live-packager
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: live-packager
+    spec:
+      volumes:
+        - name: stream-volume
+          emptyDir: {}
+      containers:
+      - name: nginx
+        image: nginx:1.21.5
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: stream-volume
+          mountPath: /usr/share/nginx/html/stream
+      - name: live-packager
+        image: frikanalen/live-packager
+        imagePullPolicy: Always
+        env:
+          - name: VIDEO_IN
+            value: http://simula.frikanalen.no:9094/frikanalen.ts
+        volumeMounts:
+        - name: stream-volume
+          mountPath: /stream
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: live-packager
+  namespace: beta
+spec:
+  clusterIP: None
+  ipFamilyPolicy: SingleStack
+  ipFamilies:
+    - IPv4
+  ports:
+  - name: web
+    port: 80
+  selector:
+    app: live-packager
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: live-stream
+  namespace: beta
+spec:
+  entryPoints: 
+    - web
+  routes:
+  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/stream`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: live-packager
+      scheme: http
+      port: 80
