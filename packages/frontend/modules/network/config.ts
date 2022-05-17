@@ -9,7 +9,7 @@ export type ConfigType = typeof VALID_CONFIGS[number];
 
 export const configs: Record<ConfigType, Config> = {
   development: {
-    api: "http://localhost:8080/api/",
+    api: "http://localhost:8000/api/",
     upload: "https://frikanalen.no/api/videos/upload/",
   },
   staging: {
