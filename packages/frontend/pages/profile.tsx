@@ -123,12 +123,12 @@ function Profile() {
   );
 }
 
-export default function Page() {
-  return (
-    <RequireAuthentication>
-      <Profile />
-    </RequireAuthentication>
-  );
-}
+const Page = () => (
+  <RequireAuthentication>
+    <Profile />
+  </RequireAuthentication>
+);
+
+export default Page;
 
 Page.getInitialProps = getInitialRequireAuthenticationProps;
