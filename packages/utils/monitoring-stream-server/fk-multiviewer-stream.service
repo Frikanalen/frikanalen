@@ -1,0 +1,12 @@
+[Unit]
+Description=Multiviewer encoder for Janus WebRTC Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/ffmpeg/bin/ffmpeg -f decklink -rtbufsize 100M -i "DeckLink SDI 4K" -codec:v mpeg1video -s 720x576 -aspect 16:9 -b:v 0 -b:v 1.5M -r 50 -ac 1 -ar 44100 -f mpegts -muxdelay 0.001 -b 0 http://192.168.3.100:8081/monitoring
+Restart=on-abnormal
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
