@@ -4,6 +4,7 @@ metadata:
   name: live-packager
   namespace: beta
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: live-packager
@@ -52,17 +53,35 @@ spec:
   selector:
     app: live-packager
 ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors
+  namespace: beta
+spec:
+  headers:
+    customResponseHeaders:
+      Access-Control-Allow-Origin: "*"
+      Access-Control-Allow-Headers: "range"
+      Access-Control-Allow-Methods: "GET, POST, OPTIONS"
+---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
   name: live-stream
   namespace: beta
 spec:
+  tls:
+    certResolver: default
   entryPoints: 
     - web
+    - websecure
   routes:
   - match: Host(`beta.frikanalen.no`) && PathPrefix(`/stream`)
     kind: Rule
+    middlewares:
+      - name: cors
+        namespace: beta
     services:
     - kind: Service
       name: live-packager

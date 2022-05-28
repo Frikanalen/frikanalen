@@ -20,6 +20,13 @@ spec:
         image: frikanalen/toches
         imagePullPolicy: Always
         env:
+          - name: FK_MEDIA
+            value: http://beta.frikanalen.no/media
+          - name: FK_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: fk-api-key
+                key: FK_API_KEY
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
@@ -64,8 +71,11 @@ metadata:
   name: toches
   namespace: beta
 spec:
+  tls:
+    certResolver: default
   entryPoints:
     - web
+    - websecure
   routes:
   - match: Host(`beta.frikanalen.no`) && PathPrefix(`/api/v2`)
     kind: Rule

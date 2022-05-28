@@ -21,9 +21,9 @@ spec:
         image: frikanalen/frontend-v2:latest
         env:
           - name: FK_API
-            value: http://beta.frikanalen.no/api/v2
+            value: https://beta.frikanalen.no/api/v2
           - name: FK_UPLOAD
-            value: http://beta.frikanalen.no/api/v2
+            value: https://beta.frikanalen.no/api/v2
         imagePullPolicy: Always
         ports:
           - name: web
@@ -58,8 +58,11 @@ metadata:
   name: frontend
   namespace: beta
 spec:
+  tls:
+    certResolver: default
   entryPoints:
     - web
+    - websecure
   routes:
   - match: Host(`beta.frikanalen.no`)
     kind: Rule

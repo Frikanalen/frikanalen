@@ -69,7 +69,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: cubemap
-  namespace: default
+  namespace: beta
 spec:
   clusterIP: None
   ipFamilyPolicy: SingleStack
@@ -100,14 +100,17 @@ metadata:
   name: cubemap
   namespace: beta
 spec:
+  tls:
+    certResolver: default
   entryPoints: 
     - web
+    - websecure
   routes:
   - match: Host(`beta.frikanalen.no`) && PathPrefix(`/cubemap`)
     kind: Rule
     middlewares:
       - name: strip-cubemap-prefix
-        namespace: default
+        namespace: beta
     services:
     - kind: Service
       name: cubemap

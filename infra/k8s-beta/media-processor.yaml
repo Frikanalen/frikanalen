@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-persist
+  namespace: beta
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-processor
+  namespace: beta
+spec:
+  selector:
+    matchLabels:
+      app: media-processor
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: media-processor
+    spec:
+      volumes:
+        - name: redis-persist
+          persistentVolumeClaim:
+            claimName: redis-persist
+      containers:
+      - name: redis
+        image: redis:alpine
+        args: ["--save", "60", "1", "--loglevel", "warning"]
+        volumeMounts:
+          - mountPath: /data
+            name: redis-persist
+        ports:
+          - name: redis
+            containerPort: 6379
+      - name: media-processor
+        image: frikanalen/media-processor
+        imagePullPolicy: Always
+        env:
+          - name: PORT
+            value: "8000"
+          - name: REDIS_URL
+            value: "redis://localhost:6379"
+          - name: FK_API
+            value: "http://beta.frikanalen.no/api/v2"
+          - name: FK_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: fk-api-key
+                key: FK_API_KEY
+        envFrom:
+          - secretRef:
+              name: s3
+        ports:
+          - name: web
+            containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: media-processor
+  name: media-processor
+  namespace: beta
+spec:
+  ports:
+  - name: web
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: media-processor
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-apiv2-prefix
+  namespace: beta
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/v2/
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: media-processor
+  namespace: beta
+spec:
+  tls:
+    certResolver: default
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/api/v2/upload/video`)
+    kind: Rule
+    middlewares:
+      - name: strip-apiv2-prefix
+        namespace: beta
+    services:
+    - name: media-processor
+      kind: Service
+      scheme: http
+      port: 8000

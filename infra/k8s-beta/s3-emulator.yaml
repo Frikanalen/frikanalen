@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: s3-ninja-persist
+  namespace: beta
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-ninja
+  namespace: beta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3-ninja
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: s3-ninja
+    spec:
+      volumes:
+        - name: s3-ninja-persist
+          persistentVolumeClaim:
+            claimName: s3-ninja-persist
+      containers:
+        - name: s3-ninja
+          image: scireum/s3-ninja:7.1.2
+          volumeMounts:
+            - mountPath: /home/sirius/data
+              name: s3-ninja-persist
+          ports:
+            - name: web
+              containerPort: 9000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: s3
+  namespace: beta
+spec:
+  type: ClusterIP
+  selector:
+    app: s3-ninja
+  ports:
+    - protocol: TCP
+      port: 9000
+      name: web
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-media-prefix
+  namespace: beta
+spec:
+  stripPrefix:
+    prefixes:
+      - /media
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: s3-fetch
+  namespace: beta
+spec:
+  tls:
+    certResolver: default
+  entryPoints: 
+    - web
+    - websecure
+  routes:
+  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/media`)
+    priority: 1000
+    kind: Rule
+    middlewares:
+      - name: strip-media-prefix
+        namespace: beta
+    services:
+    - kind: Service
+      name: s3
+      scheme: http
+      port: 9000

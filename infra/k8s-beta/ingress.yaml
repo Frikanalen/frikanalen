@@ -4,8 +4,11 @@ metadata:
   name: toches
   namespace: default
 spec:
+  tls:
+    certResolver: default
   entryPoints:
     - web
+    - websecure
   routes:
   - match: Host(`beta.frikanalen.no`) && PathPrefix(`/api`)
     kind: Rule
@@ -23,6 +26,7 @@ metadata:
 spec:
   entryPoints:
     - web
+    - websecure
   routes:
   - match: Host(`beta.frikanalen.no`)
     kind: Rule
