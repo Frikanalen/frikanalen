@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 
 logger = logging.getLogger('copy-to-legacy')
 
+logger.info("starting")
 def upload_video(video_id, s3key, orig_filename):
     """ Creates a temporary directory on file01, copies the file, and moves it
     into the move_and_process watchfolder. """
