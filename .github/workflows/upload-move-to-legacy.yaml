@@ -1,0 +1,46 @@
+name: File upload copy
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/utils/ingest/copy-to-legacy/**'
+      - '.github/workflows/upload-move-to-legacy.yml'
+
+jobs:
+  docker:
+    name: Build and push Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout master
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Build docker
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          tags: frikanalen/upload-processor-copy-to-legacy:latest
+          context: packages/utils/ingest/copy-to-legacy
+          push: true
+          pull: true
+          file: packages/utils/ingest/copy-to-legacy/Dockerfile
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
