@@ -1,4 +1,4 @@
-FROM python:3-buster AS builder
+FROM python:3-bullseye AS builder
 
 WORKDIR /app
 
