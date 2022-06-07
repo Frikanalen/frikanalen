@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: traefik-certstore
+  name: traefik-cert-storage
 spec:
   accessModes:
     - ReadWriteOnce

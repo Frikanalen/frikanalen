@@ -11,7 +11,7 @@ spec:
   - name: dashboard
     port: 8083
     protocol: TCP
-    targetPort: 8083
+    targetPort: 8443
   selector:
     app: rook-ceph-mgr
     rook_cluster: rook-ceph

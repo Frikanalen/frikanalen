@@ -29,14 +29,9 @@ data:
       CREATE DATABASE fkweb OWNER fkweb;
     EOSQL
 
+    # This must be run manually after database is created!
     psql -v ON_ERROR_STOP=1 --username postgres --dbname fkweb <<-EOSQL
         CREATE USER fkschedule with password '$FKSCHEDULE_PASSWORD';
-        # This must be run manually after database is created!
-        # GRANT select ON fk_schedulepurpose, fk_video, fk_organization, fk_scheduleitem TO fkschedule;
-
-        # GRANT SELECT ON fk_video, fk_scheduleitem, fk_organization TO fkschedule;
-        # GRANT INSERT ON fk_scheduleitem to fkschedule;
-        # GRANT USAGE, SELECT ON SEQUENCE "ScheduleItem_id_seq" to fkschedule;
 
         DROP FUNCTION IF EXISTS fk_schedule_gaps(TIMESTAMP, TIMESTAMP);
 
@@ -99,6 +94,10 @@ data:
         END
         ;
         $$ LANGUAGE 'plpgsql';
+        -- GRANT select ON fk_schedulepurpose, fk_video, fk_organization, fk_scheduleitem TO fkschedule;
+        -- GRANT SELECT ON fk_video, fk_scheduleitem, fk_organization TO fkschedule;
+        -- GRANT INSERT ON fk_scheduleitem to fkschedule;
+        -- GRANT USAGE, SELECT ON SEQUENCE "ScheduleItem_id_seq" to fkschedule;
     EOSQL
 
     echo "$dt - Init script is completed";
@@ -109,7 +108,7 @@ metadata:
   name: database-api
 
 spec:
-  replicas: 3
+  replicas: 1
   image: postgres:13.2
   port: 5432
 

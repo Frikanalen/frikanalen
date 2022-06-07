@@ -25,8 +25,6 @@ data:
             192.168.3.36  tx4.frikanalen.no        tx4
             192.168.3.59  file01.frikanalen.no        file01
             192.168.3.240 fw1.frikanalen.no fw1
-            192.168.3.100 frikanalen.no
-            192.168.3.100 beta.frikanalen.no
             192.168.3.100 forrige.frikanalen.no
             fallthrough
         }

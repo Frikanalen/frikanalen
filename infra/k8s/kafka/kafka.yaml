@@ -12,7 +12,8 @@ spec:
     protocol: TCP
   selector:
     app: kafka
-  type: LoadBalancer
+    id: "0"
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: ReplicationController
@@ -29,6 +30,7 @@ spec:
     metadata:
       labels:
         app: kafka
+        id: "0"
     spec:
       containers:
       - name: kafka
@@ -36,13 +38,11 @@ spec:
         ports:
         - containerPort: 9092
         env:
-        - name: KAFKA_ADVERTISED_PORT
-          value: "9092"
-        - name: KAFKA_ADVERTISED_HOST_NAME
-          value: "kafka-service.kafka"
+        - name: KAFKA_LISTENERS
+          value: PLAINTEXT://:9092
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: PLAINTEXT://kafka-service.kafka:9092
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: zk-cs.kafka:2181
         - name: KAFKA_BROKER_ID
           value: "0"
-        - name: KAFKA_CREATE_TOPICS
-          value: new-video-uploaded:1:1

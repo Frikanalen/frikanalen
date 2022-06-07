@@ -7,7 +7,7 @@ metadata:
   name: traefik
 spec:
   externalIPs:
-    - 192.168.3.100
+    - 158.36.191.228
   externalTrafficPolicy: Cluster
   ports:
   - name: web

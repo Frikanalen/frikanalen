@@ -5,7 +5,7 @@ metadata:
   name: traefik-ingress-controller
 
 ---
-kind: StatefulSet
+kind: Deployment
 apiVersion: apps/v1
 metadata:
   namespace: default
@@ -14,7 +14,6 @@ metadata:
     app: traefik
 
 spec:
-  serviceName: traefik
   selector:
     matchLabels:
       app: traefik
@@ -33,6 +32,8 @@ spec:
             - --api.insecure
             - --accesslog
             - --entrypoints.web.address=:80
+            - --entrypoints.web.http.redirections.entryPoint.to=websecure
+            - --entrypoints.web.http.redirections.entryPoint.scheme=https
             - --entrypoints.websecure.address=:443
             - --entrypoints.admin.address=:8100
             - --entrypoints.monitoring.address=:8081/udp
@@ -44,7 +45,7 @@ spec:
             - --metrics.prometheus.entryPoint=admin
             - --ping=true
             - --log.level=INFO
-            - --certificatesresolvers.default.acme.email=toresbe@gmail.com
+            - --certificatesresolvers.default.acme.email=toresbe@protonmail.com
             - --certificatesresolvers.default.acme.storage=/acme/acme.json
           ports:
             - name: web
@@ -62,4 +63,4 @@ spec:
       volumes:
       - name: storage-volume
         persistentVolumeClaim:
-          claimName: traefik-certstore
+          claimName: traefik-cert-storage
