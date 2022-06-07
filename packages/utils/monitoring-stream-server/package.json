@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "node build/server.js",
+    "start": "node dist/server.js",
     "dev": "ts-node-dev src/server.ts",
     "prettier": "prettier -w src"
   },
