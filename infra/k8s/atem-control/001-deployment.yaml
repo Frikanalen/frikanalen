@@ -14,7 +14,12 @@ spec:
     spec:
       containers:
       - name: atem-control
-        image: frikanalen/atem-control-service:latest
+        image: frikanalen/atem-control:latest
+        env:
+          - name: ATEM_HOST
+            value: 10.3.2.1
+          - name: LISTEN_PORT
+            value: "80"
         ports:
           - name: web
             containerPort: 80
