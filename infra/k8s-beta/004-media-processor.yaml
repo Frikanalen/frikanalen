@@ -50,7 +50,7 @@ spec:
           - name: REDIS_URL
             value: "redis://localhost:6379"
           - name: FK_API
-            value: "http://beta.frikanalen.no/api/v2"
+            value: "https://beta.frikanalen.no/api/v2"
           - name: FK_API_KEY
             valueFrom:
               secretKeyRef:

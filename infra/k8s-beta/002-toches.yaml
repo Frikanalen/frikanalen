@@ -21,7 +21,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: FK_MEDIA
-            value: http://beta.frikanalen.no/media
+            value: https://beta.frikanalen.no/media
           - name: FK_API_KEY
             valueFrom:
               secretKeyRef:
@@ -65,6 +65,30 @@ spec:
     prefixes:
       - /api/v2/
 ---
+# I have to set this up this way because swagger-ui insists on getting static
+# assets from /swagger. Please don't link directly to frikanalen.no/swagger,
+# because At Some Point I'll figure out how to make swagger-ui use relative
+# URLs
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: toches-swagger
+  namespace: beta
+spec:
+  tls:
+    certResolver: default
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/swagger`)
+    kind: Rule
+    services:
+    - name: toches
+      namespace: beta
+      kind: Service
+      scheme: http
+      port: 80
+---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
@@ -74,7 +98,6 @@ spec:
   tls:
     certResolver: default
   entryPoints:
-    - web
     - websecure
   routes:
   - match: Host(`beta.frikanalen.no`) && PathPrefix(`/api/v2`)
@@ -84,6 +107,7 @@ spec:
         namespace: beta
     services:
     - name: toches
+      namespace: beta
       kind: Service
       scheme: http
       port: 80

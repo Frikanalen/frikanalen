@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: playout
+  namespace: beta
+spec:
+  serviceName: playout
+  selector:
+    matchLabels:
+      app: playout
+  template:
+    metadata:
+      annotations:
+        co.elastic.logs/json.add_error_key: "true"
+        co.elastic.logs/json.overwrite_keys: "true"
+        co.elastic.logs/json.keys_under_root: "true"
+      labels:
+        app: playout
+    spec:
+      containers:
+      - name: playout
+        image: frikanalen/playout-v2:latest
+        env:
+          - name: TZ
+            value: Europe/Oslo
+        envFrom:
+        - configMapRef:
+            name: playout
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: tz-config
+          mountPath: /etc/localtime
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Europe/Oslo
+          type: File
+---
+kind: ConfigMap
+apiVersion: v1
+data:
+  CASPAR_HOST: 192.168.3.34
+  CASPAR_MEDIA_URL_PREFIX: https://beta.frikanalen.no/media
+  FK_API: https://beta.frikanalen.no/api/v2
+  GRAPHICS_URL: http://fk.dev.local/graphics
+metadata:
+  name: playout
+  namespace: beta

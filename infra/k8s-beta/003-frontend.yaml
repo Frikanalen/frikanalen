@@ -61,7 +61,6 @@ spec:
   tls:
     certResolver: default
   entryPoints:
-    - web
     - websecure
   routes:
   - match: Host(`beta.frikanalen.no`)
