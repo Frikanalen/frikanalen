@@ -1,13 +1,17 @@
 from node:16-alpine as builder
 
+copy . .
+
+RUN "yarn"
+RUN ["yarn", "build"]
+
+from node:16-alpine as runner
+
 copy package.json .
 copy yarn.lock .
 
-RUN "yarn"
-
-from builder as running
-
-copy server.js .
+copy --from=builder dist .
+copy --from=builder node_modules .
 
 EXPOSE 8081
 EXPOSE 8082
