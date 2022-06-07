@@ -17,7 +17,7 @@ export const MonitoringStream = () => {
 
     if (!videoElement)
       setVideoElement(
-        new JSMpeg.VideoElement(containerRef.current, "wss://monitoring.frikanalen.no/", {
+        new JSMpeg.VideoElement(containerRef.current, "wss://multiviewer.frikanalen.no/", {
           videoBufferSize: 512 * 1024 * 20,
           audioBufferSize: 128 * 1024 * 20,
         })

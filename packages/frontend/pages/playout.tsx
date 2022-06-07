@@ -9,7 +9,6 @@ import { GenericButton } from "modules/ui/components/GenericButton";
 import { spawnTextSlideModal } from "modules/playout/helpers/spawnTextSlideModal";
 import { Meta } from "modules/core/components/Meta";
 import { NextPageContext } from "next";
-// import { NextPageContext } from "next";
 
 const breakpoint = 830;
 
