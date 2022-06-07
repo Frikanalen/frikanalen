@@ -1,6 +1,6 @@
 import { RealAtem } from "./RealAtem";
 import { MockAtem } from "./MockAtem";
-import { Atem } from "atem-connection";
+import type { Atem } from "atem-connection";
 
 export interface AtemMixEffects {
   readonly input: number;

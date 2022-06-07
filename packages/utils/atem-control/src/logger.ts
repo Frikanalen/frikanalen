@@ -1,6 +1,6 @@
 const winston = require("winston");
 export const getLogger = () => {
-  if (process.env.NODE_ENV === "production") {
+  if (process.env["NODE_ENV"] === "production") {
     return winston.createLogger({
       level: "info",
       format: winston.format.json(),

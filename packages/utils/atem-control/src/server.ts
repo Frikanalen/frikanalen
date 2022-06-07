@@ -7,27 +7,32 @@ import { RealAtem } from "./atem/RealAtem";
 import express from "express";
 import { getLogger } from "./logger";
 import { checkIfStaff } from "./auth";
-import { AtemConnection } from "./atem/AtemInterface";
+import type { AtemConnection } from "./atem/AtemInterface";
 import { MockAtem } from "./atem/MockAtem";
-import {
+import type {
   Request as expressRequest,
   Response as expressResponse,
 } from "express";
 import fetch from "node-fetch";
+
 const logger = getLogger();
-import cookieParser from "cookie-parser";
+const cookieParser = require("cookie-parser");
 import bodyParser from "body-parser";
-const ATEM_HOST = process.env.ATEM_HOST || undefined;
-export const FK_API_URL = process.env.FK_API_URL || "https://frikanalen.no/api";
+
+const ATEM_HOST = process.env["ATEM_HOST"];
+export const FK_API_URL =
+  process.env["FK_API_URL"] || "https://frikanalen.no/api";
 
 // The ATEM video mixer's multiviewer output is looped back in on input 10.
 export const MULTI_VIEWER_INPUT = 10;
+
 export interface AtemControlOptions {
   listenPort: number;
-  atemHost?: string;
+  atemHost?: string | undefined;
 }
+
 class AtemControl {
-  private listenPort: number;
+  private readonly listenPort: number;
   atem: AtemConnection;
   app = express.application;
   atemHost: string | undefined;
@@ -48,7 +53,7 @@ class AtemControl {
     if (this.atemHost) {
       logger.info(`Connecting to ATEM at ${this.atemHost}`);
       await this.atem.connect(this.atemHost);
-      logger.info('Connected.')
+      logger.info("Connected.");
     }
 
     this.app.use(cookieParser());
@@ -57,8 +62,8 @@ class AtemControl {
     this.app.get(
       "/poster/preview",
       async (req: expressRequest, res: expressResponse) => {
-        const text = req.query.text;
-        const heading = req.query.heading;
+        const text = req.query["text"];
+        const heading = req.query["heading"];
         console.error(
           "Generating poster: [",
           text,
@@ -92,10 +97,11 @@ class AtemControl {
       "/poster/upload",
       async (req: expressRequest, res: expressResponse) => {
         const staff = await checkIfStaff(req.cookies);
-        /*if (!staff) {
+        if (!staff) {
+          logger.warn(`Rejected non-staff user`);
           res.status(403).send("User not authorized").end();
           return;
-        }*/
+        }
 
         const posterRequest = await fetch(
           "http://stills-generator/getPoster.rgba",
@@ -126,7 +132,7 @@ class AtemControl {
     );
 
     this.app.get("/program", (_req, res) => {
-      res.send({ inputIndex: this.atem.ME[0].input });
+      res.send({ inputIndex: this.atem.ME[0]?.input });
     });
 
     this.app.get("/ping", (_req, res) => {
@@ -150,8 +156,8 @@ class AtemControl {
         return;
       }
 
-      await this.atem.ME[0].setInput(inputIndex);
-      res.send({ inputIndex: this.atem.ME[0].input });
+      await this.atem.ME[0]?.setInput(inputIndex);
+      res.send({ inputIndex: this.atem.ME[0]?.input });
     });
 
     this.app.listen(this.listenPort, () => {
@@ -161,7 +167,7 @@ class AtemControl {
 }
 
 const getListenPort = () => {
-  const portEnv = parseInt(process.env?.LISTEN_PORT || "");
+  const portEnv = parseInt(process.env["LISTEN_PORT"] || "");
   const defaultPort = 8089;
 
   if (isNaN(portEnv)) {

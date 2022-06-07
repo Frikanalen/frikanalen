@@ -1,4 +1,4 @@
-import { AtemConnection, AtemMixEffects } from "./AtemInterface";
+import type { AtemConnection, AtemMixEffects } from "./AtemInterface";
 
 class MockAtemME implements AtemMixEffects {
   idx: number;
@@ -26,7 +26,7 @@ export class MockAtem implements AtemConnection {
     this.ME = [new MockAtemME(0)];
   }
 
-  async connect(hostName: string) {
+  async connect(_hostName: string) {
     return;
   }
 }

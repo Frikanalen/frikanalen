@@ -1,19 +1,18 @@
-FROM node:14-alpine
+FROM node:16-alpine AS builder
 
-WORKDIR /home/node/app
-
-COPY package.json .
-
-RUN yarn install --quiet --dev
+WORKDIR /app
 
 COPY . .
-RUN yarn tsc
 
-ENV LISTEN_PORT 80
-ENV ATEM_HOST 10.3.2.1
-ENV FK_API_URL https://frikanalen.no/api
+RUN yarn install --quiet --dev
+RUN yarn build
+
+FROM node:16-alpine
+
+COPY --from=builder /app/dist dist
+COPY --from=builder /app/node_modules node_modules
+COPY yarn.lock package.json tsconfig.json ./
 
 EXPOSE 80
-
 
 CMD ["yarn", "start"]

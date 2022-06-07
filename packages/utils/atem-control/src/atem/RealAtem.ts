@@ -1,7 +1,7 @@
 import { Atem } from "atem-connection";
 import { applyInitialConfiguration } from "./utils";
 import { getLogger } from "../logger";
-import { AtemConnection, AtemMixEffects } from "./AtemInterface";
+import type { AtemConnection, AtemMixEffects } from "./AtemInterface";
 
 const logger = getLogger();
 
@@ -15,8 +15,10 @@ class RealAtemME implements AtemMixEffects {
   }
 
   public get input() {
-    const programInput = this.atem.state.video.ME[this.idx].programInput;
-    return programInput;
+    if (this.atem.state.video.ME[this.idx] === undefined) {
+      throw new Error(`M/E #${this.idx} does not exist!`);
+    }
+    return this.atem.state.video.ME[this.idx]!.programInput;
   }
 
   public setInput = async (inputIndex: number) => {
@@ -34,14 +36,14 @@ export class RealAtem implements AtemConnection {
   }
 
   async connect(hostName: string) {
-    const connectionPromise = new Promise<void>(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       logger.info(`Connecting to ATEM mixer at ${hostName}.`);
 
       await this.atem.connect(hostName);
 
       this.atem.on("error", logger.error);
 
-      this.atem.on("stateChanged", (state, pathToChange) => {
+      this.atem.on("stateChanged", (state, _pathToChange) => {
         logger.info(state); // catch the ATEM state.
       });
 
@@ -51,7 +53,5 @@ export class RealAtem implements AtemConnection {
         resolve();
       });
     });
-
-    return connectionPromise;
   }
 }

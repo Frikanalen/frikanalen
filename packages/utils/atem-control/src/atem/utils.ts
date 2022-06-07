@@ -1,4 +1,4 @@
-import { Atem } from "atem-connection";
+import type { Atem } from "atem-connection";
 import { AudioMixOption } from "atem-connection/dist/enums";
 import { MULTI_VIEWER_INPUT } from "../server";
 
