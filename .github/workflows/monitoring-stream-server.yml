@@ -1,0 +1,23 @@
+name: Build monitoring stream server
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'packages/utils/monitoring-stream-server/**'
+jobs:
+  build:
+    name: Build and push Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+      - name: Build docker
+        uses: docker/build-push-action@v1.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: frikanalen/monitoring-stream-ws
+          tag_with_ref: true
+          path: packages/utils/monitoring-stream-server
+          dockerfile: packages/utils/monitoring-stream-server/Dockerfile
