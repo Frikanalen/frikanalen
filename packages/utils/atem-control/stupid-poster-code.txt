@@ -4,7 +4,7 @@
 import {Request as expressRequest, Response as expressResponse} from "express";
 import fetch from "node-fetch";
 
-this.app.get(
+app.get(
     "/poster/preview",
     async (req: expressRequest, res: expressResponse) => {
         const text = req.query.text;
@@ -38,7 +38,7 @@ this.app.get(
     }
 );
 
-this.app.post(
+app.post(
     "/poster/upload",
     async (req: expressRequest, res: expressResponse) => {
         const staff = await check_if_staff(req.headers.authorization);
