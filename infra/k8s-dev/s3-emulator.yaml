@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: s3-ninja
-        image: scireum/s3-ninja:7.1.2
+        image: scireum/s3-ninja:latest
         ports:
           - name: web
             containerPort: 9000
