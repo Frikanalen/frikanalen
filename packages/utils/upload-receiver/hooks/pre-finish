@@ -5,6 +5,7 @@
 import json
 import logging
 import os
+import shutil
 import sys
 
 from paramiko import SSHClient
@@ -14,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 HOSTNAME = 'file01'
 USERNAME = 'fkupload'
-KEYPATH = '/srv/tus-data/secrets/ssh_private_key'
+KEYPATH = '/secrets/ssh_private_key'
 
 def read_upload_status():
     """ Reads the JSON data from tusd, and returns a tuple of numeric video ID, original
@@ -51,6 +52,13 @@ def get_session():
     client = SSHClient()
     client.load_system_host_keys()
     client.set_missing_host_key_policy(AutoAddPolicy)
+
+    # Working around a Kubernetes issue. Can't have too permissive mode
+    # on the key file or ssh won't accept. But can't set UID on the
+    # Kube mounted secret. So this is the workaround. Ugh.
+    shutil.copyfile(KEYPATH, '/srv/tus-data/private-key')
+    os.chmod('/srv/tus-data/private-key', 0o0444)
+
     client.connect(HOSTNAME, username=USERNAME, key_filename=KEYPATH)
     logging.debug(f"Connected, opening SFTP session")
     sftp = client.open_sftp()
