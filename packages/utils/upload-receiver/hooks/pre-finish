@@ -42,7 +42,11 @@ def read_upload_status():
         }
     }
     """
-    s = json.load(sys.stdin)["Upload"]
+    s = json.load(sys.stdin)
+    print(json.dumps(s, indent=2), file=sys.stderr)
+
+    s = s["Upload"]
+
     return (s["MetaData"]["videoID"], s["MetaData"]["origFileName"],
             s["Storage"]["Path"])
 
