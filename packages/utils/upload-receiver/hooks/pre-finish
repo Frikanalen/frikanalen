@@ -82,6 +82,7 @@ def upload_video(video_id, path, orig_filename):
         return
         # Fixme: Find a better way to handle an existing directory
 
+    path = os.path.join("/srv/tusd-data/upload-tmp/", path)
     logging.debug(f"Copying {path} to {legacy_temp_filename}...")
     sftp.put(path, legacy_temp_filename)
 
