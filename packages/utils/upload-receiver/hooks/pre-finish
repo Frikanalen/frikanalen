@@ -57,7 +57,7 @@ def get_session():
     # on the key file or ssh won't accept. But can't set UID on the
     # Kube mounted secret. So this is the workaround. Ugh.
     shutil.copyfile(KEYPATH, '/srv/tus-data/private-key')
-    os.chmod('/srv/tus-data/private-key', 0o0444)
+    os.chmod('/srv/tusd-data/private-key', 0o0444)
 
     client.connect(HOSTNAME, username=USERNAME, key_filename=KEYPATH)
     logging.debug(f"Connected, opening SFTP session")
