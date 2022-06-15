@@ -60,8 +60,8 @@ def get_session():
     # Working around a Kubernetes issue. Can't have too permissive mode
     # on the key file or ssh won't accept. But can't set UID on the
     # Kube mounted secret. So this is the workaround. Ugh.
-    shutil.copyfile(KEYPATH, '/srv/tusd-data/private-key')
-    os.chmod('/srv/tusd-data/private-key', 0o0444)
+    # shutil.copyfile(KEYPATH, '/srv/tusd-data/private-key')
+    # os.chmod('/srv/tusd-data/private-key', 0o0400)
 
     client.connect(HOSTNAME, username=USERNAME, key_filename=KEYPATH)
     logging.debug(f"Connected, opening SFTP session")
@@ -98,5 +98,5 @@ if __name__ == '__main__':
     logging.info("Pre-finish hook starting")
     video_id, orig_filename, path = read_upload_status()
     logging.info(f"Video ID: {video_id} File name: {orig_filename}")
-    upload_video(video_id, orig_filename, path)
+    upload_video(video_id,  path, orig_filename)
     logging.info("Copy complete")
