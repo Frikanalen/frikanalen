@@ -3,8 +3,7 @@ FROM tusproject/tusd
 USER root
 COPY requirements.txt .
 
-RUN apk add py3-pip
-RUN pip3 install -r requirements.txt
+RUN apk add py3-pip py3-paramiko py3-requests
 
 USER tusd
 
