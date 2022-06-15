@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 HOSTNAME = 'file01'
 USERNAME = 'fkupload'
-KEYPATH = '/secrets/ssh_private_key'
+KEYPATH = '/srv/tus-data/secrets/ssh_private_key'
 
 def read_upload_status():
     """ Reads the JSON data from tusd, and returns a tuple of numeric video ID, original
