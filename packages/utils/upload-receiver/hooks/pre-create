@@ -6,7 +6,7 @@ import json
 import os
 import sys
 import requests
-from loguru import logger
+import logging
 
 FK_API = os.environ.get('FK_API', 'http://django.default.svc.cluster.local/api')
 FK_TOKEN = os.environ.get('FK_TOKEN', None)
@@ -38,7 +38,7 @@ def refuse(string):
     """ Reject an incoming request. The output given to stdout will be returned
     as part of the error message which is presently displayed on the front end.
     The output given to standard error is logged by the upload receiver. """
-    logger.warning(string)
+    logging.warning(string)
     sys.exit(1)
 
 
@@ -68,15 +68,15 @@ def validate_request(request):
 
 
 if __name__ == '__main__':
-    logger.info('pre-create hook starting')
+    logging.info('pre-create hook starting')
     if FK_TOKEN is None:
-        logger.error('FK_TOKEN is not set! Quitting.')
+        logging.error('FK_TOKEN is not set! Quitting.')
         sys.exit(1)
 
     try:
         request = parse_request()
         print(json.dumps(request, indent=2), file=sys.stderr)
-        logger = logger.bind(remote_addr=request['HTTPRequest']['Header']['X-Forwarded-For'])
+        logging = logging.bind(remote_addr=request['HTTPRequest']['Header']['X-Forwarded-For'])
         validate_request(request)
     except TokenValidationException as e:
         refuse(e)

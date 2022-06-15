@@ -9,4 +9,4 @@ RUN pip3 install -r requirements.txt
 USER tusd
 
 COPY hooks /srv/tusd-hooks
-CMD ["-behind-proxy","-s3-bucket","incoming","-s3-endpoint","http://s3-backend","-hooks-dir","/srv/tusd-hooks","-base-path","/api/videos/upload"]
+CMD ["-behind-proxy","-upload-dir","./upload-tmp","-hooks-dir","/srv/tusd-hooks","-base-path","/api/videos/upload"]

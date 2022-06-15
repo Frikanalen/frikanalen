@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+""" This script is invoked by tusd upon successful reception of a complete file.
+
+"""
+import json
+import logging
+import os
+import sys
+
+from paramiko import SSHClient
+from paramiko.client import AutoAddPolicy
+
+logging.basicConfig(level=logging.DEBUG)
+
+HOSTNAME = 'file01'
+USERNAME = 'fkupload'
+KEYPATH = 'secrets/ssh_private_key'
+
+def read_upload_status():
+    """ Reads the JSON data from tusd, and returns a tuple of numeric video ID, original
+    file name, and S3 key.
+
+    Example JSON data:
+
+    "Upload": {
+        "ID": "9a1a39798141223fb20f133f2bc58535+2~Qe1PIASV0XqmPse9fP-oq6PMzy-ZvdD",
+        "IsFinal": false,
+        "IsPartial": false,
+        "MetaData": {
+            "origFileName": "IMG_1133.MOV",
+            "uploadToken": "6182701c94024dd4ac75866ed5071bf1",
+            "videoID": "626739"
+        },
+        "Offset": 9844291,
+        "PartialUploads": null,
+        "Size": 9844291,
+        "SizeIsDeferred": false,
+        "Storage": {
+            "Type": "filestore",
+            "Path": "/my/upload/directory/14b1c4c77771671a8479bc0444bbc5ce",
+        }
+    }
+    """
+    s = json.load(sys.stdin)["Upload"]
+    return (s["MetaData"]["videoID"], s["MetaData"]["origFileName"],
+            s["Storage"]["Path"])
+
+
+def get_session():
+    logging.debug(f"SSH connecting to {USERNAME}@{HOSTNAME}")
+    client = SSHClient()
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(AutoAddPolicy)
+    client.connect(HOSTNAME, username=USERNAME, key_filename=KEYPATH)
+    logging.debug(f"Connected, opening SFTP session")
+    sftp = client.open_sftp()
+    return sftp
+
+
+def upload_video(video_id, path, orig_filename):
+    """ Creates a temporary directory on file01, copies the file, and moves it
+    into the move_and_process watchfolder. """
+    sftp = get_session()
+
+    legacy_temp_directory = f'/srv/fkupload/adaptor_incoming/{video_id}'
+    legacy_temp_filename = os.path.join(legacy_temp_directory, orig_filename)
+    legacy_watchfolder = f'/srv/fkupload/finished_uploads/{video_id}'
+
+    try:
+        logging.debug(f"Creating directory {HOSTNAME}:{legacy_temp_directory}")
+        sftp.mkdir(legacy_temp_directory)
+    except OSError as e:
+        logging.error("Target directory already exists!", e)
+        return
+        # Fixme: Find a better way to handle an existing directory
+
+    logging.debug(f"Copying {path} to {legacy_temp_filename}...")
+    sftp.put(path, legacy_temp_filename)
+
+    logging.debug(f"Moving from {legacy_temp_directory} {legacy_watchfolder}")
+    sftp.posix_rename(legacy_temp_directory, legacy_watchfolder)
+
+
+if __name__ == '__main__':
+    logging.info("Pre-finish hook starting")
+    video_id, orig_filename, path = read_upload_status()
+    logging.info(f"Video ID: {video_id} File name: {orig_filename}")
+    upload_video(video_id, orig_filename, path)
+    logging.info("Copy complete")
