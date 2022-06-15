@@ -78,7 +78,7 @@ if __name__ == '__main__':
     try:
         request = parse_request()
         print(json.dumps(request, indent=2), file=sys.stderr)
-        logging.info("Receiving from ", request['HTTPRequest']['Header']['X-Forwarded-For'])
+        logging.info("Receiving from " + request['HTTPRequest']['Header']['X-Forwarded-For'])
         validate_request(request)
     except TokenValidationException as e:
         refuse(e)
