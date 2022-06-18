@@ -3,16 +3,10 @@ import styled from "@emotion/styled";
 import { Form } from "modules/form/components/Form";
 import { FormField, FormFieldWithProps } from "modules/form/components/FormField";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
-import { Organization } from "modules/organization/resources/Organization";
-import { createResourcePageWrapper } from "modules/state/helpers/createResourcePageWrapper";
 import { useStores } from "modules/state/manager";
-import { observer } from "mobx-react-lite";
 import { FileInput } from "modules/input/components/FileInput";
 import { css } from "@emotion/react";
-import {
-  getInitialRequireAuthenticationProps,
-  RequireAuthentication,
-} from "modules/auth/components/RequireAuthentication";
+import { RequireAuthentication } from "modules/auth/components/RequireAuthentication";
 import { ControlledDropdownInput } from "modules/input/components/ControlledDropdownInput";
 import { StatusLine } from "modules/ui/components/StatusLine";
 import { GenericButton } from "modules/ui/components/GenericButton";
@@ -20,6 +14,7 @@ import { ButtonList } from "modules/ui/components/ButtonList";
 import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { ProgressBar } from "modules/ui/components/ProgressBar";
 import { InternalLink } from "modules/ui/components/InternalLink";
+import { useRouter } from "next/router";
 
 const breakpoint = 550;
 
@@ -78,11 +73,15 @@ const UploadFooter = styled.div`
   justify-content: space-between;
 `;
 
-const Upload = observer(() => {
+const UploadPage = async () => {
+  const router = useRouter();
   const { videoUploadStore, organizationStore } = useStores();
 
-  const { form, organizationId, videoId } = videoUploadStore;
-  const organization = organizationStore.getResourceById(organizationId);
+  const orgId = parseInt(router.query.orgId as string);
+  await videoUploadStore.prepare(orgId);
+
+  const { form, videoId } = videoUploadStore;
+  const organization = organizationStore.getResourceById(orgId);
 
   const { file, upload } = videoUploadStore;
   const progress = upload?.progress || 0;
@@ -151,31 +150,15 @@ const Upload = observer(() => {
   );
 
   return (
-    <Container>
-      <h1>Last opp video for {organization.data.name}</h1>
-      {renderFilePrompt()}
-      {renderVideoForm()}
-      {renderUpload()}
-    </Container>
-  );
-});
-
-const UploadPage = createResourcePageWrapper<Organization>({
-  getFetcher: (query, manager) => {
-    const { organizationStore } = manager.stores;
-    const { orgID } = query;
-
-    const safeOrgId = Number(orgID) ?? 0;
-    return organizationStore.fetchById(safeOrgId);
-  },
-  renderContent: () => (
     <RequireAuthentication>
-      <Upload />
+      <Container>
+        <h1>Last opp video for {organization.data.name}</h1>
+        {renderFilePrompt()}
+        {renderVideoForm()}
+        {renderUpload()}
+      </Container>
     </RequireAuthentication>
-  ),
-  getInitialProps: async (o, context) => {
-    await getInitialRequireAuthenticationProps(context);
-  },
-});
+  );
+};
 
 export default UploadPage;
