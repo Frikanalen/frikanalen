@@ -82,7 +82,7 @@ function Profile() {
     const { data } = await api.put<User>("/user", serialized);
 
     // TODO: Fix this, users should be in a resource store
-    Object.assign(authStore.user, data);
+    Object.assign(authStore.user!, data);
   });
 
   return (
