@@ -39,7 +39,7 @@ export class ResourceStore<R extends Resource<D>, D> {
     const item = this.items[id];
 
     if (!item) {
-      throw new Error("Passed invalid id to getById");
+      throw new Error(`Passed invalid id ${id} to getById`);
     }
 
     return item;

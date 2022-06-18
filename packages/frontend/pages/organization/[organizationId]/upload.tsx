@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import { Form } from "modules/form/components/Form";
 import { FormField, FormFieldWithProps } from "modules/form/components/FormField";
@@ -15,6 +15,7 @@ import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { ProgressBar } from "modules/ui/components/ProgressBar";
 import { InternalLink } from "modules/ui/components/InternalLink";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
 const breakpoint = 550;
 
@@ -73,17 +74,21 @@ const UploadFooter = styled.div`
   justify-content: space-between;
 `;
 
-const UploadPage = async () => {
+const Upload = () => {
   const router = useRouter();
-  const { videoUploadStore, organizationStore } = useStores();
+  const organizationId = parseInt(router.query.organizationId as string);
+  const { videoUploadStore } = useStores();
 
-  const orgId = parseInt(router.query.orgId as string);
-  await videoUploadStore.prepare(orgId);
+  // Just an ugly hack to force component re-draw
+  const [lol, updateState] = React.useState<string>("asdf");
+  const forceUpdate = React.useCallback(() => updateState((s) => s + "f"), []);
 
-  const { form, videoId } = videoUploadStore;
-  const organization = organizationStore.getResourceById(orgId);
+  const { form, videoId, file, upload } = videoUploadStore;
 
-  const { file, upload } = videoUploadStore;
+  useEffect(() => {
+    videoUploadStore.prepare(organizationId).then(() => forceUpdate());
+  }, []);
+
   const progress = upload?.progress || 0;
   const uploadStatus = upload?.status || "idle";
 
@@ -100,8 +105,12 @@ const UploadPage = async () => {
     await videoUploadStore.start();
   });
 
+  if (isNaN(organizationId)) return null;
+
   const handleSelectFile = (files: File[]) => {
     videoUploadStore.file = files[0];
+    console.log("HI");
+    forceUpdate();
   };
 
   const renderFilePrompt = () => (
@@ -113,6 +122,7 @@ const UploadPage = async () => {
 
   const renderVideoForm = () => (
     <Step active={!!file && !upload}>
+      <div style={{ display: "none" }}>{lol}</div>
       <Instruction>2. Fyll ut videoinformasjon</Instruction>
       <StyledForm form={form} onSubmit={handleSubmit}>
         <Field area="name" label="Tittel" name="name">
@@ -152,7 +162,7 @@ const UploadPage = async () => {
   return (
     <RequireAuthentication>
       <Container>
-        <h1>Last opp video for {organization.data.name}</h1>
+        <h1>Last opp video</h1>
         {renderFilePrompt()}
         {renderVideoForm()}
         {renderUpload()}
@@ -161,4 +171,6 @@ const UploadPage = async () => {
   );
 };
 
-export default UploadPage;
+export default dynamic(() => Promise.resolve(Upload), {
+  ssr: false,
+});

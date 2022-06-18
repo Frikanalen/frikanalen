@@ -134,9 +134,9 @@ function OrganizationView(props: OrganizationViewProps) {
 const OrganizationPage = createResourcePageWrapper<Organization>({
   getFetcher: (query, manager) => {
     const { organizationStore } = manager.stores;
-    const { orgID } = query;
+    const { organizationId } = query;
 
-    const safeOrgId = Number(orgID) ?? 0;
+    const safeOrgId = Number(organizationId) ?? 0;
     return organizationStore.fetchById(safeOrgId);
   },
   renderContent: (o) => <OrganizationView organization={o} />,
