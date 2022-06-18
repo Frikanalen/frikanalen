@@ -174,10 +174,6 @@ const UploadPage = createResourcePageWrapper<Organization>({
     </RequireAuthentication>
   ),
   getInitialProps: async (o, context) => {
-    const { manager } = context;
-    const { videoUploadStore } = manager.stores;
-
-    await videoUploadStore.prepare(o.data.id);
     await getInitialRequireAuthenticationProps(context);
   },
 });
