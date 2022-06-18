@@ -1,12 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import { Form } from "modules/form/components/Form";
 import { FormField, FormFieldWithProps } from "modules/form/components/FormField";
 import { ControlledTextInput } from "modules/input/components/ControlledTextInput";
+import { Organization } from "modules/organization/resources/Organization";
+import { createResourcePageWrapper } from "modules/state/helpers/createResourcePageWrapper";
 import { useStores } from "modules/state/manager";
+import { observer } from "mobx-react-lite";
 import { FileInput } from "modules/input/components/FileInput";
 import { css } from "@emotion/react";
-import { RequireAuthentication } from "modules/auth/components/RequireAuthentication";
+import {
+  getInitialRequireAuthenticationProps,
+  RequireAuthentication,
+} from "modules/auth/components/RequireAuthentication";
 import { ControlledDropdownInput } from "modules/input/components/ControlledDropdownInput";
 import { StatusLine } from "modules/ui/components/StatusLine";
 import { GenericButton } from "modules/ui/components/GenericButton";
@@ -14,8 +20,6 @@ import { ButtonList } from "modules/ui/components/ButtonList";
 import { useFormSubmission } from "modules/form/hooks/useFormSubmission";
 import { ProgressBar } from "modules/ui/components/ProgressBar";
 import { InternalLink } from "modules/ui/components/InternalLink";
-import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
 
 const breakpoint = 550;
 
@@ -74,21 +78,13 @@ const UploadFooter = styled.div`
   justify-content: space-between;
 `;
 
-const Upload = () => {
-  const router = useRouter();
-  const organizationId = parseInt(router.query.organizationId as string);
-  const { videoUploadStore } = useStores();
+const Upload = observer(() => {
+  const { videoUploadStore, organizationStore } = useStores();
 
-  // Just an ugly hack to force component re-draw
-  const [lol, updateState] = React.useState<string>("asdf");
-  const forceUpdate = React.useCallback(() => updateState((s) => s + "f"), []);
+  const { form, organizationId, videoId } = videoUploadStore;
+  const organization = organizationStore.getResourceById(organizationId);
 
-  const { form, videoId, file, upload } = videoUploadStore;
-
-  useEffect(() => {
-    videoUploadStore.prepare(organizationId).then(() => forceUpdate());
-  }, []);
-
+  const { file, upload } = videoUploadStore;
   const progress = upload?.progress || 0;
   const uploadStatus = upload?.status || "idle";
 
@@ -105,12 +101,8 @@ const Upload = () => {
     await videoUploadStore.start();
   });
 
-  if (isNaN(organizationId)) return null;
-
   const handleSelectFile = (files: File[]) => {
     videoUploadStore.file = files[0];
-    console.log("HI");
-    forceUpdate();
   };
 
   const renderFilePrompt = () => (
@@ -122,7 +114,6 @@ const Upload = () => {
 
   const renderVideoForm = () => (
     <Step active={!!file && !upload}>
-      <div style={{ display: "none" }}>{lol}</div>
       <Instruction>2. Fyll ut videoinformasjon</Instruction>
       <StyledForm form={form} onSubmit={handleSubmit}>
         <Field area="name" label="Tittel" name="name">
@@ -160,17 +151,35 @@ const Upload = () => {
   );
 
   return (
-    <RequireAuthentication>
-      <Container>
-        <h1>Last opp video</h1>
-        {renderFilePrompt()}
-        {renderVideoForm()}
-        {renderUpload()}
-      </Container>
-    </RequireAuthentication>
+    <Container>
+      <h1>Last opp video for {organization.data.name}</h1>
+      {renderFilePrompt()}
+      {renderVideoForm()}
+      {renderUpload()}
+    </Container>
   );
-};
-
-export default dynamic(() => Promise.resolve(Upload), {
-  ssr: false,
 });
+
+const UploadPage = createResourcePageWrapper<Organization>({
+  getFetcher: (query, manager) => {
+    const { organizationStore } = manager.stores;
+    const { organizationId } = query;
+
+    const safeOrgId = Number(organizationId) ?? 0;
+    return organizationStore.fetchById(safeOrgId);
+  },
+  renderContent: () => (
+    <RequireAuthentication>
+      <Upload />
+    </RequireAuthentication>
+  ),
+  getInitialProps: async (o, context) => {
+    const { manager } = context;
+    const { videoUploadStore } = manager.stores;
+
+    await videoUploadStore.prepare(o.data.id);
+    await getInitialRequireAuthenticationProps(context);
+  },
+});
+
+export default UploadPage;
