@@ -1,11 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
 import { TUS_CHUNK_SIZE, TUS_RESUMABLE, UPLOAD_RETRY_COUNT } from "../constants";
-import { StoredArray } from "modules/state/classes/StoredArray";
-import { toSafeAsciiString } from "modules/lang/string";
 import { Manager } from "modules/state/types";
-
-const storage = new StoredArray<string>("resumable-uploads", 10);
 
 export type FileUploadStatus = "idle" | "uploading" | "failed" | "completed";
 
@@ -33,7 +29,7 @@ export class FileUpload {
   private offset = 0;
   private retries = 0;
 
-  private file: File;
+  private readonly file: File;
   private destination: string;
   private metadata: object;
   private location?: string;
@@ -87,7 +83,7 @@ export class FileUpload {
     }
   }
 
-  private encodeMetadata(metadata: Record<string, any>) {
+  private static encodeMetadata(metadata: Record<string, any>) {
     let encoded = [];
 
     for (const key in metadata) {
@@ -97,14 +93,14 @@ export class FileUpload {
     return encoded.join(",");
   }
 
-  private async prepare() {
+  async start() {
     const { destination, metadata } = this;
     const { size } = this.file;
 
     const headers = {
       ...TUS_HEADERS,
       "Upload-Length": String(size),
-      "Upload-Metadata": this.encodeMetadata(metadata),
+      "Upload-Metadata": FileUpload.encodeMetadata(metadata),
     };
 
     const request = this.server.post<any>(destination, null, {
@@ -114,54 +110,16 @@ export class FileUpload {
 
     try {
       const response = await request;
-      const location = response.headers.location!;
+      this.location = response.headers.location!;
 
-      this.location = location;
-      storage.set(this.fingerprint, location);
-
-      this.upload();
+      await this.upload();
     } catch (e) {
       this.status = "failed";
       console.error(e);
     }
   }
 
-  private async restore(location: string) {
-    const request = this.server.head(location, { ...this.cancelOptions, headers: TUS_HEADERS });
-
-    try {
-      const response = await request;
-      const offset = response.headers["upload-offset"];
-
-      this.offset = Number(offset);
-      this.upload();
-    } catch (error) {
-      const { response } = error as AxiosError;
-
-      if (response) {
-        const { status } = response;
-
-        if (status === 410) return this.retry();
-        if (status === 404) return await this.prepare();
-
-        this.error = response.data;
-      }
-
-      this.status = "failed";
-    }
-  }
-
-  public start() {
-    const location = storage.get(this.fingerprint);
-
-    if (location) {
-      this.restore(location);
-    } else {
-      this.prepare();
-    }
-  }
-
-  public retry() {
+  public async retry() {
     this.retries += 1;
 
     if (this.retries > UPLOAD_RETRY_COUNT) {
@@ -169,12 +127,10 @@ export class FileUpload {
       return;
     }
 
-    storage.remove(this.fingerprint);
-
     this.offset = 0;
     this.location = undefined;
 
-    this.start();
+    await this.start();
   }
 
   public stop() {
@@ -198,15 +154,6 @@ export class FileUpload {
 
     return this.retry();
   };
-
-  public get fingerprint(): string {
-    const { name, size, lastModified } = this.file;
-
-    const rawFingerprint = `tus-${name}-${size}-${lastModified}`;
-    const escapedFingerprint = toSafeAsciiString(rawFingerprint);
-
-    return btoa(escapedFingerprint);
-  }
 
   private get cancelOptions() {
     return {
