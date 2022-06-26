@@ -1,7 +1,6 @@
 import psycopg2
 import pytz
 from datetime import datetime, timedelta
-from .connection import get_connstring
 import sys
 
 class Organization():
@@ -56,9 +55,18 @@ class Graphics(ScheduleItem):
                 'type': 'graphics',
                 }
 
+class UnconfiguredEnvironment(Exception):
+    """base class for new exception"""
+    pass
+
 class Schedule():
     def __init__(self):
-        self.conn = psycopg2.connect(get_connstring())
+        try:
+            database_url = os.getenv("DATABASE_URL")
+        except KeyError:
+            raise UnconfiguredEnvironment("DATABASE_URL must be set")
+
+        self.conn = psycopg2.connect(database_url)
 
     def get_date(self, date):
         query = """
