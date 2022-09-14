@@ -20,6 +20,8 @@ spec:
       - name: frontend
         image: frikanalen/frontend-v2:latest
         env:
+          - name: FK_MEDIA
+            value: https://beta.frikanalen.no/media/ui
           - name: FK_API
             value: https://beta.frikanalen.no/api/v2
           - name: FK_UPLOAD
