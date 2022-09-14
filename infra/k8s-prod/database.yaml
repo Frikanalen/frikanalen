@@ -108,8 +108,8 @@ metadata:
   name: database-api
 
 spec:
-  replicas: 1
-  image: postgres:13.2
+  replicas: 3
+  image: postgres:13.8
   port: 5432
 
   backup:
