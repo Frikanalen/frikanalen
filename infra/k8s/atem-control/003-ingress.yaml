@@ -1,7 +1,7 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: cors
+  name: atem-control-cors
   namespace: default
 spec:
   headers:
@@ -35,7 +35,7 @@ spec:
     middlewares:
       - name: strip-atem-prefix
         namespace: default
-      - name: cors
+      - name: atem-control-cors
         namespace: default
     services:
     - kind: Service
