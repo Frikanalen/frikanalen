@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: elasticsearch
-data:
-  elasticsearch.yml: |
-    discovery.zen:
-      minimum_master_nodes: ${NODE_QUORUM}
-      ping.unicast.hosts: elasticsearch-cluster

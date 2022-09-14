@@ -1,2 +1,0 @@
-To initialize Kibana dashboards in shell on filebeat machine:
-filebeat setup -E output.elasticsearch.hosts=elasticsearch-logging.default -E setup.kibana.host=kibana-logging.default -E setup.dashboards.index=logstash*
