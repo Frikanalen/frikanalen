@@ -92,6 +92,26 @@ spec:
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
+  name: toches-graphql
+  namespace: beta
+spec:
+  tls:
+    certResolver: default
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/graphql`)
+    kind: Rule
+    services:
+    - name: toches
+      namespace: beta
+      kind: Service
+      scheme: http
+      port: 80
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
   name: toches
   namespace: beta
 spec:
