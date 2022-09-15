@@ -15,17 +15,11 @@ spec:
       containers:
       - name: schedule-service
         env:
-          - name: DATABASE_HOST
-            value: database-api
-          - name: DATABASE_USER
-            value: fkschedule
-          - name: DATABASE_NAME
-            value: fkweb
-          - name: DATABASE_PASSWORD
+          - name: DATABASE_URL
             valueFrom:
                secretKeyRef:
                   name: database-api-secret
-                  key: FKSCHEDULE_PASSWORD
+                  key: DATABASE_URL
           - name: TZ
             value: Europe/Oslo
         image: frikanalen/schedule-service:latest
