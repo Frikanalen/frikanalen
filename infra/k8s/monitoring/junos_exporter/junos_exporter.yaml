@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: junos-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: junos-exporter
+  template:
+    metadata:
+      name: junos-exporter
+      labels:
+        app: junos-exporter
+    spec:
+      containers:
+      - name: junos-exporter
+        image: czerwonk/junos_exporter:latest
+        ports:
+        - name: metrics
+          containerPort: 9326
+        volumeMounts:
+          - mountPath: /ssh-keyfile
+            name: junos-exporter-key
+          - mountPath: /config.yml
+            name: junos-exporter-config
+            subPath: config.yaml
+      volumes:
+        - name: junos-exporter-config
+          configMap:
+            defaultMode: 420
+            name: junos-exporter
+        - name: junos-exporter-key
+          secret:
+            secretName: junos-exporter-key
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: junos-exporter
+  namespace: monitoring
+data:
+  config.yaml: |
+    devices:
+      - host: 192.168.4.3
+        key_file: /ssh-keyfile/id_rsa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: junos-exporter
+  namespace: monitoring
+  labels:
+    app: junos-exporter
+spec:
+  selector:
+    app: junos-exporter
+  ports:
+  - name: metrics
+    protocol: TCP
+    port: 9326
+    targetPort: 9326
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: junos
+  namespace: monitoring
+  labels:
+    release: prometheus-stack
+spec:
+  endpoints:
+  - path: /metrics
+    port: metrics
+    scheme: http
+    interval: 1m
+    scrapeTimeout: 50s
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app: junos-exporter
+
