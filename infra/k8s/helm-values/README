@@ -1,0 +1,8 @@
+These are the values files for the Helm packages we use.
+
+These are documented here. Ideally these should probably be integrated into our Ansible setup!
+
+See eg. https://www.ansible.com/blog/automating-helm-using-ansible
+
+helm install -f kube-prometheus-stack.yaml prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring
+helm install -f prometheus-postgres-exporter.yaml prometheus-postgres-exporter prometheus-community/prometheus-postgres-exporter

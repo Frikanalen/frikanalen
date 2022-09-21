@@ -1,0 +1,48 @@
+
+serviceMonitor:
+  # When set true then use a ServiceMonitor to configure scraping
+  enabled: true
+  # Set the namespace the ServiceMonitor should be deployed
+  namespace: default
+  # Set how frequently Prometheus should scrape
+  # interval: 30s
+  # Set path to cloudwatch-exporter telemtery-path
+  # telemetryPath: /metrics
+  # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
+  labels:
+    release: prometheus-stack
+  # Set timeout for scrape
+  # timeout: 10s
+  # Set of labels to transfer from the Kubernetes Service onto the target
+  # targetLabels: []
+  # MetricRelabelConfigs to apply to samples before ingestion
+  # metricRelabelings: []
+  # Set relabel_configs as per https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+  # relabelings: []
+
+prometheusRule:
+  enabled: false
+  additionalLabels: {}
+  namespace: ""
+  rules: []
+    ## These are just examples rules, please adapt them to your needs.
+    ## Make sure to constraint the rules to the current prometheus-postgres-exporter service.
+    # - alert: HugeReplicationLag
+    #   expr: pg_replication_lag{service="{{ template "prometheus-postgres-exporter.fullname" . }}"} / 3600 > 1
+    #   for: 1m
+    #   labels:
+    #     severity: critical
+    #   annotations:
+    #     description: replication for {{ template "prometheus-postgres-exporter.fullname" . }} PostgreSQL is lagging by {{ "{{ $value }}" }} hour(s).
+    #     summary: PostgreSQL replication is lagging by {{ "{{ $value }}" }} hour(s).
+
+config:
+  datasource:
+    # Specify one of both datasource or datasourceSecret
+    host: database-api
+    user: postgres
+    database: postgres
+    passwordSecret:
+      name: database-api-secret
+      key: POSTGRES_PASSWORD
+    sslmode: disable
