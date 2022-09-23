@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: config-example
+  namespace: monitoring
+  labels:
+    alertmanagerConfig: example
+    release: prometheus-stack
+spec:
+  route:
+    groupBy: ['job']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: 'telegram-example'
+  receivers:
+  - name: 'telegram-example'
+    telegramConfigs:
+    - chatID: -796927645
+      apiURL: https://api.telegram.org
+      parseMode: "HTML"
+      sendResolved: true
+      botToken:
+        name: 'telegram-config'
+        key: 'apiSecret'

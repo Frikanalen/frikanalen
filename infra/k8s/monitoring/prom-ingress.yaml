@@ -2,19 +2,21 @@
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: grafana-service
+  name: prometheus
   namespace: default
 spec:
   entryPoints: 
     - websecure
   routes:
-  - match: Host(`grafana.frikanalen.no`) 
+  - match: Host(`prometheus.admin.frikanalen.no`) 
     kind: Rule
+    middlewares:
+    - name: basic-admin-auth 
     services:
     - kind: Service
-      name: grafana-service
-      namespace: default
+      name: prometheus-stack-kube-prom-prometheus
+      namespace: monitoring
       scheme: http
-      port: 3000
+      port: 9090
   tls:
     certResolver: default

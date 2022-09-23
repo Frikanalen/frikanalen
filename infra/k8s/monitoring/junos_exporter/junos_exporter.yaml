@@ -43,6 +43,8 @@ metadata:
 data:
   config.yaml: |
     devices:
+      - host: 192.168.4.2
+        key_file: /ssh-keyfile/id_rsa
       - host: 192.168.4.3
         key_file: /ssh-keyfile/id_rsa
 ---
