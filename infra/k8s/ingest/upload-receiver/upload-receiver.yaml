@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: upload-receiver
+  namespace: default
 spec:
   type: ClusterIP
   selector:
@@ -15,6 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: upload-receiver
+  namespace: default
 spec:
   selector:
     matchLabels:
@@ -29,30 +31,23 @@ spec:
       containers:
       - name: upload-receiver
         image: frikanalen/upload-receiver:latest
+        volumeMounts:
+        - name: secrets-volume
+          mountPath: /secrets
         imagePullPolicy: Always
         ports:
           - name: web
             containerPort: 1080
         env:
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: upload-receiver
-                key: AWS_ACCESS_KEY_ID
-          - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: upload-receiver
-                key: AWS_SECRET_ACCESS_KEY
-          - name: AWS_REGION
-            valueFrom:
-              secretKeyRef:
-                name: upload-receiver
-                key: AWS_REGION
           - name: FK_TOKEN
             valueFrom:
               secretKeyRef:
                 name: upload-receiver
                 key: FK_TOKEN
           - name: FK_API
-            value: http://fk.dev.local/api
+            value: https://frikanalen.no/api
+      volumes:
+      - name: secrets-volume
+        secret:
+          secretName: upload-processors
+          defaultMode: 0444
