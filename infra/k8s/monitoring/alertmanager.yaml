@@ -16,7 +16,7 @@ spec:
   receivers:
   - name: 'telegram-example'
     telegramConfigs:
-    - chatID: -796927645
+    - chatID: -666624603
       apiURL: https://api.telegram.org
       parseMode: "HTML"
       sendResolved: true
