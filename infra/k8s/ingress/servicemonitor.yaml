@@ -4,7 +4,7 @@ metadata:
   name: traefik
   namespace: default
   labels:
-    release: kube-prometheus-stack
+    release: prometheus-stack
 spec:
   endpoints:
   - path: /metrics
