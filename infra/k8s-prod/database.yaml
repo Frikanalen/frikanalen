@@ -4,6 +4,37 @@ metadata:
   name: database-api-config
 
 data:
+  postgres.conf: |2
+
+    ## Replication configs
+    listen_addresses = '*'
+    max_wal_senders = 10
+    max_connections = 100
+    shared_buffers = 128MB
+
+    ## Logging
+    ##log_destination = 'stderr,csvlog'
+    ##logging_collector = on
+    ##log_directory = 'pg_log'
+    ##log_filename= 'postgresql-%Y-%m-%d_%H%M%S.log'
+
+    # Replication configs - kubegres default overrides
+    logging_collector = 'on'
+    log_destination = 'stderr,csvlog'
+    log_directory = '/var/log/postgresql/'
+    log_filename= 'postgresql-%Y-%m-%d_%H%M%S.log'
+
+    # Database statistics
+    shared_preload_libraries = 'pg_stat_statements'
+    pg_stat_statements.max = 10000
+    pg_stat_statements.track = all
+
+    log_statement = 'none'
+    log_checkpoints = on
+    log_connections = on
+    log_disconnections = on
+    log_lock_waits = on
+    log_min_duration_statement = 0
   fkschedule-init.sh: |
     #!/bin/bash
     set -e
