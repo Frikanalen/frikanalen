@@ -6,6 +6,7 @@ users:
           ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKS8PkeV+Itq1ysleZJ1p/mnukyErXuIPJRuvByCiGot surface
           ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJGXen+zA2cx2lxrQ4Uebgn58zPNxFucf/BWPTGHd+tCAI2Mgg/VeCX6LxOBJPBa95xJa/BGdM1Z5dIEmLD+hkg= desktop
           ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEhzXg9p4NSAX+kZ2VOEa+u3pKQvDy4seHfTqMQoTpWr MacBook Frikanalen
+          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHskehJG40/SMwmGv33LsC94H7thBWpZ/Yu14zZ9Wmoe IntelMBP
     - username: odinho
       realname: "Odin Hørthe Omdal"
       ssh_keys: |

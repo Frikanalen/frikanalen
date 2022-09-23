@@ -12,3 +12,6 @@ file01.frikanalen.no nginx=true domain=upload.frikanalen.no
 
 [playout]
 tx2.frikanalen.no
+
+[k8s_master]
+simula.frikanalen.no

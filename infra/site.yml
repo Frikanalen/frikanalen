@@ -2,7 +2,7 @@
 - name: Apply common Debian config
   hosts: all
   become: true
-  gather_facts: false
+  gather_facts: true
   roles:
      - role: debian_stock_config
        when: ansible_facts['os_family'] == 'Debian'
@@ -14,22 +14,15 @@
   roles:
     - common
   tags: common
-- name: Install upload app
-  hosts: upload
-  become: true
-  gather_facts: false
-  roles:
-    - upload-app
-- name: Set up web server
-  hosts: web
-  become: true
-  gather_facts: false
-  roles:
-    - web
-- name: Set up playout server
-  hosts: playout
-  become: true
-  gather_facts: false
-  tags: playout
-  roles:
-    - playout
+    #- name: Install upload app
+    #  hosts: upload
+    #  become: true
+    #  gather_facts: false
+    #  roles:
+    #    - upload-app
+    #- name: Set up web server
+    #  hosts: web
+    #  become: true
+    #  gather_facts: false
+    #  roles:
+    #    - web
