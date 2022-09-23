@@ -1,0 +1,50 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kiloview
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: 192.168.3.168
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kiloview-stream
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: 192.168.3.167
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: kiloview
+  namespace: default
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`kiloview.frikanalen.no`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: kiloview
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: kiloview-rtmp
+  namespace: default
+spec:
+  entryPoints:
+    - rtmp
+  routes:
+  - match: HostSNI(`*`)
+    services:
+    - name: kiloview-stream
+      port: 1935
