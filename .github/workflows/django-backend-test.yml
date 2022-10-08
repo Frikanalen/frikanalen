@@ -19,7 +19,8 @@ jobs:
           python-version: 3.10
           cache: 'pip'
       - name: Install dependencies
-        run: pip install -r packages/fkweb/requirements-dev.txt
+        run: pip install -r requirements-dev.txt
+        working-directory: packages/fkweb
       - name: Run tests
-        run: env/bin/python manage.py test
+        run: python manage.py test
         working-directory: packages/fkweb
