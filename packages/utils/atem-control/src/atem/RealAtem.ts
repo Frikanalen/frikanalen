@@ -69,7 +69,7 @@ export class RealAtem implements AtemConnection {
 
   constructor() {
     this.atem = new Atem.Atem();
-    this.ME = [new RealAtemME(0, this.atem)];
+    this.ME = [];
   }
 
   async connect(hostName: string) {
@@ -86,6 +86,9 @@ export class RealAtem implements AtemConnection {
 
       this.atem.on("connected", async () => {
         logger.info("Connected to ATEM");
+
+        this.ME = [new RealAtemME(0, this.atem)];
+
         await applyInitialConfiguration(this.atem);
         resolve();
       });

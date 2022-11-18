@@ -25,5 +25,5 @@ export const applyInitialConfiguration = async (atem: Atem) => {
     console.log("got exception while setting audio mixer input props");
     console.log(e);
   }
-  await atem.setAuxSource(MULTI_VIEWER_INPUT, 2);
+  await atem.setAuxSource(MULTI_VIEWER_INPUT, 0);
 };
