@@ -1,20 +1,30 @@
-import type { AtemConnection, AtemMixEffects } from "./AtemInterface";
+import type { AtemConnection, AtemMixEffects } from "./AtemInterface.js";
 
 class MockAtemME implements AtemMixEffects {
   idx: number;
-  currentInput: number;
+  currentProgram: number;
+  currentPreview: number;
 
   constructor(idx: number) {
     this.idx = idx;
-    this.currentInput = 1;
+    this.currentProgram = 1;
+    this.currentPreview = 1;
   }
 
-  public get input() {
-    return this.currentInput;
+  public get program() {
+    return this.currentProgram;
   }
 
-  public setInput = async (inputIndex: number) => {
-    this.currentInput = inputIndex;
+  public get preview() {
+    return this.currentProgram;
+  }
+
+  public setProgram = async (inputIndex: number) => {
+    this.currentProgram = inputIndex;
+  };
+
+  public setPreview = async (inputIndex: number) => {
+    this.currentPreview = inputIndex;
   };
 }
 

@@ -1,1 +1,2 @@
-node_modules/
+FK_API_URL=http://fk.dev.local/api
+FK_APIV2_URL=http://localhost:8080/

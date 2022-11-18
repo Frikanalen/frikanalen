@@ -1,38 +1,33 @@
-import fetch from "node-fetch";
-import { FK_API_URL } from "./server";
-import { getLogger } from "./logger";
+import { getLogger } from "./logger.js";
+import { V1CheckStaff } from "./auth/sessionV1.js";
+import { V2CheckStaff } from "./auth/sessionV2.js";
+import { FetchError } from "node-fetch";
 
 const logger = getLogger();
 
-interface authenticationCookies {
-  csrftoken?: string;
-  sessionid?: string;
-}
-
-export const getProfile = async ({
-  csrftoken,
-  sessionid,
-}: authenticationCookies) => {
-  const res = await fetch(`${FK_API_URL}/user`, {
-    headers: {
-      cookie: `csrftoken=${csrftoken}; sessionid=${sessionid}`,
-    },
-  });
-  return await res.json();
+type authenticationCookies = {
+  sessionid?: string; // API v1 session ID
+  "fk-session"?: string; // API v2 session ID
 };
 
 export const checkIfStaff = async (requestCookies: authenticationCookies) => {
-  if (!("csrftoken" in requestCookies && "sessionid" in requestCookies)) {
-    logger.warn("Refusing to authenticate without authorization header");
-    return false;
-  }
+  const V1SessionId = requestCookies?.["sessionid"];
+  const V2SessionId = requestCookies?.["fk-session"];
+  try {
+    if (V2SessionId) {
+      return V2CheckStaff(V2SessionId);
+    } else if (V1SessionId) {
+      return V1CheckStaff(V1SessionId);
+    }
+  } catch (e: any) {
+    if (e instanceof FetchError) {
+      console.error(`HTTP ${e.code}, ${e.message}`);
+    } else {
+      console.error(`Error: ${e.toString()}`);
+    }
 
-  const userProfile = await getProfile(requestCookies);
-  if (userProfile.isStaff) {
-    logger.info(`Authenticated request for ${userProfile.email}`);
-    return true;
-  } else {
-    logger.info(`User %{userProfile.email} is not staff, refusing`);
     return false;
   }
+  logger.warn("Rejecting request with neither v1 nor v2 API session cookie");
+  return false;
 };

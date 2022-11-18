@@ -1,8 +1,8 @@
 import type { RequestHandler } from "express";
 import fetch from "node-fetch";
-import { checkIfStaff } from "../auth";
-import { getLogger } from "../logger";
-import atem from "../atem/AtemInterface";
+import { checkIfStaff } from "../auth.js";
+import { getLogger } from "../logger.js";
+import atem from "../atem/AtemInterface.js";
 const logger = getLogger();
 
 export const posterPreview: RequestHandler = async (req, res) => {

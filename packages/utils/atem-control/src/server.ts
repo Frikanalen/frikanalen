@@ -1,20 +1,29 @@
 // vim: set ft=typescript:
 // Forgive me. This was my first Node project ever. It's starting to get back into shape.
 // Tidying-up PRs _very_ welcome.
-
+import * as dotenv from "dotenv";
+dotenv.config();
 import express, { RequestHandler } from "express";
-import { getLogger } from "./logger";
-const logger = getLogger();
-const cookieParser = require("cookie-parser");
+import { getLogger } from "./logger.js";
 import bodyParser from "body-parser";
-import { atemRouter } from "./atem/router";
-import { posterRouter } from "./poster/router";
-import atem from "./atem/AtemInterface";
+import { atemRouter } from "./atem/router.js";
+import { posterRouter } from "./poster/router.js";
+import atem from "./atem/AtemInterface.js";
+import cors from "cors";
+
+const logger = getLogger();
+import cookieParser from "cookie-parser";
+
 const handlePing: RequestHandler = (_req, res) => {
   res.send("pong");
 };
-export const FK_API_URL =
-  process.env["FK_API_URL"] || "https://frikanalen.no/api";
+
+export const FK_API_URL = process.env["FK_API_URL"];
+export const FK_APIV2_URL = process.env["FK_APIV2_URL"];
+if (!(FK_API_URL?.length && FK_APIV2_URL?.length)) {
+  logger.error("Environments FK_API_URL and FK_APIV2_URL must be set");
+  process.exit(1);
+}
 
 // The ATEM video mixer's multiviewer output is looped back in on input 10.
 export const MULTI_VIEWER_INPUT = 10;
@@ -39,6 +48,10 @@ const main = async () => {
     logger.info("Connected.");
   }
 
+  if (process.env["NODE_ENV"] === "development") {
+    logger.info("In development mode, applying CORS headers...");
+    app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+  }
   app.use(cookieParser());
   app.use(bodyParser.json());
   app.get("/ping", handlePing);

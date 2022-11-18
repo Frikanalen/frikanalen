@@ -1,4 +1,4 @@
-const winston = require("winston");
+import winston from "winston";
 export const getLogger = () => {
   if (process.env["NODE_ENV"] === "production") {
     return winston.createLogger({

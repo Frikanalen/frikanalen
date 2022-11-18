@@ -1,37 +1,74 @@
-import { Atem } from "atem-connection";
-import { applyInitialConfiguration } from "./utils";
-import { getLogger } from "../logger";
-import type { AtemConnection, AtemMixEffects } from "./AtemInterface";
+import Atem from "atem-connection";
+import { applyInitialConfiguration } from "./utils.js";
+import { getLogger } from "../logger.js";
+import type { AtemConnection, AtemMixEffects } from "./AtemInterface.js";
+import type { MixEffect } from "atem-connection/dist/state/video";
 
 const logger = getLogger();
 
 class RealAtemME implements AtemMixEffects {
   idx: number;
-  atem: Atem;
+  atem: Atem.Atem;
+  me: MixEffect;
 
-  constructor(idx: number, atem: Atem) {
+  constructor(idx: number, atem: Atem.Atem) {
     this.atem = atem;
+
+    if (!atem.state)
+      throw new Error("Cannot construct ME with empty Atem state");
+
+    const me = atem.state.video.mixEffects[idx];
+    if (!me) throw new Error("Cannot construct ME which does not exist");
+    this.me = me;
+
     this.idx = idx;
   }
 
-  public get input() {
-    if (this.atem.state.video.ME[this.idx] === undefined) {
+  private getME() {
+    const me = this.atem.state?.video.mixEffects[this.idx];
+
+    if (me === undefined) {
       throw new Error(`M/E #${this.idx} does not exist!`);
     }
-    return this.atem.state.video.ME[this.idx]!.programInput;
+
+    return me;
   }
 
-  public setInput = async (inputIndex: number) => {
+  public get program() {
+    const { programInput } = this.getME();
+
+    if (programInput === undefined) {
+      throw new Error(`M/E #${this.idx} is not online!`);
+    }
+
+    return programInput;
+  }
+
+  public get preview() {
+    const { previewInput } = this.getME();
+
+    if (previewInput === undefined) {
+      throw new Error(`M/E #${this.idx} is not online!`);
+    }
+
+    return previewInput;
+  }
+
+  public setProgram = async (inputIndex: number) => {
     await this.atem.changeProgramInput(inputIndex, this.idx);
+  };
+
+  public setPreview = async (inputIndex: number) => {
+    await this.atem.changePreviewInput(inputIndex, this.idx);
   };
 }
 
 export class RealAtem implements AtemConnection {
   public ME: RealAtemME[];
-  public atem: Atem;
+  public atem: Atem.Atem;
 
   constructor() {
-    this.atem = new Atem();
+    this.atem = new Atem.Atem();
     this.ME = [new RealAtemME(0, this.atem)];
   }
 

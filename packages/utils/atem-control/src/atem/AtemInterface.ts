@@ -1,14 +1,16 @@
-import { RealAtem } from "./RealAtem";
-import { MockAtem } from "./MockAtem";
+import { RealAtem } from "./RealAtem.js";
+import { MockAtem } from "./MockAtem.js";
 import type { Atem } from "atem-connection";
-import { getLogger } from "../logger";
+import { getLogger } from "../logger.js";
 
 const logger = getLogger();
 
 export interface AtemMixEffects {
-  readonly input: number;
+  readonly program: number;
+  readonly preview: number;
 
-  setInput: (inputIndex: number) => Promise<void>;
+  setProgram: (inputIndex: number) => Promise<void>;
+  setPreview: (inputIndex: number) => Promise<void>;
 }
 
 export interface AtemConnection {
@@ -18,8 +20,6 @@ export interface AtemConnection {
 }
 
 const getAtem = (): AtemConnection => {
-  if (atem) return atem;
-
   if (process.env["ATEM_HOST"]) {
     return new RealAtem();
   } else {
@@ -28,5 +28,5 @@ const getAtem = (): AtemConnection => {
   }
 };
 
-export const atem = getAtem();
+const atem = getAtem();
 export default atem;
