@@ -20,6 +20,8 @@ spec:
         image: frikanalen/toches
         imagePullPolicy: Always
         env:
+          - name: TZ
+            value: Europe/Oslo
           - name: FK_MEDIA
             value: https://beta.frikanalen.no/media
           - name: FK_API_KEY

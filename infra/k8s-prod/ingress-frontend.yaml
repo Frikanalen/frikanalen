@@ -1,26 +1,6 @@
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: scheme-redirect-frontend
-  namespace: default
-spec:
-  entryPoints: 
-    - web
-  routes:
-  - match: Host(`www.frikanalen.no`) || Host(`frikanalen.no`)
-    priority: 100
-    kind: Rule
-    services:
-    - kind: Service
-      name: frontend
-      scheme: http
-      port: 3000
-    middlewares:
-      - name: scheme-redirect
----
-kind: IngressRoute
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
   name: frontend
   namespace: default
 spec:

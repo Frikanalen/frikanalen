@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: atem-control
+  namespace: default
 spec:
   selector:
     matchLabels:
@@ -20,6 +21,10 @@ spec:
             value: 10.3.2.1
           - name: LISTEN_PORT
             value: "80"
+          - name: FK_API_URL
+            value: "https://frikanalen.no/api"
+          - name: FK_APIV2_URL
+            value: "https://beta.frikanalen.no/api/v2"
         ports:
           - name: web
             containerPort: 80

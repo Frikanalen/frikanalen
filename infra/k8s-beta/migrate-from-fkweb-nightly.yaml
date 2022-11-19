@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: migrate-from-fkweb
+  namespace: beta
+spec:
+  schedule: "00 00 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: toches
+            image: frikanalen/toches
+            args:
+              - sh
+              - -c
+              - "yarn build-cli && yarn cli migrate-fkweb"
+            env:
+              - name: DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: database
+                    key: DATABASE_URL
+              - name: FKWEB_DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: database
+                    key: FKWEB_DATABASE_URL

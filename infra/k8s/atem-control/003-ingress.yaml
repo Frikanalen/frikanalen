@@ -1,18 +1,6 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: atem-control-cors
-  namespace: default
-spec:
-  headers:
-    customResponseHeaders:
-      Access-Control-Allow-Origin: "*"
-      Access-Control-Allow-Headers: "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-      Access-Control-Allow-Methods: "POST"
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
   name: strip-atem-prefix
   namespace: default
 spec:
@@ -29,17 +17,53 @@ spec:
   entryPoints: 
     - websecure
   routes:
-  - match: Host(`frikanalen.no`) && PathPrefix(`/api/playout/atem/`)
+  - match: (Host(`frikanalen.no`) || Host(`beta.frikanalen.no`)) && PathPrefix(`/api/playout/atem/`)
     kind: Rule
     priority: 100
     middlewares:
       - name: strip-atem-prefix
         namespace: default
-      - name: atem-control-cors
+      - name: cors
         namespace: default
     services:
     - kind: Service
       name: atem-control
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: styring-api-prefix
+  namespace: beta
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/atem
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: styring-atem-api
+  namespace: beta
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: Host(`styring.frikanalen.no`) && PathPrefix(`/api/atem/`)
+    kind: Rule
+    priority: 100
+    middlewares:
+      - name: styring-api-prefix
+        namespace: beta
+      - name: cors
+        namespace: default
+    services:
+    - kind: Service
+      name: atem-control
+      namespace: default
       scheme: http
       port: 80
   tls:

@@ -1,0 +1,30 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: epgxml-prefix
+  namespace: beta
+spec:
+  addPrefix:
+    prefix: /epg
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: toches-xmltv
+  namespace: beta
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`frikanalen.no`) || Host(`www.frikanalen.no`)) && PathPrefix(`/xmltv`)
+    kind: Rule
+    middlewares:
+      - name: epgxml-prefix
+        namespace: beta
+    services:
+    - kind: Service
+      name: toches
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default

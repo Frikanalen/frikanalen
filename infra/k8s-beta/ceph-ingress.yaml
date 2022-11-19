@@ -1,0 +1,24 @@
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: s3-fetch
+  namespace: beta
+spec:
+  tls:
+    certResolver: default
+  entryPoints: 
+    - web
+    - websecure
+  routes:
+  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/media`)
+    priority: 1000
+    kind: Rule
+    middlewares:
+      - name: strip-media-prefix
+        namespace: beta
+    services:
+    - kind: Service
+      name: rook-ceph-rgw-media-store
+      namespace: rook-ceph
+      scheme: http
+      port: 80

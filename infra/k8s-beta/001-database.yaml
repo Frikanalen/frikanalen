@@ -34,7 +34,7 @@ spec:
   port: 5432
 
   database:
-     size: 200Mi
+     size: 500Mi
 
   customConfig: database-config
 

@@ -1,0 +1,48 @@
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStoreUser
+metadata:
+  name: my-user
+  namespace: rook-ceph # namespace:cluster
+spec:
+  store: my-store
+  displayName: "my display name"
+---
+# TODO: It would be premature optimization at this point,
+# but at some point - the redundancy/performance requirements
+# are very different for the upload and media library use cases.
+# We should probably split this into two stores,
+# one erasure coded (media) and the upload just replicated.
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStore
+metadata:
+  name: my-store
+  namespace: rook-ceph # namespace:cluster
+spec:
+  metadataPool:
+    replicated:
+      size: 1
+  dataPool:
+    replicated:
+      size: 1
+  preservePoolsOnDelete: false
+  gateway:
+    port: 80
+    # securePort: 443
+    instances: 1
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: rook-ceph-retain-bucket
+provisioner: rook-ceph.ceph.rook.io/bucket # driver:namespace:cluster
+# set the reclaim policy to retain the bucket when its OBC is deleted
+reclaimPolicy: Retain
+parameters:
+   objectStoreName: my-store # port 80 assumed
+   objectStoreNamespace: rook-ceph # namespace:cluster
+   # To accommodate brownfield cases reference the existing bucket name here instead
+   # of in the ObjectBucketClaim (OBC). In this case the provisioner will grant
+   # access to the bucket by creating a new user, attaching it to the bucket, and
+   # providing the credentials via a Secret in the namespace of the requesting OBC.
+   #bucketName:

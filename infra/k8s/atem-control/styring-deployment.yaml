@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: styring
+  namespace: beta
+spec:
+  selector:
+    matchLabels:
+      app: styring
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: styring
+    spec:
+      containers:
+      - name: styring
+        image: frikanalen/styring:latest
+        ports:
+          - name: web
+            containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: styring
+  namespace: beta
+spec:
+  type: ClusterIP
+  selector:
+    app: styring
+  ports:
+    # Three types of ports for a service
+    # nodePort - a static port assigned on each the node
+    # port - port exposed internally in the cluster
+    # targetPort - the container port to send requests to
+    - protocol: TCP
+      port: 80
+      name: web
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: atem-control
+  namespace: beta
+spec:
+  entryPoints: 
+    - websecure
+  routes:
+  - match: (Host(`frikanalen.no`) || Host(`beta.frikanalen.no`)) && PathPrefix(`/playout`)
+    kind: Rule
+    middlewares:
+      - name: cors
+        namespace: default
+    services:
+    - kind: Service
+      name: styring
+      scheme: http
+      port: 80
+  tls:
+    certResolver: default
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: styring-api-prefix
+  namespace: beta
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/atem

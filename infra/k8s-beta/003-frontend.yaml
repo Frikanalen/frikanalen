@@ -21,7 +21,9 @@ spec:
         image: frikanalen/frontend-v2:latest
         env:
           - name: FK_MEDIA
-            value: https://beta.frikanalen.no/media/ui
+            value: https://beta.frikanalen.no/media
+          - name: FK_GRAPHQL
+            value: https://beta.frikanalen.no/graphql
           - name: FK_API
             value: https://beta.frikanalen.no/api/v2
           - name: FK_UPLOAD
@@ -72,3 +74,9 @@ spec:
       kind: Service
       scheme: http
       port: 3000
+      sticky:
+        cookie:
+          httpOnly: true
+          name: fk-load-balancer
+          secure: true
+          sameSite: none
