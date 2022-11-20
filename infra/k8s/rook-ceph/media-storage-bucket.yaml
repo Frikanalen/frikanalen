@@ -1,3 +1,8 @@
+## See https://rook.io/docs/rook/v1.10/Storage-Configuration/Object-Storage-RGW/ceph-object-bucket-claim
+#
+##
+# This CRD defines an instance of the object store, spinning up a RADOS gateway.
+##
 apiVersion: ceph.rook.io/v1
 kind: CephObjectStore
 metadata:
@@ -23,12 +28,31 @@ spec:
       disabled: false
       interval: 60s
 ---
+##
+# This CRD defines a link between an object bucket claim and an object store.
+# It also defines bucket retention policy; ie. what to do when the last claim
+# to a bucket is rescinded.
+##
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-   name: media-bucket
+   name: media-buckets
 provisioner: rook-ceph.ceph.rook.io/bucket
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 parameters:
   objectStoreName: media-store
   objectStoreNamespace: rook-ceph
+---
+##
+# This CRD finally creates a bucket prefixed with "video-masters", and generates
+# the Secret and ConfigMap which can be very easily attached to pods as environment
+# variables.
+##
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: video-masters
+  namespace: beta
+spec:
+  generateBucketName: video-masters
+  storageClassName: media-buckets
