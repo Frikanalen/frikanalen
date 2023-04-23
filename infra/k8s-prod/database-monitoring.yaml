@@ -1,0 +1,109 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-postgres-exporter
+  labels:
+    release: prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-postgres-exporter
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: exporter
+      interval: 30s
+      path: /metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: postgresql-health-alerts
+  namespace: monitoring
+  labels:
+    release: prometheus-stack
+spec:
+  groups:
+    - name: postgresql-health
+      rules:
+        - alert: PostgresHighConnectionUsage
+          expr: (sum(pg_stat_activity_count) / sum(pg_settings_max_connections)) * 100 > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL high connection usage (instance {{ $labels.instance }})"
+            description: "PostgreSQL is using more than 80% of available connections for at least 5 minutes."
+
+        - alert: PostgresReplicationLag
+          expr: pg_replication_lag > 300
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL replication lag (instance {{ $labels.instance }})"
+            description: "PostgreSQL replication lag is greater than 300 seconds for at least 5 minutes."
+
+        - alert: PostgresLongRunningQueries
+          expr: pg_stat_activity_longest_query > 300
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL long-running queries (instance {{ $labels.instance }})"
+            description: "There are queries running for more than 300 seconds for at least 5 minutes."
+
+        - alert: PostgresHighDeadRows
+          expr: pg_stat_user_tables_n_dead_tup / (pg_stat_user_tables_n_dead_tup + pg_stat_user_tables_n_live_tup) > 0.1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL high dead rows ratio (instance {{ $labels.instance }})"
+            description: "More than 10% of the rows in the tables are dead for at least 5 minutes."
+
+        - alert: PostgresUnreachable
+          expr: pg_up == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "PostgreSQL database unreachable (instance {{ $labels.instance }})"
+            description: "PostgreSQL database is unreachable for at least 5 minutes."
+
+        - alert: PostgresTransactionIDWraparoundRisk
+          expr: (pg_stat_database_xact_commit + pg_stat_database_xact_rollback) / (2^32 - 1) > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL transaction ID wraparound risk (instance {{ $labels.instance }})"
+            description: "The database is at risk of transaction ID wraparound, as more than 80% of transaction IDs have been used."
+
+        - alert: PostgresOutOfMemory
+          expr: (pg_memory_usage / pg_memory_total) * 100 > 90
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "PostgreSQL out of memory (instance {{ $labels.instance }})"
+            description: "PostgreSQL is using more than 90% of available memory for at least 5 minutes."
+
+        - alert: PostgresSlowCheckpoint
+          expr: rate(pg_stat_bgwriter_checkpoints_timed{job="postgres"}[5m]) / rate(pg_stat_bgwriter_checkpoints_req{job="postgres"}[5m]) < 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL slow checkpoints (instance {{ $labels.instance }})"
+            description: "More than 50% of the checkpoints in the last 5 minutes were requested, rather than scheduled. This could indicate insufficient checkpointing or high database load."
+
+        - alert: PostgresCacheHitRatioLow
+          expr: pg_stat_database_blks_hit / (pg_stat_database_blks_hit + pg_stat_database_blks_read) < 0.9
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL cache hit ratio low (instance {{ $labels.instance }})"
+            description: "The cache hit ratio is below 90% for at least 5 minutes. This may indicate that the shared_buffers configuration parameter needs to be increased."

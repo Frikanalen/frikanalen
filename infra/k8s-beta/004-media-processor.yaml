@@ -77,7 +77,9 @@ spec:
                 key: FK_API_KEY
         envFrom:
           - secretRef:
-              name: s3
+              name: media
+          - configMapRef:
+              name: media
         ports:
           - name: web
             containerPort: 8000

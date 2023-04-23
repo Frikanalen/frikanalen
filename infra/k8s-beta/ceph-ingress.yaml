@@ -13,9 +13,6 @@ spec:
   - match: Host(`beta.frikanalen.no`) && PathPrefix(`/media`)
     priority: 1000
     kind: Rule
-    middlewares:
-      - name: strip-media-prefix
-        namespace: beta
     services:
     - kind: Service
       name: rook-ceph-rgw-media-store

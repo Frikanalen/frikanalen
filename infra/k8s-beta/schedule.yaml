@@ -1,6 +1,17 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
+  name: strip-www
+  namespace: beta
+spec:
+  redirectRegex:
+    permanent: true
+    regex: ^https://www.frikanalen.no/(.*)
+    replacement: https://frikanalen.no/${1}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
   name: epgxml-prefix
   namespace: beta
 spec:
@@ -17,8 +28,11 @@ spec:
     - websecure
   routes:
   - match: (Host(`frikanalen.no`) || Host(`www.frikanalen.no`)) && PathPrefix(`/xmltv`)
+    priority: 1000
     kind: Rule
     middlewares:
+      - name: strip-www
+        namespace: beta
       - name: epgxml-prefix
         namespace: beta
     services:

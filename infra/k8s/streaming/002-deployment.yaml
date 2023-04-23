@@ -25,6 +25,13 @@ spec:
       - name: ffmpeg
         image: jrottenberg/ffmpeg:4.1-alpine
         command: [ "/bin/sh", "-c", "sleep 15s; ffmpeg $FFMPEG_OPTIONS -i $SOURCE_URL $ENCODING_OPTIONS"]
+        livenessProbe:
+          exec:
+            command:
+            - exit $(test $(date +%H) -eq 3 && echo 1 || echo 0)
+          failureThreshold: 1
+          initialDelaySeconds: 3600
+          periodSeconds: 60
         env:
           - name: ENCODING_OPTIONS
             valueFrom:
@@ -43,6 +50,13 @@ spec:
                 key: ffmpeg_options
       - name: shaka-packager
         image: google/shaka-packager:release-v2.4.2
+        livenessProbe:
+          exec:
+            command:
+            - exit $(test $(date +%H) -eq 3 && echo 1 || echo 0)
+          failureThreshold: 1
+          initialDelaySeconds: 3600
+          periodSeconds: 60
         command: ["/bin/sh", "-c", "killall -9 ffmpeg; sleep 2s; packager $ARGUMENTS"]
         workingDir: /stream
         env:

@@ -6,3 +6,5 @@ See eg. https://www.ansible.com/blog/automating-helm-using-ansible
 
 helm install -f kube-prometheus-stack.yaml prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring
 helm install -f prometheus-postgres-exporter.yaml prometheus-postgres-exporter prometheus-community/prometheus-postgres-exporter
+
+helm install -n beta -f prometheus-postgres-exporter-beta.yaml pg-prom-exporter prometheus-community/prometheus-postgres-exporter

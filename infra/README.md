@@ -115,3 +115,12 @@ tx2:        eth0: sw1,7  eth1: sw2,7 ilo: sw1,36
 simula:     eth0: sw2,5  eth1: sw1,5 ilo: sw1,18
 tx4:        eth0: sw1,11 eth1: sw2,11 ilo: sw1,34
 ```
+
+### Kubernetes cheat sheet
+
+Removing a node from cluster:
+
+
+### Kubernetes cheat sheet
+
+`k drain tx1 --delete-emptydir-data --ignore-daemonsets`

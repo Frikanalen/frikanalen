@@ -56,3 +56,12 @@ metadata:
 spec:
   generateBucketName: video-masters
   storageClassName: media-buckets
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: media
+  namespace: beta
+spec:
+  bucketName: media
+  storageClassName: media-buckets

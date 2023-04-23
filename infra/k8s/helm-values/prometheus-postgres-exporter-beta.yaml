@@ -9,11 +9,10 @@ prometheusRule:
 
 config:
   datasource:
-    # Specify one of both datasource or datasourceSecret
-    host: database-api
+    host: postgres
     user: postgres
-    database: fkweb
+    database: fk
     passwordSecret:
-      name: database-api-secret
+      name: database
       key: POSTGRES_PASSWORD
     sslmode: disable
