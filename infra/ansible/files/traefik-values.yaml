@@ -1,0 +1,97 @@
+deployment:
+  initContainers:
+    - name: volume-permissions
+      image: busybox:latest
+      command: ["sh", "-c", "touch /data/acme.json; chmod -v 600 /data/acme.json"]
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 65532
+        runAsUser: 65532
+      volumeMounts:
+        - name: data
+          mountPath: /data
+
+# Create a default IngressClass for Traefik
+ingressClass:
+  enabled: true
+  isDefaultClass: true
+
+# Create an IngressRoute for the dashboard
+ingressRoute:
+  dashboard:
+    enabled: true
+    # Additional ingressRoute annotations (e.g. for kubernetes.io/ingress.class)
+    annotations: {}
+    # Additional ingressRoute labels (e.g. for filtering IngressRoute by custom labels)
+    labels: {}
+    # The router match rule used for the dashboard ingressRoute
+    matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+    # Specify the allowed entrypoints to use for the dashboard ingress route, (e.g. traefik, web, websecure).
+    # By default, it's using traefik entrypoint, which is not exposed.
+    # /!\ Do not expose your dashboard without any protection over the internet /!\
+    entryPoints: ["traefik"]
+    # Additional ingressRoute middlewares (e.g. for authentication)
+    middlewares: []
+    # TLS options (e.g. secret containing certificate)
+    tls: {}
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    # TODO: This should be disabled in time
+    allowCrossNamespace: true
+    allowExternalNameServices: true
+
+  kubernetesIngress:
+    enabled: true
+    # TODO: This should be disabled in time
+    allowExternalNameServices: true
+    allowEmptyServices: true
+
+additionalArguments:
+  - "--certificatesresolvers.default.acme.storage=/data/acme.json"
+
+globalArguments:
+  - "--global.checknewversion"
+  - "--global.sendanonymoususage"
+
+# Configure ports
+ports:
+  web:
+    redirectTo: websecure
+
+  websecure:
+    tls:
+      enabled: true
+      certResolver: default
+
+
+# Options for the main traefik service, where the entrypoints traffic comes
+# from.
+service:
+  externalIPs:
+    - 192.168.3.100
+    - 158.36.191.228
+
+persistence:
+  enabled: true
+  name: data
+  accessMode: ReadWriteOnce
+  size: 128Mi
+  storageClass: rook-ceph-block
+  path: /data
+  annotations: {}
+
+certResolvers:
+   default:
+     email: toresbe@gmail.com
+     tlsChallenge: true
+     httpChallenge:
+       entryPoint: "web"
+     storage: /data/acme.json
+
+podSecurityContext:
+  fsGroupChangePolicy: "OnRootMismatch"
+  runAsGroup: 65532
+  runAsNonRoot: true
+  runAsUser: 65532

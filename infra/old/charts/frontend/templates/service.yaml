@@ -1,0 +1,14 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-frontend
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      name: web

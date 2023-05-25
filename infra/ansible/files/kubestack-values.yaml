@@ -1,0 +1,39 @@
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: rook-ceph-block
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+
+prometheus:
+
+  ingress:
+    annotations:
+      traefik.ingress.kubernetes.io/router.middlewares: default-basic-admin-auth@kubernetescrd
+    enabled: true
+    hosts:
+      - prometheus.admin.frikanalen.no
+
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: rook-ceph-block
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+
+    additionalScrapeConfigs: |
+      - job_name: "static-node-exporter"
+        relabel_configs:
+          - target_label: "job"
+            replacement: node-exporter
+        static_configs:
+        - targets:
+          - obe-hd:9100
+          - file01:9100

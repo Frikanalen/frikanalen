@@ -64,7 +64,7 @@ pspEnable: true
 cephClusterSpec:
   ### Following spec from cluster definition
   cephVersion:
-    image: quay.io/ceph/ceph:v17.2.5
+    image: quay.io/ceph/ceph:v17.2.6
   cleanupPolicy:
     sanitizeDisks:
       dataSource: zero

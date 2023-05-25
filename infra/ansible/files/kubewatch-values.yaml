@@ -1,0 +1,26 @@
+rbac:
+  create: true
+resourcesToWatch:
+  deployment: true
+  replicationcontroller: false
+  replicaset: false
+  daemonset: true
+  services: true
+  pod: true
+  job: true
+  node: false
+  clusterrole: true
+  clusterrolebinding: true
+  serviceaccount: true
+  persistentvolume: true
+  namespace: false
+  secret: false
+  configmap: false
+  ingress: true
+  coreevent: false
+  event: false
+webhook:
+  enabled: true
+  url: "http://telegram-bot/kubewatch/-666624603?format=detailed"
+slack:
+  enabled: false

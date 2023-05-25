@@ -1,0 +1,39 @@
+- hosts: localhost
+  vars:
+  tasks:
+    - name: Add prometheus-community helm repo
+      kubernetes.core.helm_repository:
+        name: prometheus-community
+        repo_url: "https://prometheus-community.github.io/helm-charts"
+    - name: Add Kubewatch helm repo
+      kubernetes.core.helm_repository:
+        name: robusta
+        repo_url: "https://robusta-charts.storage.googleapis.com"
+    - name: Add Traefik helm repo
+      kubernetes.core.helm_repository:
+        name: traefik             	
+        repo_url: "https://helm.traefik.io/traefik"
+    - name: Deploy Prometheus stack
+      kubernetes.core.helm:
+        name: prometheus-stack
+        chart_ref: prometheus-community/kube-prometheus-stack
+        release_namespace: monitoring
+        create_namespace: true
+        values: "{{ lookup('ansible.builtin.file', 'kubestack-values.yaml') | from_yaml }}"
+    - name: Deploy Kubewatch
+      kubernetes.core.helm:
+        name: kubewatch
+        chart_ref: robusta/kubewatch
+        release_namespace: monitoring
+        create_namespace: true
+        values: "{{ lookup('ansible.builtin.file', 'kubewatch-values.yaml') | from_yaml }}"
+    - name: Deploy telegram bot
+      community.kubernetes.k8s:
+        state: present
+        src: files/telegram-bot.yaml
+    - name: Deploy Traefik
+      kubernetes.core.helm:
+        name: traefik
+        chart_ref: traefik/traefik
+        release_namespace: default
+        values: "{{ lookup('ansible.builtin.file', 'traefik-values.yaml') | from_yaml }}"

@@ -15,11 +15,6 @@ spec:
     receiver: 'telegram-example'
   receivers:
   - name: 'telegram-example'
-    telegramConfigs:
-    - chatID: -666624603
-      apiURL: https://api.telegram.org
-      parseMode: "HTML"
-      sendResolved: true
-      botToken:
-        name: 'telegram-config'
-        key: 'apiSecret'
+    webhookConfigs:
+    - sendResolved: true
+      url: http://telegram-bot/prometheus/-666624603

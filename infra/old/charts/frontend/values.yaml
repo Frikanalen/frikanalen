@@ -1,0 +1,29 @@
+namespace: fk
+replicas: 2
+minReadySeconds: 5
+domain: frikanalen.no
+image:
+  repository: frikanalen/frontend-v2
+  tag: latest
+  pullPolicy: Always
+env:
+  - name: FK_MEDIA
+    value: https://{{ .Values.domain }}/media
+  - name: FK_GRAPHQL
+    value: https://{{ .Values.domain }}/graphql
+  - name: FK_API
+    value: https://{{ .Values.domain }}/api/v2
+  - name: FK_UPLOAD
+    value: https://{{ .Values.domain }}/api/v2
+probe:
+  initialDelaySeconds: 10
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: 3000
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 3000
+service:
+  type: ClusterIP

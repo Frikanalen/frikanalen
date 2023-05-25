@@ -1,0 +1,4 @@
+# Ansible-galaxy requirements
+- src: kubernetes.core
+
+- src: community.kubernetes

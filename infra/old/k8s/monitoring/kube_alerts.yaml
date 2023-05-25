@@ -1,0 +1,24 @@
+#
+# Skrev denne reglene for å feilsøke en issue hvorved simula ikke får sine CSRs approved.
+#
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: csr-alert-rule
+  namespace: monitoring
+  labels:
+    app: prometheus-operator
+    release: monitoring
+spec:
+  groups:
+  - name: csr_alert_rules
+    rules:
+    - alert: HighNumberOfCertificateSigningRequests
+      expr: sum(kube_certificatesigningrequest_created) > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High number of Certificate Signing Requests"
+        description: "There are more than 5 Certificate Signing Requests in the cluster (current value: {{ $value }})"
+

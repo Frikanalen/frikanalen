@@ -12,7 +12,7 @@ data:
     max_connections = 100
     shared_buffers = 128MB
 
-    # Replication configs - kubegres default overrides
+    # Logging
     logging_collector = 'off'
     log_destination = 'stderr,csvlog'
     log_directory = '/var/log/postgresql/'
@@ -54,7 +54,7 @@ metadata:
 
 spec:
   replicas: 1
-  image: postgres:14
+  image: postgres:15
   port: 5432
 
   database:
