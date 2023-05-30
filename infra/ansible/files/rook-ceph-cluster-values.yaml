@@ -1,0 +1,57 @@
+toolbox:
+  enabled: true
+
+monitoring:
+  enabled: true
+  createPrometheusRules: true
+
+cephClusterSpec:
+  dashboard:
+    enabled: true
+    ssl: false
+
+ingress:
+  dashboard:
+    enabled: true
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: traefik
+    tls:
+      hosts:
+        - ceph.frikanalen.no
+
+cephBlockPools:
+  - name: ceph-blockpool
+    spec: 
+      failureDomain: host
+      replicated:
+        requireSafeReplicaSize: true
+        size: 3
+    storageClass:
+      enabled: true
+      name: ceph-block
+      isDefault: true
+      parameters:
+        csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+        csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+        csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+        csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+        csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+        csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+        pool: ceph-blockpool
+
+cephObjectStores:
+  - name: media-store
+    spec:
+      gateway:
+        port: 80
+      metadataPool:
+        failureDomain: host
+        replicated:
+          size: 3
+      dataPool:
+        erasureCoded:
+          codingChunks: 1
+          dataChunks: 2
+        failureDomain: host
+    storageClass:
+      enabled: false

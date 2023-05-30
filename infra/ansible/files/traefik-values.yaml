@@ -62,8 +62,7 @@ ports:
 
   websecure:
     tls:
-      enabled: true
-      certResolver: default
+      enabled: false
 
 
 # Options for the main traefik service, where the entrypoints traffic comes
@@ -78,17 +77,9 @@ persistence:
   name: data
   accessMode: ReadWriteOnce
   size: 128Mi
-  storageClass: rook-ceph-block
+  storageClass: ceph-block
   path: /data
   annotations: {}
-
-certResolvers:
-   default:
-     email: toresbe@gmail.com
-     tlsChallenge: true
-     httpChallenge:
-       entryPoint: "web"
-     storage: /data/acme.json
 
 podSecurityContext:
   fsGroupChangePolicy: "OnRootMismatch"

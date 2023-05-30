@@ -1,0 +1,24 @@
+- hosts: localhost
+  tasks:
+    - name: Add rook-ceph Helm repo
+      kubernetes.core.helm_repository:
+        name: rook-release
+        repo_url: "https://charts.rook.io/release"
+    - name: Deploy rook-ceph
+      kubernetes.core.helm:
+        name: rook-ceph
+        chart_ref: rook-release/rook-ceph
+        release_namespace: rook-ceph
+        create_namespace: true
+        values: "{{ lookup('ansible.builtin.file', 'rook-ceph-values.yaml') | from_yaml }}"
+    - name: Deploy rook-ceph cluster
+      kubernetes.core.helm:
+        name: rook-ceph-cluster
+        chart_ref: rook-release/rook-ceph-cluster
+        release_namespace: rook-ceph
+        create_namespace: true
+        values: "{{ lookup('ansible.builtin.file', 'rook-ceph-cluster-values.yaml') | from_yaml }}"
+          #    - name: Deploy telegram bot
+          #      community.kubernetes.k8s:
+          #        state: present
+          #        src: files/telegram-bot.yaml

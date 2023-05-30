@@ -6,6 +6,8 @@ In this directory is Ansible to manage Helm and Kubernetes deployments.
 ```bash
 ansible-galaxy install -r requirements.yml
 pip3 install -r requirements.txt
+# -- or -- 
+sudo apt install python3-kubernetes python3-openshift
 ```
 
 ## Usage

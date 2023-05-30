@@ -3,7 +3,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
-          storageClassName: rook-ceph-block
+          storageClassName: ceph-block
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
@@ -13,7 +13,7 @@ prometheus:
 
   ingress:
     annotations:
-      traefik.ingress.kubernetes.io/router.middlewares: default-basic-admin-auth@kubernetescrd
+      traefik.ingress.kubernetes.io/router.entrypoints: traefik
     enabled: true
     hosts:
       - prometheus.admin.frikanalen.no
@@ -22,7 +22,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: rook-ceph-block
+          storageClassName: ceph-block
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
@@ -35,5 +35,4 @@ prometheus:
             replacement: node-exporter
         static_configs:
         - targets:
-          - obe-hd:9100
           - file01:9100
