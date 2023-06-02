@@ -80,3 +80,11 @@ prometheus:
         static_configs:
         - targets:
           - file01:9100
+
+# Relabel "instance" so eg. "192.168.3.33:9100" is replaced by "tx1"
+prometheus-node-exporter:
+  prometheus:
+    monitor:
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: instance
