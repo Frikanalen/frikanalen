@@ -13,11 +13,10 @@ cephClusterSpec:
 ingress:
   dashboard:
     enabled: true
+    host: ceph.admin.frikanalen.no
     annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: traefik
-    tls:
-      hosts:
-        - ceph.frikanalen.no
+      traefik.ingress.kubernetes.io/router.middlewares: default-admin-auth@kubernetescrd
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
 
 cephBlockPools:
   - name: ceph-blockpool

@@ -21,7 +21,8 @@ ingressRoute:
   dashboard:
     enabled: true
     # Additional ingressRoute annotations (e.g. for kubernetes.io/ingress.class)
-    annotations: {}
+    annotations:
+      traefik.ingress.kubernetes.io/router.middlewares: default-admin-auth@kubernetescrd
     # Additional ingressRoute labels (e.g. for filtering IngressRoute by custom labels)
     labels: {}
     # The router match rule used for the dashboard ingressRoute
@@ -29,7 +30,7 @@ ingressRoute:
     # Specify the allowed entrypoints to use for the dashboard ingress route, (e.g. traefik, web, websecure).
     # By default, it's using traefik entrypoint, which is not exposed.
     # /!\ Do not expose your dashboard without any protection over the internet /!\
-    entryPoints: ["traefik"]
+    entryPoints: ["websecure"]
     # Additional ingressRoute middlewares (e.g. for authentication)
     middlewares: []
     # TLS options (e.g. secret containing certificate)
@@ -48,8 +49,7 @@ providers:
     allowExternalNameServices: true
     allowEmptyServices: true
 
-additionalArguments:
-  - "--certificatesresolvers.default.acme.storage=/data/acme.json"
+additionalArguments: {}
 
 globalArguments:
   - "--global.checknewversion"
@@ -62,14 +62,14 @@ ports:
 
   websecure:
     tls:
-      enabled: false
-
+      enabled: true
+      certResolver: default
 
 # Options for the main traefik service, where the entrypoints traffic comes
 # from.
 service:
   externalIPs:
-    - 192.168.3.100
+    - 192.168.3.101
     - 158.36.191.228
 
 persistence:
@@ -80,6 +80,15 @@ persistence:
   storageClass: ceph-block
   path: /data
   annotations: {}
+
+certResolvers:
+  default:
+    email: toresbe@gmail.com
+    tlsChallenge: true
+    httpChallenge:
+      entryPoint: "web"
+      #caServer: "https://acme-staging.api.letsencrypt.org/directory"
+    storage: /data/acme.json
 
 podSecurityContext:
   fsGroupChangePolicy: "OnRootMismatch"

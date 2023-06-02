@@ -1,4 +1,11 @@
 alertmanager:
+  ingress:
+    annotations:
+      traefik.ingress.kubernetes.io/router.middlewares: default-admin-auth@kubernetescrd
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    enabled: true
+    hosts:
+      - alertmanager.admin.frikanalen.no
   alertmanagerSpec:
     storage:
       volumeClaimTemplate:
@@ -9,11 +16,46 @@ alertmanager:
             requests:
               storage: 50Gi
 
-prometheus:
+grafana:
+  # Everything here is defaults, except the "auth" stanza
+  # we bypass all authentication because it's already behind
+  # an authenticating proxy (admin-auth-service)
+  grafana.ini:
+    paths:
+      data: /var/lib/grafana/
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+    analytics:
+      check_for_updates: true
+    log:
+      mode: console
+    grafana_net:
+      url: https://grafana.net
+    server:
+      domain: "{{ if (and .Values.ingress.enabled .Values.ingress.hosts) }}{{ .Values.ingress.hosts | first }}{{ else }}''{{ end }}"
+    auth:
+      disable_login_form: true
+    auth.anonymous:
+        enabled: true
+          #org_name: Frikanalen
+        org_role: Admin
+    auth.basic:
+        enabled: false
 
   ingress:
     annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: traefik
+      traefik.ingress.kubernetes.io/router.middlewares: default-admin-auth@kubernetescrd
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    enabled: true
+    hosts:
+      - grafana.admin.frikanalen.no
+
+prometheus:
+  ingress:
+    annotations:
+      traefik.ingress.kubernetes.io/router.middlewares: default-admin-auth@kubernetescrd
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
     enabled: true
     hosts:
       - prometheus.admin.frikanalen.no
