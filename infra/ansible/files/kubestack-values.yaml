@@ -38,7 +38,9 @@ grafana:
       disable_login_form: true
     auth.anonymous:
         enabled: true
-          #org_name: Frikanalen
+        # Can't add the org name yet
+        # See https://github.com/grafana/grafana/issues/2908
+        #org_name: Frikanalen
         org_role: Admin
     auth.basic:
         enabled: false
