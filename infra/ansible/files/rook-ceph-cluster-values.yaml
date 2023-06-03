@@ -4,6 +4,9 @@ toolbox:
 monitoring:
   enabled: true
   createPrometheusRules: true
+  prometheusRule:
+    labels:
+      release: prometheus-stack
 
 cephClusterSpec:
   dashboard:
@@ -13,7 +16,9 @@ cephClusterSpec:
 ingress:
   dashboard:
     enabled: true
-    host: ceph.admin.frikanalen.no
+    host:
+      name: ceph.admin.frikanalen.no
+      path: /
     annotations:
       traefik.ingress.kubernetes.io/router.middlewares: default-admin-auth@kubernetescrd
       traefik.ingress.kubernetes.io/router.entrypoints: websecure

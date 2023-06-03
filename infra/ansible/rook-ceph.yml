@@ -18,7 +18,7 @@
         release_namespace: rook-ceph
         create_namespace: true
         values: "{{ lookup('ansible.builtin.file', 'rook-ceph-cluster-values.yaml') | from_yaml }}"
-          #    - name: Deploy telegram bot
-          #      community.kubernetes.k8s:
-          #        state: present
-          #        src: files/telegram-bot.yaml
+    - name: Deploy rook-ceph monitoring
+      community.kubernetes.k8s:
+        state: present
+        src: files/rook-ceph-monitoring.yaml

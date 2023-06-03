@@ -63,6 +63,11 @@ prometheus:
       - prometheus.admin.frikanalen.no
 
   prometheusSpec:
+    # Because this is the only Prometheus instance in the cluster, we don't
+    # need to fuss about with filtering on labels which isn't always
+    # well-supported in Helm charts.
+    serviceMonitorSelectorNilUsesHelmValues: false
+
     storageSpec:
       volumeClaimTemplate:
         spec:
