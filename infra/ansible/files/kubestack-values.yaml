@@ -73,13 +73,20 @@ prometheus:
               storage: 50Gi
 
     additionalScrapeConfigs: |
+      - job_name: "zfs-exporter"
+        relabel_configs:
+          - target_label: "job"
+            replacement: zfs-exporter
+        static_configs:
+        - targets:
+          - 192.168.3.59:9134
       - job_name: "static-node-exporter"
         relabel_configs:
           - target_label: "job"
             replacement: node-exporter
         static_configs:
         - targets:
-          - file01:9100
+          - 192.168.3.59:9100
 
 # Relabel "instance" so eg. "192.168.3.33:9100" is replaced by "tx1"
 prometheus-node-exporter:
