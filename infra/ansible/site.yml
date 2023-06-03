@@ -20,12 +20,17 @@
         release_namespace: monitoring
         create_namespace: true
         values: "{{ lookup('ansible.builtin.file', 'kubestack-values.yaml') | from_yaml }}"
+    - name: Deploy Prometheus Postgres exporter
+      kubernetes.core.helm:
+        name: prometheus-postgres-exporter
+        chart_ref: prometheus-community/prometheus-postgres-exporter
+        release_namespace: monitoring
+        values: "{{ lookup('ansible.builtin.file', 'prometheus-postgres-exporter.yaml') | from_yaml }}"
     - name: Deploy Kubewatch
       kubernetes.core.helm:
         name: kubewatch
         chart_ref: robusta/kubewatch
         release_namespace: monitoring
-        create_namespace: true
         values: "{{ lookup('ansible.builtin.file', 'kubewatch-values.yaml') | from_yaml }}"
     - name: Deploy telegram bot
       community.kubernetes.k8s:

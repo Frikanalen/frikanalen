@@ -1,0 +1,8 @@
+serviceMonitor:
+  enabled: true
+
+config:
+  datasource:
+    datasourceSecret:
+      name: database-api-secret
+      key: DATABASE_URL
