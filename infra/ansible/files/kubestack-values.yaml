@@ -6,6 +6,18 @@ alertmanager:
     enabled: true
     hosts:
       - alertmanager.admin.frikanalen.no
+  config:
+    route:
+      groupBy: ['job']
+      groupWait: 30s
+      groupInterval: 5m
+      repeatInterval: 12h
+      receiver: 'telegram-example'
+    receivers:
+    - name: 'telegram-example'
+      webhookConfigs:
+      - sendResolved: true
+        url: http://telegram-bot/prometheus/-666624603
   alertmanagerSpec:
     storage:
       volumeClaimTemplate:
@@ -67,6 +79,7 @@ prometheus:
     # need to fuss about with filtering on labels which isn't always
     # well-supported in Helm charts.
     serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
 
     storageSpec:
       volumeClaimTemplate:

@@ -1,0 +1,11 @@
+eck-kibana:
+  enabled: true
+  ingress:
+    host: kibana.admin.frikanalen.no
+  annotations:
+      eck.k8s.elastic.co/license: basic
+
+eck-elasticsearch:
+  enabled: true
+  annotations:
+    eck.k8s.elastic.co/license: basic

@@ -26,15 +26,16 @@
         chart_ref: prometheus-community/prometheus-postgres-exporter
         release_namespace: monitoring
         values: "{{ lookup('ansible.builtin.file', 'prometheus-postgres-exporter.yaml') | from_yaml }}"
-    - name: Deploy Kubewatch
+    - name: Undeploy Kubewatch
       kubernetes.core.helm:
         name: kubewatch
         chart_ref: robusta/kubewatch
+        release_state: absent
         release_namespace: monitoring
         values: "{{ lookup('ansible.builtin.file', 'kubewatch-values.yaml') | from_yaml }}"
-    - name: Deploy telegram bot
+    - name: Undeploy telegram bot
       community.kubernetes.k8s:
-        state: present
+        state: absent
         src: files/telegram-bot.yaml
     - name: Deploy Traefik
       kubernetes.core.helm:
@@ -42,3 +43,13 @@
         chart_ref: traefik/traefik
         release_namespace: default
         values: "{{ lookup('ansible.builtin.file', 'traefik-values.yaml') | from_yaml }}"
+    - name: Enable metrics for Calico felixconfiguration
+      command: >
+        kubectl patch felixconfiguration default --type merge --patch '{"spec":{"prometheusMetricsEnabled": true}}'
+    - name: Enable metrics for Calico kubecontrollersconfiguration
+      command: >
+        kubectl patch kubecontrollersconfiguration default --type=merge  --patch '{"spec":{"prometheusMetricsPort": 9095}}'
+    - name: Configure Calico monitoring
+      community.kubernetes.k8s:
+        state: present
+        src: files/calico-monitoring.yaml

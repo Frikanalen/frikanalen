@@ -1,0 +1,12 @@
+eck-kibana:
+  enabled: true
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  ingress:
+    host: kibana.admin.frikanalen.no
+
+eck-elasticsearch:
+  enabled: true
+

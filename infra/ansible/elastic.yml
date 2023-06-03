@@ -1,0 +1,19 @@
+- hosts: localhost
+  tasks:
+    - name: Add Elastic helm repo
+      kubernetes.core.helm_repository:
+        name: elastic
+        repo_url: "https://helm.elastic.co"
+    - name: Deploy Elastic Operator
+      kubernetes.core.helm:
+        name: eck-operator
+        chart_ref: elastic/eck-operator
+        release_namespace: elastic-system
+        create_namespace: true
+        values: "{{ lookup('ansible.builtin.file', 'elastic-values.yaml') | from_yaml }}"
+    - name: Deploy Elastic Cloud on Kubernetes
+      kubernetes.core.helm:
+        name: eck
+        chart_ref: elastic/eck-stack
+        release_namespace: elastic-system
+        values: "{{ lookup('ansible.builtin.file', 'elastic-stack-values.yaml') | from_yaml }}"

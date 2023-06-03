@@ -1,0 +1,8 @@
+# Monitoring of cluster-external resources
+- hosts: localhost
+  vars:
+  tasks:
+    - name: Deploy ZFS monitoring
+      community.kubernetes.k8s:
+        state: present
+        src: files/zfs-monitoring.yaml
