@@ -1,0 +1,38 @@
+- hosts: localhost
+  vars_files:
+    - vault.yml
+  vars:
+    database_replicas: 3
+    postgres_version: 15
+    db_user: fk
+    db_host: postgres
+  tasks:
+    - name: Create database URL
+      set_fact:
+        database_url: "postgresql://{{ db_user }}:{{ postgres_password }}@{{ db_host }}/postgres"
+
+    - name: Install Kubegres
+      community.kubernetes.k8s:
+        state: present
+        src: files/kubegres-1.16.yaml
+
+    - name: Create Postgres secret
+      kubernetes.core.k8s:
+        state: present
+        definition: 
+          apiVersion: v1
+          kind: Secret
+          type: Opaque             
+          metadata:
+            name: database
+            namespace: beta
+          stringData:
+            DATABASE_URL: "{{ database_url }}"
+            FKWEB_DATABASE_URL: "{{fkweb_database_url}}"
+            POSTGRES_PASSWORD: "{{ postgres_password }}"
+            POSTGRES_REPLICATION_PASSWORD: "{{ replication_password }}"
+
+    - name: Deploy Kubegres instance
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{lookup ('template', 'database-kubegres.yaml')}}"

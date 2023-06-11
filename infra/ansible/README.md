@@ -11,6 +11,14 @@ sudo apt install python3-kubernetes python3-openshift
 ```
 
 
+## Vault
+
+We store our keys in an encrypted vault. To create your own, do this:
+
+```bash
+ansible-vault encrypt default-secrets.yml --output vault.yml
+```
+
 ## Grafana dashboards
 
 Grafana dashboards are read from configmaps with the `grafana_dashboard` label.
