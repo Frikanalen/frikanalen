@@ -53,3 +53,7 @@
       community.kubernetes.k8s:
         state: present
         src: files/calico-monitoring.yaml
+    - name: Configure kibana ingress (requires microk8s fluentd plugin!)
+      community.kubernetes.k8s:
+        state: present
+        src: files/kibana-ingress.yaml

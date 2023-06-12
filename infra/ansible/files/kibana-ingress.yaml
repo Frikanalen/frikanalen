@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.middlewares: default-admin-auth@kubernetescrd
+  name: kibana
+  namespace: kube-system
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: kibana.admin.frikanalen.no
+    http:
+      paths:
+      - backend:
+          service:
+            name: kibana-logging
+            port:
+              number: 5601
+        path: /
+        pathType: Prefix
