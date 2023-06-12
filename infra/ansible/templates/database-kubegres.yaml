@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: database-config
-  namespace: beta
+  namespace: "{{ namespace }}"
 data:
   primary_init_script.sh: |
     #!/bin/bash
@@ -25,7 +25,7 @@ apiVersion: kubegres.reactive-tech.io/v1
 kind: Kubegres
 metadata:
   name: postgres
-  namespace: beta
+  namespace: "{{ namespace }}"
 
 spec:
   replicas: {{ database_replicas }} 
@@ -33,9 +33,14 @@ spec:
   port: 5432
 
   database:
-     size: 500Mi
+     size: {{ database_size }}
 
   customConfig: database-config
+
+  backup:
+    schedule: "{{ backup_schedule }}" 
+    pvcName: nfs-pgbackup-pvc
+    volumeMount: /var/lib/backup
 
   env:
     - name: TZ

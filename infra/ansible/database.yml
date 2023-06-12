@@ -2,14 +2,25 @@
   vars_files:
     - vault.yml
   vars:
+    namespace: beta
+    database_size: 500Mi
     database_replicas: 3
     postgres_version: 15
     db_user: fk
     db_host: postgres
+    backups_nfs_path: /srv/nfs/pgbackups
+    backups_nfs_host: 192.168.3.1
+    # In Kubernetes CronJob syntax 
+    backup_schedule: "0 */1 * * *"
   tasks:
     - name: Create database URL
       set_fact:
         database_url: "postgresql://{{ db_user }}:{{ postgres_password }}@{{ db_host }}/postgres"
+
+    - name: Create NFS volume for database backups
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{lookup ('template', 'database-nfs-volume.yaml')}}"
 
     - name: Install Kubegres
       community.kubernetes.k8s:
@@ -25,7 +36,7 @@
           type: Opaque             
           metadata:
             name: database
-            namespace: beta
+            namespace: "{{ namespace }}"
           stringData:
             DATABASE_URL: "{{ database_url }}"
             FKWEB_DATABASE_URL: "{{fkweb_database_url}}"
