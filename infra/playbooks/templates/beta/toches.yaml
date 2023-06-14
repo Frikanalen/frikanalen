@@ -19,6 +19,14 @@ spec:
       - name: migrate-db-latest
         image: frikanalen/toches
         command: ['yarn', 'knex', 'migrate:latest']
+        env:
+          - name: TZ
+            value: Europe/Oslo
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: database
+                key: DATABASE_URL
       containers:
       - name: toches
         image: frikanalen/toches

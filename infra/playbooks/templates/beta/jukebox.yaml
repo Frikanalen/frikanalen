@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: jukebox
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   schedule: "00 22 * * *"
   jobTemplate:
@@ -14,7 +14,7 @@ spec:
             image: frikanalen/jukebox-v2:latest
             env:
               - name: FK_API
-                value: "https://beta.frikanalen.no/api/v2"
+                value: "https://{{ domain }}/api/v2"
               - name: FK_API_KEY
                 valueFrom:
                   secretKeyRef:

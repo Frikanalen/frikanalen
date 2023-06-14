@@ -1,17 +1,18 @@
+##
+# For end users
+##
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
-  name: s3-fetch
-  namespace: beta
+  name: media-ingress
+  namespace: "{{ namespace }}"
 spec:
   tls:
     certResolver: default
   entryPoints: 
-    - web
     - websecure
   routes:
-  - match: Host(`beta.frikanalen.no`) && PathPrefix(`/media`)
-    priority: 1000
+  - match: Host(`{{ domain }}`) && PathPrefix(`/media`)
     kind: Rule
     services:
     - kind: Service

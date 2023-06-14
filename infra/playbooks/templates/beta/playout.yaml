@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: playout
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   serviceName: playout
   selector:
@@ -38,11 +38,12 @@ spec:
 ---
 kind: ConfigMap
 apiVersion: v1
-data:
-  CASPAR_HOST: 192.168.3.34
-  CASPAR_MEDIA_URL_PREFIX: https://beta.frikanalen.no/media
-  FK_API: https://beta.frikanalen.no/api/v2
-  GRAPHICS_URL: http://fk.dev.local/graphics
 metadata:
   name: playout
-  namespace: beta
+  namespace: "{{ namespace }}"
+data:
+  CASPAR_HOST: 192.168.3.34
+  CASPAR_MEDIA_URL_PREFIX: https://{{ domain }}/media
+  FK_API: https://{{ domain }}/api/v2
+  GRAPHICS_URL: http://{{ domain }}/graphics
+

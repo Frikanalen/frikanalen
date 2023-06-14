@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   replicas: 2
   selector:
@@ -21,13 +21,13 @@ spec:
         image: frikanalen/frontend-v2:latest
         env:
           - name: FK_MEDIA
-            value: https://beta.frikanalen.no/media
+            value: https://{{ domain }}/media
           - name: FK_GRAPHQL
-            value: https://beta.frikanalen.no/graphql
+            value: https://{{ domain }}/graphql
           - name: FK_API
-            value: https://beta.frikanalen.no/api/v2
+            value: https://{{ domain }}/api/v2
           - name: FK_UPLOAD
-            value: https://beta.frikanalen.no/api/v2
+            value: https://{{ domain }}/api/v2
         imagePullPolicy: Always
         ports:
           - name: web
@@ -46,7 +46,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: frontend
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   type: ClusterIP
   selector:
@@ -60,14 +60,14 @@ kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
   name: frontend
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   tls:
     certResolver: default
   entryPoints:
     - websecure
   routes:
-  - match: Host(`beta.frikanalen.no`)
+  - match: Host(`{{ domain }}`)
     kind: Rule
     services:
     - name: frontend

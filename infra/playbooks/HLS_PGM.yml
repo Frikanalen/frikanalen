@@ -1,18 +1,16 @@
 - hosts: localhost
-  vars_files:
-    - vault.yml
   vars:
     namespace: beta
     domain: beta.frikanalen.no
   tasks:
-    - name: Create beta namespace
+    - name: Create namespace
       k8s:
         name: "{{ namespace }}"
         api_version: v1
         kind: Namespace
         state: present
 
-    - name: Set up backend
+    - name: Set up live packager
       community.kubernetes.k8s:
         state: present
-        definition: "{{lookup ('template', 'beta/toches.yaml')}}"
+        definition: "{{lookup ('template', 'stream-hls-pgm.yaml')}}"

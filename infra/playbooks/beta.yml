@@ -1,0 +1,64 @@
+- name: Set up beta.frikanalen.no
+  hosts: localhost
+  vars_files:
+    - vault.yml
+  vars:
+    namespace: beta
+    domain: beta.frikanalen.no
+  tasks:
+    - name: Create beta namespace
+      kubernetes.core.k8s:
+        name: "{{ namespace }}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Set up frontend
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/frontend.yaml') }}"
+
+    - name: Set up media processor
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/media-ingress.yaml') }}"
+
+    - name: Set up media processor
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/media/processor.yaml') }}"
+
+    - name: Set up backend
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/toches.yaml') }}"
+
+    # Set up media processor ingress
+    - name: Set up media processor ingress
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/media/ingress.yaml') }}"
+
+    # Set up upload ingress
+    - name: Set up upload ingress
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/media/upload-ingress.yaml') }}"
+
+    # Set up media storage
+    - name: Set up media storage
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/media/storage.yaml') }}"
+
+    # Set up Redis
+    - name: Set up Redis
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/media/redis.yaml') }}"
+
+    # Set up playout
+    - name: Set up playout
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/playout.yaml') }}"

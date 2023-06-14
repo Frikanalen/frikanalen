@@ -1,0 +1,29 @@
+##
+# This CRD defines a link between an object bucket claim and an object store.
+# It also defines bucket retention policy; ie. what to do when the last claim
+# to a bucket is rescinded.
+##
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: media-buckets
+provisioner: rook-ceph.ceph.rook.io/bucket
+reclaimPolicy: Retain
+parameters:
+  # The object store is defined using helm values
+  objectStoreName: media-store
+  objectStoreNamespace: rook-ceph
+---
+##
+# This CRD generates the "media" Secret and ConfigMap 
+# which can be very easily attached to pods as environment
+# variables.
+##
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: media
+  namespace: "{{ namespace }}"
+spec:
+  bucketName: media
+  storageClassName: media-buckets
