@@ -14,3 +14,35 @@ spec:
     targetPort: 6379
   selector:
     app: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: "{{ namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: redis
+    spec:
+      volumes:
+        - name: redis-persist
+          persistentVolumeClaim:
+            claimName: redis
+      containers:
+      - name: redis
+        image: redis:alpine
+        args: ["--save", "60", "1", "--loglevel", "warning"]
+        volumeMounts:
+          - mountPath: /data
+            name: redis-persist
+        ports:
+          - name: redis
+            containerPort: 6379

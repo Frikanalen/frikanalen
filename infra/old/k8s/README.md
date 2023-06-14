@@ -1,7 +1,3 @@
 # k8s
 
-This directory contains the CRDs which orchestrate the vast majority of Frikanalen's deployment.
-
-
-
-
+This directory is being phased out, but used to be the main repository for k8s resources.

@@ -21,11 +21,6 @@
     - name: Set up media processor
       community.kubernetes.k8s:
         state: present
-        definition: "{{ lookup('template', 'beta/media-ingress.yaml') }}"
-
-    - name: Set up media processor
-      community.kubernetes.k8s:
-        state: present
         definition: "{{ lookup('template', 'beta/media/processor.yaml') }}"
 
     - name: Set up backend
