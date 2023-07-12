@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atemkontroll
+  namespace: "{{ namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: atemkontroll
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: atemkontroll
+    spec:
+      containers:
+        - name: atemkontroll
+          image: frikanalen/atemkontroll:latest
+          env:
+            - name: ATEM_HOST
+              value: 10.3.2.1
+            - name: FK_API
+              value: "https://{{ domain }}/api/v2"
+          ports:
+            - name: web
+              containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: atemkontroll
+  namespace: "{{ namespace }}"
+spec:
+  type: ClusterIP
+  selector:
+    app: atemkontroll
+  ports:
+    - protocol: TCP
+      port: 3000
+      name: web
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-atem-prefix
+  namespace: "{{ namespace }}"
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/playout/atem
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: atemkontroll
+  namespace: "{{ namespace }}"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`{{ domain }}`) && PathPrefix(`/api/playout/atem`)
+      kind: Rule
+      middlewares:
+        - name: strip-atem-prefix
+          namespace: "{{ namespace }}"
+        - name: styring-cors
+          namespace: "{{ namespace }}"
+      services:
+        - kind: Service
+          name: atemkontroll
+          scheme: http
+          port: 3000
+  tls:
+    certResolver: default

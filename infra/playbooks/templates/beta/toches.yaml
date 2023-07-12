@@ -35,7 +35,7 @@ spec:
           - name: TZ
             value: Europe/Oslo
           - name: FK_MEDIA
-            value: https://{{ domain }}/media
+            value: https://{{ domain }}/
           - name: FK_API_KEY
             valueFrom:
               secretKeyRef:

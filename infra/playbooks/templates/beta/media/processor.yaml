@@ -9,38 +9,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redis
-  namespace: "{{ namespace }}"
-spec:
-  selector:
-    matchLabels:
-      app: redis
-  minReadySeconds: 5
-  template:
-    metadata:
-      annotations:
-        linkerd.io/inject: enabled
-      labels:
-        app: redis
-    spec:
-      volumes:
-        - name: redis-persist
-          persistentVolumeClaim:
-            claimName: redis
-      containers:
-      - name: redis
-        image: redis:alpine
-        args: ["--save", "60", "1", "--loglevel", "warning"]
-        volumeMounts:
-          - mountPath: /data
-            name: redis-persist
-        ports:
-          - name: redis
-            containerPort: 6379
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -100,34 +69,3 @@ spec:
   selector:
     app: media-processor
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: strip-apiv2-prefix
-  namespace: "{{ namespace }}"
-spec:
-  stripPrefix:
-    prefixes:
-      - /api/v2/
----
-kind: IngressRoute
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
-  name: media-processor
-  namespace: "{{ namespace }}"
-spec:
-  tls:
-    certResolver: default
-  entryPoints:
-    - websecure
-  routes:
-  - match: Host(`{{ domain }}`) && PathPrefix(`/api/v2/upload/video`)
-    kind: Rule
-    middlewares:
-      - name: strip-apiv2-prefix
-        namespace: "{{ namespace }}"
-    services:
-    - name: media-processor
-      kind: Service
-      scheme: http
-      port: 8000

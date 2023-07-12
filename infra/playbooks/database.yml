@@ -1,4 +1,5 @@
 - hosts: localhost
+  name: Deploy database
   vars_files:
     - vault.yml
   vars:
@@ -10,17 +11,17 @@
     db_host: postgres
     backups_nfs_path: /srv/nfs/pgbackups
     backups_nfs_host: 192.168.3.1
-    # In Kubernetes CronJob syntax 
+    # In Kubernetes CronJob syntax
     backup_schedule: "0 */1 * * *"
   tasks:
     - name: Create database URL
-      set_fact:
-        database_url: "postgresql://{{ db_user }}:{{ postgres_password }}@{{ db_host }}/postgres"
+      ansible.builtin.set_fact:
+        database_url: "postgresql://{{ db_user }}:{{ postgres_password }}@{{ db_host }}/fk"
 
     - name: Create NFS volume for database backups
       community.kubernetes.k8s:
         state: present
-        definition: "{{lookup ('template', 'database-nfs-volume.yaml')}}"
+        definition: "{{ lookup('template', 'database/nfs-backup-volume.yaml') }}"
 
     - name: Install Kubegres
       community.kubernetes.k8s:
@@ -30,20 +31,25 @@
     - name: Create Postgres secret
       kubernetes.core.k8s:
         state: present
-        definition: 
+        definition:
           apiVersion: v1
           kind: Secret
-          type: Opaque             
+          type: Opaque
           metadata:
             name: database
             namespace: "{{ namespace }}"
           stringData:
             DATABASE_URL: "{{ database_url }}"
-            FKWEB_DATABASE_URL: "{{fkweb_database_url}}"
+            FKWEB_DATABASE_URL: "{{ fkweb_database_url }}"
             POSTGRES_PASSWORD: "{{ postgres_password }}"
             POSTGRES_REPLICATION_PASSWORD: "{{ replication_password }}"
 
     - name: Deploy Kubegres instance
       community.kubernetes.k8s:
         state: present
-        definition: "{{lookup ('template', 'database-kubegres.yaml')}}"
+        definition: "{{ lookup('template', 'database/kubegres.yaml') }}"
+
+    - name: Create database servicemonitor
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'database/servicemonitor.yaml') }}"

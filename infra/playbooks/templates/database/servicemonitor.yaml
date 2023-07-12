@@ -2,6 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: prometheus-postgres-exporter
+  namespace: "monitoring"
   labels:
     release: prometheus-stack
 spec:
@@ -10,7 +11,7 @@ spec:
       app: prometheus-postgres-exporter
   namespaceSelector:
     matchNames:
-      - beta
+      - "{{ namespace }}"
   endpoints:
     - port: exporter
       interval: 30s

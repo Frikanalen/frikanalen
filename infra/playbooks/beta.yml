@@ -57,3 +57,8 @@
       community.kubernetes.k8s:
         state: present
         definition: "{{ lookup('template', 'beta/playout.yaml') }}"
+
+    - name: Set up monitoring stream
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/monitoring-stream.yaml') }}"

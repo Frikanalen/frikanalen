@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring-stream
+  namespace: "{{ namespace }}"
+spec:
+  selector:
+    matchLabels:
+      app: monitoring-stream
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: monitoring-stream
+    spec:
+      containers:
+        - name: monitoring-stream
+          image: frikanalen/monitoring-stream-ws:latest
+          ports:
+            - name: http
+              containerPort: 8081
+            - name: ws
+              containerPort: 8082
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: monitoring-stream
+  namespace: "{{ namespace }}"
+spec:
+  type: ClusterIP
+  selector:
+    app: monitoring-stream
+  ports:
+    - protocol: TCP
+      port: 8081
+      name: http
+    - protocol: TCP
+      port: 8082
+      name: ws
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-stream-prefix
+  namespace: "{{ namespace }}"
+spec:
+  stripPrefix:
+    prefixes:
+      - /api/playout/stream
+---
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: monitoring-stream
+  namespace: "{{ namespace }}"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`{{ domain }}`) && PathPrefix(`/api/playout/stream`)
+      kind: Rule
+      middlewares:
+        - name: strip-stream-prefix
+          namespace: "{{ namespace }}"
+      services:
+        - kind: Service
+          name: monitoring-stream
+          scheme: http
+          port: 8082
+  tls:
+    certResolver: default

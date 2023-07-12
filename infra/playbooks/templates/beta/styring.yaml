@@ -2,7 +2,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: styring-cors
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   headers:
     customResponseHeaders:
@@ -14,7 +14,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: styring
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   selector:
     matchLabels:
@@ -26,17 +26,17 @@ spec:
         app: styring
     spec:
       containers:
-      - name: styring
-        image: frikanalen/styring:latest
-        ports:
-          - name: web
-            containerPort: 80
+        - name: styring
+          image: frikanalen/styring:latest
+          ports:
+            - name: web
+              containerPort: 80
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: styring
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   type: ClusterIP
   selector:
@@ -54,21 +54,21 @@ kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
 metadata:
   name: atem-control
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
-  entryPoints: 
+  entryPoints:
     - websecure
   routes:
-  - match: (Host(`beta.frikanalen.no`)) && PathPrefix(`/playout`)
-    kind: Rule
-    middlewares:
-      - name: styring-cors
-        namespace: beta
-    services:
-    - kind: Service
-      name: styring
-      scheme: http
-      port: 80
+    - match: Host(`{{ domain }}`) && PathPrefix(`/playout`)
+      kind: Rule
+      middlewares:
+        - name: styring-cors
+          namespace: "{{ namespace }}"
+      services:
+        - kind: Service
+          name: styring
+          scheme: http
+          port: 80
   tls:
     certResolver: default
 ---
@@ -76,7 +76,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: styring-api-prefix
-  namespace: beta
+  namespace: "{{ namespace }}"
 spec:
   stripPrefix:
     prefixes:
