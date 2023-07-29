@@ -19,15 +19,19 @@ spec:
       containers:
       - name: frontend
         image: frikanalen/frontend-v2:latest
+        # NB: Remember this is a Next.JS project and as a result
+        # the values of these at build time are also significant!
         env:
-          - name: FK_MEDIA
+          - name: NEXT_PUBLIC_FK_MEDIA
             value: https://{{ domain }}/media
-          - name: FK_GRAPHQL
+          - name: NEXT_PUBLIC_FK_GRAPHQL
             value: https://{{ domain }}/graphql
-          - name: FK_API
+          - name: NEXT_PUBLIC_FK_API
             value: https://{{ domain }}/api/v2
-          - name: FK_UPLOAD
-            value: https://{{ domain }}/api/v2
+          - name: NEXT_PUBLIC_FK_UPLOAD
+            value: https://{{ domain }}/api/v2/media/upload
+          - name: NEXT_PUBLIC_FK_MEDIAPROC
+            value: https://{{ domain }}/api/v2/media
         imagePullPolicy: Always
         ports:
           - name: web

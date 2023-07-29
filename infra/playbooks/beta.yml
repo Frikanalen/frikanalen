@@ -62,3 +62,8 @@
       community.kubernetes.k8s:
         state: present
         definition: "{{ lookup('template', 'beta/monitoring-stream.yaml') }}"
+
+    - name: Set up automation frontend
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'beta/styring.yaml') }}"

@@ -1,12 +1,40 @@
+#
+# The ingress router maps the media API under /api/v2/media so we strip that prefix.
+#
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: strip-apiv2-prefix
+  name: strip-apiv2-media-prefix
   namespace: "{{ namespace }}"
 spec:
   stripPrefix:
     prefixes:
-      - /api/v2/
+      - /api/v2/media
+---
+#
+# The upload receiver is a tusd binary running in the same pod as the media-processor.
+# It receives files into a shared directory and notifies media-processor over HTTP.
+#
+# Note that the entire '/api/v2/media/upload' path is received by tusd.
+#
+kind: IngressRoute
+apiVersion: traefik.containo.us/v1alpha1
+metadata:
+  name: upload-receiver
+  namespace: "{{ namespace }}"
+spec:
+  tls:
+    certResolver: default
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`{{ domain }}`) && PathPrefix(`/api/v2/media/upload`)
+    kind: Rule
+    services:
+    - name: media-processor
+      kind: Service
+      scheme: http
+      port: 1080
 ---
 kind: IngressRoute
 apiVersion: traefik.containo.us/v1alpha1
@@ -19,13 +47,13 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`{{ domain }}`) && PathPrefix(`/api/v2/upload/video`)
+  - match: Host(`{{ domain }}`) && PathPrefix(`/api/v2/media`)
     kind: Rule
     middlewares:
-      - name: strip-apiv2-prefix
+      - name: strip-apiv2-media-prefix
         namespace: "{{ namespace }}"
     services:
     - name: media-processor
       kind: Service
       scheme: http
-      port: 8000
+      port: 8001
