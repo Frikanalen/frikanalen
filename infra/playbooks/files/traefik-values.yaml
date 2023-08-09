@@ -1,4 +1,13 @@
 deployment:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - tx1
   initContainers:
     - name: volume-permissions
       image: busybox:latest
