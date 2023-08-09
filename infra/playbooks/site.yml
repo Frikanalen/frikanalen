@@ -1,6 +1,26 @@
 - name: Deploy Kubernetes basics
   hosts: localhost
   tasks:
+    - name: Check if calico-config ConfigMap exists
+      k8s_info:
+        kind: ConfigMap
+        name: calico-config
+        namespace: kube-system
+      register: cm_result
+
+    - name: Ensure data.calico_backend is bird
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: calico-config
+            namespace: kube-system
+          data:
+            calico_backend: bird
+      when: cm_result.resources | length > 0
+
     - name: Add prometheus-community helm repo
       kubernetes.core.helm_repository:
         name: prometheus-community
@@ -38,13 +58,27 @@
         release_namespace: default
         values: "{{ lookup('ansible.builtin.file', 'traefik-values.yaml') | from_yaml }}"
 
+    - name: Check if prometheusMetricsEnabled is set to true
+      ansible.builtin.command: >
+        kubectl get felixconfiguration default -o jsonpath='{.spec.prometheusMetricsEnabled}'
+      register: felixconfig_output
+      changed_when: false
+
+    - name: Check if prometheusMetricsPort is set to 9095
+      ansible.builtin.command: >
+        kubectl get kubecontrollersconfiguration default -o jsonpath='{.spec.prometheusMetricsPort}'
+      register: kubecontrollers_output
+      changed_when: false
+
     - name: Enable metrics for Calico felixconfiguration
       ansible.builtin.command: >
         kubectl patch felixconfiguration default --type merge --patch '{"spec":{"prometheusMetricsEnabled": true}}'
+      when: felixconfig_output.stdout != "true"
 
     - name: Enable metrics for Calico kubecontrollersconfiguration
       ansible.builtin.command: >
-        kubectl patch kubecontrollersconfiguration default --type=merge  --patch '{"spec":{"prometheusMetricsPort": 9095}}'
+        kubectl patch kubecontrollersconfiguration default --type=merge --patch '{"spec":{"prometheusMetricsPort": 9095}}'
+      when: kubecontrollers_output.stdout != "9095"
 
     - name: Configure Calico monitoring
       community.kubernetes.k8s:
