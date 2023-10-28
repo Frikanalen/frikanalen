@@ -14,7 +14,7 @@ export const configs: Record<ConfigType, Config> = {
   },
   staging: {
     api: "https://frikanalen.no/api/",
-    upload: "https://frikanalen.no/api/videos/upload/",
+    upload: "https://upload.frikanalen.no/files",
   },
   devcluster: {
     api: "http://fk.dev.local/api/",
@@ -22,7 +22,9 @@ export const configs: Record<ConfigType, Config> = {
   },
   production: {
     api: "https://frikanalen.no/api/",
-    upload: "https://frikanalen.no/api/videos/upload/",
+    // This is temporarily file01; until the rest of the system is in play
+    // Usually it will be `/api/videos/upload/` at full URL
+    upload: "https://upload.frikanalen.no/files",
   },
 };
 
