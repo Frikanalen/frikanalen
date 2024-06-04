@@ -21,6 +21,44 @@
             calico_backend: bird
       when: cm_result.resources | length > 0
 
+    - name: Create PersistentVolumeClaim for elasticsearch-logging
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: PersistentVolumeClaim
+          metadata:
+            name: elasticsearch-logging-pvc
+            namespace: kube-system
+            labels:
+              app: elasticsearch
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 40Gi
+            storageClassName: ceph-block
+            volumeMode: Filesystem
+
+    - name: Patch ElasticSearch StatefulSet to use PersistentVolumeClaim
+      k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          metadata:
+            name: elasticsearch-logging
+            namespace: kube-system
+          spec:
+            template:
+              spec:
+                volumes:
+                  - name: elasticsearch-logging
+                    emptyDir: null
+                    persistentVolumeClaim:
+                      claimName: elasticsearch-logging-pvc
+
     - name: Add prometheus-community helm repo
       kubernetes.core.helm_repository:
         name: prometheus-community
