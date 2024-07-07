@@ -289,17 +289,22 @@ class Graphic(PlannedItem):
             # NRK clock used to do it! ^_^
             if self._seconds_left() >= 5.0:
                 await asyncio.sleep(self._seconds_left() - 2.0)
+                await CurrentPlayer.issue(f'MIXER {self.layer}1 OPACITY 0 50 easeinsine')
                 await CurrentPlayer.issue(f'MIXER {self.layer} OPACITY 0 50 easeinsine')
 
             await self._completion()
             await self.clear()
-            await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
             await CurrentPlayer.issue(f'MIXER {self.layer}1 CLEAR')
+            await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
 
         except asyncio.CancelledError:
             await self.clear()
-            await CurrentPlayer.issue(f'MIXER {self.layer}1 CLEAR')
-            await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
+
+    async def clear(self):
+        await CurrentPlayer.issue("CLEAR {}".format(self.layer))
+        await CurrentPlayer.issue(f'CG {self.layer}1 CLEAR')
+        await CurrentPlayer.issue(f'MIXER {self.layer}1 CLEAR')
+        await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
 
     async def prepare(self):
         try:
