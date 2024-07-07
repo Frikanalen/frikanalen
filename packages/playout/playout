@@ -278,10 +278,11 @@ class Graphic(PlannedItem):
     async def cue(self):
         try:
             if self.has_been_prepared:
-                await CurrentPlayer.issue(f'PLAY {self.layer}')
+                await CurrentPlayer.issue(f'CG {self.layer}1 PLAY 0')
+                await CurrentPlayer.issue(f'PLAY {self.layer} filler/FrikanalenLoop loop 0')
             else:
-                #await CurrentPlayer.issue(f'PLAY {self.layer} [HTML] "{self.url}"')
-                await CurrentPlayer.issue(f'PLAY {self.layer} filler/frikanalenloop loop 0')
+                await CurrentPlayer.issue(f'CG {self.layer}1 ADD 0 "{self.url}" 1')
+                await CurrentPlayer.issue(f'PLAY {self.layer}')
 
             # If we have time for it, do a nice and steady fade to black
             # two seconds before the next programme, just like the old
@@ -293,14 +294,16 @@ class Graphic(PlannedItem):
             await self._completion()
             await self.clear()
             await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
+            await CurrentPlayer.issue(f'MIXER {self.layer}1 CLEAR')
 
         except asyncio.CancelledError:
             await self.clear()
+            await CurrentPlayer.issue(f'MIXER {self.layer}1 CLEAR')
             await CurrentPlayer.issue(f'MIXER {self.layer} CLEAR')
 
     async def prepare(self):
         try:
-            #await CurrentPlayer.issue(f'LOADBG {self.layer} [HTML] "{self.url}"')
+            await CurrentPlayer.issue(f'CG {self.layer}1 ADD 0 "{self.url}" 0')
             await CurrentPlayer.issue(f'LOADBG {self.layer} filler/FrikanalenLoop loop 0')
             self.has_been_prepared = True
         except asyncio.CancelledError:
