@@ -13,7 +13,7 @@
     "node-fetch": "^3.3.0",
     "start": "^5.1.0",
     "winston": "^3.8.2",
-    "zod": "^3.19.1"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@tsconfig/node18-strictest-esm": "^1",
