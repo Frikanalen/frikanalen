@@ -1,27 +1,26 @@
 # Copyright (c) 2012-2013 Benjamin Bruheim <grolgh@gmail.com>
 # This file is covered by the LGPLv3 or later, read COPYING for details.
+from phonenumber_field.modelfields import PhoneNumberField
+from model_utils.models import TimeStampedModel
+from model_utils import Choices
+from django.utils.translation import gettext as _
+from django.utils import timezone
+from django.db.models.signals import post_save, post_delete
+from django.db import models
+from django.urls import reverse
+from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.cache import caches
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.conf import settings
+import pytz
 import datetime
 import os
 import uuid
 
 import logging
 logger = logging.getLogger(__name__)
-
-import pytz
-from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.contrib.auth import get_user_model
-from django.core.cache import caches
-from django.core.exceptions import ObjectDoesNotExist
-from django.dispatch import receiver
-from django.urls import reverse
-from django.db import models
-from django.db.models.signals import post_save, post_delete
-from django.utils import timezone
-from django.utils.translation import ugettext as _
-from model_utils import Choices
-from model_utils.models import TimeStampedModel
-from phonenumber_field.modelfields import PhoneNumberField
 
 
 """
@@ -76,14 +75,21 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(verbose_name='email address', max_length=254, unique=True)
-    first_name = models.CharField(blank=True, max_length=30, verbose_name='first name')
-    last_name = models.CharField(blank=True, max_length=30, verbose_name='last name')
-    is_active = models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')
-    is_superuser = models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='admin status')
-    identity_confirmed = models.BooleanField(default=False, help_text='Whether the identity of this user has been confirmed by Frikanalen management.', verbose_name='identity confirmed')
+    email = models.EmailField(
+        verbose_name='email address', max_length=254, unique=True)
+    first_name = models.CharField(
+        blank=True, max_length=30, verbose_name='first name')
+    last_name = models.CharField(
+        blank=True, max_length=30, verbose_name='last name')
+    is_active = models.BooleanField(
+        default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')
+    is_superuser = models.BooleanField(
+        default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='admin status')
+    identity_confirmed = models.BooleanField(
+        default=False, help_text='Whether the identity of this user has been confirmed by Frikanalen management.', verbose_name='identity confirmed')
 
-    phone_number = PhoneNumberField(blank=True, help_text='Phone number at which this user can be reached', verbose_name='phone number')
+    phone_number = PhoneNumberField(
+        blank=True, help_text='Phone number at which this user can be reached', verbose_name='phone number')
 
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     date_of_birth = models.DateField(blank=True, null=True)
@@ -115,25 +121,27 @@ class User(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_superuser
 
+
 class Organization(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, max_length=255)
 
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)  # User ownership of an organization
+    # User ownership of an organization
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     fkmember = models.BooleanField(default=False)
     orgnr = models.CharField(blank=True, max_length=255)
     homepage = models.CharField('Link back to the organisation home page.',
                                 blank=True, null=True, max_length=255)
 
     postal_address = models.TextField('Postal address for organization.',
-                                blank=True, null=True, max_length=2048)
+                                      blank=True, null=True, max_length=2048)
     street_address = models.TextField('Street address for organization.',
-                                blank=True, null=True, max_length=2048)
+                                      blank=True, null=True, max_length=2048)
 
     # The user legally marked as the editor for this organization
     editor = models.ForeignKey(User, on_delete=models.SET_NULL,
-            blank=True, null=True, related_name='editor')
+                               blank=True, null=True, related_name='editor')
 
     # Videos to feature on their frontpage, incl other members
     # featured_videos = models.ManyToManyField("Video")
@@ -236,7 +244,7 @@ class VideoManager(models.Manager):
         return (super(VideoManager, self)
                 .get_queryset()
                 .filter(is_filler=True, has_tono_records=False,
-                    organization__fkmember=True, proper_import=True))
+                        organization__fkmember=True, proper_import=True))
 
 
 class Video(models.Model):
@@ -251,7 +259,7 @@ class Video(models.Model):
     creator = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
     has_tono_records = models.BooleanField(default=False)
     is_filler = models.BooleanField('Play automatically?',
-                                    help_text = 'You still have the editorial responsibility.  Only affect videos from members.',
+                                    help_text='You still have the editorial responsibility.  Only affect videos from members.',
                                     default=False)  # Find a better name?
     publish_on_web = models.BooleanField(default=True)
 
@@ -303,7 +311,7 @@ class Video(models.Model):
         return uuid.uuid4().hex
 
     upload_token = models.CharField(blank=True, default=default_uuid_value.__func__,
-            max_length=32, help_text='Video upload token (used by fkupload/frontend)')
+                                    max_length=32, help_text='Video upload token (used by fkupload/frontend)')
 
     objects = VideoManager()
 
@@ -400,8 +408,10 @@ class Video(models.Model):
 
         vodfiles = []
         for videofile in self.videofiles().filter(format__vod_publish=True):
-            url = settings.FK_MEDIA_URLPREFIX + videofile.location(relative=True)
-            vodfiles.append({'url': url, 'mime_type': videofile.format.mime_type})
+            url = settings.FK_MEDIA_URLPREFIX + \
+                videofile.location(relative=True)
+            vodfiles.append(
+                {'url': url, 'mime_type': videofile.format.mime_type})
         return vodfiles
 
     def get_absolute_url(self):
@@ -415,7 +425,8 @@ class ScheduleitemManager(models.Manager):
         elif hasattr(date, 'date'):
             date.replace(tzinfo=timezone.get_current_timezone())
             date = date.date()
-        startdt = datetime.datetime.combine(date, datetime.time(0, tzinfo=pytz.timezone('Europe/Oslo')))
+        startdt = datetime.datetime.combine(
+            date, datetime.time(0, tzinfo=pytz.timezone('Europe/Oslo')))
         enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
             startdt, enddt = self.expand_to_surrounding(startdt, enddt)
@@ -426,15 +437,15 @@ class ScheduleitemManager(models.Manager):
         # Try to find the event before the given date
         try:
             startdt = (Scheduleitem.objects
-                .filter(starttime__lte=startdt)
-                .order_by("-starttime")[0].starttime)
+                       .filter(starttime__lte=startdt)
+                       .order_by("-starttime")[0].starttime)
         except IndexError:
             pass
         # Try to find the event after the end date
         try:
             enddt = (Scheduleitem.objects
-                .filter(starttime__gte=enddt)
-                .order_by("starttime")[0].starttime)
+                     .filter(starttime__gte=enddt)
+                     .order_by("starttime")[0].starttime)
         except IndexError:
             pass
         return startdt, enddt
@@ -456,7 +467,8 @@ class Scheduleitem(models.Model):
 
     id = models.AutoField(primary_key=True)
     default_name = models.CharField(max_length=255, blank=True)
-    video = models.ForeignKey(Video, null=True, blank=True, on_delete=models.SET_NULL)
+    video = models.ForeignKey(
+        Video, null=True, blank=True, on_delete=models.SET_NULL)
     schedulereason = models.IntegerField(blank=True, choices=SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = models.DurationField()
@@ -471,7 +483,7 @@ class Scheduleitem(models.Model):
     @staticmethod
     @receiver([post_save, post_delete])
     def _clear_cache(**kwargs):
-        #logger.warning('[Scheduleitem] cache flush')
+        # logger.warning('[Scheduleitem] cache flush')
         caches['schedule'].clear()
 
     def __str__(self):
@@ -505,7 +517,8 @@ class SchedulePurpose(models.Model):
     strategy = models.CharField(max_length=32, choices=STRATEGY)
 
     # You probably need one of these depending on type and strategy
-    organization = models.ForeignKey(Organization, blank=True, null=True, on_delete=models.SET_NULL)
+    organization = models.ForeignKey(
+        Organization, blank=True, null=True, on_delete=models.SET_NULL)
     direct_videos = models.ManyToManyField(Video, blank=True)
 
     class Meta:
@@ -567,7 +580,8 @@ class WeeklySlot(models.Model):
         (6, _('Sunday')),
     )
 
-    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True, on_delete=models.SET_NULL)
+    purpose = models.ForeignKey(
+        SchedulePurpose, null=True, blank=True, on_delete=models.SET_NULL)
     day = models.IntegerField(
         choices=DAY_OF_THE_WEEK,
     )
@@ -630,7 +644,8 @@ class AsRun(TimeStampedModel):
                how long we live streamed a particular URL.
                Can be null (None) if this is 'currently happening'.
     """
-    video = models.ForeignKey(Video, blank=True, null=True, on_delete=models.SET_NULL)
+    video = models.ForeignKey(
+        Video, blank=True, null=True, on_delete=models.SET_NULL)
     program_name = models.CharField(max_length=160, blank=True, default='')
     playout = models.CharField(max_length=255, blank=True, default='main')
     played_at = models.DateTimeField(blank=True, default=timezone.now)
@@ -646,13 +661,16 @@ class AsRun(TimeStampedModel):
     class Meta:
         ordering = ('-played_at', '-id',)
 
-# This class is actually not managed by Django. It is accessed by the 
+# This class is actually not managed by Django. It is accessed by the
 # media-processor, which manipulates the database directly. It is only
 # defined here so that database migrations are handled centrally.
+
+
 class Asset(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     asset_type = models.CharField(max_length=160)
     location = models.CharField(max_length=160)
+
 
 class IngestJob(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)

@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 
 from fk.models import Organization
@@ -26,197 +26,202 @@ logger = logging.getLogger(__name__)
 
 
 class ProgramguideView(TemplateView):
-  """Simple Programguide
+    """Simple Programguide
 
-  It's quite slow.
+    It's quite slow.
 
-  Improvement would be to give out days presorted as days to facilitate
-  flowing formatting.
-  """
-  template_name = 'agenda/events.html'
-  title = 'Program guide - this week'
+    Improvement would be to give out days presorted as days to facilitate
+    flowing formatting.
+    """
+    template_name = 'agenda/events.html'
+    title = 'Program guide - this week'
 
-  def get_context_data(self, **kwargs):
-    context = super(ProgramguideView, self).get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(ProgramguideView, self).get_context_data(**kwargs)
 
-    if 'date' in self.request.GET:
-        starttime = parse_datetime(self.request.GET['date'] + " 00:00")
-    else:
-        starttime = timezone.now()
-    events = (Scheduleitem.objects
-              .by_day(starttime.date(), days=7)
-              .order_by('starttime'))
-    context.update(
-        events=events,
-        starttime=starttime,
-        title=self.title,
-    )
-    return context
+        if 'date' in self.request.GET:
+            starttime = parse_datetime(self.request.GET['date'] + " 00:00")
+        else:
+            starttime = timezone.now()
+        events = (Scheduleitem.objects
+                  .by_day(starttime.date(), days=7)
+                  .order_by('starttime'))
+        context.update(
+            events=events,
+            starttime=starttime,
+            title=self.title,
+        )
+        return context
 
 
 class ProgramguideCalendarView(ProgramguideView):
-  template_name = 'agenda/calendar.html'
-  title = _('Calendar - this week')
+    template_name = 'agenda/calendar.html'
+    title = _('Calendar - this week')
 
 
 class ProgramplannerView(TemplateView):
-  def get(self, request, form = None):
-    context = {
-        #'events': events,
-        'title': _('Schedule planner')
-      }
-    return render(request, 'agenda/planner.html', context)
+    def get(self, request, form=None):
+        context = {
+            # 'events': events,
+            'title': _('Schedule planner')
+        }
+        return render(request, 'agenda/planner.html', context)
+
 
 class ManageVideoList(TemplateView):
-  def get(self, request):
-    if not request.user.is_authenticated:
-      return redirect('/login/?next=%s' % request.path)
-    context = {}
-    context["title"] = _('My videos')
-    videos = Video.objects.filter(creator=request.user).order_by('name')
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('/login/?next=%s' % request.path)
+        context = {}
+        context["title"] = _('My videos')
+        videos = Video.objects.filter(creator=request.user).order_by('name')
 
-    p = Paginator(videos, 20)
-    s = request.GET.get("page")
-    if str(s).isdigit():
-      page_nr = int(s)
-    else:
-      page_nr = 1
-    page = p.page(page_nr)
+        p = Paginator(videos, 20)
+        s = request.GET.get("page")
+        if str(s).isdigit():
+            page_nr = int(s)
+        else:
+            page_nr = 1
+        page = p.page(page_nr)
 
-    context["videos"] = page.object_list
-    context["page"] = page
-    return render(request, 'agenda/manage_video_list.html', context)
+        context["videos"] = page.object_list
+        context["page"] = page
+        return render(request, 'agenda/manage_video_list.html', context)
 
 
 class VideoFormForUsers(ModelForm):
-  class Meta:
-    model = Video
-    fields = (
-      'name',
-      'categories',
-      'organization',
-      'has_tono_records',
-      'is_filler',
-      'publish_on_web',
-      'header',
-      'ref_url',
-      'duration',
-    )
+    class Meta:
+        model = Video
+        fields = (
+            'name',
+            'categories',
+            'organization',
+            'has_tono_records',
+            'is_filler',
+            'publish_on_web',
+            'header',
+            'ref_url',
+            'duration',
+        )
 
 
 class VideoFormForAdmin(ModelForm):
-  class Meta:
-    model = Video
-    fields = (
-      'name',
-      'categories',
-      'creator',
-      'organization',
-      'has_tono_records',
-      'is_filler',
-      'publish_on_web',
-      'header',
-      'ref_url',
-      'duration',
-    )
+    class Meta:
+        model = Video
+        fields = (
+            'name',
+            'categories',
+            'creator',
+            'organization',
+            'has_tono_records',
+            'is_filler',
+            'publish_on_web',
+            'header',
+            'ref_url',
+            'duration',
+        )
 
 
 class AbstractVideoFormView(TemplateView):
-  UserForm = VideoFormForUsers
-  AdminForm = VideoFormForAdmin
+    UserForm = VideoFormForUsers
+    AdminForm = VideoFormForAdmin
 
-  def get_form(self, request, data=None, initial={}, form=None, instance=None):
-    # I suspect this stuff should be moved to the VideoForm-class
-    organizations = Organization.objects.filter(members=request.user.id)
-    if not form:
-      if not instance:
-        if organizations:
-          initial["organization"] = organizations[0].id
-        initial["publish_on_web"] = True
+    def get_form(self, request, data=None, initial={}, form=None, instance=None):
+        # I suspect this stuff should be moved to the VideoForm-class
+        organizations = Organization.objects.filter(members=request.user.id)
+        if not form:
+            if not instance:
+                if organizations:
+                    initial["organization"] = organizations[0].id
+                initial["publish_on_web"] = True
 
-        # Request manual intervention before the video end in rotation
-        initial["is_filler"] = False
+                # Request manual intervention before the video end in rotation
+                initial["is_filler"] = False
 
-      if request.user.is_superuser:
-        initial["creator"] = request.user.id
-        if not instance:
-          form = self.AdminForm(initial=initial)
-        else:
-          form = self.AdminForm(data, instance=instance)
-      else:
-        if not instance:
-          form = self.UserForm(initial=initial)
-        else:
-          form = self.UserForm(data, instance=instance)
+            if request.user.is_superuser:
+                initial["creator"] = request.user.id
+                if not instance:
+                    form = self.AdminForm(initial=initial)
+                else:
+                    form = self.AdminForm(data, instance=instance)
+            else:
+                if not instance:
+                    form = self.UserForm(initial=initial)
+                else:
+                    form = self.UserForm(data, instance=instance)
 
-    if not request.user.is_superuser:
-      form.fields["organization"].queryset=organizations
-    return form
+        if not request.user.is_superuser:
+            form.fields["organization"].queryset = organizations
+        return form
+
 
 class ManageVideoNew(AbstractVideoFormView):
-  def get(self, request, form=None):
-    if not request.user.is_authenticated or not request.user.is_superuser:
-      return redirect('/login/?next=%s' % request.path)
-    initial = {}
-    form = self.get_form(request, initial=initial, form=form)
-    context = {
-               "form": form,
-               "title": _('New Video')
-               }
-    return render(request, 'agenda/manage_video_new.html', context)
+    def get(self, request, form=None):
+        if not request.user.is_authenticated or not request.user.is_superuser:
+            return redirect('/login/?next=%s' % request.path)
+        initial = {}
+        form = self.get_form(request, initial=initial, form=form)
+        context = {
+            "form": form,
+            "title": _('New Video')
+        }
+        return render(request, 'agenda/manage_video_new.html', context)
 
-  def post(self, request):
-    if not request.user.is_authenticated or not request.user.is_superuser:
-      return redirect('/login/?next=%s' % request.path)
-    if request.user.is_superuser:
-      video = Video()
-    else:
-      video = Video(creator=request.user)
-    # Since this is not an import we set this to True
-    video.proper_import = True
+    def post(self, request):
+        if not request.user.is_authenticated or not request.user.is_superuser:
+            return redirect('/login/?next=%s' % request.path)
+        if request.user.is_superuser:
+            video = Video()
+        else:
+            video = Video(creator=request.user)
+        # Since this is not an import we set this to True
+        video.proper_import = True
 
-    form = self.get_form(request, data=request.POST, instance=video)
-    if form.is_valid():
-      video = form.save()
-      # Success, send to edit page
-      return redirect("manage-video-edit", video.id)
-    return self.get(request, form=form)
+        form = self.get_form(request, data=request.POST, instance=video)
+        if form.is_valid():
+            video = form.save()
+            # Success, send to edit page
+            return redirect("manage-video-edit", video.id)
+        return self.get(request, form=form)
+
 
 def allowed_to_edit(video, user):
-  return (user.is_authenticated
-          and ((video.organization
-                and video.organization.members.filter(pk=user.id).exists())
-               or user.is_superuser))
+    return (user.is_authenticated
+            and ((video.organization
+                  and video.organization.members.filter(pk=user.id).exists())
+                 or user.is_superuser))
+
 
 class ManageVideoEdit(AbstractVideoFormView):
-  Form = VideoFormForUsers
-  def get(self, request, id=None, form=None):
-    if not request.user.is_authenticated:
-      return redirect('/login/?next=%s' % request.path)
-    video = Video.objects.get(id=id)
-    if not allowed_to_edit(video, request.user):
-      return HttpResponseForbidden(
-          _('You are not a member of the organization that owns this videos.'))
-    form = self.get_form(request, form=form, instance=video)
-    videofiles = VideoFile.objects.filter(video=video)
-    context = {
-               "form": form,
-               "videofiles": videofiles,
-               "title": _("Edit video")
-               }
-    return render(request, 'agenda/manage_video_new.html', context)
+    Form = VideoFormForUsers
 
-  def post(self, request, id):
-    if not request.user.is_authenticated:
-      return redirect('/login/?next=%s' % request.path)
-    video = Video.objects.get(id=id)
-    if not allowed_to_edit(video, request.user):
-      return HttpResponseForbidden(
-          _('You are not a member of the organization that owns this videos.'))
-    form = self.get_form(request, data=request.POST, instance=video)
-    if form.is_valid():
-      form.save()
-    return self.get(request, id=id, form=form)
+    def get(self, request, id=None, form=None):
+        if not request.user.is_authenticated:
+            return redirect('/login/?next=%s' % request.path)
+        video = Video.objects.get(id=id)
+        if not allowed_to_edit(video, request.user):
+            return HttpResponseForbidden(
+                _('You are not a member of the organization that owns this videos.'))
+        form = self.get_form(request, form=form, instance=video)
+        videofiles = VideoFile.objects.filter(video=video)
+        context = {
+            "form": form,
+            "videofiles": videofiles,
+            "title": _("Edit video")
+        }
+        return render(request, 'agenda/manage_video_new.html', context)
+
+    def post(self, request, id):
+        if not request.user.is_authenticated:
+            return redirect('/login/?next=%s' % request.path)
+        video = Video.objects.get(id=id)
+        if not allowed_to_edit(video, request.user):
+            return HttpResponseForbidden(
+                _('You are not a member of the organization that owns this videos.'))
+        form = self.get_form(request, data=request.POST, instance=video)
+        if form.is_valid():
+            form.save()
+        return self.get(request, id=id, form=form)
 
 
 def fill_next_weeks_agenda():
@@ -244,10 +249,10 @@ def fill_next_weeks_agenda():
             logger.debug("Already something scheduled in this slot")
             continue
         item = Scheduleitem(
-                  video=video,
-                  schedulereason=Scheduleitem.REASON_AUTO,
-                  starttime=next_datetime,
-                  duration=video.duration)
+            video=video,
+            schedulereason=Scheduleitem.REASON_AUTO,
+            starttime=next_datetime,
+            duration=video.duration)
         item.save()
 
 
@@ -269,25 +274,28 @@ def fill_agenda_with_jukebox(start=None, days=1):
 
     return jukebox_choices
 
+
 def ceil_minute(dt):
     return floor_minute(dt) + datetime.timedelta(minutes=1)
+
 
 def floor_minute(dt):
     """ Returns the datetime with seconds and microseconds cleared """
     return dt.replace(second=0, microsecond=0)
 
+
 def _items_for_gap(start, end, candidates):
-    logger.info("Being asked to fill gap from {} to {}".format(start,end))
+    logger.info("Being asked to fill gap from {} to {}".format(start, end))
     # The smallest gap this function will try to fill
     MINIMUM_GAP_SECONDS = 300
     # The schedule granularity in minutes (eg. 5 means the scheduler
-    # will schedule at 13:05, 13:10, etc.) 
+    # will schedule at 13:05, 13:10, etc.)
     SCHEDULE_GRANULARITY = 5
 
     # Get a list of previously scheduled videos
     startdt, enddt = Scheduleitem.objects.expand_to_surrounding(start, end)
     already_scheduled = list(Scheduleitem.objects.filter(starttime__gte=startdt,
-            starttime__lte=enddt).order_by('starttime'))
+                                                         starttime__lte=enddt).order_by('starttime'))
 
     start_of_gap = ceil_minute(start)
     end = floor_minute(end)
@@ -308,7 +316,7 @@ def _items_for_gap(start, end, candidates):
                 continue
 
             # If it doesn't begin until after the
-            # end of our window, the window is 
+            # end of our window, the window is
             # empty; otherwise this video is now
             # the end of our gap
             if extant_video.starttime > end:
@@ -319,7 +327,8 @@ def _items_for_gap(start, end, candidates):
         gap = (end_of_gap - start_of_gap).total_seconds()
 
         if gap > MINIMUM_GAP_SECONDS:
-            (items, pool) = _fill_time_with_jukebox(start_of_gap, end_of_gap, candidates, current_pool=pool)
+            (items, pool) = _fill_time_with_jukebox(
+                start_of_gap, end_of_gap, candidates, current_pool=pool)
             full_items.extend(items)
         else:
             logging.info("Not filling %d second gap" % gap)
@@ -330,10 +339,12 @@ def _items_for_gap(start, end, candidates):
         start_of_gap = ceil_minute(extant_video.endtime())
     return full_items
 
+
 def _fill_time_with_jukebox(start, end, videos, current_pool=None):
     current_time = start
     video_pool = current_pool or list(videos)
-    logger.info("Filling jukebox from %s to %s - %d in pool" % (start, end, len(video_pool)))
+    logger.info("Filling jukebox from %s to %s - %d in pool" %
+                (start, end, len(video_pool)))
     rejected_videos = []
     new_items = []
 
@@ -342,7 +353,7 @@ def _fill_time_with_jukebox(start, end, videos, current_pool=None):
 
     def next_vid(first=False):
         logger.debug("next vid %s rej %s pool %s" % (first, plist(rejected_videos),
-            plist(video_pool)))
+                                                     plist(video_pool)))
         if len(video_pool) < len(videos) and first:
             video_pool.extend(list(videos))
         if len(rejected_videos):
@@ -355,18 +366,20 @@ def _fill_time_with_jukebox(start, end, videos, current_pool=None):
         video = next_vid(True)
         new_rejects = []
         while current_time + video.duration > end:
-            logger.debug("end overshoots time %s" % (current_time + video.duration))
+            logger.debug("end overshoots time %s" %
+                         (current_time + video.duration))
             if video not in rejected_videos and video not in new_rejects:
                 new_rejects.append(video)
             video = next_vid()
             logger.debug("next vid is %s rejected %s new_rej %s" % (video,
-                plist(rejected_videos), plist(new_rejects)))
+                                                                    plist(rejected_videos), plist(new_rejects)))
             if not video:
                 return (new_items, rejected_videos + video_pool)
         rejected_videos.extend(new_rejects)
-        new_items.append({ 'id': video.id, 'starttime': current_time, 'video': video })
-        logger.info ("Added video %s at curr time %s", video.id,
-                current_time.strftime("%H:%M:%S"))
+        new_items.append(
+            {'id': video.id, 'starttime': current_time, 'video': video})
+        logger.info("Added video %s at curr time %s", video.id,
+                    current_time.strftime("%H:%M:%S"))
         current_time = ceil_minute(current_time + video.duration)
 
     return (new_items, rejected_videos + video_pool)

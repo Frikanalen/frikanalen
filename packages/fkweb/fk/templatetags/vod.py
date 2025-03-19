@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django import template
 from django.conf import settings
 
@@ -29,6 +29,8 @@ def show_sched(scheditem, type):
         'video_error_explanation': video_error_explanation,
         'title': title,
     }
+
+
 @register.inclusion_tag('fkvod/vod_widget.html')
 def show_vod_widget(video_id):
     video_error_explanation = ''
