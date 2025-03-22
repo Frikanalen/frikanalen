@@ -14,7 +14,7 @@ class FilterTest(APITestCase):
             url = reverse(urlname) + lookup
             r = self.client.get(url)
             self.assertEqual(status.HTTP_200_OK, r.status_code,
-                             "lookup '%s' did not return status 200" % url)
+                             f"lookup '{url}' did not return status 200")
             videos = [v[fieldname] for v in r.data['results']]
             self.assertEqual(
                 expect, videos, "%s lookup '%s' expect %s got %s" %

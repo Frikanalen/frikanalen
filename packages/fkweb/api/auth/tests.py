@@ -86,7 +86,7 @@ class UserProfileTests(APITestCase):
     def _basic_auth_credentials(self):
         credentials = base64.b64encode(
             f'{self.email}:{self.password}'.encode('utf-8'))
-        return 'Basic {}'.format(credentials.decode('utf-8'))
+        return f"Basic {credentials.decode('utf-8')}"
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(
@@ -201,9 +201,7 @@ class PermissionsTest(APITestCase):
             page_response = self.client.get(url)
             self.assertEqual(
                 code, page_response.status_code,
-                "{} status is {} expected {}".format(name,
-                                                     page_response.status_code,
-                                                     code))
+                f"{name} status is {page_response.status_code} expected {code}")
 
     def test_anonymous_does_not_have_token(self):
         r = self.client.get(reverse('api-token-auth'))

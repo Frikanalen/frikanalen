@@ -16,7 +16,7 @@ def get_env_setting(setting):
     try:
         return environ[setting]
     except KeyError:
-        error_msg = "Set the %s env variable" % setting
+        error_msg = f"Set the {setting} env variable"
         raise ImproperlyConfigured(error_msg)
 
 ########## HOST CONFIGURATION
@@ -31,7 +31,7 @@ DEFAULT_FROM_EMAIL = 'Frikanalen <noreply@frikanalen.no>'
 EMAIL_HOST = get_env_setting('SMTP_SERVER')
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_SUBJECT_PREFIX = '[%s] ' % SITE_NAME
+EMAIL_SUBJECT_PREFIX = f'[{SITE_NAME}] '
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 ########## END EMAIL CONFIGURATION
 

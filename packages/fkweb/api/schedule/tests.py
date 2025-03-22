@@ -52,7 +52,7 @@ class ScheduleitemTest(APITestCase):
             },
                                  format='json')
             self.assertEqual(status.HTTP_400_BAD_REQUEST, r.status_code)
-            self.assertEqual("Conflict with '2015-01-01 %s'." % conflict,
+            self.assertEqual(f"Conflict with '2015-01-01 {conflict}'.",
                              r.data['duration'][0])
 
     def test_schedule_item_can_update(self):

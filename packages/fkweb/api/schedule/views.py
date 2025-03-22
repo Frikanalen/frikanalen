@@ -86,7 +86,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
 
         # The schedule cache is cleared on save() and delete() in fk/models.py:Scheduleitem
         cache = caches['schedule']
-        cache_key = 'schedule-%s-%s' % (date.strftime('%Y%m%d'), days)
+        cache_key = f"schedule-{date.strftime('%Y%m%d')}-{days}"
 
         # We only cache for the most common use case: Single day of schedule,
         # requested as JSON. If any other parameters are set, we simply disable

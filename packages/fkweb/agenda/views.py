@@ -71,7 +71,7 @@ class ProgramplannerView(TemplateView):
 class ManageVideoList(TemplateView):
     def get(self, request):
         if not request.user.is_authenticated:
-            return redirect('/login/?next=%s' % request.path)
+            return redirect(f'/login/?next={request.path}')
         context = {}
         context["title"] = _('My videos')
         videos = Video.objects.filter(creator=request.user).order_by('name')
@@ -158,7 +158,7 @@ class AbstractVideoFormView(TemplateView):
 class ManageVideoNew(AbstractVideoFormView):
     def get(self, request, form=None):
         if not request.user.is_authenticated or not request.user.is_superuser:
-            return redirect('/login/?next=%s' % request.path)
+            return redirect(f'/login/?next={request.path}')
         initial = {}
         form = self.get_form(request, initial=initial, form=form)
         context = {
@@ -169,7 +169,7 @@ class ManageVideoNew(AbstractVideoFormView):
 
     def post(self, request):
         if not request.user.is_authenticated or not request.user.is_superuser:
-            return redirect('/login/?next=%s' % request.path)
+            return redirect(f'/login/?next={request.path}')
         if request.user.is_superuser:
             video = Video()
         else:
@@ -197,7 +197,7 @@ class ManageVideoEdit(AbstractVideoFormView):
 
     def get(self, request, id=None, form=None):
         if not request.user.is_authenticated:
-            return redirect('/login/?next=%s' % request.path)
+            return redirect(f'/login/?next={request.path}')
         video = Video.objects.get(id=id)
         if not allowed_to_edit(video, request.user):
             return HttpResponseForbidden(
@@ -213,7 +213,7 @@ class ManageVideoEdit(AbstractVideoFormView):
 
     def post(self, request, id):
         if not request.user.is_authenticated:
-            return redirect('/login/?next=%s' % request.path)
+            return redirect(f'/login/?next={request.path}')
         video = Video.objects.get(id=id)
         if not allowed_to_edit(video, request.user):
             return HttpResponseForbidden(
@@ -285,7 +285,7 @@ def floor_minute(dt):
 
 
 def _items_for_gap(start, end, candidates):
-    logger.info("Being asked to fill gap from {} to {}".format(start, end))
+    logger.info("Being asked to fill gap from {%s} to {%s}", start, end)
     # The smallest gap this function will try to fill
     MINIMUM_GAP_SECONDS = 300
     # The schedule granularity in minutes (eg. 5 means the scheduler
@@ -331,7 +331,7 @@ def _items_for_gap(start, end, candidates):
                 start_of_gap, end_of_gap, candidates, current_pool=pool)
             full_items.extend(items)
         else:
-            logging.info("Not filling %d second gap" % gap)
+            logging.info("Not filling %d second gap", gap)
 
         if end_of_gap >= end:
             break
@@ -343,8 +343,8 @@ def _items_for_gap(start, end, candidates):
 def _fill_time_with_jukebox(start, end, videos, current_pool=None):
     current_time = start
     video_pool = current_pool or list(videos)
-    logger.info("Filling jukebox from %s to %s - %d in pool" %
-                (start, end, len(video_pool)))
+    logger.info(
+        "Filling jukebox from {%s} to {%s} - {%s} in pool", start, end, len(video_pool))
     rejected_videos = []
     new_items = []
 
@@ -366,13 +366,13 @@ def _fill_time_with_jukebox(start, end, videos, current_pool=None):
         video = next_vid(True)
         new_rejects = []
         while current_time + video.duration > end:
-            logger.debug("end overshoots time %s" %
-                         (current_time + video.duration))
+            logger.debug(
+                "end overshoots time %s", current_time + video.duration)
             if video not in rejected_videos and video not in new_rejects:
                 new_rejects.append(video)
             video = next_vid()
-            logger.debug("next vid is %s rejected %s new_rej %s" % (video,
-                                                                    plist(rejected_videos), plist(new_rejects)))
+            logger.debug("next vid is %s rejected %s new_rej %s", video,
+                         plist(rejected_videos), plist(new_rejects))
             if not video:
                 return (new_items, rejected_videos + video_pool)
         rejected_videos.extend(new_rejects)
@@ -389,8 +389,8 @@ def xmltv_home(request):
     """ Information about the XMLTV schedule presentation. """
     now = timezone.now()
     today_url = reverse('xmltv-feed', args=(now.year,
-                                            '{:02}'.format(now.month),
-                                            '{:02}'.format(now.day)))
+                                            f'{now.month:02}',
+                                            f'{now.day:02}'))
     return render(request, 'agenda/xmltv_home.html', {
         'channel_display_names': settings.CHANNEL_DISPLAY_NAMES,
         'today_url': today_url,
@@ -422,7 +422,7 @@ def xmltv_upcoming(request):
 
 def xmltv_date(request, year, month, day):
     date = (datetime.datetime(year=int(year), month=int(month), day=int(day))
-            .replace(tzinfo=timezone.UTC))
+            .replace(tzinfo=datetime.UTC))
     events = (Scheduleitem.objects
               .by_day(date, days=1)
               .order_by('starttime'))

@@ -208,7 +208,7 @@ class VideoFile(models.Model):
         ordering = ('-video_id', '-id',)
 
     def __str__(self):
-        return "%s version of %s" % (self.format.fsname, self.video.name)
+        return f"{self.format.fsname} version of {self.video.name}"
 
     def location(self, relative=False):
         filename = os.path.basename(self.filename)
@@ -539,7 +539,7 @@ class SchedulePurpose(models.Model):
         elif self.type == self.TYPE.videos:
             qs = self.direct_videos.all()
         else:
-            raise Exception("Unhandled type %s" % self.type)
+            raise Exception(f"Unhandled type {self.type}")
         if max_duration:
             qs = qs.filter(duration__lte=max_duration)
         # Workaround playout not handling broken files correctly
@@ -564,7 +564,7 @@ class SchedulePurpose(models.Model):
             return (qs.annotate(num_sched=models.Count('scheduleitem'))
                     .order_by('num_sched').first())
         else:
-            raise Exception("Unhandled strategy %s" % self.strategy)
+            raise Exception(f"Unhandled strategy {self.strategy}")
 
     def __str__(self):
         return self.name

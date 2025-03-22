@@ -59,10 +59,10 @@ class ScheduleitemModifySerializer(serializers.ModelSerializer):
             for entry in items:
                 if entry.starttime <= start < entry.endtime():
                     raise serializers.ValidationError(
-                        {'duration': "Conflict with '%s'." % entry})
+                        {'duration': f"Conflict with '{entry}'."})
                 if entry.starttime < end < entry.endtime():
                     raise serializers.ValidationError(
-                        {'duration': "Conflict with '%s'." % entry})
+                        {'duration': f"Conflict with '{entry}'."})
         return data
 
 
@@ -94,10 +94,10 @@ class ScheduleitemReadSerializer(serializers.ModelSerializer):
             for entry in items:
                 if entry.starttime <= start < entry.endtime():
                     raise serializers.ValidationError(
-                        {'duration': "Conflict with '%s'." % entry})
+                        {'duration': f"Conflict with '{entry}'."})
                 if entry.starttime < end < entry.endtime():
                     raise serializers.ValidationError(
-                        {'duration': "Conflict with '%s'." % entry})
+                        {'duration': f"Conflict with '{entry}'."})
         return data
 
 

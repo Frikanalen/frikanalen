@@ -13,7 +13,7 @@ def populate_email(apps, schema_editor):
         elif '@' in row.username:
             row.email = row.username
         else:
-            row.email = "%s@example.com" % row.username
+            row.email = f"{row.username}@example.com"
         row.save()
 
 

@@ -13,11 +13,11 @@ def _get_video(video_id):
     try:
         video_id = int(video_id)
     except ValueError:
-        return (None, _('Invalid video id "%s"' % video_id))
+        return (None, _(f'Invalid video id "{video_id}"'))
     try:
         video = Video.objects.public().get(id=video_id)
     except ObjectDoesNotExist:
-        return (None, _('Video #%i not found' % int(video_id)))
+        return (None, _(f'Video #{int(video_id)} not found'))
     return (video, None)
 
 

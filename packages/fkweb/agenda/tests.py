@@ -73,10 +73,11 @@ class FillJukeboxUnitTests(TestCase):
         if 'duration' not in kwargs:
             kwargs['duration'] = datetime.timedelta(minutes=minutes)
         return Video(
-                id=video_id, name="id:%d, min:%d" % (video_id, minutes),
-                creator_id=1, organization_id=1,
-                proper_import=True, is_filler=True,
-                **kwargs)
+            id=video_id, name=f"id:${video_id}, min:{minutes}" % (
+                video_id, minutes),
+            creator_id=1, organization_id=1,
+            proper_import=True, is_filler=True,
+            **kwargs)
 
     def test_two_videos_fills_time(self):
         videos = [
@@ -89,8 +90,8 @@ class FillJukeboxUnitTests(TestCase):
         res = agenda_views._items_for_gap(self.start_date, end, videos)
 
         self.assertEquals(
-                [1, 2, 1, 2],
-                [r['id'] for r in res])
+            [1, 2, 1, 2],
+            [r['id'] for r in res])
 
     def test_times_are_rounded(self):
         """
@@ -100,27 +101,30 @@ class FillJukeboxUnitTests(TestCase):
         """
         self.skipTest("This test is not updated to match schedule code")
         videos = [
-            self._video(video_id=1, duration=datetime.timedelta(minutes=1, seconds=1)),
+            self._video(video_id=1, duration=datetime.timedelta(
+                minutes=1, seconds=1)),
             self._video(video_id=2, duration=datetime.timedelta(hours=1)),
-            self._video(video_id=3, duration=datetime.timedelta(minutes=0, seconds=50)),
+            self._video(video_id=3, duration=datetime.timedelta(
+                minutes=0, seconds=50)),
         ]
         Scheduleitem.objects.create(
-                video_id=0,  # unused
-                starttime=self.start_date + datetime.timedelta(minutes=2, seconds=27),
-                duration=datetime.timedelta(minutes=1),
-                schedulereason=Scheduleitem.REASON_AUTO,
-                ),
+            video_id=0,  # unused
+            starttime=self.start_date +
+            datetime.timedelta(minutes=2, seconds=27),
+            duration=datetime.timedelta(minutes=1),
+            schedulereason=Scheduleitem.REASON_AUTO,
+        ),
         start = self.start_date + datetime.timedelta(seconds=13)
         end = self.start_date + datetime.timedelta(minutes=10, seconds=3)
 
         res = agenda_views._items_for_gap(start, end, videos)
 
         self.assertEquals(
-                [3, 1, 1, 3, 3],
-                [r['id'] for r in res])
+            [3, 1, 1, 3, 3],
+            [r['id'] for r in res])
         self.assertEquals(
-                self.start_date + datetime.timedelta(minutes=1),
-                res[0]['starttime'])
+            self.start_date + datetime.timedelta(minutes=1),
+            res[0]['starttime'])
 
     def test_cases(self):
         self.skipTest("This test is skipped because code has changed")
@@ -134,7 +138,8 @@ class FillJukeboxUnitTests(TestCase):
             ("never fit", "1:1m 2:4m",     "4m",                "1 1 1 1"),
             ("order",    "1:2m 2:1m 3:1m", "2m x 1m x 1m x 1m", "1 x 2 x 3 x 2"),
             ("last fit", "1:2m 2:2m 3:1m", "2m x 1m x 1m x 5m", "1 x 3 x 3 x 2 1 3"),
-            ("last fit 2", "3:3m 2:2m 4:4m 1:1m", "1m x 2m x 3m x 7m", "1 x 2 x 3 x 4 3"),
+            ("last fit 2", "3:3m 2:2m 4:4m 1:1m",
+             "1m x 2m x 3m x 7m", "1 x 2 x 3 x 4 3"),
             ("tight sched", "2:2m 1:1m", "1m x x x 3m", "1 x x x 2 1"),
             ("tight sched", "2:2m", "x 1m x 1m x", "x x x"),
         ]
@@ -144,7 +149,8 @@ class FillJukeboxUnitTests(TestCase):
                 for x in video_str.split(' ')
             ]
             videos = [
-                self._video(video_id=int(m.group('id')), min=int(m.group('min')))
+                self._video(video_id=int(m.group('id')),
+                            min=int(m.group('min')))
                 for m in video_tok
             ]
 
@@ -159,7 +165,8 @@ class FillJukeboxUnitTests(TestCase):
                     dur = 1
                     pre_scheduled.append(Scheduleitem(
                         video_id='x',
-                        starttime=self.start_date + datetime.timedelta(minutes=sched_cur),
+                        starttime=self.start_date +
+                        datetime.timedelta(minutes=sched_cur),
                         duration=datetime.timedelta(minutes=int(dur)),
                     ))
                 sched_cur += int(dur)
@@ -178,5 +185,5 @@ class FillJukeboxUnitTests(TestCase):
 
             with self.subTest(name=name, videos=video_str, scheds=sched_str, dur=sched_cur):
                 self.assertEquals(
-                        expect_str,
-                        newly_scheduled_str)
+                    expect_str,
+                    newly_scheduled_str)

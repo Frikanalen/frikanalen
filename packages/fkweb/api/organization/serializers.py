@@ -26,7 +26,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
     def get_editor_name(self, obj):
         if obj.editor:
             return obj.editor.first_name + " " + obj.editor.last_name
-        logger.warning('Organization %d has no editor assigned' % (obj.id))
+        logger.warning('Organization %d has no editor assigned', obj.id)
         return 'Ingen redaktør!'
 
     class Meta:
