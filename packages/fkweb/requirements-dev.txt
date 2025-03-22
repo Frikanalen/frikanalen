@@ -1,7 +1,8 @@
 -r requirements.txt
 # Local development and testing dependencies go in this file
-psycopg2-binary == 2.8.6
-PyYAML == 5.4
-pylint == 2.13.9
+psycopg2-binary == 2.9.10
+PyYAML == 6.0.2
+pylint == 3.3.5
 uritemplate
 drf_spectacular
+prospector == 1.15.3

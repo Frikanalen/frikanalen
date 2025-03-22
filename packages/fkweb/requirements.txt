@@ -14,3 +14,4 @@ requests == 2.32.3
 djangorestframework-camel-case == 1.4.2
 dj-database-url == 2.3.0
 drf-spectacular == 0.28.0
+pylint-django == 2.6.1
