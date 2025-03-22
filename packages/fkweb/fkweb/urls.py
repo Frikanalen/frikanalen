@@ -10,7 +10,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 import agenda.urls
 import api.urls
-import news.urls
 from fkweb.views import Frontpage
 
 admin.autodiscover()
