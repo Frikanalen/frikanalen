@@ -30,7 +30,7 @@ class FillJukeboxIntegrationTests(TestCase):
 
         agenda_views.fill_agenda_with_jukebox(start_date, days=1)
 
-        self.assertEquals(pre_count + 23, Scheduleitem.objects.count())
+        self.assertEqual(pre_count + 23, Scheduleitem.objects.count())
 
     def test_fills_in_only_where_it_can(self):
         Video.objects.create(
@@ -61,7 +61,7 @@ class FillJukeboxIntegrationTests(TestCase):
 
         agenda_views.fill_agenda_with_jukebox(start_date, days=0.5)
 
-        self.assertEquals(pre_count + 9, Scheduleitem.objects.count())
+        self.assertEqual(pre_count + 9, Scheduleitem.objects.count())
 
 
 class FillJukeboxUnitTests(TestCase):
@@ -73,8 +73,7 @@ class FillJukeboxUnitTests(TestCase):
         if 'duration' not in kwargs:
             kwargs['duration'] = datetime.timedelta(minutes=minutes)
         return Video(
-            id=video_id, name=f"id:${video_id}, min:{minutes}" % (
-                video_id, minutes),
+            id=video_id, name=f"id:${video_id}, min:{minutes}",
             creator_id=1, organization_id=1,
             proper_import=True, is_filler=True,
             **kwargs)
@@ -89,7 +88,7 @@ class FillJukeboxUnitTests(TestCase):
 
         res = agenda_views._items_for_gap(self.start_date, end, videos)
 
-        self.assertEquals(
+        self.assertEqual(
             [1, 2, 1, 2],
             [r['id'] for r in res])
 
@@ -119,10 +118,10 @@ class FillJukeboxUnitTests(TestCase):
 
         res = agenda_views._items_for_gap(start, end, videos)
 
-        self.assertEquals(
+        self.assertEqual(
             [3, 1, 1, 3, 3],
             [r['id'] for r in res])
-        self.assertEquals(
+        self.assertEqual(
             self.start_date + datetime.timedelta(minutes=1),
             res[0]['starttime'])
 
@@ -184,6 +183,6 @@ class FillJukeboxUnitTests(TestCase):
             newly_scheduled_str = ' '.join(str(r.video_id) for r in full_sched)
 
             with self.subTest(name=name, videos=video_str, scheds=sched_str, dur=sched_cur):
-                self.assertEquals(
+                self.assertEqual(
                     expect_str,
                     newly_scheduled_str)
