@@ -420,12 +420,12 @@ class Video(models.Model):
 class ScheduleitemManager(models.Manager):
     def by_day(self, date=None, days=1, surrounding=False):
         if not date:
-            date = timezone.now().astimezone(pytz.timezone('Europe/Oslo')).date()
+            date = timezone.now().astimezone(ZoneInfo('Europe/Oslo')).date()
         elif hasattr(date, 'date'):
             date.replace(tzinfo=timezone.get_current_timezone())
             date = date.date()
         startdt = datetime.datetime.combine(
-            date, datetime.time(0, tzinfo=pytz.timezone('Europe/Oslo')))
+            date, datetime.time(0, tzinfo=ZoneInfo('Europe/Oslo')))
         enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
             startdt, enddt = self.expand_to_surrounding(startdt, enddt)
@@ -608,7 +608,7 @@ class WeeklySlot(models.Model):
     def next_datetime(self, from_date=None):
         next_date = self.next_date(from_date)
         naive_dt = datetime.datetime.combine(next_date, self.start_time)
-        tz = pytz.timezone(settings.TIME_ZONE)
+        tz = ZoneInfo(settings.TIME_ZONE)
         return tz.localize(naive_dt)
 
     def __str__(self):

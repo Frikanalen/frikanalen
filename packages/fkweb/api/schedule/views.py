@@ -1,11 +1,11 @@
 import datetime
 
-import pytz
 from django.core.cache import caches
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from zoneinfo import ZoneInfo
 
 from api.auth.permissions import IsInOrganizationOrReadOnly
 from api.schedule.serializers import ScheduleitemModifySerializer, ScheduleitemReadSerializer
@@ -53,9 +53,9 @@ class ScheduleitemList(generics.ListCreateAPIView):
     def parse_yyyymmdd_or_today(inputDate):
         try:
             return datetime.datetime.strptime(inputDate, '%Y-%m-%d')\
-                .astimezone(pytz.timezone('Europe/Oslo'))
+                .astimezone(ZoneInfo('Europe/Oslo'))
         except (KeyError, ValueError, TypeError):
-            return datetime.datetime.now(tz=pytz.timezone('Europe/Oslo'))
+            return datetime.datetime.now(tz=ZoneInfo('Europe/Oslo'))
 
     @staticmethod
     def parse_int_or_7(inputDays):
@@ -104,14 +104,14 @@ class ScheduleitemList(generics.ListCreateAPIView):
             cache_res = cache.get(cache_key)
 
             if cache_res:
-                #logger.warning('[Scheduleitem] cache hit')
+                # logger.warning('[Scheduleitem] cache hit')
                 return cache_res
             else:
-                #logger.warning('[Scheduleitem] cache miss, cache_key=%s', cache_key)
+                # logger.warning('[Scheduleitem] cache miss, cache_key=%s', cache_key)
                 pass
         else:
             pass
-            #logger.warning('[Scheduleitem] not caching')
+            # logger.warning('[Scheduleitem] not caching')
 
         res = super().get(request, *args, **kwargs)
         res.accepted_renderer = request.accepted_renderer
@@ -120,7 +120,7 @@ class ScheduleitemList(generics.ListCreateAPIView):
         res.render()
 
         if cacheable and res.status_code == 200:
-            #logger.warning('[Scheduleitem] cache store, cache_key=%s', cache_key)
+            # logger.warning('[Scheduleitem] cache store, cache_key=%s', cache_key)
             cache.set(cache_key, res, None)
 
         return res
