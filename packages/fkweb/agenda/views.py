@@ -422,7 +422,7 @@ def xmltv_upcoming(request):
 
 def xmltv_date(request, year, month, day):
     date = (datetime.datetime(year=int(year), month=int(month), day=int(day))
-            .replace(tzinfo=timezone.utc))
+            .replace(tzinfo=timezone.UTC))
     events = (Scheduleitem.objects
               .by_day(date, days=1)
               .order_by('starttime'))
