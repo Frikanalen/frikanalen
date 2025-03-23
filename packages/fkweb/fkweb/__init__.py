@@ -1,1 +1,1 @@
-default_app_config = 'fkweb.apps.FrikanalenAppConfig'
+default_app_config = "fkweb.apps.FrikanalenAppConfig"

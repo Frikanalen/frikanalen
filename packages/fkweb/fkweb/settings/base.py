@@ -9,21 +9,21 @@
 from os.path import abspath, basename, dirname, join, normpath
 import sys
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # CUSTOM FKBETA CONFIGURATION
 # Do not publish any files with the TONO flag set on the web
 WEB_NO_TONO = True
 
 # Where all the media files are stored (Must have trailing slash)
-FK_MEDIA_URLPREFIX = 'https://upload.frikanalen.no/media/'
-FK_MEDIA_ROOT = '/tank/new_media/media'
+FK_MEDIA_URLPREFIX = "https://upload.frikanalen.no/media/"
+FK_MEDIA_ROOT = "/tank/new_media/media"
 
-FK_UPLOAD_URL = 'https://upload.frikanalen.no/upload'
+FK_UPLOAD_URL = "https://upload.frikanalen.no/upload"
 
-AUTH_USER_MODEL = 'fk.User'
-LOGIN_URL = '/login/'
-LOGOUT_REDIRECT_URL = '/'
+AUTH_USER_MODEL = "fk.User"
+LOGIN_URL = "/login/"
+LOGOUT_REDIRECT_URL = "/"
 
 # Channel ID per RFC 2838 (Uniform Resource Identifier for Television Broadcasts)
 CHANNEL_ID = "frikanalen.tv"
@@ -32,7 +32,7 @@ CHANNEL_ID = "frikanalen.tv"
 CHANNEL_DISPLAY_NAMES = ["Frikanalen"]
 
 # URL to the website for references in feeds (No trailing slash)
-SITE_URL = 'https://frikanalen.no'
+SITE_URL = "https://frikanalen.no"
 
 # PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
@@ -60,14 +60,14 @@ DEBUG = False
 # MANAGER CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = (
-    ('Tore Sinding Bekkedal', 'toresbe@gmail.com'),
-    ('Odin Hørthe Omdal', 'odin.omdal@gmail.com'),
+    ("Tore Sinding Bekkedal", "toresbe@gmail.com"),
+    ("Odin Hørthe Omdal", "odin.omdal@gmail.com"),
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS + (
-    ('Frikanalen styret', 'styret@frikanalen.no'),
-    ('Olav Hardang', 'olav.hardang@p7.no'),
+    ("Frikanalen styret", "styret@frikanalen.no"),
+    ("Olav Hardang", "olav.hardang@p7.no"),
 )
 # END MANAGER CONFIGURATION
 
@@ -75,55 +75,53 @@ MANAGERS = ADMINS + (
 # DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+    "default": {
+        "ENGINE": "django.db.backends.",
+        "NAME": "",
+        "USER": "",
+        "PASSWORD": "",
+        "HOST": "",
+        "PORT": "",
     }
 }
 # END DATABASE CONFIGURATION
 
 
 # GENERAL CONFIGURATION
-TIME_ZONE = 'Europe/Oslo'
-LANGUAGE_CODE = 'en-us'
+TIME_ZONE = "Europe/Oslo"
+LANGUAGE_CODE = "en-us"
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
 # END GENERAL CONFIGURATION
 
 
 # MEDIA CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = normpath(join(PROJECT_ROOT, 'media'))
+MEDIA_ROOT = normpath(join(PROJECT_ROOT, "media"))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 # END MEDIA CONFIGURATION
 
 
 # STATIC FILE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = normpath(join(PROJECT_ROOT, 'collected_staticfiles'))
+STATIC_ROOT = normpath(join(PROJECT_ROOT, "collected_staticfiles"))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = (
-    normpath(join(SITE_ROOT, 'static')),
-)
+STATICFILES_DIRS = (normpath(join(SITE_ROOT, "static")),)
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 )
 # END STATIC FILE CONFIGURATION
 
@@ -144,9 +142,7 @@ ALLOWED_HOSTS = []
 
 # FIXTURE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
-FIXTURE_DIRS = (
-    normpath(join(SITE_ROOT, 'fixtures')),
-)
+FIXTURE_DIRS = (normpath(join(SITE_ROOT, "fixtures")),)
 # END FIXTURE CONFIGURATION
 
 
@@ -156,36 +152,36 @@ FIXTURE_DIRS = (
 TEMPLATES = [
     {
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
         # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
-        'DIRS': [
-            normpath(join(SITE_ROOT, 'templates')),
+        "DIRS": [
+            normpath(join(SITE_ROOT, "templates")),
         ],
-        'OPTIONS': {
+        "OPTIONS": {
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
-            'debug': DEBUG,
+            "debug": DEBUG,
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
-            'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
+            "loaders": [
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
                 # deprecated in Django 2
                 # 'django.template.loaders.eggs.Loader',
             ],
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
-                'django.contrib.messages.context_processors.messages',
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.tz",
+                "django.contrib.messages.context_processors.messages",
             ],
-            'builtins': [
-                'django.templatetags.i18n',
-            ]
+            "builtins": [
+                "django.templatetags.i18n",
+            ],
         },
     },
 ]
@@ -195,64 +191,61 @@ TEMPLATES = [
 # MIDDLEWARE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#middleware-classes
 MIDDLEWARE = (
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     # Default Django middleware.
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'csp.middleware.CSPMiddleware',
-    'fkweb.middleware.api_utc_middleware',
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "csp.middleware.CSPMiddleware",
+    "fkweb.middleware.api_utc_middleware",
 )
 # END MIDDLEWARE CONFIGURATION
 
 
 # URL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
-ROOT_URLCONF = f'{SITE_NAME}.urls'
+ROOT_URLCONF = f"{SITE_NAME}.urls"
 # END URL CONFIGURATION
 
 
 # APP CONFIGURATION
 DJANGO_APPS = (
     # Default Django apps:
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
     # 'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # Useful template tags:
     # 'django.contrib.humanize',
-
     # Admin panel and documentation:
-    'django.contrib.admin',
+    "django.contrib.admin",
     # 'django.contrib.admindocs',
-
     # improved OpenAPI schema generation
-    'drf_spectacular',
+    "drf_spectacular",
 )
 
 THIRD_PARTY_APPS = (
-    'corsheaders',
-    'django_filters',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'phonenumber_field',
+    "corsheaders",
+    "django_filters",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "phonenumber_field",
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
-    'fkweb',
-    'agenda',
-    'fk',
-    'api',
-    'news',
+    "fkweb",
+    "agenda",
+    "fk",
+    "api",
+    "news",
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -268,76 +261,68 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
         },
     },
-    'loggers': {
-        'root': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
+    "loggers": {
+        "root": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
         },
-        'django': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': True,
+        "django": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": True,
         },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
+        "django.request": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": True,
         },
-        'gunicorn': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
+        "gunicorn": {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": True,
         },
-    }
+    },
 }
 # END LOGGING CONFIGURATION
 
 
 # WSGI CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = f'{SITE_NAME}.wsgi.application'
+WSGI_APPLICATION = f"{SITE_NAME}.wsgi.application"
 # END WSGI CONFIGURATION
 
 # REST FRAMEWORK CONFIGURATION
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    "DEFAULT_RENDERER_CLASSES": (
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
     ),
-    'DEFAULT_PARSER_CLASSES': (
-        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    "DEFAULT_PARSER_CLASSES": ("djangorestframework_camel_case.parser.CamelCaseJSONParser",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.OrderingFilter',
-    ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 #
@@ -352,7 +337,9 @@ CSP_DEFAULT_SRC = "'self'"
 CSP_SCRIPT_SRC = "'self' 'unsafe-inline' 'unsafe-eval'"
 CSP_IMG_SRC = "'self' https://upload.frikanalen.no"
 CSP_OBJECT_SRC = None
-CSP_MEDIA_SRC = "'self' http://icecast.frikanalen.no https://icecast.frikanalen.no https://upload.frikanalen.no"
+CSP_MEDIA_SRC = (
+    "'self' http://icecast.frikanalen.no https://icecast.frikanalen.no https://upload.frikanalen.no"
+)
 CSP_FRAME_SRC = None
 CSP_FONT_SRC = None
 CSP_CONNECT_SRC = "'self' https://upload.frikanalen.no"
@@ -370,16 +357,16 @@ CSP_REPORT_URI = "/csp-report"
 # Everything with the API should be okay, since we don't share
 # the login cookie it's all safe.
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/api/.*$'  # anyway, only enable CORS for the API
+CORS_URLS_REGEX = r"^/api/.*$"  # anyway, only enable CORS for the API
 
 CACHES = {
-    'schedule': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'schedule-cache',
-        'TIMEOUT': None,
-        'KEY_PREFIX': 'schedule-',
+    "schedule": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "schedule-cache",
+        "TIMEOUT": None,
+        "KEY_PREFIX": "schedule-",
     },
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    },
 }

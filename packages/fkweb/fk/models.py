@@ -49,7 +49,7 @@ class UserManager(BaseUserManager):
         birth and password.
         """
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError("Users must have an email address")
 
         user = self.model(
             email=self.normalize_email(email),
@@ -76,29 +76,38 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name='email address', max_length=254, unique=True)
-    first_name = models.CharField(
-        blank=True, max_length=30, verbose_name='first name')
-    last_name = models.CharField(
-        blank=True, max_length=30, verbose_name='last name')
+    email = models.EmailField(verbose_name="email address", max_length=254, unique=True)
+    first_name = models.CharField(blank=True, max_length=30, verbose_name="first name")
+    last_name = models.CharField(blank=True, max_length=30, verbose_name="last name")
     is_active = models.BooleanField(
-        default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')
+        default=True,
+        help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+        verbose_name="active",
+    )
     is_superuser = models.BooleanField(
-        default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='admin status')
+        default=False,
+        help_text="Designates that this user has all permissions without explicitly assigning them.",
+        verbose_name="admin status",
+    )
     identity_confirmed = models.BooleanField(
-        default=False, help_text='Whether the identity of this user has been confirmed by Frikanalen management.', verbose_name='identity confirmed')
+        default=False,
+        help_text="Whether the identity of this user has been confirmed by Frikanalen management.",
+        verbose_name="identity confirmed",
+    )
 
     phone_number = PhoneNumberField(
-        blank=True, help_text='Phone number at which this user can be reached', verbose_name='phone number')
+        blank=True,
+        help_text="Phone number at which this user can be reached",
+        verbose_name="phone number",
+    )
 
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
     date_of_birth = models.DateField(blank=True, null=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['date_of_birth']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["date_of_birth"]
 
     def __str__(self):
         return self.email
@@ -132,17 +141,24 @@ class Organization(models.Model):
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     fkmember = models.BooleanField(default=False)
     orgnr = models.CharField(blank=True, max_length=255)
-    homepage = models.CharField('Link back to the organisation home page.',
-                                blank=True, null=True, max_length=255)
+    homepage = models.CharField(
+        "Link back to the organisation home page.",
+        blank=True,
+        null=True,
+        max_length=255,
+    )
 
-    postal_address = models.TextField('Postal address for organization.',
-                                      blank=True, null=True, max_length=2048)
-    street_address = models.TextField('Street address for organization.',
-                                      blank=True, null=True, max_length=2048)
+    postal_address = models.TextField(
+        "Postal address for organization.", blank=True, null=True, max_length=2048
+    )
+    street_address = models.TextField(
+        "Street address for organization.", blank=True, null=True, max_length=2048
+    )
 
     # The user legally marked as the editor for this organization
-    editor = models.ForeignKey(User, on_delete=models.SET_NULL,
-                               blank=True, null=True, related_name='editor')
+    editor = models.ForeignKey(
+        User, on_delete=models.SET_NULL, blank=True, null=True, related_name="editor"
+    )
 
     # Videos to feature on their frontpage, incl other members
     # featured_videos = models.ManyToManyField("Video")
@@ -152,32 +168,29 @@ class Organization(models.Model):
     # categories = models.ManyToManyField(Category)
 
     class Meta:
-        ordering = ('name', '-id')
+        ordering = ("name", "-id")
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('vod-org-video-list', kwargs={'orgid': self.id})
+        return reverse("vod-org-video-list", kwargs={"orgid": self.id})
 
 
 class FileFormat(models.Model):
     id = models.AutoField(primary_key=True)
-    description = models.TextField(
-        unique=True, max_length=255, null=True, blank=True)
+    description = models.TextField(unique=True, max_length=255, null=True, blank=True)
     fsname = models.CharField(max_length=20)
-    vod_publish = models.BooleanField('Present video format to video on demand?',
-                                      default=False)
-    mime_type = models.CharField(max_length=256,
-                                 null=True, blank=True)
+    vod_publish = models.BooleanField("Present video format to video on demand?", default=False)
+    mime_type = models.CharField(max_length=256, null=True, blank=True)
 
     # httpprefix = models.CharField(max_length=200)
     # metadata framerate, resolution, etc?
 
     class Meta:
-        verbose_name = 'video file format'
-        verbose_name_plural = 'video file formats'
-        ordering = ('fsname', '-id')
+        verbose_name = "video file format"
+        verbose_name_plural = "video file formats"
+        ordering = ("fsname", "-id")
 
     def __str__(self):
         return self.fsname
@@ -191,21 +204,24 @@ class VideoFile(models.Model):
     filename = models.CharField(max_length=256)
     # source = video = models.ForeignKey("VideoFile")
     integrated_lufs = models.FloatField(
-        'Integrated LUFS of file defined in ITU R.128',
-        blank=True, null=True)
+        "Integrated LUFS of file defined in ITU R.128", blank=True, null=True
+    )
     truepeak_lufs = models.FloatField(
-        'True peak LUFS of file defined in ITU R.128',
-        blank=True, null=True)
+        "True peak LUFS of file defined in ITU R.128", blank=True, null=True
+    )
     created_time = models.DateTimeField(
-        auto_now_add=True, null=True,
-        help_text='Time the video file was created')
+        auto_now_add=True, null=True, help_text="Time the video file was created"
+    )
     # metadata frames, width, height, framerate? mlt profile name?
     # edl for in/out?
 
     class Meta:
-        verbose_name = 'video file'
-        verbose_name_plural = 'video files'
-        ordering = ('-video_id', '-id',)
+        verbose_name = "video file"
+        verbose_name_plural = "video files"
+        ordering = (
+            "-video_id",
+            "-id",
+        )
 
     def __str__(self):
         return f"{self.format.fsname} version of {self.video.name}"
@@ -213,12 +229,12 @@ class VideoFile(models.Model):
     def location(self, relative=False):
         filename = os.path.basename(self.filename)
 
-        path = '/'.join((str(self.video.id), self.format.fsname, filename))
+        path = "/".join((str(self.video.id), self.format.fsname, filename))
 
         if relative:
             return path
         else:
-            return '/'.join((settings.FK_MEDIA_ROOT, path))
+            return "/".join((settings.FK_MEDIA_ROOT, path))
 
 
 class Category(models.Model):
@@ -227,9 +243,9 @@ class Category(models.Model):
     desc = models.CharField(max_length=255, blank=True)
 
     class Meta:
-        verbose_name = 'video category'
-        verbose_name_plural = 'video categories'
-        ordering = ('name', '-id')
+        verbose_name = "video category"
+        verbose_name_plural = "video categories"
+        ordering = ("name", "-id")
 
     def __str__(self):
         return self.name
@@ -237,15 +253,21 @@ class Category(models.Model):
 
 class VideoManager(models.Manager):
     def public(self):
-        return (super(VideoManager, self)
-                .get_queryset()
-                .filter(publish_on_web=True, proper_import=True))
+        return (
+            super(VideoManager, self).get_queryset().filter(publish_on_web=True, proper_import=True)
+        )
 
     def fillers(self):
-        return (super(VideoManager, self)
-                .get_queryset()
-                .filter(is_filler=True, has_tono_records=False,
-                        organization__fkmember=True, proper_import=True))
+        return (
+            super(VideoManager, self)
+            .get_queryset()
+            .filter(
+                is_filler=True,
+                has_tono_records=False,
+                organization__fkmember=True,
+                proper_import=True,
+            )
+        )
 
 
 class Video(models.Model):
@@ -259,9 +281,11 @@ class Video(models.Model):
     categories = models.ManyToManyField(Category)
     creator = models.ForeignKey(get_user_model(), on_delete=models.PROTECT)
     has_tono_records = models.BooleanField(default=False)
-    is_filler = models.BooleanField('Play automatically?',
-                                    help_text='You still have the editorial responsibility.  Only affect videos from members.',
-                                    default=False)  # Find a better name?
+    is_filler = models.BooleanField(
+        "Play automatically?",
+        help_text="You still have the editorial responsibility.  Only affect videos from members.",
+        default=False,
+    )  # Find a better name?
     publish_on_web = models.BooleanField(default=True)
 
     # disabled = models.BooleanField() # Not migrated
@@ -273,24 +297,29 @@ class Video(models.Model):
 
     proper_import = models.BooleanField(default=False)
     played_count_web = models.IntegerField(
-        default=0, help_text='Number of times it has been played')
+        default=0, help_text="Number of times it has been played"
+    )
     created_time = models.DateTimeField(
-        auto_now_add=True, null=True,
-        help_text='Time the program record was created')
+        auto_now_add=True, null=True, help_text="Time the program record was created"
+    )
     updated_time = models.DateTimeField(
-        auto_now=True, null=True,
-        help_text='Time the program record has been updated')
+        auto_now=True, null=True, help_text="Time the program record has been updated"
+    )
     uploaded_time = models.DateTimeField(
-        blank=True, null=True,
-        help_text='Time the original video for the program was uploaded')
+        blank=True,
+        null=True,
+        help_text="Time the original video for the program was uploaded",
+    )
     framerate = models.IntegerField(
-        default=25000,
-        help_text='Framerate of master video in thousands / second')
+        default=25000, help_text="Framerate of master video in thousands / second"
+    )
     organization = models.ForeignKey(
-        Organization, null=True, help_text='Organization for video',
-        on_delete=models.PROTECT)
-    ref_url = models.CharField(
-        blank=True, max_length=1024, help_text='URL for reference')
+        Organization,
+        null=True,
+        help_text="Organization for video",
+        on_delete=models.PROTECT,
+    )
+    ref_url = models.CharField(blank=True, max_length=1024, help_text="URL for reference")
     duration = models.DurationField(blank=True, default=datetime.timedelta(0))
 
     # This field is used by the new ingest.
@@ -311,14 +340,18 @@ class Video(models.Model):
     def default_uuid_value():
         return uuid.uuid4().hex
 
-    upload_token = models.CharField(blank=True, default=default_uuid_value.__func__,
-                                    max_length=32, help_text='Video upload token (used by fkupload/frontend)')
+    upload_token = models.CharField(
+        blank=True,
+        default=default_uuid_value.__func__,
+        max_length=32,
+        help_text="Video upload token (used by fkupload/frontend)",
+    )
 
     objects = VideoManager()
 
     class Meta:
-        get_latest_by = 'uploaded_time'
-        ordering = ('-id',)
+        get_latest_by = "uploaded_time"
+        ordering = ("-id",)
 
     def __str__(self):
         return self.name
@@ -334,7 +367,7 @@ class Video(models.Model):
             tags.append("www")
         if self.is_filler:
             tags.append("filler")
-        return ', '.join(tags)
+        return ", ".join(tags)
 
     def videofiles(self):
         videofiles = VideoFile.objects.filter(video=self)
@@ -357,7 +390,7 @@ class Video(models.Model):
     def last_broadcast(self):
         events = Scheduleitem.objects.filter(video=self)
         if events:
-            return events[max(0, len(events)-1)]
+            return events[max(0, len(events) - 1)]
         return None
 
     def videofile_url(self, fsname):
@@ -370,7 +403,7 @@ class Video(models.Model):
             videofile = VideoFile.objects.get(video=self, format=format)
         except ObjectDoesNotExist:
             return "/static/default_small_thumbnail.png"
-        return settings.FK_MEDIA_URLPREFIX+videofile.location(relative=True)
+        return settings.FK_MEDIA_URLPREFIX + videofile.location(relative=True)
 
     def medium_thumbnail_url(self):
         format = FileFormat.objects.get(fsname="medium_thumb")
@@ -378,7 +411,7 @@ class Video(models.Model):
             videofile = VideoFile.objects.get(video=self, format=format)
         except ObjectDoesNotExist:
             return "/static/default_medium_thumbnail.png"
-        return settings.FK_MEDIA_URLPREFIX+videofile.location(relative=True)
+        return settings.FK_MEDIA_URLPREFIX + videofile.location(relative=True)
 
     def large_thumbnail_url(self):
         format = FileFormat.objects.get(fsname="large_thumb")
@@ -386,7 +419,7 @@ class Video(models.Model):
             videofile = VideoFile.objects.get(video=self, format=format)
         except ObjectDoesNotExist:
             return "/static/default_large_thumbnail.png"
-        return settings.FK_MEDIA_URLPREFIX+videofile.location(relative=True)
+        return settings.FK_MEDIA_URLPREFIX + videofile.location(relative=True)
 
     def ogv_url(self):
         try:
@@ -409,44 +442,42 @@ class Video(models.Model):
 
         vodfiles = []
         for videofile in self.videofiles().filter(format__vod_publish=True):
-            url = settings.FK_MEDIA_URLPREFIX + \
-                videofile.location(relative=True)
-            vodfiles.append(
-                {'url': url, 'mime_type': videofile.format.mime_type})
+            url = settings.FK_MEDIA_URLPREFIX + videofile.location(relative=True)
+            vodfiles.append({"url": url, "mime_type": videofile.format.mime_type})
         return vodfiles
 
     def get_absolute_url(self):
-        return f'/video/{self.id}/'
+        return f"/video/{self.id}/"
 
 
 class ScheduleitemManager(models.Manager):
     def by_day(self, date=None, days=1, surrounding=False):
         if not date:
-            date = timezone.now().astimezone(ZoneInfo('Europe/Oslo')).date()
-        elif hasattr(date, 'date'):
+            date = timezone.now().astimezone(ZoneInfo("Europe/Oslo")).date()
+        elif hasattr(date, "date"):
             date.replace(tzinfo=timezone.get_current_timezone())
             date = date.date()
-        startdt = datetime.datetime.combine(
-            date, datetime.time(0, tzinfo=ZoneInfo('Europe/Oslo')))
+        startdt = datetime.datetime.combine(date, datetime.time(0, tzinfo=ZoneInfo("Europe/Oslo")))
         enddt = startdt + datetime.timedelta(days=days)
         if surrounding:
             startdt, enddt = self.expand_to_surrounding(startdt, enddt)
-        return self.get_queryset().filter(starttime__gte=startdt,
-                                          starttime__lte=enddt)
+        return self.get_queryset().filter(starttime__gte=startdt, starttime__lte=enddt)
 
     def expand_to_surrounding(self, startdt, enddt):
         # Try to find the event before the given date
         try:
-            startdt = (Scheduleitem.objects
-                       .filter(starttime__lte=startdt)
-                       .order_by("-starttime")[0].starttime)
+            startdt = (
+                Scheduleitem.objects.filter(starttime__lte=startdt)
+                .order_by("-starttime")[0]
+                .starttime
+            )
         except IndexError:
             pass
         # Try to find the event after the end date
         try:
-            enddt = (Scheduleitem.objects
-                     .filter(starttime__gte=enddt)
-                     .order_by("starttime")[0].starttime)
+            enddt = (
+                Scheduleitem.objects.filter(starttime__gte=enddt).order_by("starttime")[0].starttime
+            )
         except IndexError:
             pass
         return startdt, enddt
@@ -459,17 +490,16 @@ class Scheduleitem(models.Model):
     REASON_AUTO = 4
     REASON_JUKEBOX = 5
     SCHEDULE_REASONS = (
-        (REASON_LEGACY, 'Legacy'),
-        (REASON_ADMIN, 'Administrative'),
-        (REASON_USER, 'User'),
-        (REASON_AUTO, 'Automatic'),
-        (REASON_JUKEBOX, 'Jukebox'),
+        (REASON_LEGACY, "Legacy"),
+        (REASON_ADMIN, "Administrative"),
+        (REASON_USER, "User"),
+        (REASON_AUTO, "Automatic"),
+        (REASON_JUKEBOX, "Jukebox"),
     )
 
     id = models.AutoField(primary_key=True)
     default_name = models.CharField(max_length=255, blank=True)
-    video = models.ForeignKey(
-        Video, null=True, blank=True, on_delete=models.SET_NULL)
+    video = models.ForeignKey(Video, null=True, blank=True, on_delete=models.SET_NULL)
     schedulereason = models.IntegerField(blank=True, choices=SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = models.DurationField()
@@ -477,15 +507,15 @@ class Scheduleitem(models.Model):
     objects = ScheduleitemManager()
 
     class Meta:
-        verbose_name = 'TX schedule entry'
-        verbose_name_plural = 'TX schedule entries'
-        ordering = ('-id',)
+        verbose_name = "TX schedule entry"
+        verbose_name_plural = "TX schedule entries"
+        ordering = ("-id",)
 
     @staticmethod
     @receiver([post_save, post_delete])
     def _clear_cache(**kwargs):
         # logger.warning('[Scheduleitem] cache flush')
-        caches['schedule'].clear()
+        caches["schedule"].clear()
 
     def __str__(self):
         t = self.starttime
@@ -510,23 +540,24 @@ class SchedulePurpose(models.Model):
     Either an organization and its videos (takes preference) or manually
     connected videos.
     """
-    STRATEGY = Choices('latest', 'random', 'least_scheduled')
-    TYPE = Choices('videos', 'organization')
+
+    STRATEGY = Choices("latest", "random", "least_scheduled")
+    TYPE = Choices("videos", "organization")
 
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=32, choices=TYPE)
     strategy = models.CharField(max_length=32, choices=STRATEGY)
 
     # You probably need one of these depending on type and strategy
-    organization = models.ForeignKey(
-        Organization, blank=True, null=True, on_delete=models.SET_NULL)
+    organization = models.ForeignKey(Organization, blank=True, null=True, on_delete=models.SET_NULL)
     direct_videos = models.ManyToManyField(Video, blank=True)
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ("-id",)
 
     def videos_str(self):
         return ", ".join([str(x) for x in self.videos_queryset()])
+
     videos_str.short_description = "videos"
     videos_str.admin_order_field = "videos"
 
@@ -558,11 +589,10 @@ class SchedulePurpose(models.Model):
                 return None
         elif self.strategy == self.STRATEGY.random:
             # This might be slow, but hopefully few records
-            return qs.order_by('?').first()
+            return qs.order_by("?").first()
         elif self.strategy == self.STRATEGY.least_scheduled:
             # Get the video which has been scheduled the least
-            return (qs.annotate(num_sched=models.Count('scheduleitem'))
-                    .order_by('num_sched').first())
+            return qs.annotate(num_sched=models.Count("scheduleitem")).order_by("num_sched").first()
         else:
             raise Exception(f"Unhandled strategy {self.strategy}")
 
@@ -572,17 +602,16 @@ class SchedulePurpose(models.Model):
 
 class WeeklySlot(models.Model):
     DAY_OF_THE_WEEK = (
-        (0, _('Monday')),
-        (1, _('Tuesday')),
-        (2, _('Wednesday')),
-        (3, _('Thursday')),
-        (4, _('Friday')),
-        (5, _('Saturday')),
-        (6, _('Sunday')),
+        (0, _("Monday")),
+        (1, _("Tuesday")),
+        (2, _("Wednesday")),
+        (3, _("Thursday")),
+        (4, _("Friday")),
+        (5, _("Saturday")),
+        (6, _("Sunday")),
     )
 
-    purpose = models.ForeignKey(
-        SchedulePurpose, null=True, blank=True, on_delete=models.SET_NULL)
+    purpose = models.ForeignKey(SchedulePurpose, null=True, blank=True, on_delete=models.SET_NULL)
     day = models.IntegerField(
         choices=DAY_OF_THE_WEEK,
     )
@@ -590,7 +619,7 @@ class WeeklySlot(models.Model):
     duration = models.DurationField()
 
     class Meta:
-        ordering = ('day', 'start_time', 'pk')
+        ordering = ("day", "start_time", "pk")
 
     @property
     def end_time(self):
@@ -614,8 +643,7 @@ class WeeklySlot(models.Model):
         return tz.localize(naive_dt)
 
     def __str__(self):
-        return ("{day} {s.start_time} ({s.purpose})"
-                "".format(day=self.get_day_display(), s=self))
+        return "{day} {s.start_time} ({s.purpose})".format(day=self.get_day_display(), s=self)
 
 
 class AsRun(TimeStampedModel):
@@ -645,10 +673,10 @@ class AsRun(TimeStampedModel):
                how long we live streamed a particular URL.
                Can be null (None) if this is 'currently happening'.
     """
-    video = models.ForeignKey(
-        Video, blank=True, null=True, on_delete=models.SET_NULL)
-    program_name = models.CharField(max_length=160, blank=True, default='')
-    playout = models.CharField(max_length=255, blank=True, default='main')
+
+    video = models.ForeignKey(Video, blank=True, null=True, on_delete=models.SET_NULL)
+    program_name = models.CharField(max_length=160, blank=True, default="")
+    playout = models.CharField(max_length=255, blank=True, default="main")
     played_at = models.DateTimeField(blank=True, default=timezone.now)
 
     in_ms = models.IntegerField(blank=True, default=0)
@@ -656,11 +684,15 @@ class AsRun(TimeStampedModel):
 
     def __str__(self):
         if self.video:
-            return '{s.playout} video: {s.video}'.format(s=self)
-        return '{s.playout}: {s.program_name}'.format(s=self)
+            return "{s.playout} video: {s.video}".format(s=self)
+        return "{s.playout}: {s.program_name}".format(s=self)
 
     class Meta:
-        ordering = ('-played_at', '-id',)
+        ordering = (
+            "-played_at",
+            "-id",
+        )
+
 
 # This class is actually not managed by Django. It is accessed by the
 # media-processor, which manipulates the database directly. It is only

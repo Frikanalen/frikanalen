@@ -4,11 +4,10 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('fk', '0009_add_legally_required_fields'),
+        ("fk", "0009_add_legally_required_fields"),
     ]
 
     operations = [
-        migrations.RenameField('Video', 'editor', 'creator'),
+        migrations.RenameField("Video", "editor", "creator"),
     ]

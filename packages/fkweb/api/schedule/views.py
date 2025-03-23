@@ -8,12 +8,15 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from zoneinfo import ZoneInfo
 
 from api.auth.permissions import IsInOrganizationOrReadOnly
-from api.schedule.serializers import ScheduleitemModifySerializer, ScheduleitemReadSerializer
+from api.schedule.serializers import (
+    ScheduleitemModifySerializer,
+    ScheduleitemReadSerializer,
+)
 from api.views import Pagination
 from fk.models import Scheduleitem
 
 
-@method_decorator(never_cache, name='get')
+@method_decorator(never_cache, name="get")
 class ScheduleitemList(generics.ListCreateAPIView):
     """
     Video events schedule
@@ -35,27 +38,28 @@ class ScheduleitemList(generics.ListCreateAPIView):
     `ordering` - Order results by specified field.  Prepend a minus for
                  descending order.  I.e. `?ordering=-starttime`.
     """
+
     queryset = Scheduleitem.objects.all()
     pagination_class = Pagination
-    permission_classes = (IsInOrganizationOrReadOnly, )
+    permission_classes = (IsInOrganizationOrReadOnly,)
 
     # Permit session-based login for backwards compat with old frontend
     # Remove when new planner works!
     authentication_classes = [SessionAuthentication, TokenAuthentication]
 
     def get_serializer_class(self):
-        if hasattr(self.request,
-                   'method') and self.request.method in ['POST', 'PUT']:
+        if hasattr(self.request, "method") and self.request.method in ["POST", "PUT"]:
             return ScheduleitemModifySerializer
         return ScheduleitemReadSerializer
 
     @staticmethod
     def parse_yyyymmdd_or_today(inputDate):
         try:
-            return datetime.datetime.strptime(inputDate, '%Y-%m-%d')\
-                .astimezone(ZoneInfo('Europe/Oslo'))
+            return datetime.datetime.strptime(inputDate, "%Y-%m-%d").astimezone(
+                ZoneInfo("Europe/Oslo")
+            )
         except (KeyError, ValueError, TypeError):
-            return datetime.datetime.now(tz=ZoneInfo('Europe/Oslo'))
+            return datetime.datetime.now(tz=ZoneInfo("Europe/Oslo"))
 
     @staticmethod
     def parse_int_or_7(inputDays):
@@ -66,37 +70,34 @@ class ScheduleitemList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         params = self.request.query_params
-        date = self.parse_yyyymmdd_or_today(params.get('date', None))
-        days = self.parse_int_or_7(params.get('days', None))
+        date = self.parse_yyyymmdd_or_today(params.get("date", None))
+        days = self.parse_int_or_7(params.get("days", None))
 
         # FIXME by_day should be on queryset but need to upgrade
         # django first
-        queryset = Scheduleitem.objects.by_day(date=date,
-                                               days=days,
-                                               surrounding=bool(
-                                                   params.get('surrounding')))
+        queryset = Scheduleitem.objects.by_day(
+            date=date, days=days, surrounding=bool(params.get("surrounding"))
+        )
 
-        return queryset.order_by('starttime')
+        return queryset.order_by("starttime")
 
     def get(self, request, *args, **kwargs):
         query_parameters = request.GET
 
-        date = self.parse_yyyymmdd_or_today(query_parameters.get('date', None))
-        days = self.parse_int_or_7(query_parameters.get('days', None))
+        date = self.parse_yyyymmdd_or_today(query_parameters.get("date", None))
+        days = self.parse_int_or_7(query_parameters.get("days", None))
 
         # The schedule cache is cleared on save() and delete() in fk/models.py:Scheduleitem
-        cache = caches['schedule']
+        cache = caches["schedule"]
         cache_key = f"schedule-{date.strftime('%Y%m%d')}-{days}"
 
         # We only cache for the most common use case: Single day of schedule,
         # requested as JSON. If any other parameters are set, we simply disable
         # caching for the remainder of the request.
         cacheable = True
-        if (type(request.accepted_renderer).__name__) != 'JSONRenderer':
+        if (type(request.accepted_renderer).__name__) != "JSONRenderer":
             cacheable = False
-        for disqualifying_parameter in [
-                'surrounding', 'ordering', 'page_size'
-        ]:
+        for disqualifying_parameter in ["surrounding", "ordering", "page_size"]:
             if query_parameters.get(disqualifying_parameter, None) != None:
                 cacheable = False
 
@@ -130,15 +131,15 @@ class ScheduleitemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Schedule item details
     """
+
     queryset = Scheduleitem.objects.all()
 
     def get_serializer_class(self):
-        if hasattr(self.request,
-                   'method') and self.request.method in ['POST', 'PUT']:
+        if hasattr(self.request, "method") and self.request.method in ["POST", "PUT"]:
             return ScheduleitemModifySerializer
         return ScheduleitemReadSerializer
 
-    permission_classes = (IsInOrganizationOrReadOnly, )
+    permission_classes = (IsInOrganizationOrReadOnly,)
     # Permit session-based login for backwards compat with old frontend
     # Remove when new planner works!
     authentication_classes = [SessionAuthentication, TokenAuthentication]

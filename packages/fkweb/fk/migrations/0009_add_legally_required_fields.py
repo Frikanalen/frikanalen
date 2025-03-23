@@ -5,54 +5,83 @@ from django.db import migrations, models
 import django.db.models.deletion
 import phonenumber_field.modelfields
 
+
 def set_editor_if_only_one_member(apps, schema_editor):
-    Organization = apps.get_model('fk', 'Organization')
+    Organization = apps.get_model("fk", "Organization")
     for org in Organization.objects.all():
         if len(org.members.all()) == 1:
             org.editor = org.members.all()[0]
             org.save()
 
+
 def assume_extant_identities_confirmed(apps, schema_editor):
-    User = apps.get_model('fk', 'User')
+    User = apps.get_model("fk", "User")
     for user in User.objects.all():
         user.identity_confirmed = True
         user.save()
 
+
 def nop(apps, schema_editor):
     pass
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
-        ('fk', '0008_auto_20200428_1206'),
+        ("fk", "0008_auto_20200428_1206"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='organization',
-            name='editor',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='editor', to=settings.AUTH_USER_MODEL),
+            model_name="organization",
+            name="editor",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="editor",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.RunPython(set_editor_if_only_one_member, nop),
         migrations.AddField(
-            model_name='organization',
-            name='street_address',
-            field=models.TextField(blank=True, max_length=2048, null=True, verbose_name='Street address for organization.'),
+            model_name="organization",
+            name="street_address",
+            field=models.TextField(
+                blank=True,
+                max_length=2048,
+                null=True,
+                verbose_name="Street address for organization.",
+            ),
         ),
         migrations.AddField(
-            model_name='organization',
-            name='postal_address',
-            field=models.TextField(blank=True, max_length=2048, null=True, verbose_name='Postal address for organization.'),
+            model_name="organization",
+            name="postal_address",
+            field=models.TextField(
+                blank=True,
+                max_length=2048,
+                null=True,
+                verbose_name="Postal address for organization.",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='identity_confirmed',
-            field=models.BooleanField(default=False, help_text='Whether the identity of this user has been confirmed by Frikanalen management.', verbose_name='identity confirmed'),
+            model_name="user",
+            name="identity_confirmed",
+            field=models.BooleanField(
+                default=False,
+                help_text="Whether the identity of this user has been confirmed by Frikanalen management.",
+                verbose_name="identity confirmed",
+            ),
         ),
         migrations.RunPython(assume_extant_identities_confirmed, nop),
         migrations.AddField(
-            model_name='user',
-            name='phone_number',
-            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, help_text='Phone number at which this user can be reached', max_length=128, region=None, verbose_name='phone number'),
+            model_name="user",
+            name="phone_number",
+            field=phonenumber_field.modelfields.PhoneNumberField(
+                blank=True,
+                help_text="Phone number at which this user can be reached",
+                max_length=128,
+                region=None,
+                verbose_name="phone number",
+            ),
         ),
     ]

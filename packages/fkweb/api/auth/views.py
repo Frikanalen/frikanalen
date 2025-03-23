@@ -10,15 +10,20 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 
-from api.auth.serializers import TokenSerializer, NewUserSerializer, UserSerializer, LoginSerializer
+from api.auth.serializers import (
+    TokenSerializer,
+    NewUserSerializer,
+    UserSerializer,
+    LoginSerializer,
+)
 
 
 class XBasicAuth(BasicAuthentication):
     def authenticate_header(self, request):
-        return 'XXXBasic'
+        return "XXXBasic"
 
 
-@method_decorator(never_cache, name='get')
+@method_decorator(never_cache, name="get")
 class ObtainAuthToken(generics.RetrieveAPIView):
     """
     Get a token you can use as a header instead of basic auth.
@@ -26,10 +31,11 @@ class ObtainAuthToken(generics.RetrieveAPIView):
     Use the header with HTTP like:
         Authorization: Token 000000000000...
     """
+
     queryset = Token.objects.all()
     serializer_class = TokenSerializer
     authentication_classes = [XBasicAuth]
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):
         return get_object_or_404(Token, user=self.request.user)
@@ -47,7 +53,7 @@ class UserCreate(generics.CreateAPIView):
         login(self.request, new_user)
 
 
-@method_decorator(never_cache, name='dispatch')
+@method_decorator(never_cache, name="dispatch")
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     User details - used to manage your own user
@@ -61,12 +67,12 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class UserLogin(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data["user"]
         login(request, user)
         return Response(UserSerializer(user).data)
 

@@ -5,15 +5,19 @@ import fk.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('fk', '0010_rename_video_editor_field_to_creator'),
+        ("fk", "0010_rename_video_editor_field_to_creator"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='video',
-            name='upload_token',
-            field=models.CharField(blank=True, default=fk.models.Video.default_uuid_value, help_text='Video upload token (used by fkupload/frontend)', max_length=32),
+            model_name="video",
+            name="upload_token",
+            field=models.CharField(
+                blank=True,
+                default=fk.models.Video.default_uuid_value,
+                help_text="Video upload token (used by fkupload/frontend)",
+                max_length=32,
+            ),
         ),
     ]

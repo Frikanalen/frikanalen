@@ -15,18 +15,25 @@ from fkweb.views import Frontpage
 admin.autodiscover()
 
 urlpatterns = [
-    re_path(r'^$', Frontpage.as_view(), name='frontpage'),
-
-    re_path(r'^login/$', LoginView.as_view(), name='login'),
-    re_path(r'^logout/$', LogoutView.as_view(),
-            {'next_page': '/'}, name='logout'),
-
-    re_path(r'^admin/', admin.site.urls),
+    re_path(r"^$", Frontpage.as_view(), name="frontpage"),
+    re_path(r"^login/$", LoginView.as_view(), name="login"),
+    re_path(r"^logout/$", LogoutView.as_view(), {"next_page": "/"}, name="logout"),
+    re_path(r"^admin/", admin.site.urls),
 ]
 
 urlpatterns += agenda.urls.urlpatterns
 urlpatterns += api.urls.urlpatterns
-urlpatterns += [re_path(r'^api/news/', include(('news.urls', "news",)))]
+urlpatterns += [
+    re_path(
+        r"^api/news/",
+        include(
+            (
+                "news.urls",
+                "news",
+            )
+        ),
+    )
+]
 
 # Only used with DEBUG. Serves static content right from source
 urlpatterns += staticfiles_urlpatterns()

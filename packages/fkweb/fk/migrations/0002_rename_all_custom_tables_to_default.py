@@ -9,36 +9,36 @@ class Migration(migrations.Migration):
     atomic = False
 
     dependencies = [
-        ('fk', '0001_initial'),
+        ("fk", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
-            options={'verbose_name': 'user', 'verbose_name_plural': 'users'},
+            name="user",
+            options={"verbose_name": "user", "verbose_name_plural": "users"},
         ),
         migrations.AlterModelTable(
-            name='category',
+            name="category",
             table=None,
         ),
         migrations.AlterModelTable(
-            name='fileformat',
+            name="fileformat",
             table=None,
         ),
         migrations.AlterModelTable(
-            name='organization',
+            name="organization",
             table=None,
         ),
         migrations.AlterModelTable(
-            name='scheduleitem',
+            name="scheduleitem",
             table=None,
         ),
         migrations.AlterModelTable(
-            name='user',
+            name="user",
             table=None,
         ),
         migrations.AlterModelTable(
-            name='video',
+            name="video",
             table=None,
         ),
     ]

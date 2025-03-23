@@ -5,35 +5,56 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('fk', '0013_auto_20201229_1941'),
+        ("fk", "0013_auto_20201229_1941"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='video',
-            name='media_metadata',
+            model_name="video",
+            name="media_metadata",
             field=models.JSONField(blank=True, default=dict),
         ),
         migrations.CreateModel(
-            name='IngestJob',
+            name="IngestJob",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('job_type', models.CharField(max_length=160)),
-                ('percentage_done', models.IntegerField(blank=True, default=0)),
-                ('status_text', models.TextField(default='', max_length=1000)),
-                ('state', models.CharField(default='pending', max_length=160)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fk.video')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("job_type", models.CharField(max_length=160)),
+                ("percentage_done", models.IntegerField(blank=True, default=0)),
+                ("status_text", models.TextField(default="", max_length=1000)),
+                ("state", models.CharField(default="pending", max_length=160)),
+                (
+                    "video",
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="fk.video"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Asset',
+            name="Asset",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('asset_type', models.CharField(max_length=160)),
-                ('location', models.CharField(max_length=160)),
-                ('video', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fk.video')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("asset_type", models.CharField(max_length=160)),
+                ("location", models.CharField(max_length=160)),
+                (
+                    "video",
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="fk.video"),
+                ),
             ],
         ),
     ]

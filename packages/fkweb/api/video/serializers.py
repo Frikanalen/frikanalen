@@ -9,20 +9,19 @@ from fk.models import Category, VideoFile, Video, Organization
 class VideoSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
     creator = serializers.SlugRelatedField(
-        slug_field='email',
+        slug_field="email",
         queryset=get_user_model().objects.all(),
-        default=serializers.CurrentUserDefault())
-    categories = serializers.SlugRelatedField(slug_field='name',
-                                              many=True,
-                                              queryset=Category.objects.all())
+        default=serializers.CurrentUserDefault(),
+    )
+    categories = serializers.SlugRelatedField(
+        slug_field="name", many=True, queryset=Category.objects.all()
+    )
     files = serializers.SerializerMethodField()
 
     def get_files(self, video):
         file_list = {}
         for vf in VideoFile.objects.filter(video=video):
-            file_list[
-                vf.format.fsname] = settings.FK_MEDIA_URLPREFIX + vf.location(
-                    relative=True)
+            file_list[vf.format.fsname] = settings.FK_MEDIA_URLPREFIX + vf.location(relative=True)
         return file_list
 
     class Meta:
@@ -50,32 +49,28 @@ class VideoSerializer(serializers.ModelSerializer):
             "ogv_url",
             "large_thumbnail_url",
         )
-        read_only_fields = ("framerate", "created_time", "updated_time",
-                            "files")
+        read_only_fields = ("framerate", "created_time", "updated_time", "files")
 
     def validate(self, data):
         is_creation = not self.instance
-        if is_creation and not data.get('organization'):
-            potential_orgs = data['creator'].organization_set.all()
+        if is_creation and not data.get("organization"):
+            potential_orgs = data["creator"].organization_set.all()
             if len(potential_orgs) == 0:
-                raise serializers.ValidationError({
-                    'organization':
-                    "Field required when "
-                    "editor has no organization."
-                })
+                raise serializers.ValidationError(
+                    {"organization": "Field required when editor has no organization."}
+                )
             elif len(potential_orgs) > 1:
-                raise serializers.ValidationError([{
-                    'organization':
-                    "Field required when "
-                    "editor has more than one organization."
-                }])
-            data['organization'] = potential_orgs[0]
+                raise serializers.ValidationError(
+                    [{"organization": "Field required when editor has more than one organization."}]
+                )
+            data["organization"] = potential_orgs[0]
         return data
 
 
 class VideoCreateSerializer(VideoSerializer):
     organization = serializers.SlugRelatedField(
-        slug_field='id', queryset=Organization.objects.all(), required=False)
+        slug_field="id", queryset=Organization.objects.all(), required=False
+    )
 
 
 class VideoUploadTokenSerializer(serializers.ModelSerializer):
@@ -87,6 +82,6 @@ class VideoUploadTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
         fields = (
-            'upload_token',
-            'upload_url',
+            "upload_token",
+            "upload_url",
         )

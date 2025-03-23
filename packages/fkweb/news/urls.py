@@ -3,8 +3,8 @@ from rest_framework import routers
 from .views import BulletinViewSet
 
 router = routers.DefaultRouter()
-router.register(r'bulletins', BulletinViewSet)
+router.register(r"bulletins", BulletinViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

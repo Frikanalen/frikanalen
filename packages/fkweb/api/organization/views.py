@@ -10,7 +10,7 @@ class OrganizationList(generics.ListCreateAPIView):
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
     pagination_class = Pagination
-    permission_classes = (IsOrganizationEditorOrReadOnly, )
+    permission_classes = (IsOrganizationEditorOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(editor=self.request.user)
@@ -20,6 +20,7 @@ class OrganizationDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Video file details
     """
+
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
-    permission_classes = (IsOrganizationEditorOrReadOnly, )
+    permission_classes = (IsOrganizationEditorOrReadOnly,)

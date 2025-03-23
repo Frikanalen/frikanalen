@@ -7,7 +7,7 @@ import sys
 if __name__ == "__main__":
     local = "fkweb.settings.local"
     test = "fkweb.settings.test"
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", test if 'test' in sys.argv else local)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", test if "test" in sys.argv else local)
 
     from django.core.management import execute_from_command_line
 

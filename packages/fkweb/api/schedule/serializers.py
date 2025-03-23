@@ -9,12 +9,13 @@ from zoneinfo import ZoneInfo
 class ScheduleitemVideoSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
     creator = serializers.SlugRelatedField(
-        slug_field='email',
+        slug_field="email",
         queryset=get_user_model().objects.all(),
-        default=serializers.CurrentUserDefault())
-    categories = serializers.SlugRelatedField(slug_field='name',
-                                              many=True,
-                                              queryset=Category.objects.all())
+        default=serializers.CurrentUserDefault(),
+    )
+    categories = serializers.SlugRelatedField(
+        slug_field="name", many=True, queryset=Category.objects.all()
+    )
 
     class Meta:
         model = Video
@@ -32,72 +33,63 @@ class ScheduleitemVideoSerializer(serializers.ModelSerializer):
 
 
 class ScheduleitemModifySerializer(serializers.ModelSerializer):
-    starttime = serializers.DateTimeField(
-        default_timezone=ZoneInfo("Europe/Oslo")
-    )
-    endtime = serializers.DateTimeField(
-        default_timezone=ZoneInfo("Europe/Oslo"), read_only=True)
+    starttime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"))
+    endtime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"), read_only=True)
 
     class Meta:
         model = Scheduleitem
-        fields = ("id", "video", "schedulereason", "starttime", "endtime",
-                  "duration")
+        fields = ("id", "video", "schedulereason", "starttime", "endtime", "duration")
 
     def validate(self, data):
-        if 'starttime' in data or 'duration' in data:
+        if "starttime" in data or "duration" in data:
 
             def g(v):
                 return self.instance and getattr(self.instance, v)
 
-            start = data.get('starttime', g('starttime'))
-            end = start + data.get('duration', g('duration'))
-            sur_start, sur_end = (Scheduleitem.objects.expand_to_surrounding(
-                start, end))
-            items = (Scheduleitem.objects.exclude(pk=g('id')).filter(
-                starttime__gte=sur_start,
-                starttime__lte=sur_end).order_by('starttime'))
+            start = data.get("starttime", g("starttime"))
+            end = start + data.get("duration", g("duration"))
+            sur_start, sur_end = Scheduleitem.objects.expand_to_surrounding(start, end)
+            items = (
+                Scheduleitem.objects.exclude(pk=g("id"))
+                .filter(starttime__gte=sur_start, starttime__lte=sur_end)
+                .order_by("starttime")
+            )
             for entry in items:
                 if entry.starttime <= start < entry.endtime():
-                    raise serializers.ValidationError(
-                        {'duration': f"Conflict with '{entry}'."})
+                    raise serializers.ValidationError({"duration": f"Conflict with '{entry}'."})
                 if entry.starttime < end < entry.endtime():
-                    raise serializers.ValidationError(
-                        {'duration': f"Conflict with '{entry}'."})
+                    raise serializers.ValidationError({"duration": f"Conflict with '{entry}'."})
         return data
 
 
 class ScheduleitemReadSerializer(serializers.ModelSerializer):
     video = ScheduleitemVideoSerializer()
-    starttime = serializers.DateTimeField(
-        default_timezone=ZoneInfo('Europe/Oslo'))
-    endtime = serializers.DateTimeField(
-        default_timezone=ZoneInfo('Europe/Oslo'), read_only=True)
+    starttime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"))
+    endtime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"), read_only=True)
 
     class Meta:
         model = Scheduleitem
-        fields = ("id", "video", "schedulereason", "starttime", "endtime",
-                  "duration")
+        fields = ("id", "video", "schedulereason", "starttime", "endtime", "duration")
 
     def validate(self, data):
-        if 'starttime' in data or 'duration' in data:
+        if "starttime" in data or "duration" in data:
 
             def g(v):
                 return self.instance and getattr(self.instance, v)
 
-            start = data.get('starttime', g('starttime'))
-            end = start + data.get('duration', g('duration'))
-            sur_start, sur_end = (Scheduleitem.objects.expand_to_surrounding(
-                start, end))
-            items = (Scheduleitem.objects.exclude(pk=g('id')).filter(
-                starttime__gte=sur_start,
-                starttime__lte=sur_end).order_by('starttime'))
+            start = data.get("starttime", g("starttime"))
+            end = start + data.get("duration", g("duration"))
+            sur_start, sur_end = Scheduleitem.objects.expand_to_surrounding(start, end)
+            items = (
+                Scheduleitem.objects.exclude(pk=g("id"))
+                .filter(starttime__gte=sur_start, starttime__lte=sur_end)
+                .order_by("starttime")
+            )
             for entry in items:
                 if entry.starttime <= start < entry.endtime():
-                    raise serializers.ValidationError(
-                        {'duration': f"Conflict with '{entry}'."})
+                    raise serializers.ValidationError({"duration": f"Conflict with '{entry}'."})
                 if entry.starttime < end < entry.endtime():
-                    raise serializers.ValidationError(
-                        {'duration': f"Conflict with '{entry}'."})
+                    raise serializers.ValidationError({"duration": f"Conflict with '{entry}'."})
         return data
 
 
@@ -105,11 +97,11 @@ class AsRunSerializer(serializers.ModelSerializer):
     class Meta:
         model = AsRun
         fields = (
-            'id',
-            'video',
-            'program_name',
-            'playout',
-            'played_at',
-            'in_ms',
-            'out_ms',
+            "id",
+            "video",
+            "program_name",
+            "playout",
+            "played_at",
+            "in_ms",
+            "out_ms",
         )
