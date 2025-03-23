@@ -25,82 +25,74 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'date_of_birth', 'is_superuser')
-    list_filter = ('is_superuser',)
+    list_display = ("email", "date_of_birth", "is_superuser")
+    list_filter = ("is_superuser",)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', 
-            {'fields': (
-                'date_of_birth',
-                'phone_number',
-                'first_name',
-                'last_name'
-                )
-        }),
-        ('Administrative info', {'fields': ('identity_confirmed',)}),
-        ('Permissions', {'fields': ('is_superuser',)}),
+        (None, {"fields": ("email", "password")}),
+        ("Personal info", {"fields": ("date_of_birth", "phone_number", "first_name", "last_name")}),
+        ("Administrative info", {"fields": ("identity_confirmed",)}),
+        ("Permissions", {"fields": ("is_superuser",)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'date_of_birth', 'password1', 'password2')}
+        (
+            None,
+            {"classes": ("wide",), "fields": ("email", "date_of_birth", "password1", "password2")},
         ),
     )
-    search_fields = ('email',)
-    ordering = ('email',)
+    search_fields = ("email",)
+    ordering = ("email",)
     filter_horizontal = ()
 
 
-
-
 class VideoFileInline(admin.StackedInline):
-    fields = ('format', 'filename')
+    fields = ("format", "filename")
     model = VideoFile
     extra = 0
 
+
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'creator', 'organization')
+    list_display = ("name", "creator", "organization")
     inlines = [VideoFileInline]
     search_fields = ["name", "description", "organization__name", "header", "creator__email"]
     list_filter = ("proper_import", "is_filler", "publish_on_web", "has_tono_records")
 
+
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'fkmember', 'orgnr')
+    list_display = ("name", "fkmember", "orgnr")
     filter_horizontal = ("members",)
-    list_filter = ('fkmember',)
-    ordering = ('name',)
+    list_filter = ("fkmember",)
+    ordering = ("name",)
 
 
 class ScheduleitemAdmin(admin.ModelAdmin):
-    list_filter = ('starttime', 'schedulereason', 'video__organization')
-    list_display = ('__str__',
-                    'video',
-                    'schedulereason',
-                    'starttime',
-                    'duration')
-    #list_display_links = ('starttime', 'video',)
-    #inlines = [VideoInline]
-    #exclude = ('video',)
+    list_filter = ("starttime", "schedulereason", "video__organization")
+    list_display = ("__str__", "video", "schedulereason", "starttime", "duration")
+    # list_display_links = ('starttime', 'video',)
+    # inlines = [VideoInline]
+    # exclude = ('video',)
     search_fields = ["video__name", "video__organization__name"]
-    ordering = ('starttime',)
+    ordering = ("starttime",)
+
 
 class SchedulePurposeAdmin(admin.ModelAdmin):
     list_display = (
-        '__str__',
-        'videos_str',
+        "__str__",
+        "videos_str",
     )
-    filter_horizontal = ('direct_videos',)
+    filter_horizontal = ("direct_videos",)
+
 
 class WeeklySlotAdmin(admin.ModelAdmin):
     list_display = (
-        '__str__',
-        'day',
-        'start_time',
-        'duration',
-        'purpose',
+        "__str__",
+        "day",
+        "start_time",
+        "duration",
+        "purpose",
     )
+
 
 admin.site.register(Category)
 admin.site.register(FileFormat)

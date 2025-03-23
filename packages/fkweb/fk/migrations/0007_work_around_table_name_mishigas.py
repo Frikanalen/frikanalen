@@ -9,46 +9,46 @@ class Migration(migrations.Migration):
     atomic = False
 
     dependencies = [
-        ('fk', '0006_add_foreign_key_constraints'),
+        ("fk", "0006_add_foreign_key_constraints"),
     ]
 
     operations = [
         # By calling RenameModel, for some reason Django no longer
         # fails to update the ForeignKey references in the schema.
-        migrations.RenameModel('User', 'UserNew'),
+        migrations.RenameModel("User", "UserNew"),
         migrations.AlterModelTable(
-            name='UserNew',
+            name="UserNew",
             table=None,
         ),
-        migrations.RenameModel('UserNew', 'User'),
+        migrations.RenameModel("UserNew", "User"),
         migrations.AlterModelOptions(
-            name='user',
-            options={'verbose_name': 'user', 'verbose_name_plural': 'users'},
+            name="user",
+            options={"verbose_name": "user", "verbose_name_plural": "users"},
         ),
         migrations.AlterModelTable(
-            name='category',
+            name="category",
             table=None,
         ),
-        migrations.RenameModel('FileFormat', 'FileFormatNew'),
+        migrations.RenameModel("FileFormat", "FileFormatNew"),
         migrations.AlterModelTable(
-            name='fileformatnew',
+            name="fileformatnew",
             table=None,
         ),
-        migrations.RenameModel('FileFormatNew', 'FileFormat'),
-        migrations.RenameModel('Organization', 'OrganizationNew'),
+        migrations.RenameModel("FileFormatNew", "FileFormat"),
+        migrations.RenameModel("Organization", "OrganizationNew"),
         migrations.AlterModelTable(
-            name='organizationnew',
+            name="organizationnew",
             table=None,
         ),
-        migrations.RenameModel('OrganizationNew', 'Organization'),
+        migrations.RenameModel("OrganizationNew", "Organization"),
         migrations.AlterModelTable(
-            name='scheduleitem',
+            name="scheduleitem",
             table=None,
         ),
-        migrations.RenameModel('Video', 'VideoNew'),
+        migrations.RenameModel("Video", "VideoNew"),
         migrations.AlterModelTable(
-            name='videonew',
+            name="videonew",
             table=None,
         ),
-        migrations.RenameModel('VideoNew', 'Video'),
+        migrations.RenameModel("VideoNew", "Video"),
     ]

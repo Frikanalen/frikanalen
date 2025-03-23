@@ -13,6 +13,7 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
+
 import os
 import sys
 from os.path import abspath, dirname
@@ -25,18 +26,21 @@ SITE_ROOT = dirname(dirname(abspath(__file__)))
 # os.environ["DJANGO_SETTINGS_MODULE"] = "jajaja.settings"
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fkweb.settings.production")
 
+
 def application(environ, start_response):
     # pass the WSGI environment variables on through to os.environ
-    for var in ['SECRET_KEY']:
+    for var in ["SECRET_KEY"]:
         if var in environ:
             os.environ[var] = environ[var]
-    if 'EXTRA_SITE_DIR' in environ:
+    if "EXTRA_SITE_DIR" in environ:
         import site
-        site.addsitedir(environ['EXTRA_SITE_DIR'])
+
+        site.addsitedir(environ["EXTRA_SITE_DIR"])
     # Avoid repeatedly adding the when debugging
     if not SITE_ROOT in sys.path:
-       sys.path.append(SITE_ROOT)
+        sys.path.append(SITE_ROOT)
 
     from django.core.wsgi import get_wsgi_application
+
     _application = get_wsgi_application()
     return _application(environ, start_response)

@@ -20,27 +20,27 @@ class OrganizationSerializer(serializers.ModelSerializer):
             try:
                 return obj.editor.phone_number.as_international
             except:
-                return ''
+                return ""
         return None
 
     def get_editor_name(self, obj):
         if obj.editor:
             return obj.editor.first_name + " " + obj.editor.last_name
-        logger.warning('Organization %d has no editor assigned' % (obj.id))
-        return 'Ingen redaktør!'
+        logger.warning("Organization %d has no editor assigned" % (obj.id))
+        return "Ingen redaktør!"
 
     class Meta:
         model = Organization
         fields = (
-            'id',
-            'name',
-            'homepage',
-            'description',
-            'postal_address',
-            'street_address',
-            'editor_id',
-            'editor_name',
-            'editor_email',
-            'editor_msisdn',
-            'fkmember',
+            "id",
+            "name",
+            "homepage",
+            "description",
+            "postal_address",
+            "street_address",
+            "editor_id",
+            "editor_name",
+            "editor_email",
+            "editor_msisdn",
+            "fkmember",
         )

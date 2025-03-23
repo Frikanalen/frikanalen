@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    videocount = serializers.SerializerMethodField('count_videos')
+    videocount = serializers.SerializerMethodField("count_videos")
 
     @staticmethod
     def count_videos(category):
@@ -21,8 +21,8 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = (
-            'id',
-            'name',
-            'desc',
-            'videocount',
+            "id",
+            "name",
+            "desc",
+            "videocount",
         )

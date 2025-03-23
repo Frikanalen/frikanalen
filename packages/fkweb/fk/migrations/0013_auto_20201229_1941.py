@@ -5,15 +5,14 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('fk', '0012_remove_videofile_old_filename'),
+        ("fk", "0012_remove_videofile_old_filename"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='videofile',
-            name='video',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='fk.video'),
+            model_name="videofile",
+            name="video",
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="fk.video"),
         ),
     ]
