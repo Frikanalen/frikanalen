@@ -1,23 +1,22 @@
-FROM python:3-buster as base
+FROM python:3.10-alpine3.20 AS base
 
-FROM base as builder
+RUN apk add --no-cache python3 poetry postgresql-dev python3-dev
 
-# Pull missing packages
-RUN apt-get update && apt-get install -y python3 python3-pip libpq-dev python3-dev
-
-# Copy over the files we need to start
-RUN mkdir -p /srv/frikanalen
-
-ADD requirements-prod.txt /srv/frikanalen
-ADD requirements.txt /srv/frikanalen
+FROM base AS builder
 
 WORKDIR /srv/frikanalen
-RUN pip install -r requirements-prod.txt
+
+COPY poetry.lock .
+COPY pyproject.toml .
+
+RUN poetry install
 
 FROM builder
 
-ADD . /srv/frikanalen/
+COPY . .
 
-CMD ["./start.sh"]
+RUN poetry install --no-root
+
+CMD ["poetry", "run", "./start.sh"]
 
 EXPOSE 8080

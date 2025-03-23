@@ -1,5 +1,4 @@
-fkweb
-=====
+# fkweb
 
 ![Unit tests](https://github.com/Frikanalen/frikanalen/workflows/Unit%20test%20Django%20API%20service/badge.svg)
 ![Build fkweb](https://github.com/Frikanalen/frikanalen/workflows/Build%20Django%20backend%20service/badge.svg)
@@ -10,11 +9,11 @@ Backend API for the Norwegian public access TV channel [Frikanalen](https://frik
 
 The backend is configured using environment variables.
 
-* ALLOWED_HOSTS - comma-separated list of permitted domains
-* DATABASE_USER - postgres username
-* DATABASE_NAME - postgres db name
-* DATABASE_PASS - postgres password
-* SMTP_SERVER - smtp server for outgoing email
+- ALLOWED_HOSTS - comma-separated list of permitted domains
+- DATABASE_USER - postgres username
+- DATABASE_NAME - postgres db name
+- DATABASE_PASS - postgres password
+- SMTP_SERVER - smtp server for outgoing email
 
 ## Installation
 
@@ -23,13 +22,13 @@ The backend is configured using environment variables.
 This package builds on push as frikanalen/django-backend. To build a local copy:
 
 ```sh
-docker build -t frikanalen/django-backend . 
+docker build -t frikanalen/django-backend .
 ```
 
 Then you can run it thus:
 
 ```sh
-docker run -p 8080:8080 frikanalen/django-backend 
+docker run -p 8080:8080 frikanalen/django-backend
 ```
 
 ### Local development
@@ -37,10 +36,12 @@ docker run -p 8080:8080 frikanalen/django-backend
 #### Initializing dev environment
 
 ```sh
-sudo apt install python3-virtualenv python3-pip
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements-dev.txt
+sudo apt install python3-poetry
+poetry install
+# open a shell in the new environment
+poetry shell
+# or prefix "poetry run" to any command to run it in the env
+poetry run ./manage.py migrate
 ```
 
 #### Initializing database
@@ -53,7 +54,6 @@ docker-compose up -d
 # Load necessary fixtures (eg. content categories) into the database:
 ./manage.py loaddata frikanalen
 ```
-
 
 **EITHER** Load the testing users and organizations:
 
@@ -88,7 +88,7 @@ This job will fill the next week's schedule with videos as defined by the Weekly
 ```sh
 ./manage.py fill_agenda_with_jukebox
 ```
-    
+
 This job will fill the remaining unpopulated areas with videos as randomly selected from the set of all videos marked with is_filler=True.
 
 ## Test data
@@ -102,11 +102,9 @@ It contains the following organizations:
 
 Additionally, the following users:
 
-- dev-admin@frikanalen.no *site administrator*
-- dev-org1-admin@frikanalen.no *administrator for org1*
-- dev-org1-member@frikanalen.no *member of org1*
-- dev-org2-admin@frikanalen.no *administrator for org2*
-
-
+- dev-admin@frikanalen.no _site administrator_
+- dev-org1-admin@frikanalen.no _administrator for org1_
+- dev-org1-member@frikanalen.no _member of org1_
+- dev-org2-admin@frikanalen.no _administrator for org2_
 
 For more advanced things you'd want to check [our infrastructure Ansible setup](../../infra/README.md).
