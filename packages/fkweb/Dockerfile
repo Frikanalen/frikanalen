@@ -1,23 +1,32 @@
-FROM python:3-buster as base
+FROM python:3.11-alpine3.20 AS builder
 
-FROM base as builder
+COPY --from=ghcr.io/astral-sh/uv:0.6.9 /uv /uvx /bin/
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+# Disable Python downloads, because we want to use the system interpreter
+# across both images. If using a managed Python version, it needs to be
+# copied from the build image into the final image; see `standalone.Dockerfile`
+# for an example.
+ENV UV_PYTHON_DOWNLOADS=0
 
-# Pull missing packages
-RUN apt-get update && apt-get install -y python3 python3-pip libpq-dev python3-dev
+WORKDIR /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+ADD . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
-# Copy over the files we need to start
-RUN mkdir -p /srv/frikanalen
+# Then, use a final image without uv
+FROM python:3.11-alpine3.20
+# It is important to use the image that matches the builder, as the path to the
+# Python executable must be the same, e.g., using `python:3.11-slim-bookworm`
+# will fail.
 
-ADD requirements-prod.txt /srv/frikanalen
-ADD requirements.txt /srv/frikanalen
+# Copy the application from the builder
+COPY --from=builder --chown=app:app /app /app
 
-WORKDIR /srv/frikanalen
-RUN pip install -r requirements-prod.txt
+# Place executables in the environment at the front of the path
+ENV PATH="/app/.venv/bin:$PATH"
 
-FROM builder
-
-ADD . /srv/frikanalen/
-
-CMD ["./start.sh"]
-
-EXPOSE 8080
+CMD ["/app/start.sh"]
