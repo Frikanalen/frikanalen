@@ -23,10 +23,12 @@ FROM python:3.11-alpine3.20
 # Python executable must be the same, e.g., using `python:3.11-slim-bookworm`
 # will fail.
 
+WORKDIR /app
+
 # Copy the application from the builder
-COPY --from=builder --chown=app:app /app /app
+COPY --from=builder --chown=app:app /app .
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
-CMD ["/app/start.sh"]
+CMD ["./start.sh"]
