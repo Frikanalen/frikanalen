@@ -29,21 +29,35 @@ class VideoFileList(generics.ListCreateAPIView):
 
     HTTP parameters:
 
-    `video_id` - The (parent) video by ID
+    `video_id`
 
-    `created_time` - when this file entry was created.
+        The (parent) video by ID
 
-    `format__fsname` - the fileformat fsname for this file.
+    `created_time`
 
-    `integrated_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
+        when this file entry was created.
 
-    `truepeak_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
+    `format__fsname`
 
-    `page_size` - How many items per page. If set to 0 it will list
-                  all items.  Default is 50 items.
+        the fileformat fsname for this file.
 
-    `ordering` - Order results by specified field.  Prepend a minus for
-                 descending order.  I.e. `?ordering=-starttime`.
+    `integrated_lufs` (includes __gt, __gte, __lt, __lte, __isnull)
+
+        the overall loudness of the file.
+
+    `truepeak_lufs` (includes __gt, __gte, __lt, __lte, __isnull)
+
+        the overall loudness of the file.
+
+    `page_size`
+
+        How many items per page. If set to 0 it will list all items.
+        Default is 50 items.
+
+    `ordering`
+
+        Order results by specified field.
+        Prepend a minus for descending order, eg. `?ordering=-starttime`.
     """
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
