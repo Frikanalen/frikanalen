@@ -1,26 +1,31 @@
 name: Unit test Django API service
 on:
   push:
-    branches:
-      - master
     paths:
       - '.github/workflows/django-backend-test.yml'
       - 'packages/fkweb/**'
 jobs:
   test:
-    name: Unit test
+    name: Django unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.10"
-          cache: 'pip'
+          # Install a specific version of uv.
+          version: "0.6.9"
+
+      - name: Set up Python
+        run: uv python install
+
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
-        working-directory: packages/fkweb
+        run: uv sync --all-extras --dev
+
       - name: Run tests
-        run: python manage.py test
+        run: |
+          export DJANGO_SETTINGS_MODULE=fkweb.settings.test
+          uv run manage.py test
         working-directory: packages/fkweb
