@@ -108,7 +108,7 @@ class VideoList(generics.ListCreateAPIView):
 
     queryset = Video.objects.filter(proper_import=True)
     pagination_class = Pagination
-    filter_class = VideoFilter
+    filterset_class = VideoFilter
     permission_classes = (IsInOrganizationOrReadOnly,)
     ordering_fields = [
         f.column for f in Video._meta.fields if f.column in VideoSerializer.Meta().fields

@@ -49,7 +49,7 @@ class VideoFileList(generics.ListCreateAPIView):
     queryset = VideoFile.objects.all()
     serializer_class = VideoFileSerializer
     pagination_class = Pagination
-    filter_class = VideoFileFilter
+    filterset_class = VideoFileFilter
     permission_classes = (IsInOrganizationOrReadOnly,)
 
     def get_queryset(self):

@@ -10,7 +10,7 @@ dependencies = [
     "django-cors-headers==4.7.0",
     "django-csp==3.8",
     "django-durationfield==0.5.5",
-    "django-filter==21.1",
+    "django-filter==22.1",
     "django-model-utils==5.0.0",
     "django-phonenumber-field[phonenumbers]==8.0.0",
     "djangorestframework==3.16.0",

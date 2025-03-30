@@ -137,14 +137,14 @@ sdist = { url = "https://files.pythonhosted.org/packages/3b/ab/b5268d0c72944d2be
 
 [[package]]
 name = "django-filter"
-version = "21.1"
+version = "22.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e3/90/819a74f0c9650a7ceda158d85a6010b4ce3d4e215e0c69ec9f3a733ce72f/django-filter-21.1.tar.gz", hash = "sha256:632a251fa8f1aadb4b8cceff932bb52fe2f826dd7dfe7f3eac40e5c463d6836e", size = 154188 }
+sdist = { url = "https://files.pythonhosted.org/packages/c5/8c/d7899a0c3e46993922d7e5f7cdc69da304b89521e371ac63863d418cd0b0/django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5", size = 134811 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/90/8fbf530e14dbcaf502cd80078cbae9e4f805f20888973488ebe8480c3c28/django_filter-21.1-py3-none-any.whl", hash = "sha256:f4a6737a30104c98d2e2a5fb93043f36dd7978e0c7ddc92f5998e85433ea5063", size = 81384 },
+    { url = "https://files.pythonhosted.org/packages/58/99/3dc8a7d997a18596c15f588690d46e9802d983f6c1486813ec4db018c481/django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb", size = 80867 },
 ]
 
 [[package]]
@@ -242,7 +242,7 @@ requires-dist = [
     { name = "django-cors-headers", specifier = "==4.7.0" },
     { name = "django-csp", specifier = "==3.8" },
     { name = "django-durationfield", specifier = "==0.5.5" },
-    { name = "django-filter", specifier = "==21.1" },
+    { name = "django-filter", specifier = "==22.1" },
     { name = "django-model-utils", specifier = "==5.0.0" },
     { name = "django-phonenumber-field", extras = ["phonenumbers"], specifier = "==8.0.0" },
     { name = "djangorestframework", specifier = "==3.16.0" },
