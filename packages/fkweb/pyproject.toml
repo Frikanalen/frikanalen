@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "dj-database-url==2.3.0",
-    "django==4.2.20",
+    "django==5.1.7",
     "django-cors-headers==4.7.0",
     "django-csp==3.8",
     "django-durationfield==0.5.5",
