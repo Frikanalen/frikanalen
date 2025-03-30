@@ -1,8 +1,6 @@
 Frikanalen
 ==========
 
-**NOTE**: We are transitioning away from a monorepo, and will gradually be removing files from this one.
-
 All code used by the Norwegian public access TV channel [Frikanalen](https://frikanalen.no/).
 
 [GitHub page](http://github.com/Frikanalen/) | [Project mailing list](http://lists.nuug.no/mailman/listinfo/frikanalen/)
@@ -34,32 +32,6 @@ Frikanalen is actively seeking volunteers who want to be part of building our un
 If you're curious about the project, please get in touch on our IRC channel #frikanalen on OFTC.
 
 Tech lead for the project is [Tore Sinding Bekkedal](https://github.com/toresbe/) and he can be reached [by mail](mailto:toresbe@protonmail.com) as well.
-
-## Current development focus
-
-- [Creating a local k8s developer environment](infra/k8s-dev)
-- We are writing a new front-end
-    - Migrating functionality from legacy site: Almost completely done!
-    - Still needs a user interface for organizations to add their shows to schedules ([#216](https://github.com/Frikanalen/frikanalen/issues/216))
-- Filling airtime in a better way
-    - New, far more maintainable playout has been written and deployed, running stably
-    - Needs to add better instrumentalization, monitoring/alerting (final output is checked for motion, and alerts are sent on pod failure)
-    - A better jukebox algorithm to prioritize fresher content and leave bigger gaps for graphics ([see also](https://github.com/Frikanalen/frikanalen/blob/master/packages/fkweb/README.md#non-http-entry-points)
-    - Expand broadcast graphics (in React frontend) to more than just a "next programme" clock (News bulletin is mostly done)
-- Migrating the remaining bare-metal services to Kubernetes
-    - Make file server (file01) a Kubernetes node using pod-node affinity for ZFS access as stopgap measure before Ceph
-        - Dockerize fkupload and fkprocess, create CRDs
-        - Dockerize asset HTTP server
-    - Ceph cluster up and running nicely, need to migrate media from ZFS pool
-    - Media asset server serving from Ceph
-    - Upload receiver and file mover/processer migrating from systemd/SMB shares to k8s/Ceph
-    - Docker container is very much needed for Open Broadcast Encoder (curmudgeonly build process)
-    - CasparCG deployed as Docker container - not necessarily in k8s though (stability test running now)
-
-## Nice to have in the future:
-
-- It would be useful to have programmatically-generated test data for fkweb (so we can test and develop on realistic but anonymous data)
-- It would be very nice to be able to deploy our CRDs directly in the cloud to spin up a full developer instance (using some sort of templating?)
 
 ## Functional description
 
