@@ -203,6 +203,7 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "fkweb.middleware.api_utc_middleware",
+    "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -323,6 +324,18 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+########## OpenAPI CONFIGURATION
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Frikanalen Django API",
+    "DESCRIPTION": "API for Frikanalen",
+    "VERSION": "1.1.0",
+    "POSTPROCESSING_HOOKS": [
+        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+        "drf_spectacular.hooks.postprocess_schema_enums",
+    ],
+    "CAMELIZE": False,
 }
 
 # Everything with the API should be okay, since we don't share
