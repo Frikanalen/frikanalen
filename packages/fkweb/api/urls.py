@@ -5,7 +5,6 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-from csp.decorators import csp_exempt
 
 import api.auth.views
 import api.organization.views
@@ -67,12 +66,12 @@ urlpatterns = [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/schema/swagger-ui/",
-        csp_exempt(SpectacularSwaggerView.as_view(url_name="schema")),
+        SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
         "api/schema/redoc/",
-        csp_exempt(SpectacularRedocView.as_view(url_name="schema")),
+        SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
 ]
