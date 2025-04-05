@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import { ThemeProvider } from "@/components/theme-provider";
+import { HeaderNavMenu as HeaderNavMenu } from "../../HeaderNavMenu";
+import { Logo } from "@/components/Logo";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
+import { HeroUIProvider } from "@heroui/system";
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -23,11 +25,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" >
+      <head>
+        <title>Frikanalen</title>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <HeroUIProvider>
+          <div className="flex flex-col items-center min-h-screen">
+            <header className="w-full max-w-2xl">
+              <Logo className="w-100 pt-10" />
+              <HeaderNavMenu className="py-3" />
+            </header>
+            <div className="w-full max-w-2xl grow">{children}</div>
+            <footer>Footer.</footer>
+          </div>
+        </HeroUIProvider>
       </body>
     </html>
   );

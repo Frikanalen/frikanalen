@@ -7,13 +7,25 @@
     "prettier": "prettier -w src/",
     "build": "next build",
     "start": "next start",
+    "orval": "orval",
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/card": "^2.2.15",
+    "@heroui/dropdown": "^2.3.16",
+    "@heroui/navbar": "^2.2.14",
+    "@heroui/system": "^2.4.12",
+    "@heroui/theme": "^2.4.12",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@radix-ui/react-navigation-menu": "^1.2.5",
+    "@radix-ui/react-slot": "^1.1.2",
+    "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.6.3",
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
+    "next-themes": "^0.4.6",
     "prettier": "^3.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -28,6 +40,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
+    "orval": "^7.8.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

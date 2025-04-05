@@ -1,0 +1,2923 @@
+openapi: 3.0.3
+info:
+  title: Frikanalen Django API
+  version: 1.1.0
+  description: API for Frikanalen
+servers:
+- url: http://localhost:8000
+  description: Frikanalen API
+paths:
+  /api/:
+    get:
+      operationId: root_retrieve
+      description: The root of the FK API / web services
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/asrun/:
+    get:
+      operationId: asrun_list
+      description: |-
+        AsRun model is a historic log over what was sent through playout.
+
+        Query parameters
+        ----------------
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - You can order the results by any visible field.
+                     Prepend a minus to order in descending order.  I.e.
+                     `?ordering=-played_at` to show newest items first.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - asrun
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAsRunList'
+          description: ''
+    post:
+      operationId: asrun_create
+      description: |-
+        AsRun model is a historic log over what was sent through playout.
+
+        Query parameters
+        ----------------
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - You can order the results by any visible field.
+                     Prepend a minus to order in descending order.  I.e.
+                     `?ordering=-played_at` to show newest items first.
+      tags:
+      - asrun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsRun'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsRun'
+          description: ''
+  /api/asrun/{id}/:
+    get:
+      operationId: asrun_retrieve
+      description: |-
+        AsRun model is a historic log over what was sent through playout.
+
+        Query parameters
+        ----------------
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - You can order the results by any visible field.
+                     Prepend a minus to order in descending order.  I.e.
+                     `?ordering=-played_at` to show newest items first.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this as run.
+        required: true
+      tags:
+      - asrun
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsRun'
+          description: ''
+    put:
+      operationId: asrun_update
+      description: |-
+        AsRun model is a historic log over what was sent through playout.
+
+        Query parameters
+        ----------------
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - You can order the results by any visible field.
+                     Prepend a minus to order in descending order.  I.e.
+                     `?ordering=-played_at` to show newest items first.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this as run.
+        required: true
+      tags:
+      - asrun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsRun'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsRun'
+          description: ''
+    patch:
+      operationId: asrun_partial_update
+      description: |-
+        AsRun model is a historic log over what was sent through playout.
+
+        Query parameters
+        ----------------
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - You can order the results by any visible field.
+                     Prepend a minus to order in descending order.  I.e.
+                     `?ordering=-played_at` to show newest items first.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this as run.
+        required: true
+      tags:
+      - asrun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAsRun'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsRun'
+          description: ''
+    delete:
+      operationId: asrun_destroy
+      description: |-
+        AsRun model is a historic log over what was sent through playout.
+
+        Query parameters
+        ----------------
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - You can order the results by any visible field.
+                     Prepend a minus to order in descending order.  I.e.
+                     `?ordering=-played_at` to show newest items first.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this as run.
+        required: true
+      tags:
+      - asrun
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/categories/:
+    get:
+      operationId: categories_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - categories
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: categories_create
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/categories/{id}/:
+    get:
+      operationId: categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        description: A unique value identifying this video category.
+        required: true
+      tags:
+      - categories
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: categories_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        description: A unique value identifying this video category.
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: categories_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        description: A unique value identifying this video category.
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: categories_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        description: A unique value identifying this video category.
+        required: true
+      tags:
+      - categories
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/jukebox_csv:
+    get:
+      operationId: jukebox_csv_retrieve
+      tags:
+      - jukebox_csv
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/news/bulletins/:
+    get:
+      operationId: news_bulletins_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - news
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bulletin'
+          description: ''
+    post:
+      operationId: news_bulletins_create
+      tags:
+      - news
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bulletin'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bulletin'
+          description: ''
+  /api/news/bulletins/{id}/:
+    get:
+      operationId: news_bulletins_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bulletin.
+        required: true
+      tags:
+      - news
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bulletin'
+          description: ''
+    put:
+      operationId: news_bulletins_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bulletin.
+        required: true
+      tags:
+      - news
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bulletin'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bulletin'
+          description: ''
+    patch:
+      operationId: news_bulletins_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bulletin.
+        required: true
+      tags:
+      - news
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBulletin'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bulletin'
+          description: ''
+    delete:
+      operationId: news_bulletins_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this bulletin.
+        required: true
+      tags:
+      - news
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/obtain-token:
+    get:
+      operationId: obtain_token_retrieve
+      description: |-
+        Get a token you can use as a header instead of basic auth.
+
+        Use the header with HTTP like:
+            Authorization: Token 000000000000...
+      tags:
+      - obtain-token
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: ''
+  /api/organization/:
+    get:
+      operationId: organization_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - organization
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrganizationList'
+          description: ''
+    post:
+      operationId: organization_create
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+  /api/organization/{id}:
+    get:
+      operationId: organization_retrieve
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - organization
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+    put:
+      operationId: organization_update
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+    patch:
+      operationId: organization_partial_update
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrganization'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+          description: ''
+    delete:
+      operationId: organization_destroy
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - organization
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/scheduleitems/:
+    get:
+      operationId: scheduleitems_list
+      description: |-
+        Video events schedule
+
+        Query parameters
+        ----------------
+
+        `date` - Date expressed in the format YYYY-MM-DD (eg. 2020-12-31), or
+                 "today".  Default is today, Europe/Oslo time.
+
+        `days` - Number of days schedule requested. Default is 7 days.
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `surrounding` - Fetch the first event before and after the given
+                        period
+
+        `ordering` - Order results by specified field.  Prepend a minus for
+                     descending order.  I.e. `?ordering=-starttime`.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      tags:
+      - scheduleitems
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScheduleitemReadList'
+          description: ''
+    post:
+      operationId: scheduleitems_create
+      description: |-
+        Video events schedule
+
+        Query parameters
+        ----------------
+
+        `date` - Date expressed in the format YYYY-MM-DD (eg. 2020-12-31), or
+                 "today".  Default is today, Europe/Oslo time.
+
+        `days` - Number of days schedule requested. Default is 7 days.
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `surrounding` - Fetch the first event before and after the given
+                        period
+
+        `ordering` - Order results by specified field.  Prepend a minus for
+                     descending order.  I.e. `?ordering=-starttime`.
+      tags:
+      - scheduleitems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleitemModify'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleitemModify'
+          description: ''
+  /api/scheduleitems/{id}:
+    get:
+      operationId: scheduleitems_retrieve
+      description: Schedule item details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - scheduleitems
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleitemRead'
+          description: ''
+    put:
+      operationId: scheduleitems_update
+      description: Schedule item details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - scheduleitems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleitemModify'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleitemModify'
+          description: ''
+    patch:
+      operationId: scheduleitems_partial_update
+      description: Schedule item details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - scheduleitems
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScheduleitemRead'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleitemRead'
+          description: ''
+    delete:
+      operationId: scheduleitems_destroy
+      description: Schedule item details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - scheduleitems
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/schema{format}:
+    get:
+      operationId: schema_formatted_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: path
+        name: format
+        schema:
+          type: string
+          enum:
+          - .json
+        required: true
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/user:
+    get:
+      operationId: user_retrieve
+      description: User details - used to manage your own user
+      tags:
+      - user
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: user_update
+      description: User details - used to manage your own user
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: user_partial_update
+      description: User details - used to manage your own user
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: user_destroy
+      description: User details - used to manage your own user
+      tags:
+      - user
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/user/login:
+    post:
+      operationId: user_login_create
+      tags:
+      - user
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/user/logout:
+    post:
+      operationId: user_logout_create
+      tags:
+      - user
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/user/register:
+    post:
+      operationId: user_register_create
+      tags:
+      - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewUser'
+          description: ''
+  /api/videofiles/:
+    get:
+      operationId: videofiles_list
+      description: |-
+        Video file list
+
+        Query parameters
+        ----------------
+
+        HTTP parameters:
+
+        `video_id` - The (parent) video by ID
+
+        `created_time` - when this file entry was created.
+
+        `format__fsname` - the fileformat fsname for this file.
+
+        `integrated_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
+
+        `truepeak_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - Order results by specified field.  Prepend a minus for
+                     descending order.  I.e. `?ordering=-starttime`.
+      parameters:
+      - in: query
+        name: createdTimeAfter
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: createdTimeBefore
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: format_Fsname
+        schema:
+          type: string
+      - in: query
+        name: integratedLufs
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: integratedLufs_Gt
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: integratedLufs_Gte
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: integratedLufs_Isnull
+        schema:
+          type: boolean
+      - in: query
+        name: integratedLufs_Lt
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: integratedLufs_Lte
+        schema:
+          type: number
+          format: float
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: truepeakLufs
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: truepeakLufs_Gt
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: truepeakLufs_Gte
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: truepeakLufs_Isnull
+        schema:
+          type: boolean
+      - in: query
+        name: truepeakLufs_Lt
+        schema:
+          type: number
+          format: float
+      - in: query
+        name: truepeakLufs_Lte
+        schema:
+          type: number
+          format: float
+      tags:
+      - videofiles
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVideoFileList'
+          description: ''
+    post:
+      operationId: videofiles_create
+      description: |-
+        Video file list
+
+        Query parameters
+        ----------------
+
+        HTTP parameters:
+
+        `video_id` - The (parent) video by ID
+
+        `created_time` - when this file entry was created.
+
+        `format__fsname` - the fileformat fsname for this file.
+
+        `integrated_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
+
+        `truepeak_lufs` (includes __gt, __gte, __lt, __lte, __isnull) the overall loudness of the file.
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - Order results by specified field.  Prepend a minus for
+                     descending order.  I.e. `?ordering=-starttime`.
+      tags:
+      - videofiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoFile'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoFile'
+          description: ''
+  /api/videofiles/{id}:
+    get:
+      operationId: videofiles_retrieve
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videofiles
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoFile'
+          description: ''
+    put:
+      operationId: videofiles_update
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videofiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoFile'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoFile'
+          description: ''
+    patch:
+      operationId: videofiles_partial_update
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videofiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVideoFile'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoFile'
+          description: ''
+    delete:
+      operationId: videofiles_destroy
+      description: Video file details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videofiles
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/videos/:
+    get:
+      operationId: videos_list
+      description: |-
+        List of videos
+
+        Query parameters
+        ----------------
+
+        `q` - Free search query.
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - Order results by specified field.  Prepend a minus for
+                     descending order.  I.e. `?ordering=-id`.
+
+        `creator__email` - the email of the video's creator
+
+        `framerate` - the framerate in hz * 1000
+
+        `has_tono_records` - if the tono flag is set (true/false)
+
+        `is_filler` - if this is a filler video (true/false)
+
+        `name` - the exact name/title of the video
+
+        `name__icontains` - substring is part of name/title of the video
+
+        `organization` - Frikanalen ID of organization behind video
+
+        `played_count_web` - the number of times this video was played on the web
+
+        `played_count_web__gt` - greater than
+
+        `played_count_web__gte` - greater than or equal
+
+        `played_count_web__lt`  - less than
+
+        `played_count_web__lte` - less than or equal
+
+        `publish_on_web` - if this video is published ont the web (true/false)
+
+        `proper_import` - if the uploaded video was properly imported (true/false)
+
+        `ref_url` - the exact reference url
+
+        `ref_url__startswith` - the reference url start with this string
+
+        `ref_url__icontains` - the reference url contain this string
+      parameters:
+      - in: query
+        name: categories_Name_Icontains
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: createdTimeAfter
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: createdTimeBefore
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: creator_Email
+        schema:
+          type: string
+      - in: query
+        name: duration
+        schema:
+          type: string
+          format: duration
+      - in: query
+        name: duration_Gt
+        schema:
+          type: string
+          format: duration
+      - in: query
+        name: duration_Gte
+        schema:
+          type: string
+          format: duration
+      - in: query
+        name: duration_Lt
+        schema:
+          type: string
+          format: duration
+      - in: query
+        name: duration_Lte
+        schema:
+          type: string
+          format: duration
+      - in: query
+        name: framerate
+        schema:
+          type: integer
+      - in: query
+        name: hasTonoRecords
+        schema:
+          type: boolean
+      - in: query
+        name: isFiller
+        schema:
+          type: boolean
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: name_Icontains
+        schema:
+          type: string
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: organization
+        schema:
+          type: integer
+      - in: query
+        name: playedCountWeb
+        schema:
+          type: integer
+      - in: query
+        name: playedCountWeb_Gt
+        schema:
+          type: integer
+      - in: query
+        name: playedCountWeb_Gte
+        schema:
+          type: integer
+      - in: query
+        name: playedCountWeb_Lt
+        schema:
+          type: integer
+      - in: query
+        name: playedCountWeb_Lte
+        schema:
+          type: integer
+      - in: query
+        name: publishOnWeb
+        schema:
+          type: boolean
+      - in: query
+        name: refUrl
+        schema:
+          type: string
+      - in: query
+        name: refUrl_Icontains
+        schema:
+          type: string
+      - in: query
+        name: refUrl_Startswith
+        schema:
+          type: string
+      - in: query
+        name: updatedTimeAfter
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: updatedTimeBefore
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: uploadedTimeAfter
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: uploadedTimeBefore
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - videos
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVideoList'
+          description: ''
+    post:
+      operationId: videos_create
+      description: |-
+        List of videos
+
+        Query parameters
+        ----------------
+
+        `q` - Free search query.
+
+        `page_size` - How many items per page. If set to 0 it will list
+                      all items.  Default is 50 items.
+
+        `ordering` - Order results by specified field.  Prepend a minus for
+                     descending order.  I.e. `?ordering=-id`.
+
+        `creator__email` - the email of the video's creator
+
+        `framerate` - the framerate in hz * 1000
+
+        `has_tono_records` - if the tono flag is set (true/false)
+
+        `is_filler` - if this is a filler video (true/false)
+
+        `name` - the exact name/title of the video
+
+        `name__icontains` - substring is part of name/title of the video
+
+        `organization` - Frikanalen ID of organization behind video
+
+        `played_count_web` - the number of times this video was played on the web
+
+        `played_count_web__gt` - greater than
+
+        `played_count_web__gte` - greater than or equal
+
+        `played_count_web__lt`  - less than
+
+        `played_count_web__lte` - less than or equal
+
+        `publish_on_web` - if this video is published ont the web (true/false)
+
+        `proper_import` - if the uploaded video was properly imported (true/false)
+
+        `ref_url` - the exact reference url
+
+        `ref_url__startswith` - the reference url start with this string
+
+        `ref_url__icontains` - the reference url contain this string
+      tags:
+      - videos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoCreate'
+          description: ''
+  /api/videos/{id}:
+    get:
+      operationId: videos_retrieve
+      description: Video details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videos
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+          description: ''
+    put:
+      operationId: videos_update
+      description: Video details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Video'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+          description: ''
+    patch:
+      operationId: videos_partial_update
+      description: Video details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVideo'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+          description: ''
+    delete:
+      operationId: videos_destroy
+      description: Video details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videos
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/videos/{id}/upload_token:
+    get:
+      operationId: videos_upload_token_retrieve
+      description: Video details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\d+$
+        required: true
+      tags:
+      - videos
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoUploadToken'
+          description: ''
+components:
+  schemas:
+    AsRun:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        video:
+          type: integer
+          nullable: true
+          description: Points to the Video which was played if there is one. Can be empty if something other than a video was played. The field is mutually exclusive with `programName`.
+        programName:
+          type: string
+          description: A free form text input saying what was played. If `video` is set, this field should not be set. Examples of where you'd use this field is e.g. when broadcasting live. Defaults to the empty string.
+          maxLength: 160
+        playout:
+          type: string
+          description: The playout this entry corresponds with. This will almost always be 'main' which it defaults to.
+          maxLength: 255
+        playedAt:
+          type: string
+          format: date-time
+          description: Time when the playout started. Defaults to now.
+        inMs:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The inpoint where the video/stream was started at. In milliseconds. Normally 0 which it defaults to.
+        outMs:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: The outpoint where the video/stream stopped. This would often be the duration of the video, or how long we live streamed a particular URL. Can be null (None) if this is 'currently happening'.
+      required:
+      - id
+    Bulletin:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        heading:
+          type: string
+          maxLength: 80
+        text:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - heading
+      - id
+      - text
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        name:
+          type: string
+          maxLength: 255
+        desc:
+          type: string
+          maxLength: 255
+        videocount:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - name
+      - videocount
+    NewUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - dateOfBirth
+      - email
+      - firstName
+      - id
+      - lastName
+      - password
+    Organization:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        homepage:
+          type: string
+          nullable: true
+          title: Link back to the organisation home page.
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 255
+        postalAddress:
+          type: string
+          nullable: true
+          title: Postal address for organization.
+          maxLength: 2048
+        streetAddress:
+          type: string
+          nullable: true
+          title: Street address for organization.
+          maxLength: 2048
+        editorId:
+          type: integer
+          nullable: true
+          readOnly: true
+        editorName:
+          type: string
+          readOnly: true
+        editorEmail:
+          type: string
+          readOnly: true
+        editorMsisdn:
+          type: string
+          readOnly: true
+        fkmember:
+          type: boolean
+          readOnly: true
+      required:
+      - editorEmail
+      - editorId
+      - editorMsisdn
+      - editorName
+      - fkmember
+      - id
+      - name
+    PaginatedAsRunList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsRun'
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedOrganizationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+    PaginatedScheduleitemReadList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleitemRead'
+    PaginatedVideoFileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoFile'
+    PaginatedVideoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Video'
+    PatchedAsRun:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        video:
+          type: integer
+          nullable: true
+          description: Points to the Video which was played if there is one. Can be empty if something other than a video was played. The field is mutually exclusive with `programName`.
+        programName:
+          type: string
+          description: A free form text input saying what was played. If `video` is set, this field should not be set. Examples of where you'd use this field is e.g. when broadcasting live. Defaults to the empty string.
+          maxLength: 160
+        playout:
+          type: string
+          description: The playout this entry corresponds with. This will almost always be 'main' which it defaults to.
+          maxLength: 255
+        playedAt:
+          type: string
+          format: date-time
+          description: Time when the playout started. Defaults to now.
+        inMs:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: The inpoint where the video/stream was started at. In milliseconds. Normally 0 which it defaults to.
+        outMs:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: The outpoint where the video/stream stopped. This would often be the duration of the video, or how long we live streamed a particular URL. Can be null (None) if this is 'currently happening'.
+    PatchedBulletin:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        heading:
+          type: string
+          maxLength: 80
+        text:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        name:
+          type: string
+          maxLength: 255
+        desc:
+          type: string
+          maxLength: 255
+        videocount:
+          type: string
+          readOnly: true
+    PatchedOrganization:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        homepage:
+          type: string
+          nullable: true
+          title: Link back to the organisation home page.
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 255
+        postalAddress:
+          type: string
+          nullable: true
+          title: Postal address for organization.
+          maxLength: 2048
+        streetAddress:
+          type: string
+          nullable: true
+          title: Street address for organization.
+          maxLength: 2048
+        editorId:
+          type: integer
+          nullable: true
+          readOnly: true
+        editorName:
+          type: string
+          readOnly: true
+        editorEmail:
+          type: string
+          readOnly: true
+        editorMsisdn:
+          type: string
+          readOnly: true
+        fkmember:
+          type: boolean
+          readOnly: true
+    PatchedScheduleitemRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        video:
+          $ref: '#/components/schemas/ScheduleitemVideo'
+        schedulereason:
+          allOf:
+          - $ref: '#/components/schemas/SchedulereasonEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        starttime:
+          type: string
+          format: date-time
+        endtime:
+          type: string
+          format: date-time
+          readOnly: true
+        duration:
+          type: string
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        firstName:
+          type: string
+          maxLength: 30
+        lastName:
+          type: string
+          maxLength: 30
+        dateJoined:
+          type: string
+          format: date-time
+          readOnly: true
+        isStaff:
+          type: string
+          readOnly: true
+        dateOfBirth:
+          type: string
+          format: date
+          nullable: true
+        phoneNumber:
+          type: string
+          description: Phone number at which this user can be reached
+          maxLength: 128
+        organizationRoles:
+          type: string
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+    PatchedVideo:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        header:
+          type: string
+          nullable: true
+          maxLength: 2048
+        description:
+          type: string
+          nullable: true
+          maxLength: 2048
+        files:
+          type: string
+          readOnly: true
+        creator:
+          type: string
+          format: email
+          title: Email address
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/Organization'
+          readOnly: true
+        duration:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        framerate:
+          type: integer
+          readOnly: true
+          description: Framerate of master video in thousands / second
+        properImport:
+          type: boolean
+        hasTonoRecords:
+          type: boolean
+        publishOnWeb:
+          type: boolean
+        isFiller:
+          type: boolean
+          title: Play automatically?
+          description: You still have the editorial responsibility.  Only affect videos from members.
+        refUrl:
+          type: string
+          description: URL for reference
+          maxLength: 1024
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the program record was created
+        updatedTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the program record has been updated
+        uploadedTime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time the original video for the program was uploaded
+        ogvUrl:
+          type: string
+          readOnly: true
+        largeThumbnailUrl:
+          type: string
+          readOnly: true
+    PatchedVideoFile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        video:
+          type: integer
+        format:
+          type: integer
+        filename:
+          type: string
+          maxLength: 256
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the video file was created
+        integratedLufs:
+          type: number
+          format: double
+          nullable: true
+          title: Integrated LUFS of file defined in ITU R.128
+        truepeakLufs:
+          type: number
+          format: double
+          nullable: true
+          title: True peak LUFS of file defined in ITU R.128
+    ScheduleitemModify:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        video:
+          type: integer
+          nullable: true
+        schedulereason:
+          allOf:
+          - $ref: '#/components/schemas/SchedulereasonEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        starttime:
+          type: string
+          format: date-time
+        endtime:
+          type: string
+          format: date-time
+          readOnly: true
+        duration:
+          type: string
+      required:
+      - duration
+      - endtime
+      - id
+      - starttime
+    ScheduleitemRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        video:
+          $ref: '#/components/schemas/ScheduleitemVideo'
+        schedulereason:
+          allOf:
+          - $ref: '#/components/schemas/SchedulereasonEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        starttime:
+          type: string
+          format: date-time
+        endtime:
+          type: string
+          format: date-time
+          readOnly: true
+        duration:
+          type: string
+      required:
+      - duration
+      - endtime
+      - id
+      - starttime
+      - video
+    ScheduleitemVideo:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        header:
+          type: string
+          nullable: true
+          maxLength: 2048
+        description:
+          type: string
+          nullable: true
+          maxLength: 2048
+        creator:
+          type: string
+          format: email
+          title: Email address
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/Organization'
+          readOnly: true
+        duration:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+      required:
+      - categories
+      - id
+      - name
+      - organization
+    SchedulereasonEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      type: integer
+      description: |-
+        * `1` - Legacy
+        * `2` - Administrative
+        * `3` - User
+        * `4` - Automatic
+        * `5` - Jukebox
+    Token:
+      type: object
+      properties:
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        key:
+          type: string
+          maxLength: 40
+        user:
+          type: integer
+      required:
+      - created
+      - key
+      - user
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        firstName:
+          type: string
+          maxLength: 30
+        lastName:
+          type: string
+          maxLength: 30
+        dateJoined:
+          type: string
+          format: date-time
+          readOnly: true
+        isStaff:
+          type: string
+          readOnly: true
+        dateOfBirth:
+          type: string
+          format: date
+          nullable: true
+        phoneNumber:
+          type: string
+          description: Phone number at which this user can be reached
+          maxLength: 128
+        organizationRoles:
+          type: string
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - dateJoined
+      - email
+      - id
+      - isStaff
+      - organizationRoles
+    Video:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        header:
+          type: string
+          nullable: true
+          maxLength: 2048
+        description:
+          type: string
+          nullable: true
+          maxLength: 2048
+        files:
+          type: string
+          readOnly: true
+        creator:
+          type: string
+          format: email
+          title: Email address
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/Organization'
+          readOnly: true
+        duration:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        framerate:
+          type: integer
+          readOnly: true
+          description: Framerate of master video in thousands / second
+        properImport:
+          type: boolean
+        hasTonoRecords:
+          type: boolean
+        publishOnWeb:
+          type: boolean
+        isFiller:
+          type: boolean
+          title: Play automatically?
+          description: You still have the editorial responsibility.  Only affect videos from members.
+        refUrl:
+          type: string
+          description: URL for reference
+          maxLength: 1024
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the program record was created
+        updatedTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the program record has been updated
+        uploadedTime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time the original video for the program was uploaded
+        ogvUrl:
+          type: string
+          readOnly: true
+        largeThumbnailUrl:
+          type: string
+          readOnly: true
+      required:
+      - categories
+      - createdTime
+      - files
+      - framerate
+      - id
+      - largeThumbnailUrl
+      - name
+      - ogvUrl
+      - organization
+      - updatedTime
+    VideoCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        header:
+          type: string
+          nullable: true
+          maxLength: 2048
+        description:
+          type: string
+          nullable: true
+          maxLength: 2048
+        files:
+          type: string
+          readOnly: true
+        creator:
+          type: string
+          format: email
+          title: Email address
+        organization:
+          type: integer
+        duration:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        framerate:
+          type: integer
+          readOnly: true
+          description: Framerate of master video in thousands / second
+        properImport:
+          type: boolean
+        hasTonoRecords:
+          type: boolean
+        publishOnWeb:
+          type: boolean
+        isFiller:
+          type: boolean
+          title: Play automatically?
+          description: You still have the editorial responsibility.  Only affect videos from members.
+        refUrl:
+          type: string
+          description: URL for reference
+          maxLength: 1024
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the program record was created
+        updatedTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the program record has been updated
+        uploadedTime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Time the original video for the program was uploaded
+        ogvUrl:
+          type: string
+          readOnly: true
+        largeThumbnailUrl:
+          type: string
+          readOnly: true
+      required:
+      - categories
+      - createdTime
+      - files
+      - framerate
+      - id
+      - largeThumbnailUrl
+      - name
+      - ogvUrl
+      - updatedTime
+    VideoFile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        video:
+          type: integer
+        format:
+          type: integer
+        filename:
+          type: string
+          maxLength: 256
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Time the video file was created
+        integratedLufs:
+          type: number
+          format: double
+          nullable: true
+          title: Integrated LUFS of file defined in ITU R.128
+        truepeakLufs:
+          type: number
+          format: double
+          nullable: true
+          title: True peak LUFS of file defined in ITU R.128
+      required:
+      - createdTime
+      - filename
+      - format
+      - id
+      - video
+    VideoUploadToken:
+      type: object
+      properties:
+        uploadToken:
+          type: string
+          description: Video upload token (used by fkupload/frontend)
+          maxLength: 32
+        uploadUrl:
+          type: string
+          readOnly: true
+      required:
+      - uploadUrl
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
