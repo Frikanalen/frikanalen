@@ -202,7 +202,6 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "csp.middleware.CSPMiddleware",
     "fkweb.middleware.api_utc_middleware",
 )
 ########## END MIDDLEWARE CONFIGURATION
@@ -325,35 +324,6 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
-
-#
-# Use Content-Security-Policy to require everything on the web site is
-# only loaded from our site.  In other words, no external
-# dependencies.  The Django extention is documented on
-# https://django-csp.readthedocs.io/.  It is enabled by inserting
-# 'csp.middleware.CSPMiddleware' in MIDDLEWARE above.
-#
-CSP_REPORT_ONLY = False
-CSP_DEFAULT_SRC = "'self'"
-CSP_SCRIPT_SRC = "'self' 'unsafe-inline' 'unsafe-eval'"
-CSP_IMG_SRC = "'self' https://upload.frikanalen.no"
-CSP_OBJECT_SRC = None
-CSP_MEDIA_SRC = (
-    "'self' http://icecast.frikanalen.no https://icecast.frikanalen.no https://upload.frikanalen.no"
-)
-CSP_FRAME_SRC = None
-CSP_FONT_SRC = None
-CSP_CONNECT_SRC = "'self' https://upload.frikanalen.no"
-CSP_STYLE_SRC = "'self' 'unsafe-inline'"
-CSP_BASE_URI = None
-CSP_CHILD_SRC = None
-CSP_FRAME_ANCESTORS = None
-CSP_FORM_ACTION = None
-CSP_SANDBOX = None
-# Would like to use CSP_REPORT_URI = reverse("csp-report"), but using
-# reverse in settings.py causes an import dependency loop in django.
-# Hardcoding relative URL instead.
-CSP_REPORT_URI = "/csp-report"
 
 # Everything with the API should be okay, since we don't share
 # the login cookie it's all safe.
