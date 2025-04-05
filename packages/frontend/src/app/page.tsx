@@ -1,22 +1,12 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { scheduleitemsList } from "@/generated/django-api";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 
 export default function Home() {
   return (
     <main>
       <Card className="bg-green-200 dark:bg-green-900">
-        <CardHeader>
-          <CardTitle>Direkte</CardTitle>
-          <CardDescription>Direkte</CardDescription>
-        </CardHeader>
-        <CardContent>[ video goes here ]</CardContent>
+        <CardHeader>Direkte</CardHeader>
+        <CardBody>[ video goes here ]</CardBody>
         <CardFooter>
           <ComingUpSoon />
         </CardFooter>
