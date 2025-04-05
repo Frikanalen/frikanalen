@@ -1,4 +1,4 @@
-import pytz
+from zoneinfo import ZoneInfo
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -33,10 +33,8 @@ class ScheduleitemVideoSerializer(serializers.ModelSerializer):
 
 
 class ScheduleitemModifySerializer(serializers.ModelSerializer):
-    starttime = serializers.DateTimeField(default_timezone=pytz.timezone("Europe/Oslo"))
-    endtime = serializers.DateTimeField(
-        default_timezone=pytz.timezone("Europe/Oslo"), read_only=True
-    )
+    starttime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"))
+    endtime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"), read_only=True)
 
     class Meta:
         model = Scheduleitem
@@ -66,10 +64,8 @@ class ScheduleitemModifySerializer(serializers.ModelSerializer):
 
 class ScheduleitemReadSerializer(serializers.ModelSerializer):
     video = ScheduleitemVideoSerializer()
-    starttime = serializers.DateTimeField(default_timezone=pytz.timezone("Europe/Oslo"))
-    endtime = serializers.DateTimeField(
-        default_timezone=pytz.timezone("Europe/Oslo"), read_only=True
-    )
+    starttime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"))
+    endtime = serializers.DateTimeField(default_timezone=ZoneInfo("Europe/Oslo"), read_only=True)
 
     class Meta:
         model = Scheduleitem

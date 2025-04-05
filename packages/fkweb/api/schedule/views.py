@@ -1,6 +1,6 @@
 import datetime
 
-import pytz
+from zoneinfo import ZoneInfo
 from django.core.cache import caches
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -53,10 +53,10 @@ class ScheduleitemList(generics.ListCreateAPIView):
     def parse_yyyymmdd_or_today(inputDate):
         try:
             return datetime.datetime.strptime(inputDate, "%Y-%m-%d").astimezone(
-                pytz.timezone("Europe/Oslo")
+                ZoneInfo("Europe/Oslo")
             )
         except (KeyError, ValueError, TypeError):
-            return datetime.datetime.now(tz=pytz.timezone("Europe/Oslo"))
+            return datetime.datetime.now(tz=ZoneInfo("Europe/Oslo"))
 
     @staticmethod
     def parse_int_or_7(inputDays):

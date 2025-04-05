@@ -10,9 +10,8 @@ from django.forms import ModelForm
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 
 from fk.models import Organization
@@ -386,7 +385,7 @@ def _fill_time_with_jukebox(start, end, videos, current_pool=None):
 
 def xmltv_home(request):
     """Information about the XMLTV schedule presentation."""
-    now = timezone.now()
+    now = datetime.timezone.now()
     today_url = reverse(
         "xmltv-feed", args=(now.year, "{:02}".format(now.month), "{:02}".format(now.day))
     )
@@ -424,7 +423,7 @@ def xmltv_upcoming(request):
 
 def xmltv_date(request, year, month, day):
     date = datetime.datetime(year=int(year), month=int(month), day=int(day)).replace(
-        tzinfo=timezone.utc
+        tzinfo=datetime.timezone.utc
     )
     events = Scheduleitem.objects.by_day(date, days=1).order_by("starttime")
     return _xmltv(request, events)
