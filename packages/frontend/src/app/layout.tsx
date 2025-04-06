@@ -27,7 +27,7 @@ export default function RootLayout({
     children: ReactNode;
 }>) {
     return (
-        <html lang="en" className=" light" style={{colorScheme:"light"}}>
+        <html lang="en" className="light" style={{colorScheme:"light"}}>
         <head>
             <title>Frikanalen</title>
         </head>
@@ -36,11 +36,11 @@ export default function RootLayout({
         >
         <Providers>
             <div className="flex flex-col items-center min-h-screen">
-                <header className="w-full max-w-2xl">
+                <header className="w-full max-w-3xl">
                     <Logo className="w-100 pt-10"/>
                     <HeaderNavMenu className="py-3"/>
                 </header>
-                <div className="w-full max-w-2xl grow">{children}</div>
+                <div className="w-full max-w-3xl grow">{children}</div>
                 <footer>Footer.</footer>
             </div>
         </Providers>
@@ -48,3 +48,4 @@ export default function RootLayout({
         </html>
     );
 }
+

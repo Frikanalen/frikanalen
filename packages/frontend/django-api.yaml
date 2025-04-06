@@ -3,9 +3,6 @@ info:
   title: Frikanalen Django API
   version: 1.1.0
   description: API for Frikanalen
-servers:
-- url: http://localhost:8000
-  description: Frikanalen API
 paths:
   /api/:
     get:
@@ -720,12 +717,20 @@ paths:
         `page_size` - How many items per page. If set to 0 it will list
                       all items.  Default is 50 items.
 
-        `surrounding` - Fetch the first event before and after the given
+        `surrounding` - Fetch th§e first event before and after the given
                         period
 
         `ordering` - Order results by specified field.  Prepend a minus for
                      descending order.  I.e. `?ordering=-starttime`.
       parameters:
+      - in: query
+        name: date
+        schema:
+          type: string
+      - in: query
+        name: days
+        schema:
+          type: number
       - name: limit
         required: false
         in: query
@@ -744,6 +749,20 @@ paths:
         description: Which field to use when ordering the results.
         schema:
           type: string
+      - in: query
+        name: starttime_Gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: starttime_Lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: surrounding
+        schema:
+          type: boolean
       tags:
       - scheduleitems
       security:
@@ -772,7 +791,7 @@ paths:
         `page_size` - How many items per page. If set to 0 it will list
                       all items.  Default is 50 items.
 
-        `surrounding` - Fetch the first event before and after the given
+        `surrounding` - Fetch th§e first event before and after the given
                         period
 
         `ordering` - Order results by specified field.  Prepend a minus for
@@ -1975,14 +1994,19 @@ components:
         video:
           type: integer
           nullable: true
-          description: Points to the Video which was played if there is one. Can be empty if something other than a video was played. The field is mutually exclusive with `programName`.
+          description: Points to the Video which was played if there is one. Can be
+            empty if something other than a video was played. The field is mutually
+            exclusive with `programName`.
         programName:
           type: string
-          description: A free form text input saying what was played. If `video` is set, this field should not be set. Examples of where you'd use this field is e.g. when broadcasting live. Defaults to the empty string.
+          description: A free form text input saying what was played. If `video` is
+            set, this field should not be set. Examples of where you'd use this field
+            is e.g. when broadcasting live. Defaults to the empty string.
           maxLength: 160
         playout:
           type: string
-          description: The playout this entry corresponds with. This will almost always be 'main' which it defaults to.
+          description: The playout this entry corresponds with. This will almost always
+            be 'main' which it defaults to.
           maxLength: 255
         playedAt:
           type: string
@@ -1992,13 +2016,16 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: The inpoint where the video/stream was started at. In milliseconds. Normally 0 which it defaults to.
+          description: The inpoint where the video/stream was started at. In milliseconds.
+            Normally 0 which it defaults to.
         outMs:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
           nullable: true
-          description: The outpoint where the video/stream stopped. This would often be the duration of the video, or how long we live streamed a particular URL. Can be null (None) if this is 'currently happening'.
+          description: The outpoint where the video/stream stopped. This would often
+            be the duration of the video, or how long we live streamed a particular
+            URL. Can be null (None) if this is 'currently happening'.
       required:
       - id
     Bulletin:
@@ -2267,14 +2294,19 @@ components:
         video:
           type: integer
           nullable: true
-          description: Points to the Video which was played if there is one. Can be empty if something other than a video was played. The field is mutually exclusive with `programName`.
+          description: Points to the Video which was played if there is one. Can be
+            empty if something other than a video was played. The field is mutually
+            exclusive with `programName`.
         programName:
           type: string
-          description: A free form text input saying what was played. If `video` is set, this field should not be set. Examples of where you'd use this field is e.g. when broadcasting live. Defaults to the empty string.
+          description: A free form text input saying what was played. If `video` is
+            set, this field should not be set. Examples of where you'd use this field
+            is e.g. when broadcasting live. Defaults to the empty string.
           maxLength: 160
         playout:
           type: string
-          description: The playout this entry corresponds with. This will almost always be 'main' which it defaults to.
+          description: The playout this entry corresponds with. This will almost always
+            be 'main' which it defaults to.
           maxLength: 255
         playedAt:
           type: string
@@ -2284,13 +2316,16 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: The inpoint where the video/stream was started at. In milliseconds. Normally 0 which it defaults to.
+          description: The inpoint where the video/stream was started at. In milliseconds.
+            Normally 0 which it defaults to.
         outMs:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
           nullable: true
-          description: The outpoint where the video/stream stopped. This would often be the duration of the video, or how long we live streamed a particular URL. Can be null (None) if this is 'currently happening'.
+          description: The outpoint where the video/stream stopped. This would often
+            be the duration of the video, or how long we live streamed a particular
+            URL. Can be null (None) if this is 'currently happening'.
     PatchedBulletin:
       type: object
       properties:
@@ -2472,7 +2507,8 @@ components:
         isFiller:
           type: boolean
           title: Play automatically?
-          description: You still have the editorial responsibility.  Only affect videos from members.
+          description: You still have the editorial responsibility.  Only affect videos
+            from members.
         refUrl:
           type: string
           description: URL for reference
@@ -2742,7 +2778,8 @@ components:
         isFiller:
           type: boolean
           title: Play automatically?
-          description: You still have the editorial responsibility.  Only affect videos from members.
+          description: You still have the editorial responsibility.  Only affect videos
+            from members.
         refUrl:
           type: string
           description: URL for reference
@@ -2826,7 +2863,8 @@ components:
         isFiller:
           type: boolean
           title: Play automatically?
-          description: You still have the editorial responsibility.  Only affect videos from members.
+          description: You still have the editorial responsibility.  Only affect videos
+            from members.
         refUrl:
           type: string
           description: URL for reference

@@ -640,6 +640,8 @@ export type OrganizationListParams = {
 };
 
 export type ScheduleitemsListParams = {
+  date?: string;
+  days?: number;
   /**
    * Number of results to return per page.
    */
@@ -652,6 +654,9 @@ export type ScheduleitemsListParams = {
    * Which field to use when ordering the results.
    */
   ordering?: string;
+  starttime_Gt?: string;
+  starttime_Lt?: string;
+  surrounding?: boolean;
 };
 
 export type SchemaRetrieveParams = {
@@ -1343,7 +1348,7 @@ Query parameters
 `page_size` - How many items per page. If set to 0 it will list
               all items.  Default is 50 items.
 
-`surrounding` - Fetch the first event before and after the given
+`surrounding` - Fetch th§e first event before and after the given
                 period
 
 `ordering` - Order results by specified field.  Prepend a minus for
@@ -1375,7 +1380,7 @@ Query parameters
 `page_size` - How many items per page. If set to 0 it will list
               all items.  Default is 50 items.
 
-`surrounding` - Fetch the first event before and after the given
+`surrounding` - Fetch th§e first event before and after the given
                 period
 
 `ordering` - Order results by specified field.  Prepend a minus for

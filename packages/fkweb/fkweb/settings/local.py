@@ -23,7 +23,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # DATABASE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES["default"] = dj_database_url.config(
-    default="postgres://postgres:fk@localhost/fk", conn_max_age=600
+    default="postgres://postgres:fk@localhost/fkweb", conn_max_age=600
 )
 # END DATABASE CONFIGURATION
 

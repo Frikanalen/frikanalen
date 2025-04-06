@@ -18,16 +18,17 @@ export const ThemeSwitcherBrowser = () => {
     if (!mounted) return null;
 
     return (
-        <Switch
-            defaultSelected={theme === "dark"}
-            onChange={(event) => setTheme(event.target.checked ? "dark" : "light")}
-            color="success"
-            endContent={<MoonIcon/>}
-            size="lg"
-            startContent={<SunIcon/>}
-        >
-            Dark mode
-        </Switch>
+            <Switch
+                defaultSelected={theme === "light"}
+                onChange={(event) => setTheme(event.target.checked ? "light" : "dark")}
+                size="sm"
+                thumbIcon={({isSelected, className}) =>
+                    isSelected ? <SunIcon className={className}/> : <MoonIcon className={className}/>
+                }
+            >
+
+                <span className={"hidden sr-only"}>Dark mode</span>
+            </Switch>
     );
 };
 
