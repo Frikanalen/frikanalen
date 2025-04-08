@@ -1,22 +1,27 @@
 import React from "react";
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
-import { MediaPlayer, MediaProvider } from "@vidstack/react";
+import { MediaPlayer, MediaProvider, Poster } from "@vidstack/react";
 import {
   defaultLayoutIcons,
   DefaultVideoLayout,
 } from "@vidstack/react/player/layouts/default";
+import "./videoplayer.css";
 
-export const VideoPlayer = () => (
-  <div className={"aspect-video"}>
-    <MediaPlayer
-      title="Frikanalen direkte"
-      src="https://frikanalen.no/stream/index.m3u8"
-    >
-      <MediaProvider />
-      <DefaultVideoLayout icons={defaultLayoutIcons} />
-    </MediaPlayer>
-  </div>
+export const VideoPlayer = ({
+  title,
+  src,
+  poster,
+}: {
+  title: string;
+  src: string;
+  poster?: string;
+}) => (
+  <MediaPlayer title={title} src={src} className={"!border-0 !rounded-xl"}>
+    {poster && <Poster src={poster} />}
+    <MediaProvider />
+    <DefaultVideoLayout icons={defaultLayoutIcons} />
+  </MediaPlayer>
 );
 
 export default VideoPlayer;

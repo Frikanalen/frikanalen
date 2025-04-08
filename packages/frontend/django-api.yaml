@@ -709,11 +709,6 @@ paths:
         Query parameters
         ----------------
 
-        `date` - Date expressed in the format YYYY-MM-DD (eg. 2020-12-31), or
-                 "today".  Default is today, Europe/Oslo time.
-
-        `days` - Number of days schedule requested. Default is 7 days.
-
         `page_size` - How many items per page. If set to 0 it will list
                       all items.  Default is 50 items.
 
@@ -723,14 +718,6 @@ paths:
         `ordering` - Order results by specified field.  Prepend a minus for
                      descending order.  I.e. `?ordering=-starttime`.
       parameters:
-      - in: query
-        name: date
-        schema:
-          type: string
-      - in: query
-        name: days
-        schema:
-          type: number
       - name: limit
         required: false
         in: query
@@ -750,19 +737,15 @@ paths:
         schema:
           type: string
       - in: query
-        name: starttime_Gt
+        name: starttimeAfter
         schema:
           type: string
           format: date-time
       - in: query
-        name: starttime_Lt
+        name: starttimeBefore
         schema:
           type: string
           format: date-time
-      - in: query
-        name: surrounding
-        schema:
-          type: boolean
       tags:
       - scheduleitems
       security:
@@ -782,11 +765,6 @@ paths:
 
         Query parameters
         ----------------
-
-        `date` - Date expressed in the format YYYY-MM-DD (eg. 2020-12-31), or
-                 "today".  Default is today, Europe/Oslo time.
-
-        `days` - Number of days schedule requested. Default is 7 days.
 
         `page_size` - How many items per page. If set to 0 it will list
                       all items.  Default is 50 items.

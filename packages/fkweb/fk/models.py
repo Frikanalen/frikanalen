@@ -444,37 +444,6 @@ class Video(models.Model):
         return f"/video/{self.id}/"
 
 
-class ScheduleitemManager(models.Manager):
-    def by_day(self, date=None, days=1, surrounding=False):
-        if not date:
-            date = timezone.now().astimezone(ZoneInfo("Europe/Oslo")).date()
-        elif hasattr(date, "date"):
-            date.replace(tzinfo=timezone.get_current_timezone())
-            date = date.date()
-        startdt = datetime.datetime.combine(date, datetime.time(0, tzinfo=ZoneInfo("Europe/Oslo")))
-        enddt = startdt + datetime.timedelta(days=days)
-        if surrounding:
-            startdt, enddt = self.expand_to_surrounding(startdt, enddt)
-        return self.get_queryset().filter(starttime__gte=startdt, starttime__lte=enddt)
-
-    def expand_to_surrounding(self, startdt, enddt):
-        # Try to find the event before the given date
-        try:
-            startdt = (
-                Scheduleitem.objects.filter(starttime__lte=startdt)
-                .order_by("-starttime")[0]
-                .starttime
-            )
-        except IndexError:
-            pass
-        # Try to find the event after the end date
-        try:
-            enddt = (
-                Scheduleitem.objects.filter(starttime__gte=enddt).order_by("starttime")[0].starttime
-            )
-        except IndexError:
-            pass
-        return startdt, enddt
 
 
 class Scheduleitem(models.Model):
@@ -497,8 +466,6 @@ class Scheduleitem(models.Model):
     schedulereason = models.IntegerField(blank=True, choices=SCHEDULE_REASONS)
     starttime = models.DateTimeField()
     duration = models.DurationField()
-
-    objects = ScheduleitemManager()
 
     class Meta:
         verbose_name = "TX schedule entry"

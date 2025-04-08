@@ -12,11 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@heroui/card": "^2.2.16",
-    "@heroui/dropdown": "^2.3.17",
-    "@heroui/navbar": "^2.2.15",
     "@heroui/react": "^2.7.6-beta.2",
-    "@heroui/switch": "^2.2.15",
     "@heroui/system": "^2.4.13",
     "@heroui/theme": "^2.4.13",
     "@heroui/use-theme": "^2.1.6",
@@ -27,10 +23,12 @@
     "@vidstack/react": "^1.12.13",
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.6.3",
     "lucide-react": "^0.487.0",
+    "markdown-to-jsx": "^7.7.4",
     "media-icons": "^1.1.5",
     "next": "15.2.4",
     "next-themes": "^0.4.6",
@@ -38,7 +36,7 @@
     "prettier": "^3.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind": "3",
+    "react-icons": "^5.5.0",
     "tailwind-merge": "^3.1.0",
     "tw-animate-css": "^1.2.5"
   },
@@ -46,6 +44,7 @@
     "@eslint/eslintrc": "^3",
     "@faker-js/faker": "^9.6.0",
     "@tailwindcss/postcss": "^4.1.3",
+    "@tailwindcss/typography": "^0.5.16",
     "@tanstack/eslint-plugin-query": "^5.72.0",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -54,7 +53,7 @@
     "eslint-config-next": "15.2.4",
     "msw": "^2.7.3",
     "orval": "^7.8.0",
-    "tailwind-variants": "0.3.0",
+    "tailwind-variants": "1.0.0",
     "tailwindcss": "^4.1.3",
     "typescript": "^5"
   }

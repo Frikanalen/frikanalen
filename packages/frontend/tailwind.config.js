@@ -1,63 +1,83 @@
 // tailwind.config.js
-import {heroui} from "@heroui/react";
+import { heroui } from "@heroui/react";
+
+import vidstack from "@vidstack/react/tailwind.cjs";
 
 /** @type {import('tailwindcss').Config} */
 const config = {
-    content: [
-        './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-        './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-        "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}"
-    ],
-    theme: {
-        extend: {},
+  content: [
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        "sea-green": {
+          50: "#f3faf3",
+          100: "#e3f5e5",
+          200: "#c9e9cd",
+          300: "#9ed7a6",
+          400: "#6cbc77",
+          500: "#489f55",
+          600: "#3b8c47",
+          700: "#2e6736",
+          800: "#28532f",
+          900: "#234429",
+          950: "#0f2413",
+        },
+      },
     },
-    darkMode: "class",
-    plugins: [heroui({
-        themes: {
-            light: {
-                colors: {
-                    background: "#FFFFFF", // or DEFAULT
-                    foreground: "#11181C", // or 50 to 900 DEFAULT
-                    primary: {
-                        100: "#D8F7D2",
-                        200: "#ADEFA7",
-                        300: "#72D172",
-                        400: "#46A350",
-                        500: "#196628",
-                        600: "#125726",
-                        700: "#0C4924",
-                        800: "#073B20",
-                        900: "#04301E",
-                        foreground: "#FFFFFF",
-                        DEFAULT: "#006FEE",
-                    }
-                }
+  },
+  darkMode: "class",
+  plugins: [
+    vidstack,
+    heroui({
+      themes: {
+        light: {
+          colors: {
+            background: "#d4e4d9", // or DEFAULT
+            foreground: "#11181C", // or 50 to 900 DEFAULT
+            primary: {
+              100: "#D8F7D2",
+              200: "#ADEFA7",
+              300: "#72D172",
+              400: "#46A350",
+              500: "#196628",
+              600: "#125726",
+              700: "#0C4924",
+              800: "#073B20",
+              900: "#04301E",
+              foreground: "#FFFFFF",
+              DEFAULT: "#006FEE",
             },
-            dark: {
-                colors: {
-                    background: "#000000", // or DEFAULT
-                    foreground: "#ECEDEE", // or 50 to 900 DEFAULT
-                    primary: {
-                        100: "#D8F7D2",
-                        200: "#ADEFA7",
-                        300: "#72D172",
-                        400: "#46A350",
-                        500: "#196628",
-                        600: "#125726",
-                        700: "#0C4924",
-                        800: "#073B20",
-                        900: "#04301E",
-                        foreground: "#FFFFFF",
-                        DEFAULT: "#006FEE",
-                    }
-                }
-            }
-        }
-    })]
-}
+          },
+        },
+        dark: {
+          colors: {
+            background: "#000000", // or DEFAULT
+            foreground: "#ECEDEE", // or 50 to 900 DEFAULT
+            primary: {
+              100: "#D8F7D2",
+              200: "#ADEFA7",
+              300: "#72D172",
+              400: "#46A350",
+              500: "#196628",
+              600: "#125726",
+              700: "#0C4924",
+              800: "#073B20",
+              900: "#04301E",
+              foreground: "#FFFFFF",
+              DEFAULT: "#006FEE",
+            },
+          },
+        },
+      },
+    }),
+  ],
+};
 
 export default config;
-
 
 // "color-success-100": "#DFFAD7",
 //     "color-success-200": "#B9F6B0",
