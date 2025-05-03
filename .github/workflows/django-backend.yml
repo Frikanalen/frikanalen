@@ -1,4 +1,4 @@
-name: Django API service
+name: Build django-backend package
 on:
   push:
     branches:
