@@ -1,0 +1,5 @@
+- name: Enable MetalLB with configured range
+  command: "microk8s enable metallb:{{ ingress_ip_range }}"
+  args:
+    creates: /var/snap/microk8s/current/args/metallb-config
+

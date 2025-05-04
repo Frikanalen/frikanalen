@@ -1,0 +1,24 @@
+- name: Install MicroK8s via Snap
+  community.general.snap:
+    name: microk8s
+    state: present
+    classic: true
+
+- name: Start MicroK8s
+  systemd:
+    name: snap.microk8s.daemon-kubelet
+    state: started
+    enabled: yes
+
+- name: Wait for MicroK8s to become ready
+  command: microk8s status --wait-ready
+  register: status
+  retries: 10
+  delay: 5
+  until: status.rc == 0
+
+- name: Install Helm
+  community.general.snap:
+    name: helm
+    state: present
+    classic: true

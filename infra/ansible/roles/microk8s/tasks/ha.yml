@@ -1,0 +1,21 @@
+- name: Generate join command on primary
+  command: microk8s add-node --token-ttl 3600
+  register: join_cmd
+  when: inventory_hostname in groups['primary']
+
+- name: Set join command fact
+  set_fact:
+    join_command: "{{ join_cmd.stdout_lines | select('search', '^microk8s join') | list | first }}"
+  when: inventory_hostname in groups['primary']
+
+- name: Fetch join command from primary
+  set_fact:
+    join_command: "{{ hostvars[groups['primary'][0]]['join_command'] }}"
+  when: inventory_hostname in groups['secondaries']
+
+- name: Join MicroK8s cluster
+  shell: "{{ join_command }} --worker"
+  when: inventory_hostname in groups['secondaries']
+  args:
+    executable: /bin/bash
+
