@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  selector:
+    matchLabels:
+      app: django
+  minReadySeconds: 5
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: {{ .Values.image.django }}
+          imagePullPolicy: Always
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: {{ .Values.env.DJANGO_SETTINGS_MODULE }}
+            - name: ALLOWED_HOSTS
+              value: {{ .Values.env.ALLOWED_HOSTS }}
+            - name: SMTP_SERVER
+              value: {{ .Values.env.SMTP_SERVER }}
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.django.secretName }}
+                  key: SECRET_KEY
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secret }}
+                  key: DATABASE_URL
+          ports:
+            - name: django-web
+              containerPort: 8080
+          volumeMounts:
+            - mountPath: /srv/collected_staticfiles
+              name: static-files
+        - name: nginx
+          image: {{ .Values.image.nginx }}
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              readOnly: true
+              name: nginx-conf
+            - mountPath: /usr/share/nginx/html
+              name: static-files
+          ports:
+            - name: django-web
+              containerPort: 80
+      volumes:
+        - name: static-files
+          emptyDir: {}
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: site.conf
+                path: site.conf
+

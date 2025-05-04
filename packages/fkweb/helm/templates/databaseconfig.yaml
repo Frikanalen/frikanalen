@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMapName }}
+data:
+  primary_init_script.sh: |
+    #!/bin/bash
+    set -e
+
+    dt=$(date '+%d/%m/%Y %H:%M:%S')
+    echo "$dt - Initializing Frikanalen database..."
+  
+    echo "                            - Creating database and user" 
+    
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE DATABASE "$DB_NAME";
+    CREATE USER "$DB_USER" WITH ENCRYPTED PASSWORD '$DB_PASSWORD';
+    EOSQL
+    
+    echo "                            - Granting privileges"
+    
+    psql -v ON_ERROR_STOP=0 --username "$POSTGRES_USER" --dbname "$DB_NAME" <<-EOSQL
+    GRANT CONNECT ON DATABASE "$DB_NAME" to "$DB_USER";
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "$DB_USER";
+    GRANT USAGE ON SCHEMA public to "$DB_USER";
+    GRANT SELECT, UPDATE, USAGE ON ALL SEQUENCES IN SCHEMA public TO "$DB_USER";
+    GRANT SELECT, UPDATE, INSERT, DELETE,TRUNCATE ON ALL TABLES IN SCHEMA public TO "$DB_USER";
+    EOSQL

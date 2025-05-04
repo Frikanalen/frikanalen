@@ -1,0 +1,22 @@
+image:
+  django: frikanalen/django-backend:master
+  nginx: nginx
+
+env:
+  DJANGO_SETTINGS_MODULE: fkweb.settings.production
+  ALLOWED_HOSTS: frikanalen.no,fk.dev.local,forrige.frikanalen.no,localhost,django.default.svc.cluster.local
+  SMTP_SERVER: smtp.uio.no
+
+configMapName: django-postgres-conf
+
+django:
+  secretName: django-secret
+
+database:
+  image: postgres:16
+  name: fkweb
+  user: fkweb
+  secret: django-postgres-passwords
+  port: "5432"
+  size: 200Mi
+  replicas: "1"
