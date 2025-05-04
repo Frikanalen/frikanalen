@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.configMapName }}
+  name: {{ .Values.database.configMapName }}
 data:
   primary_init_script.sh: |
     #!/bin/bash
