@@ -1,0 +1,17 @@
+image:
+  django: frikanalen/django-backend:master
+  nginx: nginx
+
+env:
+  DJANGO_SETTINGS_MODULE: fkweb.settings.production
+  ALLOWED_HOSTS: frikanalen.no,fk.dev.local,forrige.frikanalen.no,localhost,django.default.svc.cluster.local
+  SMTP_SERVER: smtp.uio.no
+
+secrets:
+  SECRET_KEY:
+    name: django-secret-key
+    key: SECRET_KEY
+  DATABASE_URL:
+    name: database-api-secret
+    key: DATABASE_URL
+
