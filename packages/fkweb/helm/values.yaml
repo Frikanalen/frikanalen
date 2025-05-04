@@ -20,3 +20,6 @@ database:
   port: "5432"
   size: 200Mi
   replicas: "1"
+
+memcached:
+  image: memcached:1.6-alpine

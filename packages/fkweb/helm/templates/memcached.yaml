@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: memcached
-        image: memcached:1.6-alpine
+        image: {{ .Values.memcached.image }}
         ports:
           - name: memcached
             containerPort: 11211
