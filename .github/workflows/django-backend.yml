@@ -27,11 +27,11 @@ jobs:
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
-        tags: |
-          type=ref,event=branch
-          type=ref,event=tag
-          type=ref,event=pr
         with:
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
           images: frikanalen/django-backend
       -
         name: Login to DockerHub
