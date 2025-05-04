@@ -1,4 +1,4 @@
-FROM python:3-buster as base
+FROM python:3.6-buster as base
 
 FROM base as builder
 
