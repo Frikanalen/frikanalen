@@ -28,8 +28,8 @@ spec:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.SECRET_KEY.name }}
-                  key: {{ .Values.secrets.SECRET_KEY.key }}
+                  name: {{ .Values.django.secretName }}
+                  key: SECRET_KEY
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:

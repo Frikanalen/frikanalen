@@ -17,4 +17,6 @@ database:
   name: fkweb
   user: fkweb
   secret: django-postgres-passwords
-  port: 5432
+  port: "5432"
+  size: 200Mi
+  replicas: "1"

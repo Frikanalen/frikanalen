@@ -2,11 +2,12 @@ apiVersion: kubegres.reactive-tech.io/v1
 kind: Kubegres
 metadata:
   name: {{ .Values.database.name }}
-  namespace: default
 spec:
-  replicas: {{ .Values.replicas }}
+  database:
+    size: {{ .Values.database.size }}
+  replicas: {{ .Values.database.replicas }}
   # Use a simple custom image which contains aws-cli for S3 backup.
-  image: {{ .Values.images.postgres }}
+  image: {{ .Values.database.image }}
   env:
     - name: POSTGRES_PASSWORD
       valueFrom:
