@@ -18,3 +18,16 @@ spec:
         ports:
           - name: memcached
             containerPort: 11211
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: memcached
+spec:
+  type: ClusterIP
+  selector:
+    app: memcached
+  ports:
+    - protocol: TCP
+      port: 11211
+      name: memcached
