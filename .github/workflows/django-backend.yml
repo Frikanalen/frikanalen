@@ -27,11 +27,11 @@ jobs:
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
-        tags: |
-          type=ref,event=branch
-          type=ref,event=tag
-          type=ref,event=pr
         with:
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
           images: frikanalen/django-backend
       -
         name: Login to DockerHub
@@ -47,3 +47,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
