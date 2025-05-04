@@ -9,7 +9,7 @@ env:
 
 secrets:
   SECRET_KEY:
-    name: django-secret-key
+    name: django-secret
     key: SECRET_KEY
   DATABASE_URL:
     name: database-api-secret
