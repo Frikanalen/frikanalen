@@ -1,6 +1,6 @@
-FROM python:3.6-buster as base
+FROM python:3.6-buster AS base
 
-FROM base as builder
+FROM base AS builder
 
 # Pull missing packages
 RUN apt-get update && apt-get install -y python3 python3-pip python3-psycopg2
