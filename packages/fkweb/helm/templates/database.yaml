@@ -8,6 +8,7 @@ spec:
   replicas: {{ .Values.database.replicas }}
   # Use a simple custom image which contains aws-cli for S3 backup.
   image: {{ .Values.database.image }}
+  customConfig: {{ .Values.database.configMapName }}
   env:
     - name: POSTGRES_PASSWORD
       valueFrom:
