@@ -10,7 +10,13 @@ on:
       - 'master'
     paths:
       - 'packages/fkweb/**'
-
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run workflow on'
+        required: true
+        default: 'master'
+        
 jobs:
   build:
     name: Build and push docker package
