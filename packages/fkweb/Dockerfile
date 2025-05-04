@@ -3,16 +3,15 @@ FROM python:3-buster as base
 FROM base as builder
 
 # Pull missing packages
-RUN apt-get update && apt-get install -y python3 python3-pip libpq-dev python3-dev
+RUN apt-get update && apt-get install -y python3 python3-pip python3-psycopg2
 
 # Copy over the files we need to start
 RUN mkdir -p /srv/frikanalen
 
-ADD requirements-prod.txt /srv/frikanalen
 ADD requirements.txt /srv/frikanalen
 
 WORKDIR /srv/frikanalen
-RUN pip install -r requirements-prod.txt
+RUN pip install -r requirements.txt
 
 FROM builder
 
