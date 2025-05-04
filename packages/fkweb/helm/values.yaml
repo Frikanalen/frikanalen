@@ -14,7 +14,8 @@ django:
 
 database:
   image: postgres:16
-  name: fkweb
+  kubegresName: django-postgres
+  databaseName: fkweb
   user: fkweb
   secret: django-postgres-passwords
   port: "5432"

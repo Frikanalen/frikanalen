@@ -1,7 +1,7 @@
 apiVersion: kubegres.reactive-tech.io/v1
 kind: Kubegres
 metadata:
-  name: {{ .Values.database.name }}
+  name: {{ .Values.database.kubegresName }}
 spec:
   database:
     size: {{ .Values.database.size }}
