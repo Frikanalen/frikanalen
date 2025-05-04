@@ -203,7 +203,7 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "fkweb.middleware.api_utc_middleware",
-    "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
+    # "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
 )
 ########## END MIDDLEWARE CONFIGURATION
 
@@ -309,11 +309,12 @@ WSGI_APPLICATION = "%s.wsgi.application" % SITE_NAME
 
 ########## REST FRAMEWORK CONFIGURATION
 REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": (
-        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
-        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
-    ),
-    "DEFAULT_PARSER_CLASSES": ("djangorestframework_camel_case.parser.CamelCaseJSONParser",),
+    # Når vi ikke lenger er avhengig av API-compat, kan vi skru på disse
+    # "DEFAULT_RENDERER_CLASSES": (
+    #     "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+    #     "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
+    # ),
+    # "DEFAULT_PARSER_CLASSES": ("djangorestframework_camel_case.parser.CamelCaseJSONParser",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -332,7 +333,7 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API for Frikanalen",
     "VERSION": "1.1.0",
     "POSTPROCESSING_HOOKS": [
-        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+        # "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
     "CAMELIZE": False,

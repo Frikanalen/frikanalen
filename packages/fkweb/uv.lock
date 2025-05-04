@@ -177,12 +177,6 @@ wheels = [
 ]
 
 [[package]]
-name = "djangorestframework-camel-case"
-version = "1.4.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f4/87/647ce93053cb5e35e07bded676340774fe43190388b885c54aff47d8557b/djangorestframework-camel-case-1.4.2.tar.gz", hash = "sha256:cdae75846648abb6585c7470639a1d2fb064dc45f8e8b62aaa50be7f1a7a61f4", size = 8839 }
-
-[[package]]
 name = "drf-spectacular"
 version = "0.28.0"
 source = { registry = "https://pypi.org/simple" }
@@ -212,7 +206,6 @@ dependencies = [
     { name = "django-model-utils" },
     { name = "django-phonenumber-field", extra = ["phonenumbers"] },
     { name = "djangorestframework" },
-    { name = "djangorestframework-camel-case" },
     { name = "drf-spectacular" },
     { name = "gunicorn" },
     { name = "markdown" },
@@ -232,7 +225,6 @@ requires-dist = [
     { name = "django-model-utils", specifier = "==5.0.0" },
     { name = "django-phonenumber-field", extras = ["phonenumbers"], specifier = "==8.0.0" },
     { name = "djangorestframework", specifier = "==3.16.0" },
-    { name = "djangorestframework-camel-case", specifier = "==1.4.2" },
     { name = "drf-spectacular", specifier = "==0.28.0" },
     { name = "gunicorn", specifier = "==23.0.0" },
     { name = "markdown", specifier = "==3.7" },
