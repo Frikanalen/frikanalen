@@ -1,0 +1,33 @@
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: {{ .Values.database.name }}
+  namespace: default
+spec:
+  replicas: {{ .Values.replicas }}
+  # Use a simple custom image which contains aws-cli for S3 backup.
+  image: {{ .Values.images.postgres }}
+  env:
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.database.secret }}
+          key: superUserPassword
+    - name: POSTGRES_REPLICATION_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.database.secret }}
+          key: replicationUserPassword
+    - name: POSTGRES_DJANGO_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Values.database.secret }}
+          key: djangoPassword
+    - name: POSTGRES_DB
+      value: postgres
+    - name: POSTGRES_USER
+      value: postgres
+    - name: DB_NAME
+      value: {{ .Values.database.name }}
+    - name: DB_USER
+      value: {{ .Values.database.user }}

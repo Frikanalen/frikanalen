@@ -33,8 +33,8 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.DATABASE_URL.name }}
-                  key: {{ .Values.secrets.DATABASE_URL.key }}
+                  name: {{ .Values.database.secret }}
+                  key: DATABASE_URL
           ports:
             - name: django-web
               containerPort: 8080
