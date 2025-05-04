@@ -110,10 +110,10 @@ class UserProfileTests(APITestCase):
         req = self.factory.put(
             reverse("api-user-detail"),
             {
-                "firstName": "Firstname",
-                "lastName": "Lastname",
-                "dateOfBirth": "2000-12-15",
-                "phoneNumber": "+47 22 22 55 55",
+                "first_name": "Firstname",
+                "last_name": "Lastname",
+                "date_of_birth": "2000-12-15",
+                "phone_number": "+47 22 22 55 55",
             },
             format="json",
         )

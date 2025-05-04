@@ -18,9 +18,9 @@ class TokenSerializer(serializers.ModelSerializer):
 class NewUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
-    # These two need to be explitly included because
-    # they are not required in the database model
-    # but we want new users to have these values set
+    # These need to be explicitly included because
+    # they are not required in the database model,
+    # but we want new users to have these values set.
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     date_of_birth = serializers.DateField()
