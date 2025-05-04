@@ -46,14 +46,14 @@ DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 # FIXME: The cache clearing in schedule will probably clear the entire cache
 CACHES = {
     "schedule": {
-        "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
         "LOCATION": [
             "memcached:11211",
         ],
         "TIMEOUT": None,
     },
     "default": {
-        "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
         "LOCATION": [
             "memcached:11211",
         ],
