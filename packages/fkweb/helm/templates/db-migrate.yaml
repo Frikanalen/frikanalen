@@ -1,15 +1,15 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: django-load-fixtures
+  name: django-migrations
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded
-    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-weight": "-1"
 spec:
   template:
     metadata:
-      name: django-load-fixtures
+      name: django-migrations
       labels:
         app: django
     spec:
@@ -18,7 +18,7 @@ spec:
         - name: loaddata
           image: {{ .Values.image.django }}
           imagePullPolicy: Always
-          command: ["python", "manage.py", "loaddata", "frikanalen"]
+          command: ["python", "manage.py", "migrate"]
           env:
             - name: DJANGO_SETTINGS_MODULE
               value: {{ .Values.env.DJANGO_SETTINGS_MODULE }}
