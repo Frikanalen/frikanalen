@@ -29,6 +29,6 @@ spec:
     - name: POSTGRES_USER
       value: postgres
     - name: DB_NAME
-      value: {{ .Values.database.name }}
+      value: {{ .Values.database.databaseName }}
     - name: DB_USER
       value: {{ .Values.database.user }}
