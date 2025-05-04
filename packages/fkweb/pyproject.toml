@@ -13,13 +13,13 @@ dependencies = [
     "django-model-utils==5.0.0",
     "django-phonenumber-field[phonenumbers]==8.0.0",
     "djangorestframework==3.16.0",
-#    "djangorestframework-camel-case==1.4.2",
+    # "djangorestframework-camel-case==1.4.2",
     "drf-spectacular==0.28.0",
     "gunicorn==23.0.0",
     "markdown==3.7",
     "psycopg2-binary>=2.9.10",
+    "pymemcache>=4.0.0",
     "python-dateutil==2.9.0.post0",
-    "python-memcached==1.62",
     "requests==2.32.3",
 ]
 
