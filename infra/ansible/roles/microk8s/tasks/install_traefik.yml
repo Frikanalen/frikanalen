@@ -1,0 +1,23 @@
+- name: Ensure python3-yaml is installed
+  apt:
+    name: python3-yaml
+    state: present
+    update_cache: yes
+
+- name: Install helm-diff plugin
+  kubernetes.core.helm_plugin:
+    plugin_path: https://github.com/databus23/helm-diff
+    state: present
+
+
+- name: Ensure Helm repo for Traefik is added
+  kubernetes.core.helm_repository:
+    name: traefik
+    repo_url: https://traefik.github.io/charts
+
+- name: Install Traefik chart with values
+  kubernetes.core.helm:
+    name: traefik
+    chart_ref: traefik/traefik
+    release_namespace: kube-system
+    create_namespace: false

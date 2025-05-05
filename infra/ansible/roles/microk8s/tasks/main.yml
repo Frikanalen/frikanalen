@@ -1,0 +1,39 @@
+---
+- name: Install MicroK8s via Snap
+  community.general.snap:
+    name: microk8s
+    state: present
+    channel: 1.33/stable
+    classic: true
+
+- name: Add user to microk8s group
+  user:
+    name: "{{ ansible_user }}"
+    groups: microk8s
+    append: yes
+
+- name: Wait for MicroK8s to become ready
+  command: snap run microk8s status --wait-ready
+  register: status
+  retries: 10
+  delay: 5
+  until: status.rc == 0
+  changed_when: false
+
+- name: Get list of enabled MicroK8s addons
+  command: snap run microk8s status --format yaml
+  register: microk8s_status
+  changed_when: false
+
+- name: Check if MetalLB is enabled
+  set_fact:
+    metallb_enabled: >-
+      {{ microk8s_status.stdout | from_yaml
+      | json_query("addons[?name=='metallb' && status=='enabled']") | length > 0 }}
+
+- name: Enable MetalLB with configured range
+  command: "snap run microk8s enable metallb:{{ ingress_ip_range }}"
+  when: not metallb_enabled
+
+- name: Include Traefik installation
+  import_tasks: install_traefik.yml

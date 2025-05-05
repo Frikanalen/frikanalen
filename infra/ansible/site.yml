@@ -1,15 +1,6 @@
-- name: Setup MicroK8s HA Cluster
-  hosts: all
-  become: yes
-  roles:
-    - role: microk8s
-      tags: [microk8s]
-
-- name: Enable MetalLB
+---
+- name: Setup MicroK8s cluster
   hosts: primary
-  become: yes
+  become: true
   roles:
-    - role: microk8s
-      tags: [metallb]
-      tasks_from: enable_metallb.yml
-
+  - microk8s
