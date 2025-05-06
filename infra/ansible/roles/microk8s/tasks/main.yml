@@ -25,15 +25,37 @@
   register: microk8s_status
   changed_when: false
 
+- name: Check if Calico is enabled
+  set_fact:
+    calico_enabled: >-
+      {{ microk8s_status.stdout | from_yaml
+      | json_query("addons[?name=='calico' && status=='enabled']") | length > 0 }}
+
+- name: Check if Flannel is enabled
+  set_fact:
+    flannel_enabled: >-
+      {{ microk8s_status.stdout | from_yaml
+      | json_query("addons[?name=='flannel' && status=='enabled']") | length > 0 }}
+
 - name: Check if MetalLB is enabled
   set_fact:
     metallb_enabled: >-
       {{ microk8s_status.stdout | from_yaml
       | json_query("addons[?name=='metallb' && status=='enabled']") | length > 0 }}
 
+# Calico is not compatible with metallb.
+- name: Disable Calico
+  command: "snap run microk8s disable calico"
+  when: calico_enabled
+
+# Instead of Calico, we use Flannel for networking.
+- name: Enable Flannel
+  command: "snap run microk8s enable flannel"
+  when: not flannel_enabled
+
 - name: Enable MetalLB with configured range
   command: "snap run microk8s enable metallb:{{ ingress_ip_range }}"
   when: not metallb_enabled
 
 - name: Include Traefik installation
-  import_tasks: install_traefik.yml
+  import_tasks: helm/install_traefik.yml
