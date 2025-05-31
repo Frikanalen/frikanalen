@@ -1,7 +1,0 @@
-.coverage
-.env
-*.pyc
-
-.idea
-env
-venv

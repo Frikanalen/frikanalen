@@ -10,7 +10,6 @@ All code used by the Norwegian public access TV channel [Frikanalen](https://fri
 This repository is home to all the software used by Frikanalen. The main [packages](packages/) are:
 
 - [frontend](packages/frontend) - Next.js\/React-based front-end, under active development
-- [fkweb](packages/fkweb) - Django-based back end API server
 - [playout](packages/playout) - Playout
 - [fkupload](packages/fkupload) - Upload backend (the frontend is in fkweb) taking files from users
 - [fkprocess](packages/fkprocess) - The processing backend for the files
