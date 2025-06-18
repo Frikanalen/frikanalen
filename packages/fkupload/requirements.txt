@@ -1,4 +1,0 @@
-Flask
-Flask-CORS
-gunicorn
-requests
