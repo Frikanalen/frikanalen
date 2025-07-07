@@ -1,6 +1,6 @@
 Infrastructure definitions
 
-* ansible/
-  new ansible scripts. things are gradually being migrated to here
-* old/
-  Legacy stuff. A little chaotic. Many resources here still in use though
+All files here are for reference only and is being replaced with:
+
+[Frikanalen/infra] - Ansible and everything to build a working k8s cluster
+[Frikanalen/gitops] - Everything that gets deployed on that cluster (monitored by ArgoCD)
